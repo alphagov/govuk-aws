@@ -38,3 +38,10 @@ hideously wrong.
         s3api put-bucket-versioning  \
         --bucket ${TERRAFORM_BUCKET} \
         --versioning-configuration Status=Enabled
+
+## Architecture Decision Records
+
+We're recording architecture decisions we make so we have a history and context
+on our implementation.
+
+Please see the [ADR documentation](doc/architecture/README.md) for further details.
