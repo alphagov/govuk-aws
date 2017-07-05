@@ -14,6 +14,10 @@ resource "aws_security_group" "jumpbox" {
   name        = "${var.stackname}_jumpbox_access"
   vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
   description = "Control access to the jumpbox"
+
+  tags {
+    Name = "${var.stackname}_jumpbox_access"
+  }
 }
 
 resource "aws_security_group_rule" "allow_offsite_ssh_to_jumpbox" {
