@@ -17,7 +17,7 @@ resource "aws_security_group" "management" {
   description = "Group used to allow access by management systems"
 }
 
-resource "aws_security_group_rule" "allow_ssh_in" {
+resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
   type      = "ingress"
   from_port = 22
   to_port   = 22

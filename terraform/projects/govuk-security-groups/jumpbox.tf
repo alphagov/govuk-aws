@@ -15,7 +15,7 @@ resource "aws_security_group" "jumpbox" {
   description = "Control access to the jumpbox"
 }
 
-resource "aws_security_group_rule" "allow_ssh_from_elb_to_jumpbox" {
+resource "aws_security_group_rule" "allow_offsite_ssh_to_jumpbox" {
   type                     = "ingress"
   to_port                  = 22
   from_port                = 22
