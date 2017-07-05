@@ -17,7 +17,7 @@ resource "aws_security_group" "management" {
   description = "Group used to allow access by management systems"
 }
 
-resource "aws_security_group_rule" "allow_ssh_in" {
+resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
   type      = "ingress"
   from_port = 22
   to_port   = 22
@@ -28,4 +28,13 @@ resource "aws_security_group_rule" "allow_ssh_in" {
 
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.jumpbox.id}"
+}
+
+resource "aws_security_group_rule" "allow_mangement_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.management.id}"
 }
