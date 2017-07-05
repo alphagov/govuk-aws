@@ -22,4 +22,6 @@ resource "aws_security_group_rule" "allow_offsite_ssh" {
   to_port     = 22
   protocol    = "tcp"
   cidr_blocks = ["${var.office_ips}"]
+
+  security_group_id = "${aws_security_group.offsite_ssh.id}"
 }
