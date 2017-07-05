@@ -17,3 +17,7 @@ output "sg_offsite_ssh_id" {
 output "sg_puppetmaster_id" {
   value = "${aws_security_group.puppetmaster.id}"
 }
+
+output "sg_puppetmaster_elb_id" {
+  value = "${aws_security_group.puppetmaster_elb.id}"
+}
