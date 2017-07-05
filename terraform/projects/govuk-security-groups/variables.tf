@@ -11,3 +11,9 @@ variable "office_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
+
+variable "aws_region" {
+  type        = "string"
+  description = "AWS region"
+  default     = "eu-west-1"
+}
