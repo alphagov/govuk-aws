@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-There are two methods of defining security groups for AWS in Terraform: in-line and separate. Using in-line rules keeps the definition close to the resource but when ever a rule is changed Terraform will re-generate the entire resource. Using separate rules Terraform will only make the single rule change but there is greater boilerplate and separation between the group resource and the rule resource.
+There are two methods of defining security groups for AWS in Terraform and they are distinguished by how you add rules: in-line and separate. Using in-line rules keeps the definition close to the resource but when ever a rule is changed Terraform will re-generate the entire resource. Using separate rules Terraform will only make the single rule change but there is greater boilerplate and separation between the group resource and the rule resource.
 
 ## Decision
 
