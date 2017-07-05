@@ -29,3 +29,12 @@ resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
+
+resource "aws_security_group_rule" "allow_mangement_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.management.id}"
+}
