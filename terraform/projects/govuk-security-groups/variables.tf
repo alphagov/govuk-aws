@@ -17,3 +17,13 @@ variable "aws_region" {
   description = "AWS region"
   default     = "eu-west-1"
 }
+
+variable "remote_state_govuk_vpc_bucket" {
+  type        = "string"
+  description = "Bucket that contains network state"
+}
+
+variable "remote_state_govuk_vpc_key" {
+  type        = "string"
+  description = "Key to access the bucket"
+}
