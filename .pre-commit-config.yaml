@@ -1,0 +1,12 @@
+- repo: local
+  hooks:
+    - id: terraform-validate
+      name: ===> Validating syntax of all .tf files
+      entry: tools/terraform-validate.sh
+      language: script
+      files: \.tf$
+    - id: terraform-format
+      name: ===> Making sure new terraform code is in a canonical format
+      entry: tools/terraform-format.sh
+      language: script
+      files: \.tf$
