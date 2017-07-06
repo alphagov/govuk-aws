@@ -1,0 +1,5 @@
+# PUPPETMASTER PROVISIONING
+#
+
+date > /var/tmp/additional.txt
+
