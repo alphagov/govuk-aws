@@ -1,5 +1,39 @@
 # PUPPETMASTER PROVISIONING
 #
 
-date > /var/tmp/additional.txt
+. /etc/lsb-release
+export DEBIAN_FRONTEND=noninteractive
+echo "LC_ALL=en_GB.UTF-8" > /etc/environment
+locale-gen "en_GB.UTF-8"
+dpkg-reconfigure locales
+
+TMPFILE=$(mktemp)
+wget -qO ${TMPFILE} http://apt.puppetlabs.com/puppetlabs-release-${DISTRIB_CODENAME}.deb
+dpkg -i ${TMPFILE}
+rm ${TMPFILE}
+
+apt-get update -qq
+apt-get -y upgrade
+
+# on puppet master
+echo "127.0.0.1 puppet" >> /etc/hosts 
+
+apt-get -y install ruby1.9.3 puppet='3.8.*' puppet-common='3.8.*'
+
+# update-alternatives --set ruby /usr/bin/ruby1.9.1 # probably don’t need
+
+useradd deploy -m -s /bin/bash 
+mkdir -p /etc/puppet /usr/share/puppet/production/releases /usr/share/puppet/production/shared/cached-copy
+chown -R deploy: /usr/share/puppet/*
+apt-get -y install ruby-bundler
+
+# For Puppetdb
+apt-get -y install openjdk-7-jre-headless
+
+gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
+
+# unattended-upgrade # we’ve already done an apt-get update and upgrade by this stage.
+
+# on the machine run a verify
+puppet apply -e 'notify { "Hello from Puppet": }'
 
