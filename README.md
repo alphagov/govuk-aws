@@ -45,3 +45,32 @@ We're recording architecture decisions we make so we have a history and context
 on our implementation.
 
 Please see the [ADR documentation](doc/architecture/README.md) for further details.
+
+## Developing in the repo
+
+### Pre-commit hooks
+
+This repo uses [pre-commit](http://pre-commit.com/) for managing its pre-commit
+hooks. This is available via brew:
+
+```brew install pre-commit```
+
+The pre-commit hooks are configured in the .pre-commit-config.yaml file in the
+root of this repo. To make the pre-commit hooks work you first need to install
+the pre-commit shim in your local .git/hooks directory:
+
+```pre-commit install```
+
+This will now run the hooks configured in .pre-commit-config.yaml when you run a
+`git commit` and will pass each hook the list of files staged as part of the
+commit. You can test the hooks by doing:
+
+```pre-commit run```
+
+You can also run the hooks on all files to test the status of the entire repo.
+This might be useful, for example, as part of a PR builder job:
+
+```pre-commit run --all-files```
+
+The code for this, and this documentation itself, were taken from excellent work
+done by the GDS Verify team.

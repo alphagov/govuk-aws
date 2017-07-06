@@ -30,7 +30,9 @@ resource "aws_eip" "nat" {
   count = "${var.subnet_ids_length}"
   vpc   = true
 
-  lifecycle { create_before_destroy = true }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_nat_gateway" "nat" {
@@ -38,7 +40,9 @@ resource "aws_nat_gateway" "nat" {
   allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
   subnet_id     = "${element(var.subnet_ids, count.index)}"
 
-  lifecycle { create_before_destroy = true }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Outputs
@@ -52,4 +56,3 @@ output "nat_gateway_subnets_ids_map" {
   value       = "${zipmap(aws_nat_gateway.nat.*.subnet_id, aws_nat_gateway.nat.*.id)}"
   description = "Map containing the NAT gateway IDs and the public subnet ID where each one is located"
 }
-
