@@ -92,6 +92,12 @@ variable "elb_health_check_target" {
   description = "ELB health_check target"
 }
 
+variable "elb_internal" {
+  type        = "string"
+  description = "Configure ELB internal or internet-facing"
+  default     = true
+}
+
 variable "instance_subnet_ids" {
   type        = "list"
   description = "List of subnet ids where the instance can be deployed"
@@ -167,6 +173,7 @@ resource "aws_elb" "node_elb" {
   name            = "${var.name}"
   subnets         = ["${var.elb_subnet_ids}"]
   security_groups = ["${var.elb_security_group_ids}"]
+  internal        = "${var.elb_internal}"
 
   listener {
     instance_port     = "${var.elb_listener_instance_port}"
