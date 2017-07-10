@@ -14,9 +14,9 @@ dpkg-reconfigure openssh-server
 
 # Install puppet
 TMPFILE=$(mktemp)
-wget -qO ${TMPFILE} http://apt.puppetlabs.com/puppetlabs-release-${DISTRIB_CODENAME}.deb
-dpkg -i ${TMPFILE}
-rm ${TMPFILE}
+wget -qO $TMPFILE http://apt.puppetlabs.com/puppetlabs-release-$DISTRIB_CODENAME.deb
+dpkg -i $TMPFILE
+rm $TMPFILE
 
 # Ensure the packages are upto date.
 apt-get update -qq
@@ -41,7 +41,7 @@ done
 # Add search domain for the local project. This allows local
 # services like puppet to resolve
 PROJECT=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=tag-key,Values=Project" --region=$REGION --output=json | jq -r '.Tags[] | .Value ')
-sed -r -i "s/^search(.*)$/search\1 ${PROJECT}.internal/g" /etc/resolv.conf
+sed -r -i "s/^search(.*)$/search\1 $PROJECT.internal/g" /etc/resolv.conf
 
 # install puppet
 apt-get -y install make ruby1.9.3 puppet='3.8.*' puppet-common='3.8.*'
