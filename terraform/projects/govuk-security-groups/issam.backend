@@ -1,0 +1,4 @@
+bucket  = "issam-terraform-state"
+key     = "terraform-govuk-security-groups-issam.tfstate"
+encrypt = true
+region  = "eu-west-1"

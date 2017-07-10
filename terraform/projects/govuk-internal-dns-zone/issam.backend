@@ -1,0 +1,3 @@
+bucket  = "issam-terraform-state"
+key     = "terraform-govuk-internal-dns-zone-issam.tfstate"
+region  = "eu-west-1"

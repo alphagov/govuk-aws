@@ -1,0 +1,4 @@
+bucket  = "issam-terraform-state"
+key     = "terraform-jumpbox-issam.tfstate"
+encrypt = true
+region  = "eu-west-1"
