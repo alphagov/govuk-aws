@@ -1,0 +1,3 @@
+bucket  = "govuk-terraform-state-integration"
+key     = "terraform-govuk-internal-dns-zone-deana.tfstate"
+region  = "eu-west-1"
