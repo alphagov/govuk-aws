@@ -35,6 +35,32 @@ resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
   source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
 
+resource "aws_security_group_rule" "allow_nrpe_ingress_from_monitoring" {
+  type      = "ingress"
+  from_port = 5666
+  to_port   = 5666
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.management.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.monitoring.id}"
+}
+
+resource "aws_security_group_rule" "allow_icmp_ingress_from_monitoring" {
+  type      = "ingress"
+  from_port = 8
+  to_port   = 0
+  protocol  = "icmp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.management.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.monitoring.id}"
+}
+
 resource "aws_security_group_rule" "allow_mangement_egress" {
   type              = "egress"
   from_port         = 0
