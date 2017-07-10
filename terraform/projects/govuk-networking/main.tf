@@ -97,8 +97,8 @@ data "terraform_remote_state" "govuk_vpc" {
 
 module "govuk_public_subnet" {
   source                    = "../../modules/aws/network/public_subnet"
-  tag_project               = "${var.stackname}"
   vpc_id                    = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  default_tags              = "${map("Project", var.stackname)}"
   route_table_public_id     = "${data.terraform_remote_state.govuk_vpc.route_table_public_id}"
   subnet_cidrs              = "${var.public_subnet_cidrs}"
   subnet_availability_zones = "${var.public_subnet_availability_zones}"
@@ -137,8 +137,8 @@ data "template_file" "nat_gateway_association_nat_id" {
 
 module "govuk_private_subnet" {
   source                     = "../../modules/aws/network/private_subnet"
-  tag_project                = "${var.stackname}"
   vpc_id                     = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  default_tags               = "${map("Project", var.stackname)}"
   subnet_cidrs               = "${var.private_subnet_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_availability_zones}"
   subnet_nat_gateways        = "${zipmap(keys(var.private_subnet_nat_gateway_association), data.template_file.nat_gateway_association_nat_id.*.rendered)}"
