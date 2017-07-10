@@ -1,28 +1,6 @@
 # JUMPBOX PROVISIONING
 #
 
-# Source DISTRIB_* env vars
-. /etc/lsb-release
-
-export DEBIAN_FRONTEND=noninteractive
-echo "LC_ALL=en_GB.UTF-8" > /etc/environment
-locale-gen "en_GB.UTF-8"
-dpkg-reconfigure locales
-
-rm -f /etc/ssh/ssh_host*key*
-dpkg-reconfigure openssh-server
-
-TMPFILE=$(mktemp)
-wget -qO ${TMPFILE} http://apt.puppetlabs.com/puppetlabs-release-${DISTRIB_CODENAME}.deb
-dpkg -i ${TMPFILE}
-rm ${TMPFILE}
-
-apt-get update -qq
-apt-get -y upgrade
-
-apt-get -y install make ruby1.9.3 puppet='3.8.*' puppet-common='3.8.*'
-service puppet stop
-
 rm -rf /etc/puppet
 mkdir -p /etc/puppet
 if [ -d /var/lib/puppet/ssl ] ; then
