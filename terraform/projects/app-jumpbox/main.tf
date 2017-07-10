@@ -124,7 +124,7 @@ resource "aws_elb" "jumpbox_external_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_migration", "jumpbox", "aws_hostname", "jumpbox-1")}"
+  tags = "${map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_migration", "jumpbox")}"
 }
 
 #resource "aws_route53_record" "service_record" {

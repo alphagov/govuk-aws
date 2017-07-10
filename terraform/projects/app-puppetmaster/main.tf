@@ -184,7 +184,7 @@ resource "aws_elb" "puppetmaster_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
+  tags = "${map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_migration", "puppetmaster")}"
 }
 
 resource "aws_route53_record" "service_record" {
