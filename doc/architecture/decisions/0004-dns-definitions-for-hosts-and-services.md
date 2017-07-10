@@ -12,7 +12,13 @@ For our current monitoring to work we need Icinga to be able to communicate with
 
 ## Decision
 
-Use Route53 to register hosts with a DNS name.
+Each stack will have an internal, private, zone for internal services such as the puppetmaster. These
+will be in the following format:
+
+    $servicename.$stackname.internal
+
+    puppet.perftesting.internal
+    monitoring.mystack.internal
 
 ## Consequences
 
