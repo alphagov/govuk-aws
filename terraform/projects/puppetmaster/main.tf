@@ -142,7 +142,7 @@ module "puppetmaster" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-puppetmaster"
   vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname)}"
+  default_tags                         = "${map("Project", var.stackname, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
   elb_subnet_ids                       = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
   elb_security_group_ids               = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_elb_id}"]
   elb_listener_instance_port           = "8140"
@@ -150,7 +150,7 @@ module "puppetmaster" {
   elb_health_check_target              = "TCP:8140"
   instance_subnet_ids                  = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
-  instance_type                        = "t2.micro"
+  instance_type                        = "t2.medium"
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-puppetmaster_bootstrap"
   instance_public_key                  = "${var.puppetmaster_bootstrap_public_key}"
@@ -159,3 +159,14 @@ module "puppetmaster" {
 
 # Outputs
 # --------------------------------------------------------------
+
+output "puppetmaster_dns_name" {
+  value       = "${module.puppetmaster.service_dns_name}"
+  description = "DNS name to access the puppetmaster service"
+}
+
+output "puppetmaster_bootstrap_dns_name" {
+  value       = "${aws_elb.puppetmaster_bootstrap_elb.dns_name}"
+  description = "DNS name to access the puppetmaster bootstrap service"
+}
+
