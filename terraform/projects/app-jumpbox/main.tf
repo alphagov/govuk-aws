@@ -1,4 +1,4 @@
-# == Manifest: projects::jumpbox
+# == Manifest: projects::app-jumpbox
 #
 # Jumpbox node
 #
