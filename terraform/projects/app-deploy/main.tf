@@ -53,11 +53,6 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "puppetmaster_bootstrap_public_key" {
-  type        = "string"
-  description = "Puppetmaster default public key material"
-}
-
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
