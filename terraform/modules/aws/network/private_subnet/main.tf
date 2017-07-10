@@ -15,7 +15,7 @@
 #
 # === Variables:
 #
-# tag_project
+# default_tags
 # vpc_id
 # subnet_cidrs
 # subnet_availability_zones
@@ -29,10 +29,10 @@
 # subnet_route_table_ids
 # subnet_names_route_tables_map
 #
-variable "tag_project" {
-  type        = "string"
-  description = "The project tag."
-  default     = ""
+variable "default_tags" {
+  type        = "map"
+  description = "Additional resource tags"
+  default     = {}
 }
 
 variable "vpc_id" {
@@ -53,7 +53,7 @@ variable "subnet_availability_zones" {
 variable "subnet_nat_gateways" {
   type        = "map"
   description = "A map containing the NAT gateway IDs for the subnets being created."
-  default     = { }
+  default     = {}
 }
 
 variable "subnet_nat_gateways_length" {
@@ -70,10 +70,7 @@ resource "aws_subnet" "private" {
   cidr_block        = "${element(values(var.subnet_cidrs), count.index)}"
   availability_zone = "${lookup(var.subnet_availability_zones, element(keys(var.subnet_cidrs), count.index))}"
 
-  tags {
-    Name    = "${element(keys(var.subnet_cidrs), count.index)}"
-    Project = "${var.tag_project}"
-  }
+  tags = "${merge(var.default_tags, map("Name", element(keys(var.subnet_cidrs), count.index)))}"
 
   lifecycle {
     create_before_destroy = true
@@ -86,10 +83,7 @@ resource "aws_route_table" "private" {
   count  = "${length(keys(var.subnet_cidrs))}"
   vpc_id = "${var.vpc_id}"
 
-  tags {
-    Name    = "${element(keys(var.subnet_cidrs), count.index)}"
-    Project = "${var.tag_project}"
-  }
+  tags = "${merge(var.default_tags, map("Name", element(keys(var.subnet_cidrs), count.index)))}"
 
   lifecycle {
     create_before_destroy = true

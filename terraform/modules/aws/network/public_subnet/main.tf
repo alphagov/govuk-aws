@@ -5,7 +5,7 @@
 #
 # === Variables:
 #
-# name_prefix
+# default_tags
 # vpc_id
 # route_table_public_id
 # subnet_cidrs
@@ -17,10 +17,10 @@
 # subnet_names_ids_map
 #
 
-variable "tag_project" {
-  type        = "string"
-  description = "The prefix name used in the resource tag."
-  default     = ""
+variable "default_tags" {
+  type        = "map"
+  description = "Additional resource tags"
+  default     = {}
 }
 
 variable "vpc_id" {
@@ -51,10 +51,7 @@ resource "aws_subnet" "public" {
   cidr_block        = "${element(values(var.subnet_cidrs), count.index)}"
   availability_zone = "${lookup(var.subnet_availability_zones, element(keys(var.subnet_cidrs), count.index))}"
 
-  tags {
-    Name    = "${element(keys(var.subnet_cidrs), count.index)}"
-    Project = "${var.tag_project}"
-  }
+  tags = "${merge(var.default_tags, map("Name", element(keys(var.subnet_cidrs), count.index)))}"
 
   lifecycle {
     create_before_destroy = true
