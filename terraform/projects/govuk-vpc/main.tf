@@ -5,6 +5,7 @@
 # === Variables:
 #
 # aws_region
+# stackname
 # vpc_name
 # vpc_cidr
 #
@@ -20,6 +21,12 @@ variable "aws_region" {
   type        = "string"
   description = "AWS region"
   default     = "eu-west-1"
+}
+
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
+  default     = ""
 }
 
 variable "vpc_name" {
@@ -44,9 +51,10 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "../../modules/aws/network/vpc"
-  name   = "${var.vpc_name}"
-  cidr   = "${var.vpc_cidr}"
+  source       = "../../modules/aws/network/vpc"
+  name         = "${var.vpc_name}"
+  cidr         = "${var.vpc_cidr}"
+  default_tags = "${map("Project", var.stackname)}"
 }
 
 # Outputs

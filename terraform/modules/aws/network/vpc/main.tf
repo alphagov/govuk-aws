@@ -4,7 +4,7 @@
 #
 # === Variables:
 #
-# tag_project
+# default_tags
 # name
 # cidr
 #
@@ -15,11 +15,10 @@
 # internet_gateway_id
 # route_table_public_id
 #
-
-variable "tag_project" {
-  type        = "string"
-  description = "The project tag."
-  default     = ""
+variable "default_tags" {
+  type        = "map"
+  description = "Additional resource tags"
+  default     = {}
 }
 
 variable "name" {
@@ -39,10 +38,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags {
-    Name    = "${var.name}"
-    Project = "${var.tag_project}"
-  }
+  tags = "${merge(var.default_tags, map("Name", var.name))}"
 
   lifecycle {
     create_before_destroy = true
@@ -52,10 +48,7 @@ resource "aws_vpc" "vpc" {
 resource "aws_internet_gateway" "public" {
   vpc_id = "${aws_vpc.vpc.id}"
 
-  tags {
-    Name    = "${var.name}"
-    Project = "${var.tag_project}"
-  }
+  tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
 
 resource "aws_route_table" "public" {
@@ -66,10 +59,7 @@ resource "aws_route_table" "public" {
     gateway_id = "${aws_internet_gateway.public.id}"
   }
 
-  tags {
-    Name    = "${var.name}"
-    Project = "${var.tag_project}"
-  }
+  tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
 
 # Outputs
