@@ -18,13 +18,8 @@
 # name
 # vpc_id
 # default_tags
-# elb_subnet_ids
-# elb_security_group_ids
 # instance_subnet_ids
 # instance_security_group_ids
-# create_service_dns_name
-# service_dns_name
-# zone_id
 # instance_ami_filter_name
 # instance_type
 # create_instance_key
@@ -35,7 +30,6 @@
 #
 # === Outputs:
 #
-# instance_dns_name
 # instance_iam_role_id
 #
 
@@ -55,49 +49,6 @@ variable "vpc_id" {
   description = "The ID of the VPC in which the jumpbox is created"
 }
 
-variable "elb_subnet_ids" {
-  type        = "list"
-  description = "List of subnet ids where the jumpbox ELB can be deployed"
-}
-
-variable "elb_security_group_ids" {
-  type        = "list"
-  description = "List of security group ids to attach to the ELB"
-}
-
-variable "elb_listener_instance_port" {
-  type        = "string"
-  description = "ELB listener instance port"
-}
-
-variable "elb_listener_instance_protocol" {
-  type        = "string"
-  description = "ELB listener instance protocol"
-  default     = "tcp"
-}
-
-variable "elb_listener_lb_port" {
-  type        = "string"
-  description = "ELB listener lb port"
-}
-
-variable "elb_listener_lb_protocol" {
-  type        = "string"
-  description = "ELB listener lb protocol"
-  default     = "tcp"
-}
-
-variable "elb_health_check_target" {
-  type        = "string"
-  description = "ELB health_check target"
-}
-
-variable "elb_internal" {
-  type        = "string"
-  description = "Configure ELB internal or internet-facing"
-  default     = true
-}
-
 variable "instance_subnet_ids" {
   type        = "list"
   description = "List of subnet ids where the instance can be deployed"
@@ -106,24 +57,6 @@ variable "instance_subnet_ids" {
 variable "instance_security_group_ids" {
   type        = "list"
   description = "List of security group ids to attach to the ASG"
-}
-
-variable "create_service_dns_name" {
-  type        = "string"
-  description = "Whether to add a DNS Alias to resolve the ELB service record"
-  default     = false
-}
-
-variable "service_dns_name" {
-  type        = "string"
-  description = "Service DNS name, when service_dns_name_enable is true"
-  default     = ""
-}
-
-variable "zone_id" {
-  type        = "string"
-  description = "Route53 Zone ID to add the service DNS record, when service_dns_name_enable is true"
-  default     = ""
 }
 
 variable "instance_ami_filter_name" {
@@ -173,49 +106,13 @@ variable "instance_default_policy" {
   default     = "default_policy.json"
 }
 
+variable "instance_elb_ids" {
+  type        = "list"
+  description = "A list of the ELB IDs to attach this ASG to"
+}
+
 # Resources
 #--------------------------------------------------------------
-resource "aws_elb" "node_elb" {
-  name            = "${var.name}"
-  subnets         = ["${var.elb_subnet_ids}"]
-  security_groups = ["${var.elb_security_group_ids}"]
-  internal        = "${var.elb_internal}"
-
-  listener {
-    instance_port     = "${var.elb_listener_instance_port}"
-    instance_protocol = "${var.elb_listener_instance_protocol}"
-    lb_port           = "${var.elb_listener_lb_port}"
-    lb_protocol       = "${var.elb_listener_lb_protocol}"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "${var.elb_health_check_target}"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${merge(var.default_tags, map("Name", var.name))}"
-}
-
-resource "aws_route53_record" "service_record" {
-  count   = "${var.create_service_dns_name}"
-  zone_id = "${var.zone_id}"
-  name    = "${var.service_dns_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.node_elb.dns_name}"
-    zone_id                = "${aws_elb.node_elb.zone_id}"
-    evaluate_target_health = true
-  }
-}
 
 data "aws_ami" "node_ami_ubuntu" {
   most_recent = true
@@ -326,7 +223,7 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   force_delete              = false
   wait_for_capacity_timeout = 0
   launch_configuration      = "${aws_launch_configuration.node_launch_configuration.name}"
-  load_balancers            = ["${aws_elb.node_elb.name}"]
+  load_balancers            = ["${var.instance_elb_ids}"]
 
   enabled_metrics = [
     "GroupMinSize",
@@ -351,10 +248,6 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
 
 # Outputs
 #--------------------------------------------------------------
-output "service_dns_name" {
-  value       = "${var.create_service_dns_name == 1 ? var.service_dns_name : aws_elb.node_elb.dns_name}"
-  description = "DNS name to access the node service"
-}
 
 output "instance_iam_role_id" {
   value       = "${aws_iam_role.node_iam_role.id}"

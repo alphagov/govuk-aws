@@ -48,6 +48,16 @@ variable "remote_state_govuk_security_groups_bucket" {
   description = "VPC TF remote state bucket"
 }
 
+variable "remote_state_govuk_internal_dns_zone_key" {
+  type        = "string"
+  description = "VPC TF remote state key"
+}
+
+variable "remote_state_govuk_internal_dns_zone_bucket" {
+  type        = "string"
+  description = "VPC TF remote state bucket"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -98,6 +108,16 @@ data "terraform_remote_state" "govuk_security_groups" {
   }
 }
 
+data "terraform_remote_state" "govuk_internal_dns_zone" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_govuk_internal_dns_zone_bucket}"
+    key    = "${var.remote_state_govuk_internal_dns_zone_key}"
+    region = "eu-west-1"
+  }
+}
+
 resource "aws_elb" "puppetmaster_bootstrap_elb" {
   name            = "${var.stackname}-puppetmaster-bootstrap"
   subnets         = ["${data.terraform_remote_state.govuk_networking.public_subnet_ids}"]
@@ -138,16 +158,52 @@ resource "aws_security_group_rule" "puppetmaster_from_elb_in_22" {
   security_group_id        = "${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_id}"
 }
 
+resource "aws_elb" "puppetmaster_internal_elb" {
+  name            = "${var.stackname}-puppetmaster"
+  subnets         = ["${data.terraform_remote_state.govuk_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_elb_id}"]
+  internal        = "true"
+
+  listener {
+    instance_port     = "8140"
+    instance_protocol = "tcp"
+    lb_port           = "8140"
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "TCP:8140"
+    interval            = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
+}
+
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.govuk_internal_dns_zone.internal_service_zone_id}"
+  name    = "puppet"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.puppetmaster_internal_elb.dns_name}"
+    zone_id                = "${aws_elb.puppetmaster_internal_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "puppetmaster" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-puppetmaster"
   vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
   default_tags                         = "${map("Project", var.stackname, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
-  elb_subnet_ids                       = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
-  elb_security_group_ids               = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_elb_id}"]
-  elb_listener_instance_port           = "8140"
-  elb_listener_lb_port                 = "8140"
-  elb_health_check_target              = "TCP:8140"
   instance_subnet_ids                  = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
@@ -155,17 +211,23 @@ module "puppetmaster" {
   instance_key_name                    = "${var.stackname}-puppetmaster_bootstrap"
   instance_public_key                  = "${var.puppetmaster_bootstrap_public_key}"
   instance_additional_user_data_script = "${file("${path.module}/puppetmaster_additional_user_data.txt")}"
+  instance_elb_ids                     = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
 }
 
 # Outputs
 # --------------------------------------------------------------
 
-output "puppetmaster_dns_name" {
-  value       = "${module.puppetmaster.service_dns_name}"
+output "puppetmaster_internal_elb_dns_name" {
+  value       = "${aws_elb.puppetmaster_internal_elb.dns_name}"
   description = "DNS name to access the puppetmaster service"
 }
 
-output "puppetmaster_bootstrap_dns_name" {
+output "puppetmaster_bootstrap_elb_dns_name" {
   value       = "${aws_elb.puppetmaster_bootstrap_elb.dns_name}"
   description = "DNS name to access the puppetmaster bootstrap service"
+}
+
+output "service_dns_name" {
+  value       = "${aws_route53_record.service_record.fqdn}"
+  description = "DNS name to access the node service"
 }
