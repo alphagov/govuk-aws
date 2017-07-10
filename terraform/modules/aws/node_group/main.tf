@@ -167,6 +167,12 @@ variable "instance_additional_user_data_script" {
   default     = ""
 }
 
+variable "instance_default_policy" {
+  type        = "string"
+  description = "Name of the JSON file containing the default IAM role policy for the instance"
+  default     = "default_policy.json"
+}
+
 # Resources
 #--------------------------------------------------------------
 resource "aws_elb" "node_elb" {
@@ -256,6 +262,17 @@ resource "aws_iam_role" "node_iam_role" {
 EOF
 }
 
+resource "aws_iam_policy" "node_iam_policy_default" {
+  name   = "${var.name}"
+  path   = "/"
+  policy = "${file("${path.module}/${var.instance_default_policy}")}"
+}
+
+resource "aws_iam_role_policy_attachment" "node_iam_role_policy_attachment_default" {
+  role       = "${aws_iam_role.node_iam_role.name}"
+  policy_arn = "${aws_iam_policy.node_iam_policy_default.arn}"
+}
+
 resource "aws_iam_instance_profile" "node_instance_profile" {
   name = "${var.name}"
   role = "${aws_iam_role.node_iam_role.name}"
@@ -268,7 +285,7 @@ resource "aws_key_pair" "node_key" {
 }
 
 resource "aws_launch_configuration" "node_launch_configuration" {
-  name_prefix   = "${var.name}-"
+  name          = "${var.name}"
   image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
   instance_type = "${var.instance_type}"
   user_data     = "${data.template_file.node_user_data.rendered}"
@@ -281,6 +298,16 @@ resource "aws_launch_configuration" "node_launch_configuration" {
 
   lifecycle {
     create_before_destroy = true
+  }
+}
+
+resource "null_resource" "node_autoscaling_group_tags" {
+  count = "${length(keys(var.default_tags))}"
+
+  triggers {
+    key                 = "${element(keys(var.default_tags), count.index)}"
+    value               = "${element(values(var.default_tags), count.index)}"
+    propagate_at_launch = true
   }
 }
 
@@ -312,18 +339,10 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
     "GroupTotalInstances",
   ]
 
-  tag {
-    key                 = "Name"
-    value               = "${var.name}"
-    propagate_at_launch = true
-  }
-
-#  tag {
-#    count               = "${length(var.default_tags)}"
-#    key                 = "${element(keys(var.default_tags), count.index)}"
-#    value               = "${element(values(var.default_tags), count.index)}"
-#    propagate_at_launch = true
-#  }
+  tags = ["${concat(
+    list(map("key", "Name", "value", "${var.name}", "propagate_at_launch", true)),
+    null_resource.node_autoscaling_group_tags.*.triggers)
+  }"]
 
   lifecycle {
     create_before_destroy = true
@@ -341,4 +360,3 @@ output "instance_iam_role_id" {
   value       = "${aws_iam_role.node_iam_role.id}"
   description = "Node IAM Role ID. Use with aws_iam_role_policy resources to attach specific permissions to the node profile"
 }
-
