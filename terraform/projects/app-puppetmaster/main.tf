@@ -1,4 +1,4 @@
-# == Manifest: projects::puppetmaster
+# == Manifest: projects::app-puppetmaster
 #
 # PUppetmaster node
 #
@@ -169,4 +169,3 @@ output "puppetmaster_bootstrap_dns_name" {
   value       = "${aws_elb.puppetmaster_bootstrap_elb.dns_name}"
   description = "DNS name to access the puppetmaster bootstrap service"
 }
-
