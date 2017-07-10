@@ -29,3 +29,11 @@ output "sg_deploy_id" {
 output "sg_deploy_elb_id" {
   value = "${aws_security_group.deploy_elb.id}"
 }
+
+output "sg_monitoring_id" {
+  value = "${aws_security_group.monitoring.id}"
+}
+
+output "sg_monitoring_elb_id" {
+  value = "${aws_security_group.monitoring_elb.id}"
+}
