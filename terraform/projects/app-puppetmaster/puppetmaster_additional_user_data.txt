@@ -4,6 +4,9 @@
 # on puppet master
 echo "127.0.0.1 puppet" >> /etc/hosts 
 
+# Enable autosigning of everything
+echo '*' > /etc/puppet/autosign.conf
+
 # update-alternatives --set ruby /usr/bin/ruby1.9.1 # probably don’t need
 
 useradd deploy -m -s /bin/bash 
