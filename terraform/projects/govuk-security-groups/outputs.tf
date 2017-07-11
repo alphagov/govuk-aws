@@ -53,3 +53,16 @@ output "sg_frontend_id" {
 output "sg_frontend_elb_id" {
   value = "${aws_security_group.frontend_elb.id}"
 }
+
+output "sg_graphite_id" {
+  value = "${aws_security_group.graphite.id}"
+}
+
+output "sg_graphite_internal_elb_id" {
+  value = "${aws_security_group.graphite_internal_elb.id}"
+}
+
+output "sg_graphite_external_elb_id" {
+  value = "${aws_security_group.graphite_external_elb.id}"
+}
+

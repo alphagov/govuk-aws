@@ -30,6 +30,7 @@
 # asg_desired_capacity
 # asg_min_size
 # asg_max_size
+# root_block_device_volume_size
 #
 # === Outputs:
 #
@@ -132,6 +133,13 @@ variable "asg_min_size" {
   default     = "1"
 }
 
+variable "root_block_device_volume_size" {
+  type        = "string"
+  description = "The size of the instance root volume in gigabytes"
+  default     = "8"
+}
+
+
 # Resources
 #--------------------------------------------------------------
 
@@ -213,6 +221,12 @@ resource "aws_launch_configuration" "node_launch_configuration" {
   iam_instance_profile        = "${aws_iam_instance_profile.node_instance_profile.name}"
   associate_public_ip_address = false
   key_name                    = "${var.instance_key_name}"
+
+  root_block_device {
+    volume_type           = "gp2"
+    volume_size           = "${var.root_block_device_volume_size}"
+    delete_on_termination = true
+  }
 
   lifecycle {
     create_before_destroy = true
