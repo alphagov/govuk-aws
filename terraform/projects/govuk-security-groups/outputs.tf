@@ -46,3 +46,10 @@ output "sg_docker_management_etcd_elb_id" {
   value = "${aws_security_group.docker_management_etcd_elb.id}"
 }
 
+output "sg_frontend_id" {
+  value = "${aws_security_group.frontend.id}"
+}
+
+output "sg_frontend_elb_id" {
+  value = "${aws_security_group.frontend_elb.id}"
+}
