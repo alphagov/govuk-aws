@@ -141,7 +141,7 @@ module "monitoring" {
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-monitoring"
   instance_public_key                  = "${var.ssh_public_key}"
-  instance_additional_user_data_script = "${file("${path.module}/monitoring_additional_user_data.txt")}"
+  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
   instance_elb_ids                     = ["${aws_elb.monitoring_elb.id}"]
 }
 

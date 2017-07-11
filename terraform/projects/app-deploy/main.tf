@@ -142,7 +142,7 @@ module "deploy" {
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-deploy"
   instance_public_key                  = "${var.ssh_public_key}"
-  instance_additional_user_data_script = "${file("${path.module}/deploy_additional_user_data.txt")}"
+  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
   instance_elb_ids                     = ["${aws_elb.deploy_elb.id}"]
 }
 
