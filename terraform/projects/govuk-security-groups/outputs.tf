@@ -37,3 +37,12 @@ output "sg_monitoring_id" {
 output "sg_monitoring_elb_id" {
   value = "${aws_security_group.monitoring_elb.id}"
 }
+
+output "sg_docker_management_id" {
+  value = "${aws_security_group.docker_management.id}"
+}
+
+output "sg_docker_management_etcd_elb_id" {
+  value = "${aws_security_group.docker_management_etcd_elb.id}"
+}
+
