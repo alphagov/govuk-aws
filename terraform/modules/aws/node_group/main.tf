@@ -27,6 +27,9 @@
 # instance_public_key
 # instance_user_data_file
 # instance_additional_user_data_script
+# asg_desired_capacity
+# asg_min_size
+# asg_max_size
 #
 # === Outputs:
 #
@@ -109,6 +112,24 @@ variable "instance_default_policy" {
 variable "instance_elb_ids" {
   type        = "list"
   description = "A list of the ELB IDs to attach this ASG to"
+}
+
+variable "asg_desired_capacity" {
+  type        = "string"
+  description = "The autoscaling groups desired capacity"
+  default     = "1"
+}
+
+variable "asg_max_size" {
+  type        = "string"
+  description = "The autoscaling groups max_size"
+  default     = "1"
+}
+
+variable "asg_min_size" {
+  type        = "string"
+  description = "The autoscaling groups max_size"
+  default     = "1"
 }
 
 # Resources
@@ -215,9 +236,9 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
     "${var.instance_subnet_ids}",
   ]
 
-  desired_capacity          = "1"
-  min_size                  = "1"
-  max_size                  = "1"
+  desired_capacity          = "${var.asg_desired_capacity}"
+  min_size                  = "${var.asg_min_size}"
+  max_size                  = "${var.asg_max_size}"
   health_check_grace_period = "60"
   health_check_type         = "EC2"
   force_delete              = false
