@@ -203,7 +203,6 @@ resource "aws_route53_record" "graphite_internal_service_record" {
   }
 }
 
-
 module "graphite-1" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-graphite-1"
@@ -222,7 +221,7 @@ module "graphite-1" {
 
 resource "aws_ebs_volume" "graphite-1" {
   availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
-  size = 100
+  size              = 100
 
   tags {
     Name          = "${var.stackname}-graphite-1"
