@@ -164,7 +164,7 @@ output "public_subnet_names_ids_map" {
 }
 
 output "public_subnet_names_azs_map" {
-  value       = "${var.public_subnet_availability_zones}"
+  value = "${var.public_subnet_availability_zones}"
 }
 
 output "private_subnet_ids" {
@@ -178,7 +178,7 @@ output "private_subnet_names_ids_map" {
 }
 
 output "private_subnet_names_azs_map" {
-  value       = "${var.private_subnet_availability_zones}"
+  value = "${var.private_subnet_availability_zones}"
 }
 
 output "private_subnet_names_route_tables_map" {

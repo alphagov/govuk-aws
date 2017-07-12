@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_management_in" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.graphite_external_elb.id}"
+  security_group_id        = "${aws_security_group.graphite_external_elb.id}"
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
