@@ -188,7 +188,7 @@ EOF
 }
 
 resource "aws_iam_policy" "node_iam_policy_default" {
-  name   = "${var.name}"
+  name   = "${var.name}-default"
   path   = "/"
   policy = "${file("${path.module}/${var.instance_default_policy}")}"
 }
@@ -283,7 +283,7 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
 # Outputs
 #--------------------------------------------------------------
 
-output "instance_iam_role_id" {
-  value       = "${aws_iam_role.node_iam_role.id}"
-  description = "Node IAM Role ID. Use with aws_iam_role_policy resources to attach specific permissions to the node profile"
+output "instance_iam_role_name" {
+  value       = "${aws_iam_role.node_iam_role.name}"
+  description = "Node IAM Role Name. Use with aws_iam_role_policy_attachment to attach specific policies to the node role"
 }
