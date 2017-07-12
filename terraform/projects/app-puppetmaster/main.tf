@@ -5,8 +5,9 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_key
 # remote_state_govuk_vpc_bucket
+# remote_state_govuk_vpc_key
+# ssh_public_key
 # stackname
 #
 # === Outputs:
@@ -63,7 +64,7 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "puppetmaster_bootstrap_public_key" {
+variable "ssh_public_key" {
   type        = "string"
   description = "Puppetmaster default public key material"
 }
@@ -210,7 +211,7 @@ module "puppetmaster" {
   instance_type                        = "t2.medium"
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-puppetmaster_bootstrap"
-  instance_public_key                  = "${var.puppetmaster_bootstrap_public_key}"
+  instance_public_key                  = "${var.ssh_public_key}"
   instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
   instance_elb_ids                     = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
 }

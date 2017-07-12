@@ -18,9 +18,13 @@ TERRAFORM_DIR='./terraform'
 PROJECT_DIR="${TERRAFORM_DIR}/projects/${PROJECT}"
 BACKEND_FILE="${STACKNAME}.backend"
 
-DATA_DIR="../../data/${PROJECT}"
-STACK_DATA_FILE="${DATA_DIR}/${STACKNAME}.tfvars"
-COMMON_DATA_FILE="${DATA_DIR}/common.tfvars"
+# We're going to CD into $PROJECT_DIR so make paths relative to that.
+DATA_DIR="../../data"
+COMMON_STACK_DATA_FILE="${DATA_DIR}/common/${STACKNAME}.tfvars"
+
+PROJECT_DATA_DIR="${DATA_DIR}/${PROJECT}"
+STACK_DATA_FILE="${PROJECT_DATA_DIR}/${STACKNAME}.tfvars"
+COMMON_PROJECT_DATA_FILE="${PROJECT_DATA_DIR}/common.tfvars"
 
 # Check we have all the arguments we need
 if [[ $CMD = "-h" ]]
@@ -43,21 +47,27 @@ else
     HELP=1
   fi
 
-  # Now we know the project exists check everything else from there.
-  cd "$PROJECT_DIR"
-
   if [[ -z $STACKNAME ]]
   then
     echo 'Specify the name of the ".tfvars" and ".backend" files.'
     HELP=1
-  elif [[ $CMD == "init" ]] && [[ ! -f $BACKEND_FILE ]]
+  elif [[ $CMD == "init" ]] && [[ ! -f $PROJECT_DIR/$BACKEND_FILE ]]
   then
-    echo "Could not find backend file '$BACKEND_FILE'"
+    echo "Could not find backend file '$PROJECT_DIR/$BACKEND_FILE'"
     HELP=1
-  elif [[ ! -f $STACK_DATA_FILE ]]
-  then
-    echo "Could not find tfvars file '$STACK_DATA_FILE'"
-    HELP=1
+  else
+
+    if [[ ! -f $PROJECT_DIR/$STACK_DATA_FILE ]]
+    then
+      echo "Could not find tfvars file '$PROJECT_DIR/$STACK_DATA_FILE'"
+      HELP=1
+    fi
+
+    if [[ ! -f $PROJECT_DIR/$COMMON_STACK_DATA_FILE ]]
+    then
+      echo "Could not find tfvars file '$PROJECT_DIR/$COMMON_STACK_DATA_FILE'"
+      HELP=1
+    fi
   fi
 fi
 
@@ -70,19 +80,23 @@ then
   exit
 fi
 
+cd "$PROJECT_DIR"
+
 # Actually run the command
 if [[ $CMD == 'init' ]]
 then
   terraform "$CMD" \
             -backend-config "$BACKEND_FILE"
 
-elif [ -a "${COMMON_DATA_FILE}" ]
+elif [ -a "${COMMON_PROJECT_DATA_FILE}" ]
 then
   terraform "$CMD" \
             -var-file "$STACK_DATA_FILE" \
-            -var-file "$COMMON_DATA_FILE"
+            -var-file "$COMMON_STACK_DATA_FILE" \
+            -var-file "$COMMON_PROJECT_DATA_FILE"
 
 else
   terraform "$CMD" \
-            -var-file "$STACK_DATA_FILE"
+            -var-file "$STACK_DATA_FILE" \
+            -var-file "$COMMON_STACK_DATA_FILE"
 fi
