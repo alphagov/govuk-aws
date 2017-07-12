@@ -144,6 +144,7 @@ module "frontend" {
   instance_elb_ids                     = ["${aws_elb.frontend_elb.id}"]
   asg_max_size                         = "3"
   asg_min_size                         = "3"
+  asg_desired_capacity                 = "3"
 }
 
 # Outputs
