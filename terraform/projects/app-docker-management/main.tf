@@ -167,7 +167,7 @@ module "docker_management" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-docker_management"
   vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_migration", "docker_management", "aws_hostname", "docker-management-1")}"
+  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "docker_management", "aws_hostname", "docker-management-1")}"
   instance_subnet_ids                  = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_docker_management_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
