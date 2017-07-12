@@ -1,5 +1,53 @@
-# PROVISIONING
+# == Snippet: attach-volume
 #
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: attach-volume"
+
+apt-get install -y lvm2
+
+# The environment variables INSTANCE_ID and REGION are set
+# in the common user_data script
+#
+F_MIGRATION=$(facter aws_migration)
+F_STACKNAME=$(facter aws_stackname)
+F_HOSTNAME=$(facter aws_hostname)
+
+if [[ -z $F_MIGRATION ]] || [[ -z $F_STACKNAME ]] || [[ -z F_HOSTNAME ]] ; then
+  echo "ERROR facts not found, skipping attach-volume"
+else
+  VOLUME_ID=$(aws ec2 describe-volumes --region=$REGION --filters "Name=tag:aws_migration,Values=$F_MIGRATION" "Name=tag:aws_hostname,Values=$F_HOSTNAME" "Name=tag:aws_stackname,Values=$F_STACKNAME" --output=json | jq -r '.Volumes[] | .VolumeId ')
+
+  if [[ -z $VOLUME_ID ]] ; then
+    echo "ERROR volume not found"
+  fi
+
+  aws ec2 attach-volume --volume-id $VOLUME_ID --instance-id $INSTANCE_ID --device /dev/xvdf --region $REGION
+
+  for I in {1..20} ; do
+    if ! [[ -e /dev/xvdf ]] ; then
+      sleep 1
+    else
+      break
+    fi
+  done
+
+  if [[ $(file -s /dev/xvdf | grep "/dev/xvdf: data") ]] ; then
+    echo "/dev/xvdf does not contain any partition, Puppet will format the disk"
+  else
+    echo "/dev/xvdf is already formatted: $(file -s /dev/xvdf)"
+
+    # Puppet does not activate the LVM volume
+    echo "Activating LVM ..."
+    lvchange -a y /dev/graphite/data
+  fi
+fi
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: attach-volume"
+
+# == Snippet: puppet-client
+#
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: puppet-client"
 
 rm -rf /etc/puppet
 mkdir -p /etc/puppet
@@ -17,3 +65,4 @@ EOF
 
 puppet agent --pluginsync --configtimeout 600 --test --waitforcert 60
 
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: puppet-client"

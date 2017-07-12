@@ -222,13 +222,26 @@ module "graphite-1" {
 resource "aws_ebs_volume" "graphite-1" {
   availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
   size              = 100
+  type              = "gp2"
 
   tags {
     Name          = "${var.stackname}-graphite-1"
     Project       = "${var.stackname}"
+    aws_stackname = "${var.stackname}"
     aws_migration = "graphite"
     aws_hostname  = "graphite-1"
   }
+}
+
+resource "aws_iam_policy" "graphite_1_iam_policy" {
+  name   = "${var.stackname}-graphite-1-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_attachment" {
+  role       = "${module.graphite-1.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.graphite_1_iam_policy.arn}"
 }
 
 # Outputs
