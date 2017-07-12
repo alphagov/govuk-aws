@@ -145,7 +145,7 @@ module "jumpbox" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-jumpbox"
   vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_migration", "jumpbox", "aws_hostname", "jumpbox-1")}"
+  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "jumpbox", "aws_hostname", "jumpbox-1")}"
   instance_subnet_ids                  = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_jumpbox_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
   instance_type                        = "t2.micro"
