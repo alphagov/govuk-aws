@@ -159,6 +159,10 @@ module "jumpbox" {
 # Outputs
 # --------------------------------------------------------------
 
+output "jumpbox_elb_address" {
+  value       = "${aws_elb.jumpbox_external_elb.dns_name}"
+  description = "AWS' internal DNS name for the jumpbox ELB"
+}
 
 #output "service_dns_name" {
 #  value       = "${var.create_service_dns_name == 1 ? var.service_dns_name : aws_elb.node_elb.dns_name}"
