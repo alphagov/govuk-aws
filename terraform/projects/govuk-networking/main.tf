@@ -162,6 +162,10 @@ output "public_subnet_names_ids_map" {
   description = "Map containing the pair name-id for each public subnet created"
 }
 
+output "public_subnet_names_azs_map" {
+  value       = "${var.public_subnet_availability_zones}"
+}
+
 output "private_subnet_ids" {
   value       = "${module.govuk_private_subnet.subnet_ids}"
   description = "List of private subnet IDs"
@@ -170,6 +174,10 @@ output "private_subnet_ids" {
 output "private_subnet_names_ids_map" {
   value       = "${module.govuk_private_subnet.subnet_names_ids_map}"
   description = "Map containing the pair name-id for each private subnet created"
+}
+
+output "private_subnet_names_azs_map" {
+  value       = "${var.private_subnet_availability_zones}"
 }
 
 output "private_subnet_names_route_tables_map" {
