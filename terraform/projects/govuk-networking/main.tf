@@ -78,7 +78,8 @@ variable "private_subnet_nat_gateway_association" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend "s3" {}
+  backend          "s3"             {}
+  required_version = "= 0.9.10"
 }
 
 provider "aws" {
