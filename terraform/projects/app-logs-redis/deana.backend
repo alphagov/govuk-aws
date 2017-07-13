@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-state-integration"
+key     = "terraform-logs-redis-deana.tfstate"
+encrypt = true
+region  = "eu-west-1"
