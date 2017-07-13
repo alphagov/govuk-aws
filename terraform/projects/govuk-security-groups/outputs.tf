@@ -97,3 +97,23 @@ output "sg_api-lb_id" {
 output "sg_api-lb_elb_id" {
   value = "${aws_security_group.api-lb_elb.id}"
 }
+
+output "sg_logging_id" {
+  value = "${aws_security_group.logging.id}"
+}
+
+output "sg_logging_elb_id" {
+  value = "${aws_security_group.logging_elb.id}"
+}
+
+output "sg_logs-elasticsearch_id" {
+  value = "${aws_security_group.logs-elasticsearch.id}"
+}
+
+output "sg_logs-elasticsearch_elb_id" {
+  value = "${aws_security_group.logs-elasticsearch_elb.id}"
+}
+
+output "sg_logs-redis_id" {
+  value = "${aws_security_group.logs-redis.id}"
+}

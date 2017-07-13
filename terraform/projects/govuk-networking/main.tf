@@ -14,6 +14,8 @@
 # private_subnet_cidrs
 # private_subnet_availability_zones
 # private_subnet_nat_gateway_association
+# private_subnet_elasticache_cidrs
+# private_subnet_elasticache_availability_zones
 #
 # === Outputs:
 #
@@ -22,6 +24,9 @@
 # private_subnet_ids
 # private_subnet_names_ids_map
 # private_subnet_names_route_tables_map
+# private_subnet_elasticache_ids
+# private_subnet_elasticache_names_ids_map
+# private_subnet_elasticache_names_route_tables_map
 #
 
 variable "aws_region" {
@@ -73,6 +78,16 @@ variable "private_subnet_availability_zones" {
 variable "private_subnet_nat_gateway_association" {
   type        = "map"
   description = "Map of private subnet names and public subnet used to route external traffic (the public subnet must be listed in public_subnet_nat_gateway_enable to ensure it has a NAT gateway attached)"
+}
+
+variable "private_subnet_elasticache_cidrs" {
+  type        = "map"
+  description = "Map containing private elasticache subnet names and CIDR associated"
+}
+
+variable "private_subnet_elasticache_availability_zones" {
+  type        = "map"
+  description = "Map containing private elasticache subnet names and availability zones associated"
 }
 
 # Resources
@@ -146,6 +161,15 @@ module "govuk_private_subnet" {
   subnet_nat_gateways_length = "${length(keys(var.private_subnet_nat_gateway_association))}"
 }
 
+module "govuk_private_subnet_elasticache" {
+  source                     = "../../modules/aws/network/private_subnet"
+  vpc_id                     = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  default_tags               = "${map("Project", var.stackname, "aws_migration", "elasticache")}"
+  subnet_cidrs               = "${var.private_subnet_elasticache_cidrs}"
+  subnet_availability_zones  = "${var.private_subnet_elasticache_availability_zones}"
+  subnet_nat_gateways_length = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 output "vpc_id" {
@@ -183,5 +207,24 @@ output "private_subnet_names_azs_map" {
 
 output "private_subnet_names_route_tables_map" {
   value       = "${module.govuk_private_subnet.subnet_names_route_tables_map}"
+  description = "Map containing the name of each private subnet and route_table ID associated"
+}
+
+output "private_subnet_elasticache_ids" {
+  value       = "${module.govuk_private_subnet_elasticache.subnet_ids}"
+  description = "List of private subnet IDs"
+}
+
+output "private_subnet_elasticache_names_ids_map" {
+  value       = "${module.govuk_private_subnet_elasticache.subnet_names_ids_map}"
+  description = "Map containing the pair name-id for each private subnet created"
+}
+
+output "private_subnet_elasticache_names_azs_map" {
+  value = "${var.private_subnet_elasticache_availability_zones}"
+}
+
+output "private_subnet_elasticache_names_route_tables_map" {
+  value       = "${module.govuk_private_subnet_elasticache.subnet_names_route_tables_map}"
   description = "Map containing the name of each private subnet and route_table ID associated"
 }
