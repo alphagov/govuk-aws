@@ -1,10 +1,3 @@
-"aws_region" = "eu-west-1"
-
-"remote_state_govuk_vpc_key"    = "terraform-network-base-issam.tfstate"
-"remote_state_govuk_vpc_bucket" = "issam-terraform-state"
-
-"stackname" = "issam"
-
 "public_subnet_cidrs" = {
   "govuk_public_a" = "10.4.1.0/24"
   "govuk_public_b" = "10.4.2.0/24"
