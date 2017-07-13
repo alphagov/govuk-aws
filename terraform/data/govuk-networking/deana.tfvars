@@ -25,10 +25,22 @@
   "govuk_private_c" = "10.4.6.0/24"
 }
 
+"private_subnet_elasticache_cidrs" = {
+  "govuk_elasticache_private_a" = "10.4.7.0/24"
+  "govuk_elasticache_private_b" = "10.4.8.0/24"
+  "govuk_elasticache_private_c" = "10.4.9.0/24"
+}
+
 "private_subnet_availability_zones" = {
   "govuk_private_a" = "eu-west-1a"
   "govuk_private_b" = "eu-west-1b"
   "govuk_private_c" = "eu-west-1c"
+}
+
+"private_subnet_elasticache_availability_zones" = {
+  "govuk_elasticache_private_a" = "eu-west-1a"
+  "govuk_elasticache_private_b" = "eu-west-1b"
+  "govuk_elasticache_private_c" = "eu-west-1c"
 }
 
 "private_subnet_nat_gateway_association" = {
