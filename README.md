@@ -2,7 +2,7 @@
 
 Welcome to the GOV.UK AWS Migration repo. This will contain our first attempt at a "lift and shift"
 of our vcloud environment to AWS. The code here has many context specific corners cut
-and is intended to provide a [Walking Skelton](http://alistair.cockburn.us/Walking+skeleton)
+and is intended to provide a [Walking Skeleton](http://alistair.cockburn.us/Walking+skeleton)
 that will be fleshed out as we test the migration of more things.
 
 The code here will have a number of "older" patterns as we are attempting to move over
