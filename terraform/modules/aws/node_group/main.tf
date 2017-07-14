@@ -243,7 +243,10 @@ resource "null_resource" "node_autoscaling_group_tags" {
 }
 
 resource "aws_autoscaling_group" "node_autoscaling_group" {
-  name = "${var.name}"
+  # We generate the ASG name from its launch configuration so when change it
+  # replacement instances are created using the new configuration.
+  # (see: https://groups.google.com/forum/#!msg/terraform-tool/7Gdhv1OAc80/iNQ93riiLwAJ)
+  name = "${var.name}-${aws_launch_configuration.node_launch_configuration.name}"
 
   vpc_zone_identifier = [
     "${var.instance_subnet_ids}",
