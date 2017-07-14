@@ -121,3 +121,7 @@ output "sg_logs-redis_id" {
 output "sg_api-redis_id" {
   value = "${aws_security_group.api-redis.id}"
 }
+
+output "sg_backend-redis_id" {
+  value = "${aws_security_group.backend-redis.id}"
+}
