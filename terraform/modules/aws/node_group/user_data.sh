@@ -49,6 +49,10 @@ do
   echo $KEY=$VALUE > /etc/facter/facts.d/$KEY.txt
 done
 
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: add default user profile settings ..."
+echo -e "\n# Default user settings" >> /etc/profile
+echo "export AWS_DEFAULT_REGION=${REGION}" |tee -a /etc/profile
+
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: install Puppet ..."
 apt-get -y install make ruby1.9.3 puppet='3.8.*' puppet-common='3.8.*'
 service puppet stop
