@@ -27,6 +27,9 @@ The initial solution presents three directories: data, modules and projects:
 - The data directory also contains \_secrets files with sensitive data encrypted with 'sops'
 - The modules directory contains a subdirectory per Terraform provider
 - The projects directory contains the Terraform stacks/tiers
+- Projects will be named such that:
+    + Those to deploy common infrastructure will have a `govuk` prefix (e.g. networking, DNS zones)
+    + Those to deploy applications (or groups of applications) will have an `app` prefix (e.g. frontend, puppetmaster).
 
 ```
 ├── data
