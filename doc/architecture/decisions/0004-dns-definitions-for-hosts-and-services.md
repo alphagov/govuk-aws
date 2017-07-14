@@ -1,10 +1,10 @@
 # 4. DNS definitions for hosts and services
 
-Date: 2017-07-04
+Date: 2017-07-14
 
 ## Status
 
-Pending
+Superseded by [DNS Infrastructure](0015-dns-infrastructure.md)
 
 ## Context
 
