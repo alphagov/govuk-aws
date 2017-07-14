@@ -21,11 +21,11 @@ The data portion of ADR 0010 will now be:
 ```
 ├── data
 │   ├── common
-│   │   └── <aws environment>
+│   │   └── <environment>
 │   │       ├── common.tfvars
 │   │       └── <stackname>.tfvars
 │   ├── <project>
-│   │   └── <aws environment 1>
+│   │   └── <environment>
 │   │       ├── common.tfvars
 │   │       ├── <stackname>.tfvars
 │   │       └── <stackname>_secrets.json
@@ -33,17 +33,17 @@ The data portion of ADR 0010 will now be:
 
 Where:
 
-* `<aws environment>` is the AWS account being deployed to (e.g. 'integration', 'staging')
+* `<environment>` is the account being deployed to (e.g. 'integration', 'staging')
 * `<stackname>` is the specific collection of projects (e.g. 'integration-green', 'foo-test')
 * `<project>` is the project describing the resources to build (e.g. 'puppetmaster', 'frontend')
 
 The tfvar files will be applied in this order:
 
-* `common/<aws environment>/common.tfvars`
-* `common/<aws environment>/<stackname>.tfvars`
-* `common/<project>/common.tfvars`
-* `common/<project>/<stackname>.tfvars`
-* `common/<project>/<stackname>_secrets.tfvars`
+* `common/<environment>/common.tfvars`
+* `common/<environment>/<stackname>.tfvars`
+* `<project>/<environment>/common.tfvars`
+* `<project>/<environment>/<stackname>.tfvars`
+* `<project>/<environment>/<stackname>_secrets.tfvars`
 
 ## Consequences
 
