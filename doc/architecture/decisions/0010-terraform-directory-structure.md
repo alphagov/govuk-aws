@@ -6,6 +6,8 @@ Date: 2017-07-04
 
 Accepted
 
+Amended by [13. Terraform Data Structure](0013-terraform-data-structure.md)
+
 ## Context
 
 We should have a consistent directory structure for Terraform from the beginning.
