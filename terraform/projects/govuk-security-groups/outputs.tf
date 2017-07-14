@@ -125,3 +125,11 @@ output "sg_api-redis_id" {
 output "sg_backend-redis_id" {
   value = "${aws_security_group.backend-redis.id}"
 }
+
+output "sg_draft-cache_id" {
+  value = "${aws_security_group.draft-cache.id}"
+}
+
+output "sg_draft-cache_elb_id" {
+  value = "${aws_security_group.draft-cache_elb.id}"
+}
