@@ -117,3 +117,7 @@ output "sg_logs-elasticsearch_elb_id" {
 output "sg_logs-redis_id" {
   value = "${aws_security_group.logs-redis.id}"
 }
+
+output "sg_api-redis_id" {
+  value = "${aws_security_group.api-redis.id}"
+}
