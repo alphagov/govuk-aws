@@ -1,12 +1,10 @@
-# == Manifest: projects::govuk-networking
+# == Manifest: projects::infra-networking
 #
 # This module govuks the creation of full network stacks.
 #
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_key
-# remote_state_govuk_vpc_bucket
 # stackname
 # public_subnet_cidrs
 # public_subnet_availability_zones
@@ -35,14 +33,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "S3 bucket we store our terraform state in"
 }
 
 variable "stackname" {
@@ -101,28 +94,28 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
+data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }
 
-module "govuk_public_subnet" {
+module "infra_public_subnet" {
   source                    = "../../modules/aws/network/public_subnet"
-  vpc_id                    = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id                    = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags              = "${map("Project", var.stackname)}"
-  route_table_public_id     = "${data.terraform_remote_state.govuk_vpc.route_table_public_id}"
+  route_table_public_id     = "${data.terraform_remote_state.infra_vpc.route_table_public_id}"
   subnet_cidrs              = "${var.public_subnet_cidrs}"
   subnet_availability_zones = "${var.public_subnet_availability_zones}"
 }
 
-module "govuk_nat" {
+module "infra_nat" {
   source            = "../../modules/aws/network/nat"
-  subnet_ids        = "${matchkeys(values(module.govuk_public_subnet.subnet_names_ids_map), keys(module.govuk_public_subnet.subnet_names_ids_map), var.public_subnet_nat_gateway_enable)}"
+  subnet_ids        = "${matchkeys(values(module.infra_public_subnet.subnet_names_ids_map), keys(module.infra_public_subnet.subnet_names_ids_map), var.public_subnet_nat_gateway_enable)}"
   subnet_ids_length = "${length(var.public_subnet_nat_gateway_enable)}"
 }
 
@@ -137,7 +130,7 @@ data "template_file" "nat_gateway_association_subnet_id" {
   template = "$${subnet_id}"
 
   vars {
-    subnet_id = "${lookup(module.govuk_public_subnet.subnet_names_ids_map, element(values(var.private_subnet_nat_gateway_association), count.index))}"
+    subnet_id = "${lookup(module.infra_public_subnet.subnet_names_ids_map, element(values(var.private_subnet_nat_gateway_association), count.index))}"
   }
 }
 
@@ -147,13 +140,13 @@ data "template_file" "nat_gateway_association_nat_id" {
   depends_on = ["data.template_file.nat_gateway_association_subnet_id"]
 
   vars {
-    nat_gateway_id = "${lookup(module.govuk_nat.nat_gateway_subnets_ids_map, element(data.template_file.nat_gateway_association_subnet_id.*.rendered, count.index))}"
+    nat_gateway_id = "${lookup(module.infra_nat.nat_gateway_subnets_ids_map, element(data.template_file.nat_gateway_association_subnet_id.*.rendered, count.index))}"
   }
 }
 
-module "govuk_private_subnet" {
+module "infra_private_subnet" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags               = "${map("Project", var.stackname)}"
   subnet_cidrs               = "${var.private_subnet_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_availability_zones}"
@@ -161,9 +154,9 @@ module "govuk_private_subnet" {
   subnet_nat_gateways_length = "${length(keys(var.private_subnet_nat_gateway_association))}"
 }
 
-module "govuk_private_subnet_elasticache" {
+module "infra_private_subnet_elasticache" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags               = "${map("Project", var.stackname, "aws_migration", "elasticache")}"
   subnet_cidrs               = "${var.private_subnet_elasticache_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_elasticache_availability_zones}"
@@ -173,17 +166,17 @@ module "govuk_private_subnet_elasticache" {
 # Outputs
 # --------------------------------------------------------------
 output "vpc_id" {
-  value       = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  value       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "VPC ID where the stack resources are created"
 }
 
 output "public_subnet_ids" {
-  value       = "${module.govuk_public_subnet.subnet_ids}"
+  value       = "${module.infra_public_subnet.subnet_ids}"
   description = "List of public subnet IDs"
 }
 
 output "public_subnet_names_ids_map" {
-  value       = "${module.govuk_public_subnet.subnet_names_ids_map}"
+  value       = "${module.infra_public_subnet.subnet_names_ids_map}"
   description = "Map containing the pair name-id for each public subnet created"
 }
 
@@ -192,12 +185,12 @@ output "public_subnet_names_azs_map" {
 }
 
 output "private_subnet_ids" {
-  value       = "${module.govuk_private_subnet.subnet_ids}"
+  value       = "${module.infra_private_subnet.subnet_ids}"
   description = "List of private subnet IDs"
 }
 
 output "private_subnet_names_ids_map" {
-  value       = "${module.govuk_private_subnet.subnet_names_ids_map}"
+  value       = "${module.infra_private_subnet.subnet_names_ids_map}"
   description = "Map containing the pair name-id for each private subnet created"
 }
 
@@ -206,17 +199,17 @@ output "private_subnet_names_azs_map" {
 }
 
 output "private_subnet_names_route_tables_map" {
-  value       = "${module.govuk_private_subnet.subnet_names_route_tables_map}"
+  value       = "${module.infra_private_subnet.subnet_names_route_tables_map}"
   description = "Map containing the name of each private subnet and route_table ID associated"
 }
 
 output "private_subnet_elasticache_ids" {
-  value       = "${module.govuk_private_subnet_elasticache.subnet_ids}"
+  value       = "${module.infra_private_subnet_elasticache.subnet_ids}"
   description = "List of private subnet IDs"
 }
 
 output "private_subnet_elasticache_names_ids_map" {
-  value       = "${module.govuk_private_subnet_elasticache.subnet_names_ids_map}"
+  value       = "${module.infra_private_subnet_elasticache.subnet_names_ids_map}"
   description = "Map containing the pair name-id for each private subnet created"
 }
 
@@ -225,6 +218,6 @@ output "private_subnet_elasticache_names_azs_map" {
 }
 
 output "private_subnet_elasticache_names_route_tables_map" {
-  value       = "${module.govuk_private_subnet_elasticache.subnet_names_route_tables_map}"
+  value       = "${module.infra_private_subnet_elasticache.subnet_names_route_tables_map}"
   description = "Map containing the name of each private subnet and route_table ID associated"
 }
