@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-integration"
-key     = "terraform-frontend-deana.tfstate"
+key     = "deana/app-frontend.tfstate"
 encrypt = true
 region  = "eu-west-1"

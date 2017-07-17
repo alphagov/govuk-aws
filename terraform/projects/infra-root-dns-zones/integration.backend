@@ -1,3 +1,4 @@
-bucket  = "govuk-terraform-state-integration"
-key     = "terraform-govuk-root-dns-zones-integration.tfstate"
+bucket  = "govuk-terraform-steppingstone-integration"
+key     = "integration/infra-root-dns-zones.tfstate"
+encrypt = true
 region  = "eu-west-1"

@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-integration"
-key     = "terraform-puppetmaster-deana.tfstate"
+key     = "deana/app-puppetmaster.tfstate"
 encrypt = true
 region  = "eu-west-1"

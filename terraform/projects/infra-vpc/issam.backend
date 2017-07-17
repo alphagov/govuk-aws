@@ -1,4 +1,4 @@
-bucket  = "issam-terraform-state"
-key     = "terraform-network-base-issam.tfstate"
+bucket  = "govuk-terraform-steppingstone-integration"
+key     = "issam/infra-vpc.tfstate"
 encrypt = true
 region  = "eu-west-1"
