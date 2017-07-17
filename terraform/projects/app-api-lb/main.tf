@@ -47,7 +47,7 @@ data "terraform_remote_state" "infra_vpc" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-vpc.tfstate}"
+    key    = "${var.stackname}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }
@@ -57,7 +57,7 @@ data "terraform_remote_state" "infra_networking" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-networking.tfstate}"
+    key    = "${var.stackname}/infra-networking.tfstate"
     region = "eu-west-1"
   }
 }
@@ -67,7 +67,7 @@ data "terraform_remote_state" "infra_security_groups" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-security-groups.tfstate}"
+    key    = "${var.stackname}/infra-security-groups.tfstate"
     region = "eu-west-1"
   }
 }
@@ -77,7 +77,7 @@ data "terraform_remote_state" "infra_internal_dns_zone" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-internal-dns-zone.tfstate}"
+    key    = "${var.stackname}/infra-internal-dns-zone.tfstate"
     region = "eu-west-1"
   }
 }
