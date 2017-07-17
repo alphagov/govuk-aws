@@ -1,6 +1,6 @@
 # == Manifest: projects::app-puppetmaster
 #
-# PUppetmaster node
+# Puppetmaster node
 #
 # === Variables:
 #
@@ -19,44 +19,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_networking_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_networking_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_security_groups_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_security_groups_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_internal_dns_zone_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_internal_dns_zone_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "S3 bucket we store our terraform state in"
 }
 
 variable "stackname" {
@@ -80,50 +45,50 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
+data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-vpc.tfstate}"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_networking" {
+data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_networking_bucket}"
-    key    = "${var.remote_state_govuk_networking_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-networking.tfstate}"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_security_groups" {
+data "terraform_remote_state" "infra_security_groups" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_security_groups_bucket}"
-    key    = "${var.remote_state_govuk_security_groups_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-security-groups.tfstate}"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_internal_dns_zone" {
+data "terraform_remote_state" "infra_internal_dns_zone" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_internal_dns_zone_bucket}"
-    key    = "${var.remote_state_govuk_internal_dns_zone_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-internal-dns-zone.tfstate}"
     region = "eu-west-1"
   }
 }
 
 resource "aws_elb" "puppetmaster_bootstrap_elb" {
   name            = "${var.stackname}-puppetmaster-bootstrap"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_offsite_ssh_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
 
   listener {
     instance_port     = 22
@@ -156,14 +121,14 @@ resource "aws_security_group_rule" "puppetmaster_from_elb_in_22" {
   from_port                = "22"
   to_port                  = "22"
   protocol                 = "tcp"
-  source_security_group_id = "${data.terraform_remote_state.govuk_security_groups.sg_offsite_ssh_id}"
-  security_group_id        = "${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"
+  security_group_id        = "${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}"
 }
 
 resource "aws_elb" "puppetmaster_internal_elb" {
   name            = "${var.stackname}-puppetmaster"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_elb_id}"]
   internal        = "true"
 
   listener {
@@ -190,7 +155,7 @@ resource "aws_elb" "puppetmaster_internal_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.govuk_internal_dns_zone.internal_service_zone_id}"
+  zone_id = "${data.terraform_remote_state.infra_internal_dns_zone.internal_service_zone_id}"
   name    = "puppet"
   type    = "A"
 
@@ -204,10 +169,10 @@ resource "aws_route53_record" "service_record" {
 module "puppetmaster" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-puppetmaster"
-  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
-  instance_subnet_ids                  = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
+  instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-puppetmaster_bootstrap"
