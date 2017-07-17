@@ -5,8 +5,6 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_bucket
-# remote_state_govuk_vpc_key
 # ssh_public_key
 # stackname
 #
