@@ -15,7 +15,7 @@
 
 resource "aws_security_group" "logs-elasticsearch" {
   name        = "${var.stackname}_logs-elasticsearch_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to logs-elasticsearch"
 
   tags {
@@ -52,7 +52,7 @@ resource "aws_security_group_rule" "logs-elasticsearch_elb_in" {
 
 resource "aws_security_group" "logs-elasticsearch_elb" {
   name        = "${var.stackname}_logs-elasticsearch_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the logging ELB"
 
   tags {

@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "puppetmaster" {
   name        = "${var.stackname}_puppetmaster_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the puppetmaster from its ELB"
 
   tags {
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "allow_puppet_elb_in" {
 
 resource "aws_security_group" "puppetmaster_elb" {
   name        = "${var.stackname}_puppetmaster_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the puppetmaster ELB"
 
   tags {

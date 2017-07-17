@@ -14,7 +14,7 @@
 
 resource "aws_security_group" "management" {
   name        = "${var.stackname}_management_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Group used to allow access by management systems"
 
   tags {

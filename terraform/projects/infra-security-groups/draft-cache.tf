@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "draft-cache" {
   name        = "${var.stackname}_draft-cache_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the draft-cache host from its ELB"
 
   tags {
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_draft-cache_elb_in" {
 
 resource "aws_security_group" "draft-cache_elb" {
   name        = "${var.stackname}_draft-cache_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the draft-cache ELB"
 
   tags {

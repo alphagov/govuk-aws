@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "frontend" {
   name        = "${var.stackname}_frontend_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the frontend host from its ELB"
 
   tags {
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_frontend_elb_in" {
 
 resource "aws_security_group" "frontend_elb" {
   name        = "${var.stackname}_frontend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the frontend ELB"
 
   tags {

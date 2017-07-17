@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "logging" {
   name        = "${var.stackname}_logging_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the logging host from its ELB"
 
   tags {
@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "allow_logging_elb_in" {
 
 resource "aws_security_group" "logging_elb" {
   name        = "${var.stackname}_logging_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the logging ELB"
 
   tags {

@@ -15,7 +15,7 @@
 
 resource "aws_security_group" "graphite" {
   name        = "${var.stackname}_graphite_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the graphite host from its ELB"
 
   tags {
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "allow_graphite_carbon_aggregator_pickle_inte
 
 resource "aws_security_group" "graphite_external_elb" {
   name        = "${var.stackname}_graphite_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the Graphite External ELB"
 
   tags {
@@ -103,7 +103,7 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_egress" {
 
 resource "aws_security_group" "graphite_internal_elb" {
   name        = "${var.stackname}_graphite_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the Graphite Internal ELB"
 
   tags {

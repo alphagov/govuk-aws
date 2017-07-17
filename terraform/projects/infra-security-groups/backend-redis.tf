@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "backend-redis" {
   name        = "${var.stackname}_backend-redis_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to backend-redis from its clients"
 
   tags {

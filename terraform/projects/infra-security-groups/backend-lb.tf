@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "backend-lb" {
   name        = "${var.stackname}_backend-lb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the backend-lb host from its ELB"
 
   tags {
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_backend-lb_elb_in" {
 
 resource "aws_security_group" "backend-lb_elb" {
   name        = "${var.stackname}_backend-lb_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the backend-lb ELB"
 
   tags {

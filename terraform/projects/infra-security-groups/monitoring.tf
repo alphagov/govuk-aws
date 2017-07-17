@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "monitoring" {
   name        = "${var.stackname}_monitoring_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the monitoring host from its ELB"
 
   tags {
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_monitoring_elb_in" {
 
 resource "aws_security_group" "monitoring_elb" {
   name        = "${var.stackname}_monitoring_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the monitoring ELB"
 
   tags {

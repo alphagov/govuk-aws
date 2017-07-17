@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "cache" {
   name        = "${var.stackname}_cache_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the cache host from its ELB"
 
   tags {
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_cache_elb_in" {
 
 resource "aws_security_group" "cache_elb" {
   name        = "${var.stackname}_cache_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the cache ELB"
 
   tags {
