@@ -1,12 +1,10 @@
-# == Manifest: projects::govuk-root-dns-zones
+# == Manifest: projects::infra-root-dns-zones
 #
 # This module creates the internal and external root DNS zones.
 #
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_key
-# remote_state_govuk_vpc_bucket
 # create_internal_zone
 # root_domain_internal_name
 # create_external_zone
@@ -24,14 +22,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "S3 bucket we store our terraform state in"
 }
 
 variable "create_internal_zone" {
@@ -58,6 +51,11 @@ variable "root_domain_external_name" {
   default     = "mydomain.external"
 }
 
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -69,12 +67,12 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
+data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }
@@ -82,10 +80,10 @@ data "terraform_remote_state" "govuk_vpc" {
 resource "aws_route53_zone" "internal_zone" {
   count  = "${var.create_internal_zone}"
   name   = "${var.root_domain_internal_name}"
-  vpc_id = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
 
   tags {
-    Project = "govuk-root-dns-zones"
+    Project = "infra-root-dns-zones"
   }
 }
 
@@ -94,7 +92,7 @@ resource "aws_route53_zone" "external_zone" {
   name  = "${var.root_domain_external_name}"
 
   tags {
-    Project = "govuk-root-dns-zones"
+    Project = "infra-root-dns-zones"
   }
 }
 

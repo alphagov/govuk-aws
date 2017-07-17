@@ -1,4 +1,4 @@
-# == Manifest: projects::govuk-stack-dns-zones
+# == Manifest: projects::infra-stack-dns-zones
 #
 # This module creates the internal and external DNS zones used by our stacks.
 #
@@ -17,8 +17,6 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_key
-# remote_state_govuk_vpc_bucket
 # stackname
 # root_domain_internal_name
 # root_domain_internal_zone_id
@@ -40,14 +38,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "S3 bucket we store our terraform state in"
 }
 
 variable "stackname" {
@@ -96,12 +89,12 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
+data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }
