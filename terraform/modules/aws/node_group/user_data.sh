@@ -42,6 +42,8 @@ TAGS=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "N
 
 mkdir -p /etc/facter/facts.d/
 
+echo aws_region=$REGION > /etc/facter/facts.d/aws_region.txt
+
 for I in $TAGS
 do
   KEY=$(echo $I | cut -d"," -f1)
