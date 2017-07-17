@@ -1,6 +1,6 @@
 # == Manifest: projects::infra-networking
 #
-# This module govuks the creation of full network stacks.
+# This module governs the creation of full network stacks.
 #
 # === Variables:
 #
