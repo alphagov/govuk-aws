@@ -5,8 +5,6 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_bucket
-# remote_state_govuk_vpc_key
 # stackname
 #
 # === Outputs:
@@ -18,44 +16,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_networking_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_networking_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_security_groups_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_security_groups_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_internal_dns_zone_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_internal_dns_zone_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "S3 bucket we store our terraform state in"
 }
 
 variable "stackname" {
@@ -74,48 +37,48 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
+data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_networking" {
+data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_networking_bucket}"
-    key    = "${var.remote_state_govuk_networking_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-networking.tfstate}"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_security_groups" {
+data "terraform_remote_state" "infra_security_groups" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_security_groups_bucket}"
-    key    = "${var.remote_state_govuk_security_groups_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-security-groups.tfstate"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_internal_dns_zone" {
+data "terraform_remote_state" "infra_internal_dns_zone" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_internal_dns_zone_bucket}"
-    key    = "${var.remote_state_govuk_internal_dns_zone_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-internal-dns-zone.tfstate"
     region = "eu-west-1"
   }
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.govuk_internal_dns_zone.internal_service_zone_id}"
+  zone_id = "${data.terraform_remote_state.infra_internal_dns_zone.internal_service_zone_id}"
   name    = "backend-redis"
   type    = "CNAME"
   ttl     = 300
@@ -126,8 +89,8 @@ module "backend_redis_cluster" {
   source             = "../../modules/aws/elasticache_redis_cluster"
   name               = "${var.stackname}-backend-redis"
   default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "backend-redis")}"
-  subnet_ids         = "${data.terraform_remote_state.govuk_networking.private_subnet_elasticache_ids}"
-  security_group_ids = ["${data.terraform_remote_state.govuk_security_groups.sg_backend-redis_id}"]
+  subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_elasticache_ids}"
+  security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
 }
 
 # Outputs
