@@ -1,4 +1,4 @@
-bucket  = "govuk-terraform-state-integration"
-key     = "terraform-api-redis-deana.tfstate"
+bucket  = "govuk-terraform-steppingstone-integration"
+key     = "deana/app-api-redis.tfstate"
 encrypt = true
 region  = "eu-west-1"
