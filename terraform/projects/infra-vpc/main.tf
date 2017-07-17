@@ -1,4 +1,4 @@
-# == Manifest: projects::govuk-vpc
+# == Manifest: projects::infra-vpc
 #
 # Creates the base VPC layer for an AWS stack.
 #
