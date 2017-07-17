@@ -5,8 +5,6 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_key
-# remote_state_govuk_vpc_bucket
 # stackname
 #
 # === Outputs:
@@ -18,44 +16,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_networking_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_networking_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_internal_dns_zone_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_internal_dns_zone_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_security_groups_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_security_groups_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "S3 bucket we store our terraform state in"
 }
 
 variable "stackname" {
@@ -84,50 +47,50 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
+data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_networking" {
+data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_networking_bucket}"
-    key    = "${var.remote_state_govuk_networking_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-networking.tfstate}"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_internal_dns_zone" {
+data "terraform_remote_state" "infra_security_groups" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_internal_dns_zone_bucket}"
-    key    = "${var.remote_state_govuk_internal_dns_zone_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-security-groups.tfstate"
     region = "eu-west-1"
   }
 }
 
-data "terraform_remote_state" "govuk_security_groups" {
+data "terraform_remote_state" "infra_internal_dns_zone" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_govuk_security_groups_bucket}"
-    key    = "${var.remote_state_govuk_security_groups_key}"
+    bucket = "${var.remote_state_bucket}"
+    key    = "${var.stackname}/infra-internal-dns-zone.tfstate"
     region = "eu-west-1"
   }
 }
 
 resource "aws_elb" "graphite_external_elb" {
   name            = "${var.stackname}-graphite-external"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_graphite_external_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_external_elb_id}"]
   internal        = "false"
 
   listener {
@@ -156,8 +119,8 @@ resource "aws_elb" "graphite_external_elb" {
 
 resource "aws_elb" "graphite_internal_elb" {
   name            = "${var.stackname}-graphite-internal"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_graphite_internal_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_internal_elb_id}"]
   internal        = "true"
 
   listener {
@@ -192,7 +155,7 @@ resource "aws_elb" "graphite_internal_elb" {
 }
 
 resource "aws_route53_record" "graphite_internal_service_record" {
-  zone_id = "${data.terraform_remote_state.govuk_internal_dns_zone.internal_service_zone_id}"
+  zone_id = "${data.terraform_remote_state.infra_internal_dns_zone.internal_service_zone_id}"
   name    = "graphite"
   type    = "A"
 
@@ -206,10 +169,10 @@ resource "aws_route53_record" "graphite_internal_service_record" {
 module "graphite-1" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-graphite-1"
-  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "graphite", "aws_hostname", "graphite-1")}"
-  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_graphite_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
+  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
+  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-graphite-1"
@@ -220,7 +183,7 @@ module "graphite-1" {
 }
 
 resource "aws_ebs_volume" "graphite-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
   size              = 100
   type              = "gp2"
 
