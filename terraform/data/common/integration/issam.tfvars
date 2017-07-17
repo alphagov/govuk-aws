@@ -1,14 +1,6 @@
 "aws_region" = "eu-west-1"
 
-"remote_state_govuk_vpc_key"                = "terraform-network-base-issam.tfstate"
-"remote_state_govuk_networking_key"         = "terraform-govuk-networking-issam.tfstate"
-"remote_state_govuk_security_groups_key"    = "terraform-govuk-security-groups-issam.tfstate"
-"remote_state_govuk_internal_dns_zone_key"  = "terraform-govuk-internal-dns-zone-issam.tfstate"
-
-"remote_state_govuk_vpc_bucket"               = "issam-terraform-state"
-"remote_state_govuk_networking_bucket"        = "issam-terraform-state"
-"remote_state_govuk_security_groups_bucket"   = "issam-terraform-state"
-"remote_state_govuk_internal_dns_zone_bucket" = "issam-terraform-state"
+"remote_state_bucket" = "govuk-terraform-steppingstone-integration"
 
 "stackname" = "issam"
 
