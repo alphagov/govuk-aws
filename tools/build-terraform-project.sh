@@ -2,7 +2,7 @@
 #
 # This is a wrapper for terraform to make running projects easier.
 # It takes three arguments: the command (e.g. "init" or "apply"), the project
-# name (e.g. "govuk-networking" or "app-jumpbox") and the stack to run it in.
+# name (e.g. "infra-networking" or "app-jumpbox") and the stack to run it in.
 #
 
 set -e
@@ -12,7 +12,7 @@ function usage() {
   echo -e 'CMD\t\t The Terraform command to run, eg "init", "plan" or "apply".'
   echo -e 'ENVIRONMENT\t The environment to deploy to eg "aws-integration".'
   echo -e 'STACKNAME\t Specify the name of the ".tfvars" and ".backend" files.'
-  echo -e 'PROJECT\t\t Specify which project to create, eg "govuk-networking".'
+  echo -e 'PROJECT\t\t Specify which project to create, eg "infra-networking".'
 }
 
 function log_error() {
@@ -58,7 +58,7 @@ if [[ -z $CMD ]];  then
 fi
 
 if [[ -z $PROJECT ]]; then
-  log_error 'Specify which project to create, eg "govuk-networking".'
+  log_error 'Specify which project to create, eg "infra-networking".'
 
 elif [[ ! -d $PROJECT_DIR ]]; then
   log_error "Could not find $PROJECT directory: $PROJECT_DIR"
