@@ -1,0 +1,6 @@
+# AWS Stack: delana
+Host jumpbox-delana
+  HostName jumpbox.delana.integration.govuk.digital
+
+Host *.delana
+  ProxyCommand ssh -e none %r@jumpbox-delana -W $(echo %h | sed 's/.delana//g'):%p
