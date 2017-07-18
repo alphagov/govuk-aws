@@ -30,7 +30,7 @@ PROJECT=$4
 TERRAFORM_DIR='./terraform'
 
 PROJECT_DIR="${TERRAFORM_DIR}/projects/${PROJECT}"
-BACKEND_FILE="${STACKNAME}.backend"
+BACKEND_FILE="${ENVIRONMENT}.${STACKNAME}.backend"
 
 # We're going to CD into $PROJECT_DIR so make paths relative to that.
 DATA_DIR="../../data"
