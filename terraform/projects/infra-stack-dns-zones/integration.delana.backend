@@ -1,0 +1,3 @@
+bucket  = "govuk-terraform-steppingstone-integration"
+key     = "delana/infra-stack-dns-zones.tfstate"
+region  = "eu-west-1"

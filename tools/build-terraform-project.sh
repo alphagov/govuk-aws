@@ -75,11 +75,15 @@ elif [[ $CMD == "init" ]] && [[ ! -f $PROJECT_DIR/$BACKEND_FILE ]]; then
 # e.g. terraform/projects/app-foo/../../data/app-foo/
 elif [[ ! -f $PROJECT_DIR/$STACK_COMMON_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$STACK_PROJECT_DATA ]] && \
-     [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]]; then
+     [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]] && \
+     [[ ! -f $PROJECT_DIR/$COMMON_DATA ]]  && \
+     [[ ! -f $PROJECT_DIR/$COMMON_PROJECT_DATA ]]; then
   log_error 'Could not find any tfvar files. Looked for:\n' \
             "\t$PROJECT_DIR/$STACK_COMMON_DATA \n " \
             "\t$PROJECT_DIR/$STACK_PROJECT_DATA \n " \
-            "\t$PROJECT_DIR/$SECRET_PROJECT_DATA"
+            "\t$PROJECT_DIR/$SECRET_PROJECT_DATA \n " \
+            "\t$PROJECT_DIR/$COMMON_DATA\n " \
+            "\t$PROJECT_DIR/$COMMON_PROJECT_DATA"
 fi
 
 # If there's been an error print the usage & exit
@@ -92,7 +96,7 @@ fi
 cd "$PROJECT_DIR"
 
 # Actually run the command
-if [[ $CMD == 'init' ]]; then
+if [[ $CMD == "init" ]]; then
   terraform "$CMD" \
             -backend-config "$BACKEND_FILE"
 else

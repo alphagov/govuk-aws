@@ -22,6 +22,11 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS environment"
+}
+
 variable "ssh_public_key" {
   type        = "string"
   description = "Puppetmaster default public key material"
@@ -104,7 +109,7 @@ resource "aws_elb" "puppetmaster_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_migration", "puppetmaster")}"
+  tags = "${map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster")}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -123,7 +128,7 @@ module "puppetmaster" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-puppetmaster"
   vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
+  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
   instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"

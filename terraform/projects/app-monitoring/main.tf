@@ -23,6 +23,11 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
+}
+
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
@@ -66,16 +71,14 @@ resource "aws_elb" "monitoring_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_migration", "monitoring")}"
+  tags = "${map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring")}"
 }
-
-# TODO: Add external record when we have the external zones working
 
 module "monitoring" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-monitoring"
   vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "monitoring", "aws_hostname", "monitoring-1")}"
+  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "aws_hostname", "monitoring-1")}"
   instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
@@ -85,6 +88,19 @@ module "monitoring" {
   instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
   instance_elb_ids                     = ["${aws_elb.monitoring_elb.id}"]
 }
+
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "alerts.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.monitoring_elb.dns_name}"
+    zone_id                = "${aws_elb.monitoring_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 
 # Outputs
 # --------------------------------------------------------------
