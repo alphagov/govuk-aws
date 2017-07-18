@@ -19,10 +19,8 @@
 # aws_region
 # stackname
 # root_domain_internal_name
-# root_domain_internal_zone_id
 # create_external_zone
 # root_domain_external_name
-# root_domain_external_zone_id
 #
 # === Outputs:
 #
@@ -60,12 +58,6 @@ variable "root_domain_internal_name" {
   default     = "mydomain.internal"
 }
 
-variable "root_domain_internal_zone_id" {
-  type        = "string"
-  description = "Route53 Zone ID of the internal root domain. Override default for Integration, Staging, Production if create_internal_zone is true"
-  default     = ""
-}
-
 variable "create_external_zone" {
   type        = "string"
   description = "Create an external DNS zone (default true)"
@@ -76,12 +68,6 @@ variable "root_domain_external_name" {
   type        = "string"
   description = "External DNS root domain name. Override default for Integration, Staging, Production if create_external_zone is true"
   default     = "mydomain.external"
-}
-
-variable "root_domain_external_zone_id" {
-  type        = "string"
-  description = "Route53 Zone ID of the external root domain. Override default for Integration, Staging, Production if create_external_zone is true"
-  default     = ""
 }
 
 # Resources
@@ -105,6 +91,11 @@ data "terraform_remote_state" "infra_vpc" {
   }
 }
 
+data "aws_route53_zone" "external_selected" {
+  name         = "${var.root_domain_external_name}"
+  private_zone = false
+}
+
 resource "aws_route53_zone" "external_zone" {
   count = "${var.create_external_zone}"
   name  = "${var.stackname}.${var.root_domain_external_name}"
@@ -117,7 +108,7 @@ resource "aws_route53_zone" "external_zone" {
 
 resource "aws_route53_record" "external_zone_ns" {
   count   = "${var.create_external_zone}"
-  zone_id = "${var.root_domain_external_zone_id}"
+  zone_id = "${data.aws_route53_zone.external_selected.zone_id}"
   name    = "${var.stackname}.${var.root_domain_external_name}"
   type    = "NS"
   ttl     = "30"
@@ -130,10 +121,16 @@ resource "aws_route53_record" "external_zone_ns" {
   ]
 }
 
+data "aws_route53_zone" "internal_selected" {
+  name         = "${var.root_domain_internal_name}"
+  vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  private_zone = true
+}
+
 # Outputs
 # --------------------------------------------------------------
 output "internal_zone_id" {
-  value       = "${var.root_domain_internal_zone_id}"
+  value       = "${data.aws_route53_zone.internal_selected.zone_id}"
   description = "Route53 Internal Zone ID"
 }
 
