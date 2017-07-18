@@ -21,6 +21,11 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
+}
+
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
@@ -55,8 +60,7 @@ resource "aws_elb" "deploy_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    # TODO: change to 443 once we prove the host puppets
-    target   = "TCP:22"
+    target   = "TCP:443"
     interval = 30
   }
 
@@ -65,16 +69,14 @@ resource "aws_elb" "deploy_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-deploy", "Project", var.stackname, "aws_migration", "jenkins")}"
+  tags = "${map("Name", "${var.stackname}-deploy", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins")}"
 }
-
-# TODO: Add external record when we have the external zones working
 
 module "deploy" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-deploy"
   vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "jenkins", "aws_hostname", "jenkins-1")}"
+  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "aws_hostname", "jenkins-1")}"
   instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
@@ -83,6 +85,18 @@ module "deploy" {
   instance_public_key                  = "${var.ssh_public_key}"
   instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
   instance_elb_ids                     = ["${aws_elb.deploy_elb.id}"]
+}
+
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "deploy.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.deploy_elb.dns_name}"
+    zone_id                = "${aws_elb.deploy_elb.zone_id}"
+    evaluate_target_health = true
+  }
 }
 
 # Outputs
