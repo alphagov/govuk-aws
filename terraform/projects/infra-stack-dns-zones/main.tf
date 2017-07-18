@@ -43,6 +43,12 @@ variable "remote_state_bucket" {
   description = "S3 bucket we store our terraform state in"
 }
 
+variable "remote_state_infra_vpc_key_stack" {
+  type        = "string"
+  description = "Override infra_vpc remote state path"
+  default     = ""
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -94,7 +100,7 @@ data "terraform_remote_state" "infra_vpc" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-vpc.tfstate"
+    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "eu-west-1"
   }
 }

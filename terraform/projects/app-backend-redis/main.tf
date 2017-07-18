@@ -16,11 +16,6 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_bucket" {
-  type        = "string"
-  description = "S3 bucket we store our terraform state in"
-}
-
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -37,49 +32,9 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "infra_vpc" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-vpc.tfstate"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "infra_networking" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-networking.tfstate}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "infra_security_groups" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-security-groups.tfstate"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "infra_internal_dns_zone" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-internal-dns-zone.tfstate"
-    region = "eu-west-1"
-  }
-}
-
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_internal_dns_zone.internal_service_zone_id}"
-  name    = "backend-redis"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "backend-redis.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
   records = ["${module.backend_redis_cluster.configuration_endpoint_address}"]

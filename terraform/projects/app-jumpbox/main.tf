@@ -18,11 +18,6 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_bucket" {
-  type        = "string"
-  description = "S3 bucket we store our terraform state in"
-}
-
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -42,46 +37,6 @@ terraform {
 
 provider "aws" {
   region = "${var.aws_region}"
-}
-
-data "terraform_remote_state" "infra_vpc" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-vpc.tfstate"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "infra_networking" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-networking.tfstate"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "infra_security_groups" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-security-groups.tfstate"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "infra_internal_dns_zone" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${var.stackname}/infra-internal-dns-zone.tfstate"
-    region = "eu-west-1"
-  }
 }
 
 resource "aws_elb" "jumpbox_external_elb" {
