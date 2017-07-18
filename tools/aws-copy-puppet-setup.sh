@@ -29,8 +29,8 @@ RELEASENAME=`date +%Y%m%d%H%M%S`
 
 if [[ "$ENVIRONMENT" != "production" ]]
 then
-  cp ~/govuk-puppet/hieradata/${ENVIRONMENT}.yaml ~/govuk-puppet/hieradata/production.yaml
-  cp ~/govuk-puppet/hieradata/${ENVIRONMENT}_credentials.yaml ~/govuk-puppet/hieradata/production_credentials.yaml
+  cp ~/govuk-puppet/hieradata_aws/${ENVIRONMENT}.yaml ~/govuk-puppet/hieradata_aws/production.yaml
+  cp ~/govuk-puppet/hieradata_aws/${ENVIRONMENT}_credentials.yaml ~/govuk-puppet/hieradata_aws/production_credentials.yaml
 fi
 
 mkdir -p /usr/share/puppet/production/releases
@@ -42,11 +42,11 @@ gpg --homedir /etc/puppet/gpg --allow-secret-key-import --import gpgkey
 chown -R puppet: /etc/puppet/gpg
 
 # Switch Jenkins config management off
-for filename in /usr/share/puppet/production/current/hieradata/*.yaml; do
+for filename in /usr/share/puppet/production/current/hieradata_aws/*.yaml; do
   sed -i 's/govuk_jenkins::config::manage_config: .*/govuk_jenkins::config::manage_config: false/g' "$filename"
 done
 
 
-puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp
+puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp
 
 chown -R deploy:deploy /usr/share/puppet/production/releases/${RELEASENAME}
