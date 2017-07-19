@@ -1,5 +1,8 @@
-# JUMPBOX PROVISIONING
 #
+# Snippet: puppet-client
+#
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: puppet-client"
 
 rm -rf /etc/puppet
 mkdir -p /etc/puppet
@@ -16,4 +19,6 @@ cat <<EOF >/etc/puppet/puppet.conf
 EOF
 
 puppet agent --pluginsync --configtimeout 600 --test --waitforcert 60
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: puppet-client"
 
