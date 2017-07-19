@@ -25,8 +25,8 @@
 # create_instance_key
 # instance_key_name
 # instance_public_key
-# instance_user_data_file
-# instance_additional_user_data_script
+# instance_user_data
+# instance_additional_user_data
 # asg_desired_capacity
 # asg_min_size
 # asg_max_size
@@ -92,15 +92,15 @@ variable "instance_public_key" {
   default     = ""
 }
 
-variable "instance_user_data_file" {
+variable "instance_user_data" {
   type        = "string"
-  description = "Name of template file containing the instance user_data provisioning script"
+  description = "User_data provisioning script (default user_data.sh in module directory)"
   default     = "user_data.sh"
 }
 
-variable "instance_additional_user_data_script" {
+variable "instance_additional_user_data" {
   type        = "string"
-  description = "Append addition user-data script"
+  description = "Append additional user-data script"
   default     = ""
 }
 
@@ -158,14 +158,6 @@ data "aws_ami" "node_ami_ubuntu" {
   owners = ["099720109477"]
 }
 
-data "template_file" "node_user_data" {
-  template = "${file("${path.module}/${var.instance_user_data_file}")}"
-
-  vars {
-    additional_user_data_script = "${var.instance_additional_user_data_script}"
-  }
-}
-
 resource "aws_iam_role" "node_iam_role" {
   name = "${var.name}"
   path = "/"
@@ -213,7 +205,7 @@ resource "aws_launch_configuration" "node_launch_configuration" {
   name          = "${var.name}"
   image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
   instance_type = "${var.instance_type}"
-  user_data     = "${data.template_file.node_user_data.rendered}"
+  user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
 
   security_groups = ["${var.instance_security_group_ids}"]
 

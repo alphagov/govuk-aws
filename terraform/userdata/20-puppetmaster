@@ -1,13 +1,13 @@
-# PUPPETMASTER PROVISIONING
+#
+# Snippet: puppetmaster
 #
 
-# on puppet master
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: puppetmaster"
+
 echo "127.0.0.1 puppet" >> /etc/hosts 
 
 # Enable autosigning of everything
 echo '*' > /etc/puppet/autosign.conf
-
-# update-alternatives --set ruby /usr/bin/ruby1.9.1 # probably don’t need
 
 useradd deploy -m -s /bin/bash 
 mkdir -p /etc/puppet /usr/share/puppet/production/releases /usr/share/puppet/production/shared/cached-copy
@@ -21,4 +21,6 @@ gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
 
 # on the machine run a verify
 puppet apply -e 'notify { "Hello from Puppet": }'
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: puppetmaster"
 

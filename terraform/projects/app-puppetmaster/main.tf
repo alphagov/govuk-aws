@@ -5,8 +5,9 @@
 # === Variables:
 #
 # aws_region
-# ssh_public_key
+# aws_environment
 # stackname
+# ssh_public_key
 #
 # === Outputs:
 #
@@ -125,18 +126,18 @@ resource "aws_route53_record" "service_record" {
 }
 
 module "puppetmaster" {
-  source                               = "../../modules/aws/node_group"
-  name                                 = "${var.stackname}-puppetmaster"
-  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
-  instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                        = "t2.medium"
-  create_instance_key                  = true
-  instance_key_name                    = "${var.stackname}-puppetmaster_bootstrap"
-  instance_public_key                  = "${var.ssh_public_key}"
-  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-  instance_elb_ids                     = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-puppetmaster"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "t2.medium"
+  create_instance_key           = true
+  instance_key_name             = "${var.stackname}-puppetmaster_bootstrap"
+  instance_public_key           = "${var.ssh_public_key}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
 }
 
 # Outputs
