@@ -91,7 +91,7 @@ module "monitoring" {
 
 resource "aws_route53_record" "service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "alerts.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  name    = "alert.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
   type    = "A"
 
   alias {
