@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-state-integration"
-key     = "terraform-network-base-deana.tfstate"
-encrypt = true
-region  = "eu-west-1"

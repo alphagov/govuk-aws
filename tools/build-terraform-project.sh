@@ -2,7 +2,7 @@
 #
 # This is a wrapper for terraform to make running projects easier.
 # It takes three arguments: the command (e.g. "init" or "apply"), the project
-# name (e.g. "govuk-networking" or "app-jumpbox") and the stack to run it in.
+# name (e.g. "infra-networking" or "app-jumpbox") and the stack to run it in.
 #
 
 set -e
@@ -12,7 +12,7 @@ function usage() {
   echo -e 'CMD\t\t The Terraform command to run, eg "init", "plan" or "apply".'
   echo -e 'ENVIRONMENT\t The environment to deploy to eg "aws-integration".'
   echo -e 'STACKNAME\t Specify the name of the ".tfvars" and ".backend" files.'
-  echo -e 'PROJECT\t\t Specify which project to create, eg "govuk-networking".'
+  echo -e 'PROJECT\t\t Specify which project to create, eg "infra-networking".'
 }
 
 function log_error() {
@@ -30,7 +30,7 @@ PROJECT=$4
 TERRAFORM_DIR='./terraform'
 
 PROJECT_DIR="${TERRAFORM_DIR}/projects/${PROJECT}"
-BACKEND_FILE="${STACKNAME}.backend"
+BACKEND_FILE="${ENVIRONMENT}.${STACKNAME}.backend"
 
 # We're going to CD into $PROJECT_DIR so make paths relative to that.
 DATA_DIR="../../data"
@@ -58,7 +58,7 @@ if [[ -z $CMD ]];  then
 fi
 
 if [[ -z $PROJECT ]]; then
-  log_error 'Specify which project to create, eg "govuk-networking".'
+  log_error 'Specify which project to create, eg "infra-networking".'
 
 elif [[ ! -d $PROJECT_DIR ]]; then
   log_error "Could not find $PROJECT directory: $PROJECT_DIR"
@@ -75,11 +75,15 @@ elif [[ $CMD == "init" ]] && [[ ! -f $PROJECT_DIR/$BACKEND_FILE ]]; then
 # e.g. terraform/projects/app-foo/../../data/app-foo/
 elif [[ ! -f $PROJECT_DIR/$STACK_COMMON_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$STACK_PROJECT_DATA ]] && \
-     [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]]; then
+     [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]] && \
+     [[ ! -f $PROJECT_DIR/$COMMON_DATA ]]  && \
+     [[ ! -f $PROJECT_DIR/$COMMON_PROJECT_DATA ]]; then
   log_error 'Could not find any tfvar files. Looked for:\n' \
             "\t$PROJECT_DIR/$STACK_COMMON_DATA \n " \
             "\t$PROJECT_DIR/$STACK_PROJECT_DATA \n " \
-            "\t$PROJECT_DIR/$SECRET_PROJECT_DATA"
+            "\t$PROJECT_DIR/$SECRET_PROJECT_DATA \n " \
+            "\t$PROJECT_DIR/$COMMON_DATA\n " \
+            "\t$PROJECT_DIR/$COMMON_PROJECT_DATA"
 fi
 
 # If there's been an error print the usage & exit
@@ -92,7 +96,7 @@ fi
 cd "$PROJECT_DIR"
 
 # Actually run the command
-if [[ $CMD == 'init' ]]; then
+if [[ $CMD == "init" ]]; then
   terraform "$CMD" \
             -backend-config "$BACKEND_FILE"
 else

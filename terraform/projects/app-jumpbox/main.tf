@@ -5,8 +5,6 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_bucket
-# remote_state_govuk_vpc_key
 # ssh_public_key
 # stackname
 #
@@ -19,39 +17,14 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_networking_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_networking_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_security_groups_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_security_groups_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
 variable "stackname" {
   type        = "string"
   description = "Stackname"
+}
+
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
 }
 
 variable "ssh_public_key" {
@@ -70,40 +43,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_networking" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_networking_bucket}"
-    key    = "${var.remote_state_govuk_networking_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_security_groups" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_security_groups_bucket}"
-    key    = "${var.remote_state_govuk_security_groups_key}"
-    region = "eu-west-1"
-  }
-}
-
 resource "aws_elb" "jumpbox_external_elb" {
   name            = "${var.stackname}-jumpbox"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_offsite_ssh_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
   internal        = "false"
 
   listener {
@@ -126,29 +69,28 @@ resource "aws_elb" "jumpbox_external_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_migration", "jumpbox")}"
+  tags = "${map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jumpbox")}"
 }
 
-#resource "aws_route53_record" "service_record" {
-#  count   = "${var.create_service_dns_name}"
-#  zone_id = "${var.zone_id}"
-#  name    = "${var.service_dns_name}"
-#  type    = "A"
-#
-#  alias {
-#    name                   = "${aws_elb.node_elb.dns_name}"
-#    zone_id                = "${aws_elb.node_elb.zone_id}"
-#    evaluate_target_health = true
-#  }
-#}
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "jumpbox.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.jumpbox_external_elb.dns_name}"
+    zone_id                = "${aws_elb.jumpbox_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
 
 module "jumpbox" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-jumpbox"
-  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "jumpbox", "aws_hostname", "jumpbox-1")}"
-  instance_subnet_ids                  = "${data.terraform_remote_state.govuk_networking.private_subnet_ids}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_jumpbox_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
+  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jumpbox", "aws_hostname", "jumpbox-1")}"
+  instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_jumpbox_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.micro"
   create_instance_key                  = true
   instance_key_name                    = "${var.stackname}-jumpbox"
@@ -165,8 +107,7 @@ output "jumpbox_elb_address" {
   description = "AWS' internal DNS name for the jumpbox ELB"
 }
 
-#output "service_dns_name" {
-#  value       = "${var.create_service_dns_name == 1 ? var.service_dns_name : aws_elb.node_elb.dns_name}"
-#  description = "DNS name to access the node service"
-#}
-
+output "service_dns_name" {
+  value       = "${aws_route53_record.service_record.name}"
+  description = "DNS name to access the node service"
+}

@@ -1,4 +1,4 @@
-bucket  = "issam-terraform-state"
-key     = "terraform-monitoring-issam.tfstate"
+bucket  = "govuk-terraform-steppingstone-integration"
+key     = "issam/app-monitoring.tfstate"
 encrypt = true
 region  = "eu-west-1"

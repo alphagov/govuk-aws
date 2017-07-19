@@ -5,8 +5,7 @@
 # === Variables:
 #
 # aws_region
-# remote_state_govuk_vpc_key
-# remote_state_govuk_vpc_bucket
+# remote_state_bucket
 # stackname
 #
 # === Outputs:
@@ -16,46 +15,6 @@ variable "aws_region" {
   type        = "string"
   description = "AWS region"
   default     = "eu-west-1"
-}
-
-variable "remote_state_govuk_vpc_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_networking_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_networking_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_internal_dns_zone_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_internal_dns_zone_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_security_groups_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_security_groups_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
 }
 
 variable "stackname" {
@@ -94,50 +53,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_networking" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_networking_bucket}"
-    key    = "${var.remote_state_govuk_networking_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_internal_dns_zone" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_internal_dns_zone_bucket}"
-    key    = "${var.remote_state_govuk_internal_dns_zone_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_security_groups" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_security_groups_bucket}"
-    key    = "${var.remote_state_govuk_security_groups_key}"
-    region = "eu-west-1"
-  }
-}
-
 resource "aws_elb" "logs_elasticsearch_elb" {
   name            = "${var.stackname}-logs-elasticsearch"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_logs-elasticsearch_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_elb_id}"]
   internal        = "true"
 
   listener {
@@ -165,8 +84,8 @@ resource "aws_elb" "logs_elasticsearch_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.govuk_internal_dns_zone.internal_service_zone_id}"
-  name    = "logs-elasticsearch"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "logs-elasticsearch.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -185,10 +104,10 @@ resource "aws_key_pair" "logs_elasticsearch_key" {
 module "logs-elasticsearch-1" {
   source                               = "../../modules/aws/node_group"
   name                                 = "${var.stackname}-logs-elasticsearch-1"
-  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-1")}"
-  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_1_subnet))}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
+  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_1_subnet))}"
+  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
   create_instance_key                  = false
   instance_key_name                    = "${var.stackname}-logs-elasticsearch"
@@ -198,7 +117,7 @@ module "logs-elasticsearch-1" {
 }
 
 resource "aws_ebs_volume" "logs-elasticsearch-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.logs_elasticsearch_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.logs_elasticsearch_1_subnet)}"
   size              = 100
   type              = "gp2"
 
@@ -215,10 +134,10 @@ resource "aws_ebs_volume" "logs-elasticsearch-1" {
 #module "logs-elasticsearch-2" {
 #  source                               = "../../modules/aws/node_group"
 #  name                                 = "${var.stackname}-logs-elasticsearch-2"
-#  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+#  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
 #  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-2")}"
-#  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_2_subnet))}"
-#  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
+#  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_2_subnet))}"
+#  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
 #  instance_type                        = "t2.medium"
 #  create_instance_key                  = false
 #  instance_key_name                    = "${var.stackname}-logs-elasticsearch"
@@ -228,7 +147,7 @@ resource "aws_ebs_volume" "logs-elasticsearch-1" {
 #}
 #
 #resource "aws_ebs_volume" "logs-elasticsearch-2" {
-#  availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.logs_elasticsearch_2_subnet)}"
+#  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.logs_elasticsearch_2_subnet)}"
 #  size              = 100
 #  type              = "gp2"
 #
@@ -245,10 +164,10 @@ resource "aws_ebs_volume" "logs-elasticsearch-1" {
 #module "logs-elasticsearch-3" {
 #  source                               = "../../modules/aws/node_group"
 #  name                                 = "${var.stackname}-logs-elasticsearch-3"
-#  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+#  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
 #  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-3")}"
-#  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_3_subnet))}"
-#  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
+#  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_3_subnet))}"
+#  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
 #  instance_type                        = "t2.medium"
 #  create_instance_key                  = false
 #  instance_key_name                    = "${var.stackname}-logs-elasticsearch"
@@ -258,7 +177,7 @@ resource "aws_ebs_volume" "logs-elasticsearch-1" {
 #}
 #
 #resource "aws_ebs_volume" "logs-elasticsearch-3" {
-#  availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.logs_elasticsearch_3_subnet)}"
+#  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.logs_elasticsearch_3_subnet)}"
 #  size              = 100
 #  type              = "gp2"
 #

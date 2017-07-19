@@ -55,11 +55,11 @@ service puppet stop
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: add search domain for local stack ..."
 F_STACKNAME=$(facter aws_stackname)
-
-if [[ -z $F_STACKNAME ]] ; then
+F_AWS_ENVIRONMENT=$(facter aws_environment)
+if [[ -z $F_STACKNAME ]] || [[ -z $F_AWS_ENVIRONMENT ]] ; then
   echo "ERROR aws_stackname is null"
 else
-  echo "append domain-search \""$F_STACKNAME".internal\";" >> /etc/dhcp/dhclient.conf
+  echo "append domain-search \""$F_STACKNAME"."$F_AWS_ENVIRONMENT".govuk-internal.digital\", \""$F_AWS_ENVIRONMENT".govuk-internal.digital\", \"govuk-internal.digital\";" >> /etc/dhcp/dhclient.conf
   dhclient -r; dhclient
 fi
 

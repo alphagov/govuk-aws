@@ -1,3 +1,0 @@
-bucket  = "govuk-terraform-state-integration"
-key     = "terraform-govuk-root-dns-zones-integration.tfstate"
-region  = "eu-west-1"
