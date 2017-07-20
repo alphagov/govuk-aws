@@ -71,14 +71,14 @@ resource "aws_elb" "calculators-frontend_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-calculators-frontend", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "calculators-frontend")}"
+  tags = "${map("Name", "${var.stackname}-calculators-frontend", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "calculators_frontend")}"
 }
 
 module "calculators-frontend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-calculators-frontend"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "calculators-frontend", "aws_hostname", "calculators-frontend-1")}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "calculators_frontend", "aws_hostname", "calculators-frontend-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_calculators-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
