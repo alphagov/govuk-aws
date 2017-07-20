@@ -6,7 +6,7 @@ Date: 2017-07-04
 
 Accepted
 
-Amended by [13. Terraform Data Structure](0013-terraform-data-structure.md)
+Amended by [17. Terraform Data Structure](0017-terraform-data-structure.md)
 
 ## Context
 

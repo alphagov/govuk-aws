@@ -1,4 +1,4 @@
-# 15. Terraform Data Structure
+# 17. Terraform Data Structure
 
 Date: 2017-07-14
 
