@@ -189,3 +189,11 @@ output "sg_draft-frontend_id" {
 output "sg_draft-frontend_elb_id" {
   value = "${aws_security_group.draft-frontend_elb.id}"
 }
+
+output "sg_draft-content-store_id" {
+  value = "${aws_security_group.draft-content-store.id}"
+}
+
+output "sg_draft-content-store_elb_id" {
+  value = "${aws_security_group.draft-content-store_elb.id}"
+}
