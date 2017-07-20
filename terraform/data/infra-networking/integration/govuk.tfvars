@@ -46,3 +46,14 @@
   "govuk_private_c" = "govuk_public_c"
 }
 
+"private_subnet_rds_cidrs" = {
+  "govuk_rds_private_a" = "10.1.10.0/24"
+  "govuk_rds_private_b" = "10.1.11.0/24"
+  "govuk_rds_private_c" = "10.1.12.0/24"
+}
+
+"private_subnet_rds_availability_zones" = {
+  "govuk_rds_private_a" = "eu-west-1a"
+  "govuk_rds_private_b" = "eu-west-1b"
+  "govuk_rds_private_c" = "eu-west-1c"
+}
