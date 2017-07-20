@@ -6,6 +6,9 @@
 #
 # aws_region
 # stackname
+# aws_environment
+# ssh_public_key
+# graphite_1_subnet
 #
 # === Outputs:
 #
@@ -19,6 +22,11 @@ variable "aws_region" {
 variable "stackname" {
   type        = "string"
   description = "Stackname"
+}
+
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
 }
 
 variable "ssh_public_key" {
@@ -69,7 +77,19 @@ resource "aws_elb" "graphite_external_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-graphite-external", "Project", var.stackname, "aws_migration", "graphite")}"
+  tags = "${map("Name", "${var.stackname}-graphite-external", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "graphite")}"
+}
+
+resource "aws_route53_record" "graphite_external_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "graphite.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.graphite_external_elb.dns_name}"
+    zone_id                = "${aws_elb.graphite_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
 }
 
 resource "aws_elb" "graphite_internal_elb" {
@@ -106,7 +126,7 @@ resource "aws_elb" "graphite_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-graphite-internal", "Project", var.stackname, "aws_migration", "graphite")}"
+  tags = "${map("Name", "${var.stackname}-graphite-internal", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "graphite")}"
 }
 
 resource "aws_route53_record" "graphite_internal_service_record" {
@@ -122,19 +142,19 @@ resource "aws_route53_record" "graphite_internal_service_record" {
 }
 
 module "graphite-1" {
-  source                               = "../../modules/aws/node_group"
-  name                                 = "${var.stackname}-graphite-1"
-  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "graphite", "aws_hostname", "graphite-1")}"
-  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                        = "t2.medium"
-  create_instance_key                  = true
-  instance_key_name                    = "${var.stackname}-graphite-1"
-  instance_public_key                  = "${var.ssh_public_key}"
-  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-  instance_elb_ids                     = ["${aws_elb.graphite_internal_elb.id}", "${aws_elb.graphite_external_elb.id}"]
-  root_block_device_volume_size        = "20"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-graphite-1"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "graphite", "aws_hostname", "graphite-1")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "t2.medium"
+  create_instance_key           = true
+  instance_key_name             = "${var.stackname}-graphite-1"
+  instance_public_key           = "${var.ssh_public_key}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.graphite_internal_elb.id}", "${aws_elb.graphite_external_elb.id}"]
+  root_block_device_volume_size = "20"
 }
 
 resource "aws_ebs_volume" "graphite-1" {
@@ -143,11 +163,12 @@ resource "aws_ebs_volume" "graphite-1" {
   type              = "gp2"
 
   tags {
-    Name          = "${var.stackname}-graphite-1"
-    Project       = "${var.stackname}"
-    aws_stackname = "${var.stackname}"
-    aws_migration = "graphite"
-    aws_hostname  = "graphite-1"
+    Name            = "${var.stackname}-graphite-1"
+    Project         = "${var.stackname}"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "graphite"
+    aws_hostname    = "graphite-1"
   }
 }
 
@@ -171,6 +192,6 @@ output "graphite_internal_service_dns_name" {
 }
 
 output "graphite_external_elb_dns_name" {
-  value       = "${aws_elb.graphite_external_elb.dns_name}"
-  description = "DNS name to access the Graphite external ELB"
+  value       = "${aws_route53_record.graphite_external_service_record.fqdn}"
+  description = "DNS name to access the Graphite external service"
 }
