@@ -165,3 +165,11 @@ output "sg_content-store_id" {
 output "sg_content-store_elb_id" {
   value = "${aws_security_group.content-store_elb.id}"
 }
+
+output "sg_bouncer_id" {
+  value = "${aws_security_group.bouncer.id}"
+}
+
+output "sg_bouncer_elb_id" {
+  value = "${aws_security_group.bouncer_elb.id}"
+}
