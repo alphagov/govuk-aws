@@ -197,3 +197,7 @@ output "sg_draft-content-store_id" {
 output "sg_draft-content-store_elb_id" {
   value = "${aws_security_group.draft-content-store_elb.id}"
 }
+
+output "sg_mysql-primary_id" {
+  value = "${aws_security_group.mysql-primary.id}"
+}
