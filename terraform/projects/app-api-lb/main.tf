@@ -6,6 +6,8 @@
 #
 # aws_region
 # stackname
+# aws_environment
+# ssh_public_key
 #
 # === Outputs:
 #
@@ -19,6 +21,11 @@ variable "aws_region" {
 variable "stackname" {
   type        = "string"
   description = "Stackname"
+}
+
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
 }
 
 variable "ssh_public_key" {
@@ -64,7 +71,7 @@ resource "aws_elb" "api-lb_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-api-lb", "Project", var.stackname, "aws_migration", "api_lb")}"
+  tags = "${map("Name", "${var.stackname}-api-lb", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api_lb")}"
 }
 
 resource "aws_route53_record" "api-lb_service_record" {
@@ -80,21 +87,21 @@ resource "aws_route53_record" "api-lb_service_record" {
 }
 
 module "api-lb" {
-  source                               = "../../modules/aws/node_group"
-  name                                 = "${var.stackname}-api-lb"
-  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "api_lb", "aws_hostname", "api-lb-1")}"
-  instance_subnet_ids                  = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_api-lb_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                        = "t2.medium"
-  create_instance_key                  = true
-  instance_key_name                    = "${var.stackname}-api-lb"
-  instance_public_key                  = "${var.ssh_public_key}"
-  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-  instance_elb_ids                     = ["${aws_elb.api-lb_elb.id}"]
-  asg_max_size                         = "2"
-  asg_min_size                         = "2"
-  asg_desired_capacity                 = "2"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-api-lb"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api_lb", "aws_hostname", "api-lb-1")}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_api-lb_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "t2.medium"
+  create_instance_key           = true
+  instance_key_name             = "${var.stackname}-api-lb"
+  instance_public_key           = "${var.ssh_public_key}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.api-lb_elb.id}"]
+  asg_max_size                  = "2"
+  asg_min_size                  = "2"
+  asg_desired_capacity          = "2"
 }
 
 # Outputs
