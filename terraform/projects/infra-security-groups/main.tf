@@ -7,6 +7,14 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+# used by the fastly ip ranges provider.
+# an API key is needed but 'fake' seems to work.
+provider "fastly" {
+  api_key = "fake"
+}
+
+data "fastly_ip_ranges" "fastly" {}
+
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
