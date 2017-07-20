@@ -101,7 +101,6 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
-
 # Outputs
 # --------------------------------------------------------------
 
