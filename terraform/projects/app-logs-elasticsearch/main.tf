@@ -5,8 +5,12 @@
 # === Variables:
 #
 # aws_region
-# remote_state_bucket
 # stackname
+# aws_environment
+# ssh_public_key
+# logs_elasticsearch_1_subnet
+# logs_elasticsearch_2_subnet
+# logs_elasticsearch_3_subnet
 #
 # === Outputs:
 #
@@ -20,6 +24,11 @@ variable "aws_region" {
 variable "stackname" {
   type        = "string"
   description = "Stackname"
+}
+
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
 }
 
 variable "ssh_public_key" {
@@ -80,7 +89,7 @@ resource "aws_elb" "logs_elasticsearch_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-logs-elasticsearch", "Project", var.stackname, "aws_migration", "logs_elasticsearch")}"
+  tags = "${map("Name", "${var.stackname}-logs-elasticsearch", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "logs_elasticsearch")}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -102,18 +111,18 @@ resource "aws_key_pair" "logs_elasticsearch_key" {
 
 # Instance 1
 module "logs-elasticsearch-1" {
-  source                               = "../../modules/aws/node_group"
-  name                                 = "${var.stackname}-logs-elasticsearch-1"
-  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-1")}"
-  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_1_subnet))}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                        = "t2.medium"
-  create_instance_key                  = false
-  instance_key_name                    = "${var.stackname}-logs-elasticsearch"
-  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-  instance_elb_ids                     = ["${aws_elb.logs_elasticsearch_elb.id}"]
-  root_block_device_volume_size        = "20"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-logs-elasticsearch-1"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-1")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_1_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "t2.medium"
+  create_instance_key           = false
+  instance_key_name             = "${var.stackname}-logs-elasticsearch"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.logs_elasticsearch_elb.id}"]
+  root_block_device_volume_size = "20"
 }
 
 resource "aws_ebs_volume" "logs-elasticsearch-1" {
@@ -122,73 +131,16 @@ resource "aws_ebs_volume" "logs-elasticsearch-1" {
   type              = "gp2"
 
   tags {
-    Name          = "${var.stackname}-logs-elasticsearch-1"
-    Project       = "${var.stackname}"
-    aws_stackname = "${var.stackname}"
-    aws_migration = "logs_elasticsearch"
-    aws_hostname  = "logs-elasticsearch-1"
+    Name            = "${var.stackname}-logs-elasticsearch-1"
+    Project         = "${var.stackname}"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "logs_elasticsearch"
+    aws_hostname    = "logs-elasticsearch-1"
   }
 }
 
-## Instance round 2
-#module "logs-elasticsearch-2" {
-#  source                               = "../../modules/aws/node_group"
-#  name                                 = "${var.stackname}-logs-elasticsearch-2"
-#  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-#  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-2")}"
-#  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_2_subnet))}"
-#  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-#  instance_type                        = "t2.medium"
-#  create_instance_key                  = false
-#  instance_key_name                    = "${var.stackname}-logs-elasticsearch"
-#  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-#  instance_elb_ids                     = ["${aws_elb.logs_elasticsearch_elb.id}"]
-#  root_block_device_volume_size        = "20"
-#}
-#
-#resource "aws_ebs_volume" "logs-elasticsearch-2" {
-#  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.logs_elasticsearch_2_subnet)}"
-#  size              = 100
-#  type              = "gp2"
-#
-#  tags {
-#    Name          = "${var.stackname}-logs-elasticsearch-2"
-#    Project       = "${var.stackname}"
-#    aws_stackname = "${var.stackname}"
-#    aws_migration = "logs_elasticsearch"
-#    aws_hostname  = "logs-elasticsearch-2"
-#  }
-#}
-#
-## Instance round 3
-#module "logs-elasticsearch-3" {
-#  source                               = "../../modules/aws/node_group"
-#  name                                 = "${var.stackname}-logs-elasticsearch-3"
-#  vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-#  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-3")}"
-#  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_3_subnet))}"
-#  instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-#  instance_type                        = "t2.medium"
-#  create_instance_key                  = false
-#  instance_key_name                    = "${var.stackname}-logs-elasticsearch"
-#  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-#  instance_elb_ids                     = ["${aws_elb.logs_elasticsearch_elb.id}"]
-#  root_block_device_volume_size        = "20"
-#}
-#
-#resource "aws_ebs_volume" "logs-elasticsearch-3" {
-#  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.logs_elasticsearch_3_subnet)}"
-#  size              = 100
-#  type              = "gp2"
-#
-#  tags {
-#    Name          = "${var.stackname}-logs-elasticsearch-3"
-#    Project       = "${var.stackname}"
-#    aws_stackname = "${var.stackname}"
-#    aws_migration = "logs_elasticsearch"
-#    aws_hostname  = "logs-elasticsearch-3"
-#  }
-#}
+# TODO: Instance 2 and 3
 
 resource "aws_iam_policy" "logs_elasticsearch_iam_policy" {
   name   = "${var.stackname}-logs-elasticsearch-additional"
