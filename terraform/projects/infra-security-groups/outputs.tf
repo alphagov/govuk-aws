@@ -181,3 +181,11 @@ output "sg_calculators-frontend_id" {
 output "sg_calculators-frontend_elb_id" {
   value = "${aws_security_group.calculators-frontend_elb.id}"
 }
+
+output "sg_draft-frontend_id" {
+  value = "${aws_security_group.draft-frontend.id}"
+}
+
+output "sg_draft-frontend_elb_id" {
+  value = "${aws_security_group.draft-frontend_elb.id}"
+}
