@@ -18,6 +18,7 @@ The general steps for provisioning a new environment are:
 4. [Build the Puppet master](#build-the-puppet-master)
 5. [Deploy the puppet code and secrets](#deploy-the-puppet-code-and-secrets)
 6. [Build the deploy Jenkins](#build-the-deploy-jenkins)
+7. [Do the Jenkins token shuffle](#do-the-jenkins-token-shuffle)
 * Rebuild everything else in the usual deployment ways
 
 ## Requirements
@@ -188,9 +189,34 @@ Once this has built and provisioned you should be able to navigate to:
 deploy.<stackname>.<environment>.govuk.digital
 ```
 
-And use Jenkins to start deploying things.
-
 NB currently you'll need to manually build the boxes but in future you'll be able to do that via Jenkins too.
+
+## Do the Jenkins token shuffle
+
+For each user, Jenkins automatically generates an API token which is based upon the machine it's installed on, which means that each token is unique to each instance. Additionally, tokens stored on disk are encrypted so we are not able to manage these with Puppet in the Jenkins configuration.
+
+We use Jenkins Job Builder to manage our jobs. This tool requires a Jenkins API user and token to be able to create jobs, and use Puppet to manage these credentials. Therefore we need to generate a token for the API user that Puppet creates, and add this token to our Puppet credentials.
+
+Jenkins does not allow admins to view other users tokens, so there is a manual step involved.
+
+1. SSH to the Jenkins instance
+2. Edit the start up options: `sudo vim /etc/default/jenkins`
+3. Append the following line to the end of `JAVA_ARGS`:
+
+   `-Djenkins.security.ApiTokenProperty.showTokenToAdmins=true`
+
+   It will probably look something like this:
+
+   `JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false -Djenkins.security.ApiTokenProperty.showTokenToAdmins=true"`
+
+4. Save and quit, and restart the Jenkins service: `sudo service jenkins restart`
+5. You should now be able to login by going to https://deploy.\<stackname\>.\<environment\>.govuk.digital
+6. Find the API user you want the token from by searching in the top bar (the default is "jenkins_api_user")
+7. Click configure, and then "Show API token". Save the token, and update the credentials in the [deployment repo](https://github.digital.cabinet-office.gov.uk/gds/deployment)
+8. The hiera key you're looking to update is called: `govuk::node::s_jenkins::jenkins_api_token`
+9. As the Deploy_Puppet job won't yet exist, you will be unable to deploy Puppet at this point. Manually edit `/etc/jenkins_jobs/jenkins_jobs.ini` with the new token, and run the update job by running `sudo jenkins-jobs update /etc/jenkins_jobs/jobs/`.
+
+When Jenkins Job Builder has successfully created jobs, you should then be able to deploy Puppet and applications via Jenkins to finish off the rest of the stack.
 
 ## Glossary
 
