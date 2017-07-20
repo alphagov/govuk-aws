@@ -22,6 +22,18 @@ output "sg_api-redis_id" {
   value = "${aws_security_group.api-redis.id}"
 }
 
+output "sg_apt_external_elb_id" {
+  value = "${aws_security_group.apt_external_elb.id}"
+}
+
+output "sg_apt_id" {
+  value = "${aws_security_group.apt.id}"
+}
+
+output "sg_apt_internal_elb_id" {
+  value = "${aws_security_group.apt_internal_elb.id}"
+}
+
 output "sg_backend_elb_id" {
   value = "${aws_security_group.backend_elb.id}"
 }
