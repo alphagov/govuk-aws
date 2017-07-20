@@ -173,3 +173,11 @@ output "sg_bouncer_id" {
 output "sg_bouncer_elb_id" {
   value = "${aws_security_group.bouncer_elb.id}"
 }
+
+output "sg_calculators-frontend_id" {
+  value = "${aws_security_group.calculators-frontend.id}"
+}
+
+output "sg_calculators-frontend_elb_id" {
+  value = "${aws_security_group.calculators-frontend_elb.id}"
+}
