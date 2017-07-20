@@ -157,3 +157,11 @@ output "sg_publishing-api_id" {
 output "sg_publishing-api_elb_id" {
   value = "${aws_security_group.publishing-api_elb.id}"
 }
+
+output "sg_content-store_id" {
+  value = "${aws_security_group.content-store.id}"
+}
+
+output "sg_content-store_elb_id" {
+  value = "${aws_security_group.content-store_elb.id}"
+}
