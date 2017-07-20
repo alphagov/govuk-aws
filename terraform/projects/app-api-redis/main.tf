@@ -6,6 +6,7 @@
 #
 # aws_region
 # stackname
+# aws_environment
 #
 # === Outputs:
 #
@@ -19,6 +20,11 @@ variable "aws_region" {
 variable "stackname" {
   type        = "string"
   description = "Stackname"
+}
+
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
 }
 
 # Resources
@@ -43,7 +49,7 @@ resource "aws_route53_record" "service_record" {
 module "api_redis_cluster" {
   source             = "../../modules/aws/elasticache_redis_cluster"
   name               = "${var.stackname}-api-redis"
-  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "api-redis")}"
+  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api-redis")}"
   subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_elasticache_ids}"
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_api-redis_id}"]
 }
