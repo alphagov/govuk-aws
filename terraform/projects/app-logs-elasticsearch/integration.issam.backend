@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-integration"
+key     = "issam/app-logs-elasticsearch.tfstate"
+encrypt = true
+region  = "eu-west-1"
