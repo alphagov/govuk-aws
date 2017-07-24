@@ -134,31 +134,31 @@ resource "aws_route53_record" "gemstash_internal_service_record" {
   }
 }
 
-module "apt-1" {
+module "apt" {
   source                               = "../../modules/aws/node_group"
-  name                                 = "${var.stackname}-apt-1"
+  name                                 = "${var.stackname}-apt"
   vpc_id                               = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "apt", "aws_hostname", "apt-1")}"
   instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.apt_1_subnet))}"
   instance_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_apt_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                        = "t2.medium"
   create_instance_key                  = true
-  instance_key_name                    = "${var.stackname}-apt-1"
+  instance_key_name                    = "${var.stackname}-apt"
   instance_public_key                  = "${var.ssh_public_key}"
   instance_additional_user_data        = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids                     = ["${aws_elb.apt_internal_elb.id}", "${aws_elb.apt_external_elb.id}"]
   root_block_device_volume_size        = "20"
 }
 
-resource "aws_ebs_volume" "apt-1" {
+resource "aws_ebs_volume" "apt" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.apt_1_subnet)}"
   size              = 40
   type              = "gp2"
 
   tags {
-    Name            = "${var.stackname}-apt-1"
+    Name            = "${var.stackname}-apt"
     Project         = "${var.stackname}"
-    aws_hostname    = "apt-1"
+    aws_hostname    = "apt"
     aws_migration   = "apt"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
@@ -166,13 +166,13 @@ resource "aws_ebs_volume" "apt-1" {
 }
 
 resource "aws_iam_policy" "apt_1_iam_policy" {
-  name   = "${var.stackname}-apt-1-additional"
+  name   = "${var.stackname}-apt-additional"
   path   = "/"
   policy = "${file("${path.module}/additional_policy.json")}"
 }
 
 resource "aws_iam_role_policy_attachment" "apt_1_iam_role_policy_attachment" {
-  role       = "${module.apt-1.instance_iam_role_name}"
+  role       = "${module.apt.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.apt_1_iam_policy.arn}"
 }
 
