@@ -35,6 +35,19 @@ resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
   source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
 
+resource "aws_security_group_rule" "allow_ssh_from_deploy" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.management.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.deploy.id}"
+}
+
 resource "aws_security_group_rule" "allow_nrpe_ingress_from_monitoring" {
   type      = "ingress"
   from_port = 5666
