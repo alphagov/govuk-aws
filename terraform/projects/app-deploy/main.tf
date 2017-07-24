@@ -101,6 +101,17 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
+resource "aws_iam_policy" "deploy_iam_policy" {
+  name   = "${var.stackname}-deploy-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "deploy_iam_role_policy_attachment" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.deploy_iam_policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
