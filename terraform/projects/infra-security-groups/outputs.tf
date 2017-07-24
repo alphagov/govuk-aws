@@ -126,6 +126,18 @@ output "sg_draft-frontend_id" {
   value = "${aws_security_group.draft-frontend.id}"
 }
 
+output "sg_exception_handler_external_elb_id" {
+  value = "${aws_security_group.exception_handler_external_elb.id}"
+}
+
+output "sg_exception_handler_id" {
+  value = "${aws_security_group.exception_handler.id}"
+}
+
+output "sg_exception_handler_internal_elb_id" {
+  value = "${aws_security_group.exception_handler_internal_elb.id}"
+}
+
 output "sg_frontend_elb_id" {
   value = "${aws_security_group.frontend_elb.id}"
 }
