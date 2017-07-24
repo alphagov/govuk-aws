@@ -137,6 +137,7 @@ resource "aws_ebs_volume" "logs-elasticsearch-1" {
     aws_environment = "${var.aws_environment}"
     aws_migration   = "logs_elasticsearch"
     aws_hostname    = "logs-elasticsearch-1"
+    Device          = "xvdf"
   }
 }
 
