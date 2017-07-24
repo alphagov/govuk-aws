@@ -7,12 +7,24 @@
 
 set -e
 
+while getopts "c:e:p:s:h" option
+do
+  case $option in
+    c ) CMD=$OPTARG ;;
+    e ) ENVIRONMENT=$OPTARG ;;
+    p ) PROJECT=$OPTARG ;;
+    s ) STACKNAME=$OPTARG ;;
+    h ) HELP=1 ;;
+  esac
+done
+
 function usage() {
-  echo -e "usage: $0 [CMD] [ENVIRONMENT] [STACKNAME] [PROJECT]\n"
-  echo -e 'CMD\t\t The Terraform command to run, eg "init", "plan" or "apply".'
-  echo -e 'ENVIRONMENT\t The environment to deploy to eg "aws-integration".'
-  echo -e 'STACKNAME\t Specify the name of the ".tfvars" and ".backend" files.'
-  echo -e 'PROJECT\t\t Specify which project to create, eg "infra-networking".'
+  echo -e "usage: $0 -c -e -p -s\n"
+  echo -e '-c\t The Terraform command to run, eg "init", "plan" or "apply".'
+  echo -e '-e\t The environment to deploy to eg "aws-integration".'
+  echo -e '-s\t Specify the name of the ".tfvars" and ".backend" files.'
+  echo -e '-p\t Specify which project to create, eg "infra-networking".'
+  echo -e '-h\t Display this message.'
 }
 
 function log_error() {
@@ -20,11 +32,10 @@ function log_error() {
   HELP=1
 }
 
-# Get the arguments
-CMD=$1
-ENVIRONMENT=$2
-STACKNAME=$3
-PROJECT=$4
+if [[ $HELP = '1' ]]; then
+  usage
+  exit
+fi
 
 # Set up our locations
 TERRAFORM_DIR='./terraform'
@@ -45,11 +56,6 @@ PROJECT_DATA_DIR="${DATA_DIR}/${PROJECT}/${ENVIRONMENT}"
 COMMON_PROJECT_DATA="${PROJECT_DATA_DIR}/common.tfvars"
 STACK_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}.tfvars"
 SECRET_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}_secrets.tfvars"
-
-if [[ $CMD = "-h" ]]; then
-  usage
-  exit
-fi
 
 # Check we have all the arguments we need
 if [[ -z $CMD ]];  then
