@@ -29,12 +29,12 @@ fi
 
 if [[ -z $DEPLOYMENT_REPO ]]
 then
-  echo "No local deployment repo path set"
+  echo "No local govuk-secrets repo path set"
   HELP=1
 else
   if [[ ! -d $DEPLOYMENT_REPO ]]
   then
-    echo "The local deployment repository does not exist at the path specified"
+    echo "The local govuk-secrets repository does not exist at the path specified"
     HELP=1
   fi
 fi
@@ -61,7 +61,7 @@ if [[ "$HELP" = "1" ]]
 then
   echo "Deploy Puppet to a Puppetmaster"
   echo "-e environment name"
-  echo "-d deployment repo path"
+  echo "-d govuk-secrets repo path"
   echo "-p Puppet repo path"
   echo "-t target machine address"
   echo "-g path to Puppetmaster GPG key"
