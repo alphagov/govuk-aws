@@ -194,6 +194,10 @@ output "sg_management_id" {
   value = "${aws_security_group.management.id}"
 }
 
+output "sg_mirrorer_id" {
+  value = "${aws_security_group.mirrorer.id}"
+}
+
 output "sg_monitoring_id" {
   value = "${aws_security_group.monitoring.id}"
 }
