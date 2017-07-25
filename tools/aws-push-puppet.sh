@@ -29,12 +29,12 @@ fi
 
 if [[ -z $DEPLOYMENT_REPO ]]
 then
-  echo "No local deployment repo path set"
+  echo "No local govuk-secrets repo path set"
   HELP=1
 else
   if [[ ! -d $DEPLOYMENT_REPO ]]
   then
-    echo "The local deployment repository does not exist at the path specified"
+    echo "The local govuk-secrets repository does not exist at the path specified"
     HELP=1
   fi
 fi
@@ -61,7 +61,7 @@ if [[ "$HELP" = "1" ]]
 then
   echo "Deploy Puppet to a Puppetmaster"
   echo "-e environment name"
-  echo "-d deployment repo path"
+  echo "-d govuk-secrets repo path"
   echo "-p Puppet repo path"
   echo "-t target machine address"
   echo "-g path to Puppetmaster GPG key"
@@ -76,7 +76,7 @@ ssh-copy-id $TARGET_MACHINE
 # ${PUPPET_REPO%/} removes any trailing slash so that rsync will copy the
 # directory correctly.
 rsync -avz --exclude='.git/' --exclude='development-vm/' --exclude='training-vm/' ${PUPPET_REPO%/} $TARGET_MACHINE:
-rsync -avz --exclude='.git/' $DEPLOYMENT_REPO/puppet/hieradata_aws/* $TARGET_MACHINE:govuk-puppet/hieradata_aws/
+rsync -avz --exclude='.git/' $DEPLOYMENT_REPO/puppet_aws/hieradata/* $TARGET_MACHINE:govuk-puppet/hieradata_aws/
 rsync -avz --exclude='.git/' $GPG_KEY $TARGET_MACHINE:gpgkey
 rsync -avz --exclude='.git/' aws-copy-puppet-setup.sh $TARGET_MACHINE:
 

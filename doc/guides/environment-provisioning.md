@@ -39,7 +39,7 @@ to set your access id, secret and the region to use.
 You will need to have cloned the following repositories to your local machine
 
 * [govuk-puppet](https://github.com/alphagov/govuk-puppet)
-* [deployment](https://github.digital.cabinet-office.gov.uk/gds/deployment)
+* [govuk-secrets](https://github.com/alphagov/govuk-secrets)
 * [govuk-aws (this one)](https://github.com/alphagov/govuk-aws)
 
 e.g.

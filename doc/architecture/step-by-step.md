@@ -101,7 +101,7 @@ tail -20 /var/log/cloud-init-output.log
 
 ```
  $ cd tools/
- $ bash -x ./aws-push-puppet.sh -e integration -g /var/tmp/.key -p ~/govuk/govuk-puppet -d ~/govuk/deployment -t delana-puppetmaster-bootstrap-1848527380.eu-west-1.elb.amazonaws.com
+ $ bash -x ./aws-push-puppet.sh -e integration -g /var/tmp/.key -p ~/govuk/govuk-puppet -d ~/govuk/govuk-secrets -t delana-puppetmaster-bootstrap-1848527380.eu-west-1.elb.amazonaws.com
 ```
 
 Ssh as ubuntu in the puppetmaster, and execute:
