@@ -2,7 +2,7 @@
 
 REPOSITORY = 'govuk-aws'
 
-node {
+node ("terraform") {
   def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
 
   try {
@@ -12,6 +12,14 @@ node {
 
     stage("ADR check") {
       sh "tools/adr-check.sh"
+    }
+
+    stage("Terraform lint") {
+      sh "find . -name '*.tf' |xargs tools/terraform-format.sh"
+    }
+
+    stage("Terraform validation") {
+      sh "find . -name '*.tf' |xargs tools/terraform-validate.sh"
     }
 
     if (env.BRANCH_NAME == 'master'){
