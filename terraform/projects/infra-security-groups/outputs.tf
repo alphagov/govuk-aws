@@ -54,6 +54,14 @@ output "sg_backend-redis_id" {
   value = "${aws_security_group.backend-redis.id}"
 }
 
+output "sg_backup_id" {
+  value = "${aws_security_group.backup.id}"
+}
+
+output "sg_backup_elb_id" {
+  value = "${aws_security_group.backup_elb.id}"
+}
+
 output "sg_bouncer_elb_id" {
   value = "${aws_security_group.bouncer_elb.id}"
 }
@@ -232,12 +240,4 @@ output "sg_puppetmaster_elb_id" {
 
 output "sg_puppetmaster_id" {
   value = "${aws_security_group.puppetmaster.id}"
-}
-
-output "sg_backup_id" {
-  value = "${aws_security_group.backup.id}"
-}
-
-output "sg_backup_elb_id" {
-  value = "${aws_security_group.backup_elb.id}"
 }

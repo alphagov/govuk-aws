@@ -18,44 +18,9 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "remote_state_govuk_vpc_key" {
+variable "aws_environment" {
   type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_vpc_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_networking_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_networking_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_internal_dns_zone_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_internal_dns_zone_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
-}
-
-variable "remote_state_govuk_security_groups_key" {
-  type        = "string"
-  description = "VPC TF remote state key"
-}
-
-variable "remote_state_govuk_security_groups_bucket" {
-  type        = "string"
-  description = "VPC TF remote state bucket"
+  description = "AWS Environment"
 }
 
 variable "stackname" {
@@ -68,9 +33,9 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "backup_1_subnet" {
+variable "backup_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Graphite instance 1 and EBS volume"
+  description = "Name of the subnet to place the Backup instance 1 and EBS volume"
 }
 
 # Resources
@@ -84,50 +49,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "terraform_remote_state" "govuk_vpc" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_vpc_bucket}"
-    key    = "${var.remote_state_govuk_vpc_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_networking" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_networking_bucket}"
-    key    = "${var.remote_state_govuk_networking_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_internal_dns_zone" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_internal_dns_zone_bucket}"
-    key    = "${var.remote_state_govuk_internal_dns_zone_key}"
-    region = "eu-west-1"
-  }
-}
-
-data "terraform_remote_state" "govuk_security_groups" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_govuk_security_groups_bucket}"
-    key    = "${var.remote_state_govuk_security_groups_key}"
-    region = "eu-west-1"
-  }
-}
-
 resource "aws_elb" "backup_elb" {
   name            = "${var.stackname}-backup-internal"
-  subnets         = ["${data.terraform_remote_state.govuk_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.govuk_security_groups.sg_backup_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backup_elb_id}"]
   internal        = "true"
 
   listener {
@@ -151,12 +76,12 @@ resource "aws_elb" "backup_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-backup-internal", "Project", var.stackname, "aws_migration", "backup")}"
+  tags = "${map("Name", "${var.stackname}-backup-internal", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backup")}"
 }
 
 resource "aws_route53_record" "backup_internal_service_record" {
-  zone_id = "${data.terraform_remote_state.govuk_internal_dns_zone.internal_service_zone_id}"
-  name    = "backup"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "backup.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -166,45 +91,47 @@ resource "aws_route53_record" "backup_internal_service_record" {
   }
 }
 
-module "backup-1" {
-  source                               = "../../modules/aws/node_group"
-  name                                 = "${var.stackname}-backup-1"
-  vpc_id                               = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
-  default_tags                         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_migration", "backup", "aws_hostname", "backup-1")}"
-  instance_subnet_ids                  = "${matchkeys(values(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.govuk_networking.private_subnet_names_ids_map), list(var.backup_1_subnet))}"
-  instance_security_group_ids          = ["${data.terraform_remote_state.govuk_security_groups.sg_backup_id}", "${data.terraform_remote_state.govuk_security_groups.sg_management_id}"]
-  instance_type                        = "t2.medium"
-  create_instance_key                  = true
-  instance_key_name                    = "${var.stackname}-backup-1"
-  instance_public_key                  = "${var.ssh_public_key}"
-  instance_additional_user_data_script = "${file("${path.module}/additional_user_data.txt")}"
-  instance_elb_ids                     = ["${aws_elb.backup_elb.id}"]
-  root_block_device_volume_size        = "20"
+module "backup" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-backup"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backup", "aws_hostname", "backup-1")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.backup_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_backup_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "t2.medium"
+  create_instance_key           = true
+  instance_public_key           = "${var.ssh_public_key}"
+  instance_key_name             = "${var.stackname}-backup"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.backup_elb.id}"]
+  root_block_device_volume_size = "20"
 }
 
-resource "aws_ebs_volume" "backup-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.govuk_networking.private_subnet_names_azs_map, var.backup_1_subnet)}"
+resource "aws_ebs_volume" "backup" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.backup_subnet)}"
   size              = 750
   type              = "standard"
 
   tags {
-    Name          = "${var.stackname}-backup-1"
-    Project       = "${var.stackname}"
-    aws_stackname = "${var.stackname}"
-    aws_migration = "backup"
-    aws_hostname  = "backup-1"
+    Name            = "${var.stackname}-backup"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "backup"
+    aws_hostname    = "backup-1"
   }
 }
 
-resource "aws_iam_policy" "backup_1_iam_policy" {
-  name   = "${var.stackname}-backup-1-additional"
+resource "aws_iam_policy" "backup_iam_policy" {
+  name   = "${var.stackname}-backup-additional"
   path   = "/"
   policy = "${file("${path.module}/additional_policy.json")}"
 }
 
-resource "aws_iam_role_policy_attachment" "backup_1_iam_role_policy_attachment" {
-  role       = "${module.backup-1.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.backup_1_iam_policy.arn}"
+resource "aws_iam_role_policy_attachment" "backup_iam_role_policy_attachment" {
+  role       = "${module.backup.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.backup_iam_policy.arn}"
 }
 
 # Outputs

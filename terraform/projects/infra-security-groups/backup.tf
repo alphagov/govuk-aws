@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "backup" {
   name        = "${var.stackname}_backup_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the backup host from its ELB"
 
   tags {
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_backup_elb_in" {
 
 resource "aws_security_group" "backup_elb" {
   name        = "${var.stackname}_backup_elb_access"
-  vpc_id      = "${data.terraform_remote_state.govuk_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the backup ELB"
 
   tags {
@@ -52,4 +52,13 @@ resource "aws_security_group_rule" "allow_management_to_backup_ssh_elb" {
 
   security_group_id        = "${aws_security_group.backup_elb.id}"
   source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "allow_backup_elb_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.backup_elb.id}"
 }
