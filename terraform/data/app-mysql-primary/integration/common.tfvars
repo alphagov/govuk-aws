@@ -1,3 +1,2 @@
-
-"username" = "changeme"
-"password" = "thisisatest"
+username = "changeme"
+password = "thisisatest"
