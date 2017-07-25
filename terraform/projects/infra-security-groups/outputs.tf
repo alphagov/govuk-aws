@@ -233,3 +233,19 @@ output "sg_puppetmaster_elb_id" {
 output "sg_puppetmaster_id" {
   value = "${aws_security_group.puppetmaster.id}"
 }
+
+output "sg_whitehall-backend_elb_id" {
+  value = "${aws_security_group.whitehall-backend_elb.id}"
+}
+
+output "sg_whitehall-backend_id" {
+  value = "${aws_security_group.whitehall-backend.id}"
+}
+
+output "sg_whitehall-frontend_elb_id" {
+  value = "${aws_security_group.whitehall-frontend_elb.id}"
+}
+
+output "sg_whitehall-frontend_id" {
+  value = "${aws_security_group.whitehall-frontend.id}"
+}
