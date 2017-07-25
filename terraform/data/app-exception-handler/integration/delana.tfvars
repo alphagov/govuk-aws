@@ -1,2 +1,1 @@
-
-"exception_handler_subnet" = "govuk_private_c"
+exception_handler_subnet = "govuk_private_c"
