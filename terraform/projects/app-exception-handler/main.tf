@@ -8,7 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
-# exception_handler_1_subnet
+# exception_handler_subnet
 #
 # === Outputs:
 #
@@ -37,7 +37,7 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "exception_handler_1_subnet" {
+variable "exception_handler_subnet" {
   type        = "string"
   description = "Name of the subnet to place the exception_handler instance 1 and EBS volume"
 }
@@ -139,61 +139,61 @@ resource "aws_route53_record" "exception_handler_internal_service_record" {
 
 module "exception_handler" {
   source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-exception_handler-1"
+  name                          = "${var.stackname}-exception_handler"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "exception_handler", "aws_hostname", "exception_handler-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.exception_handler_1_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.exception_handler_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_exception_handler_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = true
-  instance_key_name             = "${var.stackname}-exception_handler-1"
+  instance_key_name             = "${var.stackname}-exception_handler"
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.exception_handler_internal_elb.id}", "${aws_elb.exception_handler_external_elb.id}"]
   root_block_device_volume_size = "20"
 }
 
-resource "aws_ebs_volume" "exception_handler-1-mongodb-data" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.exception_handler_1_subnet)}"
+resource "aws_ebs_volume" "exception_handler-mongodb-data" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.exception_handler_subnet)}"
   size              = 32
   type              = "gp2"
 
   tags {
-    Name            = "${var.stackname}-exception-handler-1-data"
+    Name            = "${var.stackname}-exception-handler-data"
     Project         = "${var.stackname}"
     Device          = "xvdf"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
     aws_migration   = "exception_handler"
-    aws_hostname    = "exception_handler-1"
+    aws_hostname    = "exception_handler"
   }
 }
 
-resource "aws_ebs_volume" "exception_handler-1-mongodb-backup" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.exception_handler_1_subnet)}"
+resource "aws_ebs_volume" "exception_handler-mongodb-backup" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.exception_handler_subnet)}"
   size              = 64
   type              = "gp2"
 
   tags {
-    Name            = "${var.stackname}-exception-handler-1-mongodb"
+    Name            = "${var.stackname}-exception-handler-mongodb"
     Project         = "${var.stackname}"
     Device          = "xvdg"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
     aws_migration   = "exception_handler"
-    aws_hostname    = "exception_handler-1"
+    aws_hostname    = "exception_handler"
   }
 }
 
-resource "aws_iam_policy" "exception_handler_1_iam_policy" {
-  name   = "${var.stackname}-exception_handler-1-additional"
+resource "aws_iam_policy" "exception_handler_iam_policy" {
+  name   = "${var.stackname}-exception_handler-additional"
   path   = "/"
   policy = "${file("${path.module}/additional_policy.json")}"
 }
 
-resource "aws_iam_role_policy_attachment" "exception_handler_1_iam_role_policy_attachment" {
-  role       = "${module.exception_handler-1.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.exception_handler_1_iam_policy.arn}"
+resource "aws_iam_role_policy_attachment" "exception_handler_iam_role_policy_attachment" {
+  role       = "${module.exception_handler.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.exception_handler_iam_policy.arn}"
 }
 
 # Outputs
