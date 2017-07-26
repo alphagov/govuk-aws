@@ -4,12 +4,27 @@
 #
 # === Variables:
 #
+# name
+# engine_name
+# engine_version
+# default_tags
 # subnet_ids
+# username
+# password
+# allocated_storage
+# storage_type
+# instance_class
 # security_group_ids
+# multi_az
+# create_replicate_source_db
+# replicate_source_db
 #
 # === Outputs:
 #
-#
+# rds_instance_id
+# rds_instance_resource_id
+# rds_instance_endpoint
+# rds_instance_address
 
 variable "name" {
   type        = "string"
@@ -99,8 +114,10 @@ resource "aws_db_subnet_group" "subnet_group" {
 }
 
 resource "aws_db_instance" "db_instance_replica" {
-  count                  = "${var.create_replicate_source_db}"
-  name                   = "${var.name}"
+  # the 'name' parameter is not set as that creates a default database
+  # of that name in the instance. Which we don't want.
+  count = "${var.create_replicate_source_db}"
+
   engine                 = "${var.engine_name}"
   engine_version         = "${var.engine_version}"
   username               = "${var.username}"
@@ -112,12 +129,18 @@ resource "aws_db_instance" "db_instance_replica" {
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
 
+  # TODO in production we probably want to re-enable this, possibly using:
+  # final_snapshot_identifier = "${var.name}-final-snapshot"
+  skip_final_snapshot = true
+
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
 
 resource "aws_db_instance" "db_instance" {
-  count                  = "${1 - var.create_replicate_source_db}"
-  name                   = "${var.name}"
+  # the 'name' parameter is not set as that creates a default database
+  # of that name in the instance. Which we don't want.
+  count = "${1 - var.create_replicate_source_db}"
+
   engine                 = "${var.engine_name}"
   engine_version         = "${var.engine_version}"
   username               = "${var.username}"
@@ -127,6 +150,11 @@ resource "aws_db_instance" "db_instance" {
   storage_type           = "${var.storage_type}"
   db_subnet_group_name   = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
+  multi_az               = "${var.multi_az}"
+
+  # TODO in production we probably want to re-enable this, possibly using:
+  # final_snapshot_identifier = "${var.name}-final-snapshot"
+  skip_final_snapshot = true
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
@@ -134,18 +162,29 @@ resource "aws_db_instance" "db_instance" {
 # Outputs
 #--------------------------------------------------------------
 
+#
+# There's a (known) problem with using conditionals in output resources where
+# one branch of the conditional cannot resolve. This is why each of these has
+# the weird `join("", aws_db_instance.db_instance_replica.*.id)`. It works
+# by creating an empty array then string if there's no value. For more detail
+# see:
+#
+# https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+# https://github.com/coreos/tectonic-installer/blob/4c7c26d7fe57dfad8b7168a9cca06f2226e7c1f7/modules/aws/vpc/vpc.tf
+#
+
 output "rds_instance_id" {
-  value = "${var.create_replicate_source_db > 0 ? aws_db_instance.db_instance_replica.id : aws_db_instance.db_instance.id}"
+  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.id) : aws_db_instance.db_instance.id}"
 }
 
 output "rds_instance_resource_id" {
-  value = "${var.create_replicate_source_db > 0 ? aws_db_instance.db_instance_replica.resource_id : aws_db_instance.db_instance.resource_id}"
+  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.resource_id) : aws_db_instance.db_instance.resource_id}"
 }
 
 output "rds_instance_endpoint" {
-  value = "${var.create_replicate_source_db > 0 ? aws_db_instance.db_instance_replica.endpoint : aws_db_instance.db_instance.endpoint}"
+  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.endpoint) : aws_db_instance.db_instance.endpoint}"
 }
 
 output "rds_instance_address" {
-  value = "${var.create_replicate_source_db > 0 ? aws_db_instance.db_instance_replica.address : aws_db_instance.db_instance.address}"
+  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.address) : aws_db_instance.db_instance.address}"
 }

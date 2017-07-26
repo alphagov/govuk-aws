@@ -5,7 +5,7 @@
 # stackname - string
 #
 # === Outputs:
-# 
+#
 #
 
 resource "aws_security_group" "mysql-primary" {
@@ -18,7 +18,7 @@ resource "aws_security_group" "mysql-primary" {
   }
 }
 
-resource "aws_security_group_rule" "allow_clients_in" {
+resource "aws_security_group_rule" "allow_mysql-primary_clients_in" {
   type      = "ingress"
   from_port = 3306
   to_port   = 3306

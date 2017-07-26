@@ -49,17 +49,16 @@ provider "aws" {
 }
 
 module "mysql_primary_rds_instance" {
-  source            = "../../modules/aws/rds_instance"
-  name              = "${var.stackname}"
-  engine_name       = "mysql"
-  engine_version    = "5.6.27"
-  default_tags      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
-  subnet_ids        = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username          = "${var.username}"
-  password          = "${var.password}"
-  allocated_storage = "10"
-  instance_class    = "db.t1.micro"
-
+  source             = "../../modules/aws/rds_instance"
+  name               = "${var.stackname}-mysql-primary"
+  engine_name        = "mysql"
+  engine_version     = "5.6.27"
+  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
+  subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username           = "${var.username}"
+  password           = "${var.password}"
+  allocated_storage  = "10"
+  instance_class     = "db.t1.micro"
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
 }
 
