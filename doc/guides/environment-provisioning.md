@@ -44,7 +44,7 @@ You will need to have cloned the following repositories to your local machine
 
 e.g.
 ```
-$ git clone git@github.digital.cabinet-office.gov.uk:gds/deployment.git
+$ git clone git@github.com:alphagov/govuk-secrets.git
 ```
 
 ## Build the S3 bucket
@@ -157,7 +157,7 @@ $ cd tools
 $ bash -x ./aws-push-puppet.sh -e <environment>\
                                -g <path to the gpg key you copied> \
                                -p <path to puppet repo> \
-                               -d <path to deployment repo> \
+                               -d <path to govuk-secrets repo> \
                                -t $PUPPETMASTER_ELB
 $ ssh ubuntu@$PUPPETMASTER_ELB
 > sudo ./aws-copy-puppet-setup.sh -e integration
