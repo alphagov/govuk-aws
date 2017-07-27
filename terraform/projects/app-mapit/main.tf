@@ -122,7 +122,7 @@ resource "aws_ebs_volume" "mapit-1" {
   tags {
     Name            = "${var.stackname}-mapit"
     Project         = "${var.stackname}"
-    aws_hostname    = "mapit"
+    aws_hostname    = "mapit-1"
     aws_migration   = "mapit"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
@@ -153,7 +153,7 @@ resource "aws_ebs_volume" "mapit-2" {
   tags {
     Name            = "${var.stackname}-mapit"
     Project         = "${var.stackname}"
-    aws_hostname    = "mapit"
+    aws_hostname    = "mapit-2"
     aws_migration   = "mapit"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
