@@ -134,6 +134,14 @@ output "sg_draft-frontend_id" {
   value = "${aws_security_group.draft-frontend.id}"
 }
 
+output "sg_elasticsearch_elb_id" {
+  value = "${aws_security_group.elasticsearch_elb.id}"
+}
+
+output "sg_elasticsearch_id" {
+  value = "${aws_security_group.elasticsearch.id}"
+}
+
 output "sg_exception_handler_external_elb_id" {
   value = "${aws_security_group.exception_handler_external_elb.id}"
 }
