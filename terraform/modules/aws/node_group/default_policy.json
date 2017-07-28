@@ -5,7 +5,8 @@
             "Sid": "Stmt1499440543000",
             "Effect": "Allow",
             "Action": [
-                "ec2:DescribeTags"
+                "ec2:DescribeTags",
+                "ec2:DescribeInstances"
             ],
             "Resource": [
                 "*"
