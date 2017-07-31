@@ -92,6 +92,18 @@ resource "aws_route53_record" "graphite_external_service_record" {
   }
 }
 
+resource "aws_route53_record" "grafana_external_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "grafana.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.graphite_external_elb.dns_name}"
+    zone_id                = "${aws_elb.graphite_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_elb" "graphite_internal_elb" {
   name            = "${var.stackname}-graphite-internal"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
