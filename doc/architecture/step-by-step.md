@@ -107,7 +107,7 @@ tail -20 /var/log/cloud-init-output.log
 Ssh as ubuntu in the puppetmaster, and execute:
 
 ```
-sudo ./aws-copy-puppet-setup.sh -e integration
+sudo ./aws-copy-puppet-setup.sh -e integration -s delana
 ```
 
 #### Build Jumpbox stack
