@@ -61,6 +61,7 @@ if [[ "$HELP" = "1" ]]
 then
   echo "Deploy Puppet to a Puppetmaster"
   echo "-e environment name"
+  echo "-s stackname"
   echo "-d govuk-secrets repo path"
   echo "-p Puppet repo path"
   echo "-t target machine address"
@@ -80,4 +81,4 @@ rsync -avz --exclude='.git/' $DEPLOYMENT_REPO/puppet_aws/hieradata/* $TARGET_MAC
 rsync -avz --exclude='.git/' $GPG_KEY $TARGET_MACHINE:gpgkey
 rsync -avz --exclude='.git/' aws-copy-puppet-setup.sh $TARGET_MACHINE:
 
-echo "Execute in Puppetmaster: sudo ./aws-copy-puppet-setup.sh -e $ENVIRONMENT"
+echo "Execute in Puppetmaster: sudo ./aws-copy-puppet-setup.sh -e $ENVIRONMENT -s $STACKNAME"

@@ -17,10 +17,17 @@ then
   HELP=1
 fi
 
+if [[ -z $STACKNAME ]]
+then
+  echo "No stackname set."
+  HELP=1
+fi
+
 if [[ "$HELP" = "1" ]]
 then
   echo "Set up Puppet on a remote machine"
   echo "-e environment name"
+  echo "-s stackname"
   echo "-h show this help"
   exit 0
 fi
@@ -31,6 +38,11 @@ if [[ "$ENVIRONMENT" != "production" ]]
 then
   cp ~/govuk-puppet/hieradata_aws/${ENVIRONMENT}.yaml ~/govuk-puppet/hieradata_aws/production.yaml
   cp ~/govuk-puppet/hieradata_aws/${ENVIRONMENT}_credentials.yaml ~/govuk-puppet/hieradata_aws/production_credentials.yaml
+
+  if [[ -d "~/govuk-puppet/hieradata_aws/${STACKNAME}" ]]
+  then
+    cp ~/govuk-puppet/hieradata_aws/${STACKNAME}/${ENVIRONMENT}_credentials.yaml ~/govuk-puppet/hieradata_aws/${STACKNAME}/production_credentials.yaml
+  fi
 fi
 
 mkdir -p /usr/share/puppet/production/releases
