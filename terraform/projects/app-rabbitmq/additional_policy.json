@@ -5,10 +5,7 @@
             "Sid": "Stmt1499854881000",
             "Effect": "Allow",
             "Action": [
-                "ec2:AttachVolume",
-                "ec2:DetachVolume",
-                "ec2:DescribeVolumeStatus",
-                "ec2:DescribeVolumes"
+                "autoscaling:DescribeAutoScalingInstances"
             ],
             "Resource": [
                 "*"

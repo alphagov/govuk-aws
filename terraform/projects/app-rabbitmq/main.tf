@@ -8,9 +8,6 @@
 # stackname
 # aws_environment
 # ssh_public_key
-# rabbitmq_1_subnet
-# rabbitmq_2_subnet
-# rabbitmq_3_subnet
 #
 # === Outputs:
 #
@@ -36,21 +33,6 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "rabbitmq_1_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the rabbitmq instance 1 and EBS volume"
-}
-
-variable "rabbitmq_2_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the rabbitmq instance 2 and EBS volume"
-}
-
-variable "rabbitmq_3_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the rabbitmq instance 3 and EBS volume"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -61,7 +43,6 @@ terraform {
 provider "aws" {
   region = "${var.aws_region}"
 }
-
 
 resource "aws_elb" "rabbitmq_elb" {
   name            = "${var.stackname}-rabbitmq-internal"
@@ -105,12 +86,12 @@ resource "aws_route53_record" "rabbitmq_internal_service_record" {
   }
 }
 
-module "rabbitmq-1" {
+module "rabbitmq" {
   source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-rabbitmq-1"
+  name                          = "${var.stackname}-rabbitmq"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rabbitmq", "aws_hostname", "rabbitmq-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rabbitmq_1_subnet))}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rabbitmq", "aws_hostname", "rabbitmq")}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = true
@@ -119,106 +100,19 @@ module "rabbitmq-1" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rabbitmq_elb.id}"]
   root_block_device_volume_size = "20"
-}
-
-resource "aws_ebs_volume" "rabbitmq-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.rabbitmq_1_subnet)}"
-  size              = 100
-  type              = "gp2"
-
-  tags {
-    Name            = "${var.stackname}-rabbitmq-1"
-    Project         = "${var.stackname}"
-    Device          = "xvdf"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-    aws_migration   = "rabbitmq"
-    aws_hostname    = "rabbitmq-1"
-  }
-}
-
-module "rabbitmq-2" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-rabbitmq-2"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rabbitmq", "aws_hostname", "rabbitmq-2")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rabbitmq_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-rabbitmq"
-  instance_public_key           = "${var.ssh_public_key}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.rabbitmq_elb.id}"]
-  root_block_device_volume_size = "20"
-}
-
-resource "aws_ebs_volume" "rabbitmq-2" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.rabbitmq_1_subnet)}"
-  size              = 100
-  type              = "gp2"
-
-  tags {
-    Name            = "${var.stackname}-rabbitmq-2"
-    Project         = "${var.stackname}"
-    Device          = "xvdf"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-    aws_migration   = "rabbitmq"
-    aws_hostname    = "rabbitmq-2"
-  }
-}
-
-module "rabbitmq-3" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-rabbitmq-3"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rabbitmq", "aws_hostname", "rabbitmq-3")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rabbitmq_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-rabbitmq"
-  instance_public_key           = "${var.ssh_public_key}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.rabbitmq_elb.id}"]
-  root_block_device_volume_size = "20"
-}
-
-resource "aws_ebs_volume" "rabbitmq-3" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.rabbitmq_1_subnet)}"
-  size              = 100
-  type              = "gp2"
-
-  tags {
-    Name            = "${var.stackname}-rabbitmq-3"
-    Project         = "${var.stackname}"
-    Device          = "xvdf"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-    aws_migration   = "rabbitmq"
-    aws_hostname    = "rabbitmq-3"
-  }
+  asg_max_size                  = "3"
+  asg_min_size                  = "3"
+  asg_desired_capacity          = "3"
 }
 
 resource "aws_iam_policy" "rabbitmq_iam_policy" {
-  name   = "${var.stackname}-rabbitmq-1-additional"
+  name   = "${var.stackname}-rabbitmq-additional"
   path   = "/"
   policy = "${file("${path.module}/additional_policy.json")}"
 }
 
-resource "aws_iam_role_policy_attachment" "rabbitmq_1_iam_role_policy_attachment" {
-  role       = "${module.rabbitmq-1.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.rabbitmq_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "rabbitmq_2_iam_role_policy_attachment" {
-  role       = "${module.rabbitmq-2.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.rabbitmq_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "rabbitmq_3_iam_role_policy_attachment" {
-  role       = "${module.rabbitmq-3.instance_iam_role_name}"
+resource "aws_iam_role_policy_attachment" "rabbitmq_iam_role_policy_attachment" {
+  role       = "${module.rabbitmq.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.rabbitmq_iam_policy.arn}"
 }
 
