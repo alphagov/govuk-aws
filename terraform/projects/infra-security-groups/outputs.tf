@@ -230,6 +230,14 @@ output "sg_mirrorer_id" {
   value = "${aws_security_group.mirrorer.id}"
 }
 
+output "sg_mongo_id" {
+  value = "${aws_security_group.mongo.id}"
+}
+
+output "sg_mongo_elb_id" {
+  value = "${aws_security_group.mongo_elb.id}"
+}
+
 output "sg_monitoring_id" {
   value = "${aws_security_group.monitoring.id}"
 }
