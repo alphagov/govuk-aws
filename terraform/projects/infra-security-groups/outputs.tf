@@ -270,6 +270,18 @@ output "sg_rabbitmq_id" {
   value = "${aws_security_group.rabbitmq.id}"
 }
 
+output "sg_router-api_elb_id" {
+  value = "${aws_security_group.router-api_elb.id}"
+}
+
+output "sg_router-backend_elb_id" {
+  value = "${aws_security_group.router-backend_elb.id}"
+}
+
+output "sg_router-backend_id" {
+  value = "${aws_security_group.router-backend.id}"
+}
+
 output "sg_whitehall-backend_elb_id" {
   value = "${aws_security_group.whitehall-backend_elb.id}"
 }
