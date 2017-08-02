@@ -194,6 +194,14 @@ output "sg_logging_id" {
   value = "${aws_security_group.logging.id}"
 }
 
+output "sg_logs-cdn_elb_id" {
+  value = "${aws_security_group.logs-cdn_elb.id}"
+}
+
+output "sg_logs-cdn_id" {
+  value = "${aws_security_group.logs-cdn.id}"
+}
+
 output "sg_logs-elasticsearch_elb_id" {
   value = "${aws_security_group.logs-elasticsearch_elb.id}"
 }
