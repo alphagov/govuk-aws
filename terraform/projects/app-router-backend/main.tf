@@ -41,17 +41,17 @@ variable "ssh_public_key" {
 
 variable "router_backend_1_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Router Mongo instance 1 and EBS volume"
+  description = "Name of the subnet to place the Router Mongo 1"
 }
 
 variable "router_backend_2_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Router Mongo 2 and EBS volume"
+  description = "Name of the subnet to place the Router Mongo 2"
 }
 
 variable "router_backend_3_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Router Mongo 3 and EBS volume"
+  description = "Name of the subnet to place the Router Mongo 3"
 }
 
 # Resources
