@@ -250,6 +250,22 @@ output "sg_mysql-primary_id" {
   value = "${aws_security_group.mysql-primary.id}"
 }
 
+output "sg_performance-backend_elb_id" {
+  value = "${aws_security_group.performance-backend_elb.id}"
+}
+
+output "sg_performance-backend_id" {
+  value = "${aws_security_group.performance-backend.id}"
+}
+
+output "sg_performance-frontend_elb_id" {
+  value = "${aws_security_group.performance-frontend_elb.id}"
+}
+
+output "sg_performance-frontend_id" {
+  value = "${aws_security_group.performance-frontend.id}"
+}
+
 output "sg_search_elb_id" {
   value = "${aws_security_group.search_elb.id}"
 }
