@@ -104,7 +104,7 @@ tail -20 /var/log/cloud-init-output.log
  $ bash -x ./aws-push-puppet.sh -e integration -g /var/tmp/.key -p ~/govuk/govuk-puppet -d ~/govuk/govuk-secrets -t delana-puppetmaster-bootstrap-1848527380.eu-west-1.elb.amazonaws.com
 ```
 
-Ssh as ubuntu in the puppetmaster, and execute:
+SSH as ubuntu in the puppetmaster, and execute:
 
 ```
 sudo ./aws-copy-puppet-setup.sh -e integration -s delana
