@@ -160,7 +160,7 @@ $ bash -x ./aws-push-puppet.sh -e <environment>\
                                -d <path to govuk-secrets repo> \
                                -t $PUPPETMASTER_ELB
 $ ssh ubuntu@$PUPPETMASTER_ELB
-> sudo ./aws-copy-puppet-setup.sh -e integration
+> sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
 ```
 
 You can now test that the puppet master is working by running
