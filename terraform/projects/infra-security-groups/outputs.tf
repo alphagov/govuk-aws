@@ -262,6 +262,14 @@ output "sg_puppetmaster_id" {
   value = "${aws_security_group.puppetmaster.id}"
 }
 
+output "sg_rabbitmq_elb_id" {
+  value = "${aws_security_group.rabbitmq_elb.id}"
+}
+
+output "sg_rabbitmq_id" {
+  value = "${aws_security_group.rabbitmq.id}"
+}
+
 output "sg_whitehall-backend_elb_id" {
   value = "${aws_security_group.whitehall-backend_elb.id}"
 }
