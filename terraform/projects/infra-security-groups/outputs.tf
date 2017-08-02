@@ -266,16 +266,12 @@ output "sg_performance-frontend_id" {
   value = "${aws_security_group.performance-frontend.id}"
 }
 
-output "sg_search_elb_id" {
-  value = "${aws_security_group.search_elb.id}"
+output "sg_performance-mongo_elb_id" {
+  value = "${aws_security_group.performance-mongo_elb.id}"
 }
 
-output "sg_search_id" {
-  value = "${aws_security_group.search.id}"
-}
-
-output "sg_offsite_ssh_id" {
-  value = "${aws_security_group.offsite_ssh.id}"
+output "sg_performance-mongo_id" {
+  value = "${aws_security_group.performance-mongo.id}"
 }
 
 output "sg_publishing-api_elb_id" {
@@ -312,6 +308,18 @@ output "sg_router-backend_elb_id" {
 
 output "sg_router-backend_id" {
   value = "${aws_security_group.router-backend.id}"
+}
+
+output "sg_search_elb_id" {
+  value = "${aws_security_group.search_elb.id}"
+}
+
+output "sg_search_id" {
+  value = "${aws_security_group.search.id}"
+}
+
+output "sg_offsite_ssh_id" {
+  value = "${aws_security_group.offsite_ssh.id}"
 }
 
 output "sg_whitehall-backend_elb_id" {
