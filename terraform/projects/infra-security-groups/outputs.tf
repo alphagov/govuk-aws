@@ -102,6 +102,14 @@ output "sg_content-store_id" {
   value = "${aws_security_group.content-store.id}"
 }
 
+output "sg_db-admin_elb_id" {
+  value = "${aws_security_group.db-admin_elb.id}"
+}
+
+output "sg_db-admin_id" {
+  value = "${aws_security_group.db-admin.id}"
+}
+
 output "sg_deploy_elb_id" {
   value = "${aws_security_group.deploy_elb.id}"
 }
