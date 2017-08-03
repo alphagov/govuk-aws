@@ -57,8 +57,8 @@ module "mysql_primary_rds_instance" {
   subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username           = "${var.username}"
   password           = "${var.password}"
-  allocated_storage  = "10"
-  instance_class     = "db.t1.micro"
+  allocated_storage  = "30"
+  instance_class     = "db.m4.xlarge"
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
 }
 
