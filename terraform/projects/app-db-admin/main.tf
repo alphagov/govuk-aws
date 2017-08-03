@@ -87,9 +87,9 @@ module "db-admin" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.db-admin_elb.id}"]
-  asg_max_size                  = "3"
-  asg_min_size                  = "3"
-  asg_desired_capacity          = "3"
+  asg_max_size                  = "1"
+  asg_min_size                  = "1"
+  asg_desired_capacity          = "1"
 }
 
 # Outputs
