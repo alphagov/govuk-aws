@@ -62,13 +62,13 @@ module "mysql_primary_rds_instance" {
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
 }
 
-#resource "aws_route53_record" "service_record" {
-#  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-#  name    = "logs-redis.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
-#  type    = "CNAME"
-#  ttl     = 300
-#  records = ["${module.logs_redis_cluster.configuration_endpoint_address}"]
-#}
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "mysql-primary.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${module.mysql_primary_rds_instance.rds_instance_address}"]
+}
 
 # Outputs
 # --------------------------------------------------------------
