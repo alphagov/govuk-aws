@@ -113,7 +113,7 @@ variable "private_subnet_reserved_ips_availability_zones" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.9.10"
+  required_version = "= 0.10.7"
 }
 
 provider "aws" {
