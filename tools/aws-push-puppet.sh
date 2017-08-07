@@ -3,7 +3,7 @@
 # already have a Jenkins instance.
 set -e
 
-while getopts "e:d:p:g:t:h" option
+while getopts "e:d:p:g:s:t:h" option
 do
   case $option in
     h ) HELP=1 ;;
@@ -11,6 +11,7 @@ do
     d ) DEPLOYMENT_REPO=$OPTARG ;;
     p ) PUPPET_REPO=$OPTARG ;;
     g ) GPG_KEY=$OPTARG ;;
+    s ) STACKNAME=$OPTARG ;;
     t ) TARGET=$OPTARG
   esac
 done
