@@ -1,0 +1,10 @@
+#
+# Snippet: db-admin
+#
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: db-admin"
+
+echo "mysqld_version=5.6.27" > /etc/facter/facts.d/mysqld_version.txt
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: db-admin"
+
