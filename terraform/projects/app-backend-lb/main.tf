@@ -87,7 +87,7 @@ resource "aws_route53_record" "backend-lb_service_record" {
 }
 
 resource "aws_elb" "backend-lb_external_elb" {
-  name            = "${var.stackname}-backend-lb_external"
+  name            = "${var.stackname}-backend-lb-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backend-lb_external_elb_id}"]
   internal        = "false"
