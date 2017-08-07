@@ -60,6 +60,7 @@ if [[ -z $F_STACKNAME ]] || [[ -z $F_AWS_ENVIRONMENT ]] ; then
 else
   echo "append domain-search \""$F_STACKNAME"."$F_AWS_ENVIRONMENT".govuk-internal.digital\", \""$F_AWS_ENVIRONMENT".govuk-internal.digital\", \"govuk-internal.digital\";" >> /etc/dhcp/dhclient.conf
   dhclient -r; dhclient
+  echo "search "$F_STACKNAME"."$F_AWS_ENVIRONMENT".govuk-internal.digital "$F_AWS_ENVIRONMENT".govuk-internal.digital govuk-internal.digital" >> /etc/resolvconf/resolv.conf.d/base
 fi
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: base"
