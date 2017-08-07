@@ -258,8 +258,12 @@ output "sg_monitoring_id" {
   value = "${aws_security_group.monitoring.id}"
 }
 
-output "sg_monitoring_elb_id" {
-  value = "${aws_security_group.monitoring_elb.id}"
+output "sg_monitoring_external_elb_id" {
+  value = "${aws_security_group.monitoring_external_elb.id}"
+}
+
+output "sg_monitoring_internal_elb_id" {
+  value = "${aws_security_group.monitoring_internal_elb.id}"
 }
 
 output "sg_mysql-primary_id" {
