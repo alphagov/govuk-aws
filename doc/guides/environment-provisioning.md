@@ -142,11 +142,12 @@ $ ssh ubuntu@$PUPPETMASTER_ELB
 We currently get the GPG key from the integration puppet master (in future this should be kept in the `deployment/pass` store)
 ```
 $ ssh puppetmaster-1.integration.publishing.service.gov.uk
-> sudo -i
-> > gpg --homedir /etc/puppet/gpg --export-secret-key -a "Hiera eYAML GPG key for Preview (To be placed on the Puppet Master)"
-> > # Copy the output
-> > exit
-> exit
+sudo -i
+
+gpg --homedir /etc/puppet/gpg --export-secret-key -a "Hiera eYAML GPG key for Preview (To be placed on the Puppet Master)"
+# Copy the output
+exit
+exit
 ```
 
 Save the output of the `gpg` command to a suitable file.
@@ -160,12 +161,13 @@ $ bash -x ./aws-push-puppet.sh -e <environment>\
                                -d <path to govuk-secrets repo> \
                                -t $PUPPETMASTER_ELB
 $ ssh ubuntu@$PUPPETMASTER_ELB
-> sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
+sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
 ```
 
 You can now test that the puppet master is working by running
 ```
-> puppet apply -e "notify {'hello world':}"
+puppet apply -e "notify {'hello world':}"
+
 Notice: Compiled catalog for ip-10-1-2-123.eu-west-1.compute.internal in environment production in 0.02 seconds
 Notice: hello world
 Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hello world'

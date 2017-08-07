@@ -3,10 +3,11 @@
 # Instead, use `tools/push-puppet.sh` in the govuk-provisioning repo.
 set -ex
 
-while getopts "e:h" option
+while getopts "e:s:h" option
 do
   case $option in
     h ) HELP=1 ;;
+    s ) STACKNAME=$OPTARG ;;
     e ) ENVIRONMENT=$OPTARG ;;
   esac
 done
