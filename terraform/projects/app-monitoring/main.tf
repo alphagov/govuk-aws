@@ -44,10 +44,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-resource "aws_elb" "monitoring_elb" {
-  name            = "${var.stackname}-monitoring"
+resource "aws_elb" "monitoring_external_elb" {
+  name            = "${var.stackname}-monitoring-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_elb_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_external_elb_id}"]
   internal        = "false"
 
   listener {
@@ -74,6 +74,36 @@ resource "aws_elb" "monitoring_elb" {
   tags = "${map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring")}"
 }
 
+resource "aws_elb" "monitoring_internal_elb" {
+  name            = "${var.stackname}-monitoring"
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_internal_elb_id}"]
+  internal        = "true"
+
+  listener {
+    instance_port     = 5667
+    instance_protocol = "tcp"
+    lb_port           = 5667
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:5667"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring")}"
+}
+
 module "monitoring" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-monitoring"
@@ -86,17 +116,29 @@ module "monitoring" {
   instance_key_name             = "${var.stackname}-monitoring"
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.monitoring_elb.id}"]
+  instance_elb_ids              = ["${aws_elb.monitoring_external_elb.id}", "${aws_elb.monitoring_internal_elb.id}"]
 }
 
-resource "aws_route53_record" "service_record" {
+resource "aws_route53_record" "external_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
   name    = "alert.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.monitoring_elb.dns_name}"
-    zone_id                = "${aws_elb.monitoring_elb.zone_id}"
+    name                   = "${aws_elb.monitoring_external_elb.dns_name}"
+    zone_id                = "${aws_elb.monitoring_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "internal_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "alert.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.monitoring_internal_elb.dns_name}"
+    zone_id                = "${aws_elb.monitoring_internal_elb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -104,7 +146,12 @@ resource "aws_route53_record" "service_record" {
 # Outputs
 # --------------------------------------------------------------
 
-output "monitoring_elb_dns_name" {
-  value       = "${aws_elb.monitoring_elb.dns_name}"
-  description = "DNS name to access the monitoring service"
+output "monitoring_external_elb_dns_name" {
+  value       = "${aws_elb.monitoring_external_elb.dns_name}"
+  description = "External DNS name to access the monitoring service"
+}
+
+output "monitoring_internal_elb_dns_name" {
+  value       = "${aws_elb.monitoring_internal_elb.dns_name}"
+  description = "Internal DNS name to access the monitoring service"
 }

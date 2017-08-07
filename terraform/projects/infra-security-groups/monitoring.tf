@@ -21,7 +21,7 @@ resource "aws_security_group" "monitoring" {
   }
 }
 
-resource "aws_security_group_rule" "allow_monitoring_elb_in" {
+resource "aws_security_group_rule" "allow_monitoring_external_elb_in" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -31,16 +31,29 @@ resource "aws_security_group_rule" "allow_monitoring_elb_in" {
   security_group_id = "${aws_security_group.monitoring.id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_elb.id}"
+  source_security_group_id = "${aws_security_group.monitoring_external_elb.id}"
 }
 
-resource "aws_security_group" "monitoring_elb" {
-  name        = "${var.stackname}_monitoring_elb_access"
+resource "aws_security_group_rule" "allow_monitoring_internal_elb_in" {
+  type      = "ingress"
+  from_port = 5667
+  to_port   = 5667
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.monitoring.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
+}
+
+resource "aws_security_group" "monitoring_external_elb" {
+  name        = "${var.stackname}_monitoring_external_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the monitoring ELB"
 
   tags {
-    Name = "${var.stackname}_monitoring_elb_access"
+    Name = "${var.stackname}_monitoring_external_elb_access"
   }
 }
 
@@ -50,16 +63,46 @@ resource "aws_security_group_rule" "allow_office_to_monitoring" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.monitoring_elb.id}"
+  security_group_id = "${aws_security_group.monitoring_external_elb.id}"
   cidr_blocks       = ["${var.office_ips}"]
 }
 
 # TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_monitoring_elb_egress" {
+resource "aws_security_group_rule" "allow_monitoring_external_elb_egress" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.monitoring_elb.id}"
+  security_group_id = "${aws_security_group.monitoring_external_elb.id}"
+}
+
+resource "aws_security_group" "monitoring_internal_elb" {
+  name        = "${var.stackname}_monitoring_internal_elb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the monitoring ELB"
+
+  tags {
+    Name = "${var.stackname}_monitoring_internal_elb_access"
+  }
+}
+
+resource "aws_security_group_rule" "allow_management_to_monitoring_internal_elb_ncsa" {
+  type      = "ingress"
+  from_port = 5667
+  to_port   = 5667
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.monitoring_internal_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
+# TODO test whether egress rules are needed on ELBs
+resource "aws_security_group_rule" "allow_monitoring_internal_elb_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
 }
