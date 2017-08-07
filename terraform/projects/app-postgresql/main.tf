@@ -67,7 +67,7 @@ module "postgresql-primary_rds_instance" {
   username           = "${var.username}"
   password           = "${var.password}"
   allocated_storage  = "30"
-  instance_class     = "db.t1.micro"
+  instance_class     = "db.m4.large"
   multi_az           = "${var.multi_az}"
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
 }
