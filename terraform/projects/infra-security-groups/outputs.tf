@@ -58,6 +58,10 @@ output "sg_backend-lb_elb_id" {
   value = "${aws_security_group.backend-lb_elb.id}"
 }
 
+output "sg_backend-lb_external_elb_id" {
+  value = "${aws_security_group.backend-lb_external_elb.id}"
+}
+
 output "sg_backend-lb_id" {
   value = "${aws_security_group.backend-lb.id}"
 }
