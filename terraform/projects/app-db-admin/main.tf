@@ -51,9 +51,9 @@ resource "aws_elb" "db-admin_elb" {
   internal        = "true"
 
   listener {
-    instance_port     = 443
+    instance_port     = 22
     instance_protocol = "tcp"
-    lb_port           = 443
+    lb_port           = 22
     lb_protocol       = "tcp"
   }
 
@@ -62,7 +62,7 @@ resource "aws_elb" "db-admin_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:443"
+    target   = "TCP:22"
     interval = 30
   }
 
