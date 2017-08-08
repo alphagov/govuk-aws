@@ -8,9 +8,9 @@
 # stackname
 # aws_environment
 # ssh_public_key
-# router_backend_1_subnet
-# router_backend_2_subnet
-# router_backend_3_subnet
+# router-backend_1_subnet
+# router-backend_2_subnet
+# router-backend_3_subnet
 #
 # === Outputs:
 #
@@ -39,17 +39,17 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "router_backend_1_subnet" {
+variable "router-backend_1_subnet" {
   type        = "string"
   description = "Name of the subnet to place the Router Mongo 1"
 }
 
-variable "router_backend_2_subnet" {
+variable "router-backend_2_subnet" {
   type        = "string"
   description = "Name of the subnet to place the Router Mongo 2"
 }
 
-variable "router_backend_3_subnet" {
+variable "router-backend_3_subnet" {
   type        = "string"
   description = "Name of the subnet to place the Router Mongo 3"
 }
@@ -160,7 +160,7 @@ module "router-backend-1" {
   name                          = "${var.stackname}-router-backend-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "router_backend", "aws_hostname", "router-backend-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router_backend_1_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router-backend_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = false
@@ -218,7 +218,7 @@ module "router-backend-2" {
   name                          = "${var.stackname}-router-backend-2"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "router_backend", "aws_hostname", "router-backend-2")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router_backend_2_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router-backend_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = false
@@ -276,7 +276,7 @@ module "router-backend-3" {
   name                          = "${var.stackname}-router-backend-3"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "router_backend", "aws_hostname", "router-backend-3")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router_backend_3_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router-backend_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = false

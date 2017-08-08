@@ -22,3 +22,19 @@ user_data_snippets = [
   "00-base",
   "20-puppet-client",
 ]
+
+api-mongo_1_subnet = "govuk_private_a"
+api-mongo_2_subnet = "govuk_private_b"
+api-mongo_3_subnet = "govuk_private_c"
+
+mongo_1_subnet = "govuk_private_a"
+mongo_2_subnet = "govuk_private_b"
+mongo_3_subnet = "govuk_private_c"
+
+performance-mongo_1_subnet = "govuk_private_a"
+performance-mongo_2_subnet = "govuk_private_b"
+performance-mongo_3_subnet = "govuk_private_c"
+
+router-backend_1_subnet = "govuk_private_a"
+router-backend_2_subnet = "govuk_private_b"
+router-backend_3_subnet = "govuk_private_c"
