@@ -23,8 +23,8 @@ resource "aws_security_group" "exception_handler" {
 
 resource "aws_security_group_rule" "allow_exception_handler_internal_elb_in" {
   type      = "ingress"
-  from_port = 3029
-  to_port   = 3029
+  from_port = 443
+  to_port   = 443
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -44,7 +44,7 @@ resource "aws_security_group" "exception_handler_internal_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_exception_handler_carbon_aggregator_line_elb" {
+resource "aws_security_group_rule" "allow_management_to_exception_handler_elb" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -54,6 +54,7 @@ resource "aws_security_group_rule" "allow_management_to_exception_handler_carbon
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
+# TODO: test and remove
 resource "aws_security_group_rule" "allow_exception_handler_internal_elb_egress" {
   type              = "egress"
   from_port         = 0
