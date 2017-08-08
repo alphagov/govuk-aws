@@ -141,6 +141,7 @@ resource "aws_route53_record" "app_service_records" {
   name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
   type    = "CNAME"
   records = ["backend-lb.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  ttl     = "300"
 }
 
 module "backend-lb" {
