@@ -26,8 +26,8 @@ output "sg_api-mongo_id" {
   value = "${aws_security_group.api-mongo.id}"
 }
 
-output "sg_api-postgres-primary_id" {
-  value = "${aws_security_group.api-postgres-primary.id}"
+output "sg_postgresql-primary_id" {
+  value = "${aws_security_group.postgresql-primary.id}"
 }
 
 output "sg_api-redis_id" {

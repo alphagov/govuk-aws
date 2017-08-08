@@ -1,4 +1,4 @@
-# == Manifest: projects::app-api-postgres
+# == Manifest: projects::app-postgresql
 #
 # RDS Mysql Primary instance
 #
@@ -56,10 +56,10 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-module "api-postgres-primary_rds_instance" {
+module "postgresql-primary_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
-  name               = "${var.stackname}-api-postgres-primary"
+  name               = "${var.stackname}-postgresql-primary"
   engine_name        = "postgres"
   engine_version     = "9.3.14"
   default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api_postgresql_primary")}"
@@ -67,38 +67,38 @@ module "api-postgres-primary_rds_instance" {
   username           = "${var.username}"
   password           = "${var.password}"
   allocated_storage  = "30"
-  instance_class     = "db.t1.micro"
+  instance_class     = "db.m4.large"
   multi_az           = "${var.multi_az}"
-  security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_api-postgres-primary_id}"]
+  security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
 }
 
 resource "aws_route53_record" "service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "api-postgres-primary.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  name    = "postgresql-primary.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
-  records = ["${module.api-postgres-primary_rds_instance.rds_instance_endpoint}"]
+  records = ["${module.postgresql-primary_rds_instance.rds_instance_endpoint}"]
 }
 
 # Outputs
 # --------------------------------------------------------------
 
-output "api-postgres-primary_id" {
-  value       = "${module.api-postgres-primary_rds_instance.rds_instance_id}"
-  description = "api-postgres instance ID"
+output "postgresql-primary_id" {
+  value       = "${module.postgresql-primary_rds_instance.rds_instance_id}"
+  description = "postgresql instance ID"
 }
 
-output "api-postgres-primary_resource_id" {
-  value       = "${module.api-postgres-primary_rds_instance.rds_instance_resource_id}"
-  description = "api-postgres instance resource ID"
+output "postgresql-primary_resource_id" {
+  value       = "${module.postgresql-primary_rds_instance.rds_instance_resource_id}"
+  description = "postgresql instance resource ID"
 }
 
-output "api-postgres-primary_endpoint" {
-  value       = "${module.api-postgres-primary_rds_instance.rds_instance_endpoint}"
-  description = "api-postgres instance endpoint"
+output "postgresql-primary_endpoint" {
+  value       = "${module.postgresql-primary_rds_instance.rds_instance_endpoint}"
+  description = "postgresql instance endpoint"
 }
 
-output "api-postgres-primary_address" {
-  value       = "${module.api-postgres-primary_rds_instance.rds_instance_address}"
-  description = "api-postgres instance address"
+output "postgresql-primary_address" {
+  value       = "${module.postgresql-primary_rds_instance.rds_instance_address}"
+  description = "postgresql instance address"
 }
