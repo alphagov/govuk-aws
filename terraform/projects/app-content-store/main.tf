@@ -92,7 +92,7 @@ module "content-store" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_store", "aws_hostname", "content-store-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.micro"
+  instance_type                 = "m4.large"
   create_instance_key           = true
   instance_key_name             = "${var.stackname}-content-store"
   instance_public_key           = "${var.ssh_public_key}"
