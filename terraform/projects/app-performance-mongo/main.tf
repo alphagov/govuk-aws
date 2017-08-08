@@ -8,9 +8,9 @@
 # stackname
 # aws_environment
 # ssh_public_key
-# performance_mongo_1_subnet
-# performance_mongo_2_subnet
-# performance_mongo_3_subnet
+# performance-mongo_1_subnet
+# performance-mongo_2_subnet
+# performance-mongo_3_subnet
 #
 # === Outputs:
 #
@@ -39,17 +39,17 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "performance_mongo_1_subnet" {
+variable "performance-mongo_1_subnet" {
   type        = "string"
   description = "Name of the subnet to place the Performance Platform Mongo instance 1"
 }
 
-variable "performance_mongo_2_subnet" {
+variable "performance-mongo_2_subnet" {
   type        = "string"
   description = "Name of the subnet to place the Performance Platform Mongo 2"
 }
 
-variable "performance_mongo_3_subnet" {
+variable "performance-mongo_3_subnet" {
   type        = "string"
   description = "Name of the subnet to place the Performance Platform Mongo 3"
 }
@@ -118,7 +118,7 @@ module "performance-mongo-1" {
   name                          = "${var.stackname}-performance-mongo-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "performance_mongo", "aws_hostname", "performance-mongo-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.performance_mongo_1_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.performance-mongo_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_performance-mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = false
@@ -176,7 +176,7 @@ module "performance-mongo-2" {
   name                          = "${var.stackname}-performance-mongo-2"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "performance_mongo", "aws_hostname", "performance-mongo-2")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.performance_mongo_2_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.performance-mongo_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_performance-mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = false
@@ -234,7 +234,7 @@ module "performance-mongo-3" {
   name                          = "${var.stackname}-performance-mongo-3"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "performance_mongo", "aws_hostname", "performance-mongo-3")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.performance_mongo_3_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.performance-mongo_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_performance-mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   create_instance_key           = false
