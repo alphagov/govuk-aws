@@ -10,3 +10,8 @@
       entry: tools/terraform-format.sh
       language: script
       files: \.tf$
+    - id: json-lint
+      name: ===> Make sure JSON is valid
+      entry: tools/json-check.sh
+      language: script
+      files: \.json$
