@@ -74,6 +74,18 @@ resource "aws_elb" "performance-backend_elb" {
   tags = "${map("Name", "${var.stackname}-performance-backend", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "performance_backend")}"
 }
 
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "performance-backend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.performance-backend_elb.dns_name}"
+    zone_id                = "${aws_elb.performance-backend_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "performance-backend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-performance-backend"
