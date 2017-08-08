@@ -80,6 +80,18 @@ resource "aws_elb" "apt_external_elb" {
   tags = "${map("Name", "${var.stackname}-apt-external", "Project", var.stackname, "aws_migration", "apt")}"
 }
 
+resource "aws_route53_record" "apt_external_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "apt.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.apt_external_elb.dns_name}"
+    zone_id                = "${aws_elb.apt_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_elb" "apt_internal_elb" {
   name            = "${var.stackname}-apt-internal"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
@@ -108,18 +120,6 @@ resource "aws_elb" "apt_internal_elb" {
   connection_draining_timeout = 400
 
   tags = "${map("Name", "${var.stackname}-apt-internal", "Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
-}
-
-resource "aws_route53_record" "apt_internal_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "apt.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.apt_internal_elb.dns_name}"
-    zone_id                = "${aws_elb.apt_internal_elb.zone_id}"
-    evaluate_target_health = true
-  }
 }
 
 resource "aws_route53_record" "gemstash_internal_service_record" {
@@ -180,12 +180,12 @@ resource "aws_iam_role_policy_attachment" "apt_1_iam_role_policy_attachment" {
 # Outputs
 # --------------------------------------------------------------
 
-output "apt_internal_service_dns_name" {
-  value       = "${aws_route53_record.apt_internal_service_record.fqdn}"
-  description = "DNS name to access the apt internal service"
+output "apt_external_service_dns_name" {
+  value       = "${aws_route53_record.apt_external_service_record.fqdn}"
+  description = "DNS name to access the Apt external service"
 }
 
-output "apt_external_elb_dns_name" {
-  value       = "${aws_elb.apt_external_elb.dns_name}"
-  description = "DNS name to access the apt external ELB"
+output "gemstash_internal_elb_dns_name" {
+  value       = "${aws_route53_record.gemstash_internal_service_record.fqdn}"
+  description = "DNS name to access the Gemstash internal service"
 }
