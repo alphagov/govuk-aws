@@ -103,6 +103,7 @@ cd "$PROJECT_DIR"
 
 # Actually run the command
 if [[ $CMD == "init" ]]; then
+  rm -rf .terraform && \
   terraform "$CMD" \
             -backend-config "$BACKEND_FILE"
 else
