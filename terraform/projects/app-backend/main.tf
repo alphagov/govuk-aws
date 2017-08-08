@@ -47,7 +47,7 @@ provider "aws" {
 resource "aws_elb" "backend_elb" {
   name            = "${var.stackname}-backend"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_id}"]
   internal        = "true"
 
   listener {
