@@ -158,7 +158,8 @@ resource "aws_ebs_volume" "apt" {
   tags {
     Name            = "${var.stackname}-apt"
     Project         = "${var.stackname}"
-    aws_hostname    = "apt"
+    Device          = "xvdf"
+    aws_hostname    = "apt-1"
     aws_migration   = "apt"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
