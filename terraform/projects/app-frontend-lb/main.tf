@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# app_service_records
 #
 # === Outputs:
 #
@@ -31,6 +32,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
+}
+
+variable "app_service_records" {
+  type        = "list"
+  description = "List of application service names that get traffic via this loadbalancer"
+  default     = []
 }
 
 # Resources
@@ -84,6 +91,15 @@ resource "aws_route53_record" "frontend-lb_service_record" {
     zone_id                = "${aws_elb.frontend-lb_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_route53_record" "app_service_records" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "CNAME"
+  records = ["frontend-lb.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  ttl     = "300"
 }
 
 module "frontend-lb" {
