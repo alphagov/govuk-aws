@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-integration"
-key     = "issam/app-postgresql.tfstate"
+key     = "blue/app-postgresql.tfstate"
 encrypt = true
 region  = "eu-west-1"
