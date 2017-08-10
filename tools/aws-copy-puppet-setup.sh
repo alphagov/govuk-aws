@@ -54,6 +54,8 @@ mkdir -p -m 0700 /etc/puppet/gpg
 gpg --homedir /etc/puppet/gpg --allow-secret-key-import --import gpgkey
 chown -R puppet: /etc/puppet/gpg
 
+gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
+
 puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp
 
 chown -R deploy:deploy /usr/share/puppet/production/releases/${RELEASENAME}
