@@ -1,6 +1,6 @@
 # == Manifest: projects::app-postgresql
 #
-# RDS Mysql Primary instance
+# RDS PostgreSQL Primary instance
 #
 # === Variables:
 #
@@ -77,7 +77,7 @@ resource "aws_route53_record" "service_record" {
   name    = "postgresql-primary.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
-  records = ["${module.postgresql-primary_rds_instance.rds_instance_endpoint}"]
+  records = ["${module.postgresql-primary_rds_instance.rds_instance_address}"]
 }
 
 # Outputs
