@@ -39,11 +39,29 @@ variable "elb_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "remote_state_infra_artefact_bucket_stack" {
+  type        = "string"
+  description = "Override infra_artefact_bucket remote state path"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
   required_version = "= 0.9.10"
+}
+
+# This is one of two places that should need to use this particular remote state
+# so keep it in main
+data "terraform_remote_state" "artefact_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_artefact_bucket_stack, var.stackname)}/artefact-bucket.tfstate"
+    region = "eu-west-1"
+  }
 }
 
 provider "aws" {
@@ -112,6 +130,11 @@ resource "aws_route53_record" "service_record" {
     zone_id                = "${aws_elb.deploy_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_iam_role_policy_attachment" "attach_read_artefact_bucket_policy" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
 }
 
 # Outputs

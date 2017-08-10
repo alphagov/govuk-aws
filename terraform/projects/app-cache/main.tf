@@ -67,11 +67,29 @@ variable "asg_desired_capacity" {
   default     = "2"
 }
 
+variable "remote_state_infra_artefact_bucket_stack" {
+  type        = "string"
+  description = "Override infra_artefact_bucket remote state path"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
   required_version = "= 0.9.10"
+}
+
+# This is one of two places that should need to use this particular remote state
+# so keep it in main
+data "terraform_remote_state" "artefact_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_artefact_bucket_stack, var.stackname)}/artefact-bucket.tfstate"
+    region = "eu-west-1"
+  }
 }
 
 provider "aws" {
@@ -196,6 +214,11 @@ module "cache" {
   asg_max_size                  = "${var.asg_max_size}"
   asg_min_size                  = "${var.asg_min_size}"
   asg_desired_capacity          = "${var.asg_desired_capacity}"
+}
+
+resource "aws_iam_role_policy_attachment" "attach_read_artefact_bucket_policy" {
+  role       = "${module.cache.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
 }
 
 # Outputs
