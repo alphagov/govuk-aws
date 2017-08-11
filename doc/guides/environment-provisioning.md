@@ -51,7 +51,8 @@ $ git clone git@github.com:alphagov/govuk-secrets.git
 
 An [S3](https://aws.amazon.com/s3/) bucket needs to be created to store state for Terraform. If you're using an account that already has this set up you can skip this step, check by running:
 ```
-$ export TERRAFORM_BUCKET="govuk-terraform-steppingstone-<environment>"
+$ export ENVIRONMENT=<environment>
+$ export TERRAFORM_BUCKET="govuk-terraform-steppingstone-${ENVIRONMENT}"
 $ aws s3 ls $TERRAFORM_BUCKET
 ```
 
@@ -80,11 +81,14 @@ $ aws s3api put-bucket-versioning  \
 There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `init`, `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `deana`).
 
 ```
-$ tools/build-terraform-project.sh init <environment> <stack name> <project name>
+$ export STACKNAME=<stackname>
+# NOTE: the ENVIRONMENT variable also needs to be set or passed to this script.
+
+$ tools/build-terraform-project.sh -c init -p name>
 ...terraform output...
-$ tools/build-terraform-project.sh plan <environment> <stack name> <project name>
+$ tools/build-terraform-project.sh -c plan -p name>
 ...terraform output...
-$ tools/build-terraform-project.sh apply <environment> <stack name> <project name>
+$ tools/build-terraform-project.sh -c apply -p project name>
 ...terraform output...
 ```
 
@@ -115,11 +119,12 @@ Puppet master is provisioned similarly to other Terraform projects but you'll ne
 Now run 
 
 ```
-$ tools/build-terraform-project.sh init <environment> <stack name> app-puppetmaster
+# Make sure STACKNAME & ENVIRONMENT are set
+$ tools/build-terraform-project.sh -c init -p app-puppetmaster
 ...terraform output...
-$ tools/build-terraform-project.sh plan <environment> <stack name> app-puppetmaster
+$ tools/build-terraform-project.sh -c plan -p app-puppetmaster
 ...terraform output...
-$ tools/build-terraform-project.sh apply <environment> <stack name> app-puppetmaster
+$ tools/build-terraform-project.sh -c apply -p app-puppetmaster
 ...terraform output...
 ```
 
@@ -155,13 +160,13 @@ Save the output of the `gpg` command to a suitable file.
 Now run these commands to initialise the puppet master:
 ```
 $ cd tools
-$ bash -x ./aws-push-puppet.sh -e <environment>\
+$ bash -x ./aws-push-puppet.sh -e ${ENVIRONMENT} \
                                -g <path to the gpg key you copied> \
                                -p <path to puppet repo> \
                                -d <path to govuk-secrets repo> \
                                -t $PUPPETMASTER_ELB
 $ ssh ubuntu@$PUPPETMASTER_ELB
-sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
+> sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
 ```
 
 You can now test that the puppet master is working by running
@@ -178,11 +183,11 @@ Notice: Finished catalog run in 0.01 seconds
 
 You now need to build the deploy Jenkins:
 ```
-$ tools/build-terraform-project.sh init <environment> <stack name> app-deploy
+$ tools/build-terraform-project.sh -c init -p app-deploy
 ...terraform output...
-$ tools/build-terraform-project.sh plan <environment> <stack name> app-deploy
+$ tools/build-terraform-project.sh -c plan -p app-deploy
 ...terraform output...
-$ tools/build-terraform-project.sh apply <environment> <stack name> app-deploy
+$ tools/build-terraform-project.sh -c apply -p app-deploy
 ...terraform output...
 ```
 

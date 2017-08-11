@@ -19,12 +19,22 @@ do
 done
 
 function usage() {
-  echo -e "usage: $0 -c -e -p -s\n"
-  echo -e '-c\t The Terraform command to run, eg "init", "plan" or "apply".'
-  echo -e '-e\t The environment to deploy to eg "aws-integration".'
-  echo -e '-s\t Specify the name of the ".tfvars" and ".backend" files.'
-  echo -e '-p\t Specify which project to create, eg "infra-networking".'
-  echo -e '-h\t Display this message.'
+  cat <<EOM
+usage: $0 -c -e -p -s
+
+     -c   The Terraform command (CMD) to run, eg "init", "plan" or "apply".
+     -e   The ENVIRONMENT to deploy to eg "aws-integration".
+     -s   Specify the STACKNAME of the ".tfvars" and ".backend" files.
+     -p   Specify which PROJECT to create, eg "infra-networking".
+     -h   Display this message.
+
+Any remaining arguments are passed to Terraform
+e.g. $0 -c plan -e foo -p bar -s baz -- -var further=override
+     will pass "-var further=override" to terraform
+
+Tip: these arguments can be passed by environment variable as well
+     using the upper case version of their name.
+EOM
 }
 
 function log_error() {
@@ -36,6 +46,9 @@ if [[ $HELP = '1' ]]; then
   usage
   exit
 fi
+
+# un-shift all the parsed arguments
+shift $(expr $OPTIND - 1)
 
 # Set up our locations
 TERRAFORM_DIR='./terraform'
@@ -56,6 +69,10 @@ PROJECT_DATA_DIR="${DATA_DIR}/${PROJECT}/${ENVIRONMENT}"
 COMMON_PROJECT_DATA="${PROJECT_DATA_DIR}/common.tfvars"
 STACK_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}.tfvars"
 SECRET_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}_secrets.tfvars"
+
+if [[ -z $(which terraform) ]]; then
+  log_error 'Terraform not found, please make sure it is installed.'
+fi
 
 # Check we have all the arguments we need
 if [[ -z $CMD ]];  then
@@ -122,5 +139,5 @@ else
     fi
   done
 
-  eval "$TO_RUN"
+  eval "$TO_RUN $@"
 fi
