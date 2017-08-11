@@ -140,6 +140,20 @@ module "puppetmaster" {
   instance_elb_ids              = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
 }
 
+# TODO: This will allow Puppetmaster to describe instances so that
+# we can run a script as an adhoc task that will remove nodes from
+# puppetdb that do not exist
+resource "aws_iam_policy" "puppetmaster_iam_policy" {
+  name   = "${var.stackname}-puppetmaster-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "puppetmaster_iam_role_policy_attachment" {
+  role       = "${module.puppetmaster.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.puppetmaster_iam_policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
