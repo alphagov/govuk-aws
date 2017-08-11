@@ -24,8 +24,8 @@ resource "aws_security_group" "backend-lb" {
 
 resource "aws_security_group_rule" "allow_backend-lb_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -37,8 +37,8 @@ resource "aws_security_group_rule" "allow_backend-lb_elb_in" {
 
 resource "aws_security_group_rule" "allow_backend-lb_external_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
