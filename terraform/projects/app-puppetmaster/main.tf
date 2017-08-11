@@ -138,6 +138,18 @@ module "puppetmaster" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_iam_policy" "puppetmaster_iam_policy" {
+  name   = "${var.stackname}-puppetmaster-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "puppetmaster_iam_role_policy_attachment" {
+  role       = "${module.puppetmaster.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.puppetmaster_iam_policy.arn}"
 }
 
 # Outputs
