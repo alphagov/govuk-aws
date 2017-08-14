@@ -23,8 +23,8 @@ resource "aws_security_group" "api" {
 
 resource "aws_security_group_rule" "allow_api_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -44,15 +44,14 @@ resource "aws_security_group" "api_elb" {
   }
 }
 
-# TODO: replace this with ingress from the api LBs when we build them.
-resource "aws_security_group_rule" "allow_management_to_api_elb" {
+resource "aws_security_group_rule" "allow_api-lb-https_to_api_elb" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
   security_group_id        = "${aws_security_group.api_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  source_security_group_id = "${aws_security_group.api-lb.id}"
 }
 
 # TODO test whether egress rules are needed on ELBs
