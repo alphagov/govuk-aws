@@ -18,10 +18,6 @@ node ("terraform") {
       sh "find . -name '*.tf' |xargs tools/terraform-format.sh"
     }
 
-    stage("Terraform validation") {
-      sh "find . -name '*.tf' |xargs tools/terraform-validate.sh"
-    }
-
     stage("JSON check") {
       sh "find . -name '*.json' |xargs tools/json-check.sh"
     }
