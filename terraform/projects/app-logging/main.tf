@@ -44,11 +44,6 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-resource "aws_s3_bucket" "govuk_logstash_package" {
-  bucket = "govuk-logstash-package-${var.aws_environment}"
-  acl    = "public-read"
-}
-
 resource "aws_elb" "logging_elb" {
   name            = "${var.stackname}-logging"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
@@ -120,9 +115,4 @@ output "logging_elb_address" {
 output "service_dns_name" {
   value       = "${aws_route53_record.service_record.name}"
   description = "DNS name to access the node service"
-}
-
-output "s3_logstash_package_domain_name" {
-  value       = "${aws_s3_bucket.govuk_logstash_package.bucket_domain_name}"
-  description = "The Logstash package bucket domain name"
 }
