@@ -23,8 +23,8 @@ resource "aws_security_group" "draft-frontend" {
 
 resource "aws_security_group_rule" "allow_draft-frontend_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
