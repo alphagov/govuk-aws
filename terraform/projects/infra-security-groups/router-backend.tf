@@ -81,8 +81,18 @@ resource "aws_security_group_rule" "allow_router-backend_to_router-backend_elb" 
 
   security_group_id = "${aws_security_group.router-backend_elb.id}"
 
-  # TODO: does anything other than icinga and logging need this?
   source_security_group_id = "${aws_security_group.router-backend.id}"
+}
+
+resource "aws_security_group_rule" "allow_draft-cache_to_router-backend_elb" {
+  type      = "ingress"
+  from_port = 27017
+  to_port   = 27017
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.router-backend_elb.id}"
+
+  source_security_group_id = "${aws_security_group.draft-cache.id}"
 }
 
 resource "aws_security_group_rule" "allow_cache_to_router-backend_elb" {
@@ -93,7 +103,6 @@ resource "aws_security_group_rule" "allow_cache_to_router-backend_elb" {
 
   security_group_id = "${aws_security_group.router-backend_elb.id}"
 
-  # TODO: does anything other than icinga and logging need this?
   source_security_group_id = "${aws_security_group.cache.id}"
 }
 
