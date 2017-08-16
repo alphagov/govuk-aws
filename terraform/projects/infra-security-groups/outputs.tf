@@ -338,8 +338,12 @@ output "sg_offsite_ssh_id" {
   value = "${aws_security_group.offsite_ssh.id}"
 }
 
-output "sg_whitehall-backend_elb_id" {
-  value = "${aws_security_group.whitehall-backend_elb.id}"
+output "sg_whitehall-backend_external_elb_id" {
+  value = "${aws_security_group.whitehall-backend_external_elb.id}"
+}
+
+output "sg_whitehall-backend_internal_elb_id" {
+  value = "${aws_security_group.whitehall-backend_internal_elb.id}"
 }
 
 output "sg_whitehall-backend_id" {
