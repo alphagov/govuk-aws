@@ -58,7 +58,7 @@ data "aws_acm_certificate" "elb_cert" {
 resource "aws_elb" "whitehall-frontend_external_elb" {
   name            = "${var.stackname}-whitehall-frontend"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_elb_id}"]
   internal        = "false"
 
   listener {
