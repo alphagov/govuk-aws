@@ -44,6 +44,21 @@ resource "aws_security_group" "cache_elb" {
   }
 }
 
+# Router backend needs access to cache for router-api to communicate with
+# router to reload routes
+resource "aws_security_group_rule" "allow_router-backend_to_cache_elb" {
+  type      = "ingress"
+  from_port = 3055
+  to_port   = 3055
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.cache_elb.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.router-backend.id}"
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_cache_elb_egress" {
   type              = "egress"

@@ -70,6 +70,13 @@ resource "aws_elb" "cache_elb" {
     ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
   }
 
+  listener {
+    instance_port     = 3055
+    instance_protocol = "tcp"
+    lb_port           = 3055
+    lb_protocol       = "tcp"
+  }
+
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
