@@ -110,7 +110,7 @@ resource "aws_elb" "cache_external_elb" {
   name            = "${var.stackname}-cache-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_cache_external_elb_id}"]
-  internal        = "true"
+  internal        = "false"
 
   listener {
     instance_port     = 80
