@@ -28,3 +28,8 @@ variable "office_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
+
+variable "carrenza_integration_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will be allowed to SSH to the jumpbox."
+}

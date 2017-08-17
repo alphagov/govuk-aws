@@ -18,6 +18,10 @@ office_ips = [
   "213.86.153.237/32",
 ]
 
+carrenza_integration_ips = [
+  "31.210.245.96/28",
+]
+
 user_data_snippets = [
   "00-base",
   "20-puppet-client",
