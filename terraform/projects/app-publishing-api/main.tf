@@ -58,7 +58,7 @@ data "aws_acm_certificate" "elb_cert" {
 resource "aws_elb" "publishing-api_elb" {
   name            = "${var.stackname}-publishing-api"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_publishing-api_elb}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_publishing-api_elb_id}"]
   internal        = "true"
 
   listener {
