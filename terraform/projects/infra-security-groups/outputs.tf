@@ -90,6 +90,10 @@ output "sg_cache_elb_id" {
   value = "${aws_security_group.cache_elb.id}"
 }
 
+output "sg_cache_external_elb_id" {
+  value = "${aws_security_group.cache_external_elb.id}"
+}
+
 output "sg_cache_id" {
   value = "${aws_security_group.cache.id}"
 }
