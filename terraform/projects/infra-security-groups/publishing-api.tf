@@ -44,15 +44,14 @@ resource "aws_security_group" "publishing-api_elb" {
   }
 }
 
-# TODO: replace this with ingress from the publishing-api LBs when we build them.
-resource "aws_security_group_rule" "allow_management_to_publishing-api_elb" {
+resource "aws_security_group_rule" "allow_backend-lb_https_to_publishing-api_elb" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
   security_group_id        = "${aws_security_group.publishing-api_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  source_security_group_id = "${aws_security_group.backend-lb.id}"
 }
 
 # TODO test whether egress rules are needed on ELBs
