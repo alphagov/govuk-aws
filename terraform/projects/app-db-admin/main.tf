@@ -90,6 +90,7 @@ module "db-admin" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
+  root_block_device_volume_size = "64"
 }
 
 # Outputs
