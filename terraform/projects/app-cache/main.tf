@@ -9,6 +9,7 @@
 # aws_environment
 # ssh_public_key
 # elb_certname
+# app_service_records
 #
 # === Outputs:
 #
@@ -37,6 +38,12 @@ variable "ssh_public_key" {
 variable "elb_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "app_service_records" {
+  type        = "list"
+  description = "List of application service names that get traffic via this loadbalancer"
+  default     = []
 }
 
 # Resources
@@ -141,6 +148,15 @@ resource "aws_route53_record" "cache_external_service_record" {
     zone_id                = "${aws_elb.cache_external_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_route53_record" "app_service_records" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "CNAME"
+  records = ["cache.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  ttl     = "300"
 }
 
 module "cache" {
