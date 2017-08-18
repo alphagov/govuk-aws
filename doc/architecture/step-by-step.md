@@ -27,6 +27,7 @@ aws --region eu-west-1 s3 mb "s3://govuk-terraform-steppingstone-${ENVIRONMENT}"
 # All of these commands are carried out in the 'govuk' infrastructure stack
 # the build-terraform-project will pick up the ENVIRONMENT & STACKNAME 
 # environment variables.
+export DATA_DIR=~/govuk-aws-data/data
 export STACKNAME=govuk
 ./tools/build-terraform-project.sh -c init -p infra-vpc
 ./tools/build-terraform-project.sh -c plan -p infra-vpc
