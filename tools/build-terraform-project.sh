@@ -7,10 +7,11 @@
 
 set -e
 
-while getopts "c:e:p:s:h" option
+while getopts "c:d:e:p:s:h" option
 do
   case $option in
     c ) CMD=$OPTARG ;;
+    d ) DATA_DIR=$OPTARG ;;
     e ) ENVIRONMENT=$OPTARG ;;
     p ) PROJECT=$OPTARG ;;
     s ) STACKNAME=$OPTARG ;;
@@ -23,6 +24,7 @@ function usage() {
 usage: $0 -c -e -p -s
 
      -c   The Terraform command (CMD) to run, eg "init", "plan" or "apply".
+     -d   The root of the data directory (DATA_DIR) to take .tfvars files from.
      -e   The ENVIRONMENT to deploy to eg "aws-integration".
      -s   Specify the STACKNAME of the ".tfvars" and ".backend" files.
      -p   Specify which PROJECT to create, eg "infra-networking".
@@ -57,7 +59,8 @@ PROJECT_DIR="${TERRAFORM_DIR}/projects/${PROJECT}"
 BACKEND_FILE="${ENVIRONMENT}.${STACKNAME}.backend"
 
 # We're going to CD into $PROJECT_DIR so make paths relative to that.
-DATA_DIR="../../data"
+echo "data dir is " $DATA_DIR
+DATA_DIR="../../../${DATA_DIR}"
 
 COMMON_DATA_DIR="${DATA_DIR}/common/${ENVIRONMENT}"
 
@@ -67,8 +70,9 @@ STACK_COMMON_DATA="${COMMON_DATA_DIR}/${STACKNAME}.tfvars"
 PROJECT_DATA_DIR="${DATA_DIR}/${PROJECT}/${ENVIRONMENT}"
 
 COMMON_PROJECT_DATA="${PROJECT_DATA_DIR}/common.tfvars"
+SECRET_COMMON_PROJECT_DATA="${PROJECT_DATA_DIR}/common.secret.tfvars"
 STACK_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}.tfvars"
-SECRET_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}_secrets.tfvars"
+SECRET_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}.secret.tfvars"
 
 if [[ -z $(which terraform) ]]; then
   log_error 'Terraform not found, please make sure it is installed.'
@@ -100,12 +104,14 @@ elif [[ ! -f $PROJECT_DIR/$STACK_COMMON_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$STACK_PROJECT_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$COMMON_DATA ]]  && \
+     [[ ! -f $PROJECT_DIR/$SECRET_COMMON_PROJECT_DATA ]]  && \
      [[ ! -f $PROJECT_DIR/$COMMON_PROJECT_DATA ]]; then
   log_error 'Could not find any tfvar files. Looked for:\n' \
             "\t$PROJECT_DIR/$STACK_COMMON_DATA \n " \
             "\t$PROJECT_DIR/$STACK_PROJECT_DATA \n " \
             "\t$PROJECT_DIR/$SECRET_PROJECT_DATA \n " \
             "\t$PROJECT_DIR/$COMMON_DATA\n " \
+            "\t$PROJECT_DIR/$SECRET_COMMON_PROJECT_DATA\n " \
             "\t$PROJECT_DIR/$COMMON_PROJECT_DATA"
 fi
 
@@ -131,10 +137,17 @@ else
   for TFVAR_FILE in "$COMMON_DATA" \
                     "$STACK_COMMON_DATA" \
                     "$COMMON_PROJECT_DATA" \
+                    "$SECRET_COMMON_PROJECT_DATA" \
                     "$STACK_PROJECT_DATA" \
                     "$SECRET_PROJECT_DATA"
   do
-    if [[ -f $TFVAR_FILE ]]; then
+    if [[ -f $TFVAR_FILE ]] &&
+       (
+        [[ "$TFVAR_FILE" == "$SECRET_PROJECT_DATA" ]] ||
+        [[ "$TFVAR_FILE" == "$SECRET_COMMON_PROJECT_DATA" ]]
+       ) ; then
+      TO_RUN="$TO_RUN -var-file <(sops -d $TFVAR_FILE)"
+    elif [[ -f $TFVAR_FILE ]]; then
       TO_RUN="$TO_RUN -var-file $TFVAR_FILE"
     fi
   done

@@ -40,6 +40,7 @@ You will need to have cloned the following repositories to your local machine
 
 * [govuk-puppet](https://github.com/alphagov/govuk-puppet)
 * [govuk-secrets](https://github.com/alphagov/govuk-secrets)
+* [govuk-aws-data](https://github.com/alphagov/govuk-aws-data)
 * [govuk-aws (this one)](https://github.com/alphagov/govuk-aws)
 
 e.g.
@@ -81,6 +82,7 @@ $ aws s3api put-bucket-versioning  \
 There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `init`, `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `deana`).
 
 ```
+$ export DATA_DIR=<path to govuk-aws-data repository>/data
 $ export STACKNAME=<stackname>
 # NOTE: the ENVIRONMENT variable also needs to be set or passed to this script.
 
