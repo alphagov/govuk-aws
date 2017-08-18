@@ -36,6 +36,19 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_in" {
   source_security_group_id = "${aws_security_group.graphite_external_elb.id}"
 }
 
+resource "aws_security_group_rule" "allow_graphite_internal_elb_in" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.graphite.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+}
+
 resource "aws_security_group_rule" "allow_graphite_carbon_aggregator_line_internal_elb_in" {
   type      = "ingress"
   from_port = 2003
@@ -82,6 +95,7 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_office_in" {
   cidr_blocks       = ["${var.office_ips}"]
 }
 
+# Maybe we don't need this one, depending on what endpoint internal clients are using
 resource "aws_security_group_rule" "allow_graphite_external_elb_management_in" {
   type      = "ingress"
   from_port = 443
@@ -109,6 +123,16 @@ resource "aws_security_group" "graphite_internal_elb" {
   tags {
     Name = "${var.stackname}_graphite_internal_elb_access"
   }
+}
+
+resource "aws_security_group_rule" "allow_graphite_internal_elb_management_in" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.graphite_internal_elb.id}"
+  source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
 resource "aws_security_group_rule" "allow_management_to_graphite_carbon_aggregator_line_elb" {
