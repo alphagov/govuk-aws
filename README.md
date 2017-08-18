@@ -89,3 +89,15 @@ This might be useful, for example, as part of a PR builder job:
 
 The code for this, and this documentation itself, were taken from excellent work
 done by the GDS Verify team.
+
+
+## Tools
+
+The `tools/` directory contains a mixture of bash scripts, some are used by the pre-commit hooks and others are intended for direct use.
+
+* `aws-copy-puppet-setup.sh` and `aws-push-puppet.sh` These are used to provision puppet on the puppetmaster, please check the [step-by-step](doc/architecture/step-by-step.md) and [environment-provisioning](doc/guides/environment-provisioning.md) guides for how to use them.
+* `build-terraform-project.sh` This is a wrapper for Terraform that simplifies building projects by fetching the correct `.tfvars` files. run `build-terraform-project.sh -h` for details. **Note** this must be run from the root of this repo.
+* `create-backends.sh` a simple utility for generating backend files, see `create-backends.sh -h` for more.
+* `generate-remote-state-boiler-plate.sh`, outputs the standard contents of a `remote_state.tf` project file.
+* `generate-user-data-boiler-plate.sh` outputs the standard contents of a `user_data_snippets.tf` project file.
+
