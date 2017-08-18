@@ -33,13 +33,14 @@ it's key to make everything work.
         scp -C publishing_api_integration.dump `govuk_node_list -c db_admin`
 
 7. Now, the "fun" starts. The db\_admin machine is an Amazon RDS instance, so
-   it has one user to administer the database with. We've set this to
-   `changeme2` for now, with the password `thisisatestaswell`. You'll need to
-   specify the hostname of the RDS instance, which is liable to change, so not
-   included here. You can find it in the RDS section of the AWS Console. The
-   command you want is:
+   it has one user to administer the database with. The username and password
+   can be found in
+   https://github.com/alphagov/govuk-aws-data/. You'll need to specify the
+   hostname of the RDS instance, which is liable to change, so not included
+   here. You can find it in the RDS section of the AWS Console. The command you
+   want is:
 
-        psql -U changeme2 -h placeholder -d publishing_api_production -f publishing_api_integration.dump
+        psql -U <username> -h <placeholder> -d publishing_api_production -f publishing_api_integration.dump
 
 8. It will import for a while (Publishing API in particular is ~20G of database
    dump) and then there'll be data for apps to read!
