@@ -55,11 +55,11 @@ data "aws_acm_certificate" "elb_cert" {
   statuses = ["ISSUED"]
 }
 
-resource "aws_elb" "whitehall-frontend_external_elb" {
+resource "aws_elb" "whitehall-frontend_elb" {
   name            = "${var.stackname}-whitehall-frontend"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_elb_id}"]
-  internal        = "false"
+  internal        = "true"
 
   listener {
     instance_port     = 80
@@ -87,13 +87,13 @@ resource "aws_elb" "whitehall-frontend_external_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "whitehall-frontend.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "whitehall-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.whitehall-frontend_external_elb.dns_name}"
-    zone_id                = "${aws_elb.whitehall-frontend_external_elb.zone_id}"
+    name                   = "${aws_elb.whitehall-frontend_elb.dns_name}"
+    zone_id                = "${aws_elb.whitehall-frontend_elb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -110,7 +110,7 @@ module "whitehall-frontend" {
   instance_key_name             = "${var.stackname}-whitehall-frontend"
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.whitehall-frontend_external_elb.id}"]
+  instance_elb_ids              = ["${aws_elb.whitehall-frontend_elb.id}"]
   asg_max_size                  = "2"
   asg_min_size                  = "2"
   asg_desired_capacity          = "2"
@@ -120,7 +120,7 @@ module "whitehall-frontend" {
 # --------------------------------------------------------------
 
 output "whitehall-frontend_elb_address" {
-  value       = "${aws_elb.whitehall-frontend_external_elb.dns_name}"
+  value       = "${aws_elb.whitehall-frontend_elb.dns_name}"
   description = "AWS' internal DNS name for the whitehall-frontend ELB"
 }
 

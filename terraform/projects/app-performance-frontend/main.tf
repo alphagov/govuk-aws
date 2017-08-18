@@ -87,6 +87,18 @@ resource "aws_elb" "performance-frontend_elb" {
   tags = "${map("Name", "${var.stackname}-performance-frontend", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "performance_frontend")}"
 }
 
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "performance-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.performance-frontend_elb.dns_name}"
+    zone_id                = "${aws_elb.performance-frontend_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "performance-frontend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-performance-frontend"
@@ -111,4 +123,9 @@ module "performance-frontend" {
 output "performance-frontend_elb_dns_name" {
   value       = "${aws_elb.performance-frontend_elb.dns_name}"
   description = "DNS name to access the performance-frontend service"
+}
+
+output "service_dns_name" {
+  value       = "${aws_route53_record.service_record.name}"
+  description = "DNS name to access the node service"
 }

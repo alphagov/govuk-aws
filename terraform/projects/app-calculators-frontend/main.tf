@@ -87,6 +87,18 @@ resource "aws_elb" "calculators-frontend_elb" {
   tags = "${map("Name", "${var.stackname}-calculators-frontend", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "calculators_frontend")}"
 }
 
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "calculators-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.calculators-frontend_elb.dns_name}"
+    zone_id                = "${aws_elb.calculators-frontend_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "calculators-frontend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-calculators-frontend"
@@ -111,4 +123,9 @@ module "calculators-frontend" {
 output "calculators-frontend_elb_dns_name" {
   value       = "${aws_elb.calculators-frontend_elb.dns_name}"
   description = "DNS name to access the calculators-frontend service"
+}
+
+output "service_dns_name" {
+  value       = "${aws_route53_record.service_record.name}"
+  description = "DNS name to access the node service"
 }
