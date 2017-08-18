@@ -87,6 +87,18 @@ resource "aws_elb" "frontend_elb" {
   tags = "${map("Name", "${var.stackname}-frontend", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "frontend")}"
 }
 
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.frontend_elb.dns_name}"
+    zone_id                = "${aws_elb.frontend_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "frontend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-frontend"
@@ -111,4 +123,9 @@ module "frontend" {
 output "frontend_elb_dns_name" {
   value       = "${aws_elb.frontend_elb.dns_name}"
   description = "DNS name to access the frontend service"
+}
+
+output "service_dns_name" {
+  value       = "${aws_route53_record.service_record.name}"
+  description = "DNS name to access the node service"
 }
