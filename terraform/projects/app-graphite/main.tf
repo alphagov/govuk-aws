@@ -9,7 +9,8 @@
 # aws_environment
 # ssh_public_key
 # graphite_1_subnet
-# elb_certname
+# elb_external_certname
+# elb_internal_certname
 #
 # === Outputs:
 #
@@ -40,7 +41,12 @@ variable "graphite_1_subnet" {
   description = "Name of the subnet to place the Graphite instance 1 and EBS volume"
 }
 
-variable "elb_certname" {
+variable "elb_external_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -56,8 +62,13 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -73,7 +84,7 @@ resource "aws_elb" "graphite_external_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {
@@ -135,6 +146,15 @@ resource "aws_elb" "graphite_internal_elb" {
     instance_protocol = "tcp"
     lb_port           = 2004
     lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 443
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
