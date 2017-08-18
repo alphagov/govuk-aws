@@ -14,6 +14,10 @@ output "sg_api-lb_elb_id" {
   value = "${aws_security_group.api-lb_elb.id}"
 }
 
+output "sg_api-lb_external_elb_id" {
+  value = "${aws_security_group.api-lb_external_elb.id}"
+}
+
 output "sg_api-lb_id" {
   value = "${aws_security_group.api-lb.id}"
 }
