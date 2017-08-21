@@ -80,6 +80,17 @@ resource "aws_security_group_rule" "allow_cache-https_to_frontend-lb_elb_in" {
   source_security_group_id = "${aws_security_group.cache.id}"
 }
 
+resource "aws_security_group_rule" "allow_public-https_to_frontend-lb_external_elb_in" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.frontend-lb_external_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_frontend-lb_elb_egress" {
   type              = "egress"
