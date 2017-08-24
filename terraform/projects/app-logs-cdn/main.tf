@@ -112,8 +112,8 @@ module "logs-cdn" {
   name                          = "${var.stackname}-logs-cdn"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "logs_cdn", "aws_hostname", "logs-cdn-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_cdn_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_cdn_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_logs-cdn_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.micro"
   create_instance_key           = true
   instance_key_name             = "${var.stackname}-logs-cdn"
