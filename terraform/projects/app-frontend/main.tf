@@ -115,6 +115,7 @@ module "frontend" {
   asg_max_size                  = "3"
   asg_min_size                  = "3"
   asg_desired_capacity          = "3"
+  root_block_device_volume_size = "30"
 }
 
 # Outputs

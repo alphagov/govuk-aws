@@ -113,6 +113,7 @@ module "backend" {
   asg_max_size                  = "2"
   asg_min_size                  = "2"
   asg_desired_capacity          = "2"
+  root_block_device_volume_size = "30"
 }
 
 # Outputs
