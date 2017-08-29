@@ -93,6 +93,18 @@ module "db-admin" {
   root_block_device_volume_size = "64"
 }
 
+resource "aws_route53_record" "db_admin_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "db-admin.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.db-admin_elb.dns_name}"
+    zone_id                = "${aws_elb.db-admin_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
