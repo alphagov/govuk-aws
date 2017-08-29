@@ -125,6 +125,18 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
+resource "aws_route53_record" "puppetdb_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "puppetdb.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.puppetmaster_internal_elb.dns_name}"
+    zone_id                = "${aws_elb.puppetmaster_internal_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "puppetmaster" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-puppetmaster"
@@ -167,5 +179,10 @@ output "puppetmaster_bootstrap_elb_dns_name" {
 
 output "service_dns_name" {
   value       = "${aws_route53_record.service_record.fqdn}"
+  description = "DNS name to access the node service"
+}
+
+output "puppetdb_service_dns_name" {
+  value       = "${aws_route53_record.puppetdb_service_record.fqdn}"
   description = "DNS name to access the node service"
 }
