@@ -125,7 +125,7 @@ module "api-mongo-1" {
   instance_key_name             = "${var.stackname}-api-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.api_mongo_1_elb.id}"]
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "220"
 }
 
 # Instance 2
@@ -183,7 +183,7 @@ module "api-mongo-2" {
   instance_key_name             = "${var.stackname}-api-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.api_mongo_2_elb.id}"]
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "220"
 }
 
 # Instance 3
@@ -241,7 +241,7 @@ module "api-mongo-3" {
   instance_key_name             = "${var.stackname}-api-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.api_mongo_3_elb.id}"]
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "220"
 }
 
 # Outputs
