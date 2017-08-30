@@ -99,6 +99,18 @@ resource "aws_route53_record" "draft-cache_service_record" {
   }
 }
 
+resource "aws_route53_record" "draft-router-api_internal_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "draft-router-api.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.draft-cache_elb.dns_name}"
+    zone_id                = "${aws_elb.draft-cache_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "draft-cache" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-draft-cache"
@@ -128,4 +140,9 @@ output "draft-cache_elb_dns_name" {
 output "service_dns_name" {
   value       = "${aws_route53_record.draft-cache_service_record.fqdn}"
   description = "DNS name to access the service"
+}
+
+output "draft-router-api_internal_dns_name" {
+  value       = "${aws_route53_record.draft-router-api_internal_record.fqdn}"
+  description = "DNS name to access draft-router-api"
 }
