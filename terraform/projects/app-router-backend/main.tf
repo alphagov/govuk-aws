@@ -84,7 +84,7 @@ resource "aws_key_pair" "router_backend_key" {
 resource "aws_elb" "router_api_elb" {
   name            = "${var.stackname}-router-api"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-api_elb_id}"]
   internal        = "true"
 
   listener {
