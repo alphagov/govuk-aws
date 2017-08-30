@@ -125,7 +125,7 @@ module "api-mongo-1" {
   instance_key_name             = "${var.stackname}-api-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.api_mongo_1_elb.id}"]
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "220"
 }
 
 # Instance 2
@@ -178,12 +178,12 @@ module "api-mongo-2" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api_mongo", "aws_hostname", "api-mongo-2")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.api-mongo_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_api-mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "m4.large"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-api-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.api_mongo_2_elb.id}"]
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "220"
 }
 
 # Instance 3
@@ -236,12 +236,12 @@ module "api-mongo-3" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api_mongo", "aws_hostname", "api-mongo-3")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.api-mongo_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_api-mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "m4.large"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-api-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.api_mongo_3_elb.id}"]
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "220"
 }
 
 # Outputs
