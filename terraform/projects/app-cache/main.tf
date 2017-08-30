@@ -10,6 +10,9 @@
 # ssh_public_key
 # elb_certname
 # app_service_records
+# asg_max_size
+# asg_min_size
+# asg_desired_capacity
 #
 # === Outputs:
 #
@@ -44,6 +47,24 @@ variable "app_service_records" {
   type        = "list"
   description = "List of application service names that get traffic via this loadbalancer"
   default     = []
+}
+
+variable "asg_max_size" {
+  type        = "string"
+  description = "The maximum size of the autoscaling group"
+  default     = "2"
+}
+
+variable "asg_min_size" {
+  type        = "string"
+  description = "The minimum size of the autoscaling group"
+  default     = "2"
+}
+
+variable "asg_desired_capacity" {
+  type        = "string"
+  description = "The desired capacity of the autoscaling group"
+  default     = "2"
 }
 
 # Resources
@@ -172,9 +193,9 @@ module "cache" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.cache_elb.id}", "${aws_elb.cache_external_elb.id}"]
-  asg_max_size                  = "3"
-  asg_min_size                  = "3"
-  asg_desired_capacity          = "3"
+  asg_max_size                  = "${var.asg_max_size}"
+  asg_min_size                  = "${var.asg_min_size}"
+  asg_desired_capacity          = "${var.asg_desired_capacity}"
 }
 
 # Outputs
