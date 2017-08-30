@@ -52,8 +52,8 @@ resource "aws_security_group_rule" "router-backend_elb_in" {
 
 resource "aws_security_group_rule" "router-api_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -125,6 +125,7 @@ resource "aws_security_group_rule" "allow_management_to_router-api_elb" {
   security_group_id = "${aws_security_group.router-api_elb.id}"
 
   # TODO: does anything other than icinga and logging need this?
+  # content store needs this.
   source_security_group_id = "${aws_security_group.management.id}"
 }
 

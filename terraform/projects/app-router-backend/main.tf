@@ -11,6 +11,7 @@
 # router-backend_1_subnet
 # router-backend_2_subnet
 # router-backend_3_subnet
+# elb_internal_certname
 #
 # === Outputs:
 #
@@ -54,6 +55,11 @@ variable "router-backend_3_subnet" {
   description = "Name of the subnet to place the Router Mongo 3"
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -65,6 +71,11 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_key_pair" "router_backend_key" {
   key_name   = "${var.stackname}-router-backend"
   public_key = "${var.ssh_public_key}"
@@ -73,14 +84,16 @@ resource "aws_key_pair" "router_backend_key" {
 resource "aws_elb" "router_api_elb" {
   name            = "${var.stackname}-router-api"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-api_elb_id}"]
   internal        = "true"
 
   listener {
-    instance_port     = 443
-    instance_protocol = "tcp"
+    instance_port     = 80
+    instance_protocol = "http"
     lb_port           = 443
-    lb_protocol       = "tcp"
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
@@ -88,7 +101,7 @@ resource "aws_elb" "router_api_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:443"
+    target   = "TCP:80"
     interval = 30
   }
 
