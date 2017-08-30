@@ -49,17 +49,32 @@ provider "aws" {
 }
 
 module "mysql_primary_rds_instance" {
-  source             = "../../modules/aws/rds_instance"
-  name               = "${var.stackname}-mysql-primary"
-  engine_name        = "mysql"
-  engine_version     = "5.6.27"
-  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
-  subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username           = "${var.username}"
-  password           = "${var.password}"
-  allocated_storage  = "30"
-  instance_class     = "db.m4.xlarge"
-  security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
+  source               = "../../modules/aws/rds_instance"
+  name                 = "${var.stackname}-mysql-primary"
+  engine_name          = "mysql"
+  engine_version       = "5.6.27"
+  default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
+  subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username             = "${var.username}"
+  password             = "${var.password}"
+  allocated_storage    = "30"
+  instance_class       = "db.m4.xlarge"
+  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
+  parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
+}
+
+resource "aws_db_parameter_group" "mysql-primary" {
+  name_prefix = "mysql-primary"
+  family      = "mysql5.6"
+
+  parameter {
+    name  = "max_allowed_packet"
+    value = 1073741824
+  }
+
+  tags {
+    aws_stackname = "${var.stackname}"
+  }
 }
 
 resource "aws_route53_record" "service_record" {
