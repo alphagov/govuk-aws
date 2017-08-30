@@ -82,6 +82,18 @@ resource "aws_security_group_rule" "allow_content-store_to_api-mongo_elb" {
   source_security_group_id = "${aws_security_group.content-store.id}"
 }
 
+resource "aws_security_group_rule" "allow_draft-content-store_to_api-mongo_elb" {
+  type      = "ingress"
+  from_port = 27017
+  to_port   = 27017
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.api-mongo_elb.id}"
+
+  # TODO: does anything other than icinga and logging need this?
+  source_security_group_id = "${aws_security_group.draft-content-store.id}"
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_api-mongo_elb_egress" {
   type              = "egress"
