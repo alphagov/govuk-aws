@@ -103,6 +103,11 @@ variable "replicate_source_db" {
   default     = "false"
 }
 
+variable "parameter_group_name" {
+  type        = "string"
+  description = "Name of the parameter group to make the instance a member of."
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -128,6 +133,7 @@ resource "aws_db_instance" "db_instance_replica" {
   db_subnet_group_name   = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
+  parameter_group_name   = "${var.parameter_group_name}"
 
   # TODO in production we probably want to re-enable this, possibly using:
   # final_snapshot_identifier = "${var.name}-final-snapshot"
@@ -151,6 +157,7 @@ resource "aws_db_instance" "db_instance" {
   db_subnet_group_name   = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   multi_az               = "${var.multi_az}"
+  parameter_group_name   = "${var.parameter_group_name}"
 
   # TODO in production we probably want to re-enable this, possibly using:
   # final_snapshot_identifier = "${var.name}-final-snapshot"
