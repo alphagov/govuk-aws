@@ -8,7 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
-# elb_certname
+# elb_internal_certname
 #
 # === Outputs:
 #
@@ -34,7 +34,7 @@ variable "ssh_public_key" {
   description = "whitehall-frontend default public key material"
 }
 
-variable "elb_certname" {
+variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -51,7 +51,7 @@ provider "aws" {
 }
 
 data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
