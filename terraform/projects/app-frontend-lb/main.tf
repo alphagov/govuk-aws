@@ -41,7 +41,12 @@ variable "app_service_records" {
   default     = []
 }
 
-variable "elb_certname" {
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "elb_external_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -57,8 +62,13 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -74,7 +84,7 @@ resource "aws_elb" "frontend-lb_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
@@ -118,7 +128,7 @@ resource "aws_elb" "frontend-lb_external_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {
