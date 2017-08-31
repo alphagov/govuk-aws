@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# elb_external_certname
 #
 # === Outputs:
 #
@@ -33,6 +34,11 @@ variable "ssh_public_key" {
   description = "content-store default public key material"
 }
 
+variable "elb_external_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -44,6 +50,11 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_elb" "content-store_external_elb" {
   name            = "${var.stackname}-content-store"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
@@ -51,17 +62,19 @@ resource "aws_elb" "content-store_external_elb" {
   internal        = "false"
 
   listener {
-    instance_port     = "443"
-    instance_protocol = "tcp"
+    instance_port     = "80"
+    instance_protocol = "http"
     lb_port           = "443"
-    lb_protocol       = "tcp"
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TCP:443"
+    target              = "TCP:80"
     interval            = 30
   }
 

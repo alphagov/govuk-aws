@@ -23,8 +23,8 @@ resource "aws_security_group" "content-store" {
 
 resource "aws_security_group_rule" "allow_content-store_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -44,15 +44,15 @@ resource "aws_security_group" "content-store_elb" {
   }
 }
 
-# TODO: replace this with ingress from the content-store LBs when we build them.
-resource "aws_security_group_rule" "allow_management_to_content-store_elb" {
+# Content Store should be available externally
+resource "aws_security_group_rule" "allow_public_to_content-store_elb" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.content-store_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id = "${aws_security_group.content-store_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
 # TODO test whether egress rules are needed on ELBs
