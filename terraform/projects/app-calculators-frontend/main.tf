@@ -12,6 +12,7 @@
 # asg_max_size
 # asg_min_size
 # asg_desired_capacity
+# app_service_records
 #
 # === Outputs:
 #
@@ -37,7 +38,7 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "elb_certname" {
+variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -60,6 +61,12 @@ variable "asg_desired_capacity" {
   default     = "2"
 }
 
+variable "app_service_records" {
+  type        = "list"
+  description = "List of application service names that get traffic via this loadbalancer"
+  default     = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -72,7 +79,7 @@ provider "aws" {
 }
 
 data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -84,7 +91,7 @@ resource "aws_elb" "calculators-frontend_elb" {
 
   listener {
     instance_port     = 80
-    instance_protocol = "https"
+    instance_protocol = "http"
     lb_port           = 443
     lb_protocol       = "https"
 
@@ -118,6 +125,15 @@ resource "aws_route53_record" "service_record" {
     zone_id                = "${aws_elb.calculators-frontend_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_route53_record" "app_service_records" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["calculators-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = "300"
 }
 
 module "calculators-frontend" {
