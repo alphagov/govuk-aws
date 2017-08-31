@@ -106,6 +106,7 @@ variable "replicate_source_db" {
 variable "parameter_group_name" {
   type        = "string"
   description = "Name of the parameter group to make the instance a member of."
+  default     = ""
 }
 
 # Resources
