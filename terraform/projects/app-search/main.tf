@@ -11,6 +11,8 @@
 # asg_max_size
 # asg_min_size
 # asg_desired_capacity
+# elb_internal_certname
+# app_service_records
 #
 # === Outputs:
 #
@@ -54,6 +56,17 @@ variable "asg_desired_capacity" {
   default     = "2"
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "app_service_records" {
+  type        = "list"
+  description = "List of application service names that get traffic via this loadbalancer"
+  default     = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -65,6 +78,11 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+data "aws_acm_certificate" "elb_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_elb" "search_elb" {
   name            = "${var.stackname}-search"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
@@ -72,10 +90,12 @@ resource "aws_elb" "search_elb" {
   internal        = "true"
 
   listener {
-    instance_port     = 443
-    instance_protocol = "tcp"
+    instance_port     = 80
+    instance_protocol = "http"
     lb_port           = 443
-    lb_protocol       = "tcp"
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
   }
 
   health_check {
@@ -83,7 +103,7 @@ resource "aws_elb" "search_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:443"
+    target   = "TCP:80"
     interval = 30
   }
 
@@ -93,6 +113,27 @@ resource "aws_elb" "search_elb" {
   connection_draining_timeout = 400
 
   tags = "${map("Name", "${var.stackname}-search", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "search")}"
+}
+
+resource "aws_route53_record" "service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "search.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.search_elb.dns_name}"
+    zone_id                = "${aws_elb.search_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "app_service_records" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["search.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = "300"
 }
 
 module "search" {
@@ -119,4 +160,9 @@ module "search" {
 output "search_elb_dns_name" {
   value       = "${aws_elb.search_elb.dns_name}"
   description = "DNS name to access the search service"
+}
+
+output "service_dns_name" {
+  value       = "${aws_route53_record.service_record.name}"
+  description = "DNS name to access the node service"
 }
