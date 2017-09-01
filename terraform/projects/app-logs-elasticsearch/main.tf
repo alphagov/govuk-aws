@@ -125,7 +125,7 @@ module "logs-elasticsearch-1" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-1", "cluster_name", var.cluster_name)}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m4.xlarge"
+  instance_type                 = "m4.2xlarge"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-logs-elasticsearch"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -157,7 +157,7 @@ module "logs-elasticsearch-2" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-2", "cluster_name", var.cluster_name)}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "m4.2xlarge"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-logs-elasticsearch"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -189,7 +189,7 @@ module "logs-elasticsearch-3" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "logs_elasticsearch", "aws_hostname", "logs-elasticsearch-3", "cluster_name", var.cluster_name)}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.logs_elasticsearch_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_logs-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "m4.2xlarge"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-logs-elasticsearch"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
