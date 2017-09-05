@@ -38,6 +38,12 @@ variable "security_group_ids" {
   description = "Security group IDs to apply to this cluster"
 }
 
+variable "enable_clustering" {
+  type        = "string"
+  description = "Set to true to enable clustering mode"
+  default     = true
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -47,6 +53,8 @@ resource "aws_elasticache_subnet_group" "redis_cluster_subnet_group" {
 }
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
+  count = "${var.enable_clustering}"
+
   # replication_group_id          = "${length(var.name) > 20 ? substr(var.name, 0, 20) : var.name}"
   replication_group_id          = "${var.name}"
   replication_group_description = "${var.name} redis cluster"
@@ -66,10 +74,26 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   }
 }
 
+resource "aws_elasticache_replication_group" "redis_master_with_replica" {
+  count                         = "${1 - var.enable_clustering}"
+  replication_group_id          = "${var.name}"
+  replication_group_description = "${var.name} redis master with replica"
+  node_type                     = "${var.elasticache_node_type}"
+  number_cache_clusters         = 2
+  port                          = 6379
+  parameter_group_name          = "default.redis3.2"
+  automatic_failover_enabled    = true
+
+  subnet_group_name  = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
+  security_group_ids = ["${var.security_group_ids}"]
+
+  tags = "${merge(var.default_tags, map("Name", var.name))}"
+}
+
 # Outputs
 #--------------------------------------------------------------
 
 output "configuration_endpoint_address" {
-  value       = "${aws_elasticache_replication_group.redis_cluster.configuration_endpoint_address}"
+  value       = "${var.enable_clustering > 0 ? join("", aws_elasticache_replication_group.redis_cluster.*.configuration_endpoint_address) : aws_elasticache_replication_group.redis_master_with_replica.primary_endpoint_address}"
   description = "Configuration endpoint address of the redis cluster"
 }
