@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# instance_ami_filter_name
 # graphite_1_subnet
 # elb_external_certname
 # elb_internal_certname
@@ -34,6 +35,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 variable "graphite_1_subnet" {
@@ -199,6 +206,7 @@ module "graphite-1" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.graphite_internal_elb.id}", "${aws_elb.graphite_external_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
 }
 

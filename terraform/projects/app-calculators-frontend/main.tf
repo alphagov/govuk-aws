@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# instance_ami_filter_name
 # elb_certname
 # asg_max_size
 # asg_min_size
@@ -36,6 +37,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 variable "elb_internal_certname" {
@@ -149,6 +156,7 @@ module "calculators-frontend" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.calculators-frontend_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "${var.asg_max_size}"
   asg_min_size                  = "${var.asg_min_size}"
   asg_desired_capacity          = "${var.asg_desired_capacity}"

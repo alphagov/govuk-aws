@@ -8,6 +8,7 @@
 # aws_environment
 # stackname
 # ssh_public_key
+# instance_ami_filter_name
 #
 # === Outputs:
 #
@@ -31,6 +32,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Puppetmaster default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 # Resources
@@ -150,6 +157,7 @@ module "puppetmaster" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.puppetmaster_bootstrap_elb.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "50"
 }
 

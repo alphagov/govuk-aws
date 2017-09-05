@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# instance_ami_filter_name
 # app_service_records
 # elb_certname
 #
@@ -33,6 +34,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 variable "app_service_records" {
@@ -182,6 +189,7 @@ module "frontend-lb" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.frontend-lb_elb.id}", "${aws_elb.frontend-lb_external_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "2"
   asg_min_size                  = "2"
   asg_desired_capacity          = "2"

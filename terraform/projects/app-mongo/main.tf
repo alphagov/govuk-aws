@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# instance_ami_filter_name
 # mongo_1_subnet
 # mongo_2_subnet
 # mongo_3_subnet
@@ -37,6 +38,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 variable "mongo_1_subnet" {
@@ -125,6 +132,7 @@ module "mongo-1" {
   instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.mongo_1_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
 }
 
@@ -183,6 +191,7 @@ module "mongo-2" {
   instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.mongo_2_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
 }
 
@@ -241,6 +250,7 @@ module "mongo-3" {
   instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.mongo_3_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
 }
 
