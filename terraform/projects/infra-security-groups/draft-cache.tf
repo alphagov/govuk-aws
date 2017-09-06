@@ -34,6 +34,21 @@ resource "aws_security_group_rule" "allow_draft-cache_elb_in" {
   source_security_group_id = "${aws_security_group.draft-cache_elb.id}"
 }
 
+# We need to allow draft-cache instances to speak to their own to reload router
+# routes
+resource "aws_security_group_rule" "allow_draft-cache_from_draft-cache" {
+  type      = "ingress"
+  from_port = 3055
+  to_port   = 3055
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.draft-cache.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.draft-cache.id}"
+}
+
 resource "aws_security_group" "draft-cache_elb" {
   name        = "${var.stackname}_draft-cache_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
