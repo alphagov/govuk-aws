@@ -79,15 +79,13 @@ $ aws s3api put-bucket-versioning  \
 
 ## Provision the base infrastructure
 
-There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `init`, `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `deana`).
+There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `deana`).
 
 ```
 $ export DATA_DIR=<path to govuk-aws-data repository>/data
 $ export STACKNAME=<stackname>
 # NOTE: the ENVIRONMENT variable also needs to be set or passed to this script.
 
-$ tools/build-terraform-project.sh -c init -p name>
-...terraform output...
 $ tools/build-terraform-project.sh -c plan -p name>
 ...terraform output...
 $ tools/build-terraform-project.sh -c apply -p project name>
@@ -122,8 +120,6 @@ Now run
 
 ```
 # Make sure STACKNAME & ENVIRONMENT are set
-$ tools/build-terraform-project.sh -c init -p app-puppetmaster
-...terraform output...
 $ tools/build-terraform-project.sh -c plan -p app-puppetmaster
 ...terraform output...
 $ tools/build-terraform-project.sh -c apply -p app-puppetmaster
@@ -185,8 +181,6 @@ Notice: Finished catalog run in 0.01 seconds
 
 You now need to build the deploy Jenkins:
 ```
-$ tools/build-terraform-project.sh -c init -p app-deploy
-...terraform output...
 $ tools/build-terraform-project.sh -c plan -p app-deploy
 ...terraform output...
 $ tools/build-terraform-project.sh -c apply -p app-deploy

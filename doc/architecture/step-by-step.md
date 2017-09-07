@@ -29,7 +29,6 @@ aws --region eu-west-1 s3 mb "s3://govuk-terraform-steppingstone-${ENVIRONMENT}"
 # environment variables.
 export DATA_DIR=~/govuk-aws-data/data
 export STACKNAME=govuk
-./tools/build-terraform-project.sh -c init -p infra-vpc
 ./tools/build-terraform-project.sh -c plan -p infra-vpc
 ./tools/build-terraform-project.sh -c apply -p infra-vpc
 ```
@@ -38,7 +37,6 @@ export STACKNAME=govuk
 
 ```
 export STACKNAME=govuk
-./tools/build-terraform-project.sh -c init -p infra-networking
 ./tools/build-terraform-project.sh -c plan -p infra-networking
 ./tools/build-terraform-project.sh -c apply -p infra-networking
 ```
@@ -47,7 +45,6 @@ export STACKNAME=govuk
 
 ```
 export STACKNAME=govuk
-./tools/build-terraform-project.sh -c init -p infra-root-dns-zones
 ./tools/build-terraform-project.sh -c plan -p infra-root-dns-zones
 ./tools/build-terraform-project.sh -c apply -p infra-root-dns-zones
 ```
@@ -57,7 +54,6 @@ export STACKNAME=govuk
 ```
 # Most of these commands are carried out in the 'blue' application stack
 export STACKNAME=blue
-./tools/build-terraform-project.sh -c init -p infra-stack-dns-zones
 ./tools/build-terraform-project.sh -c plan -p infra-stack-dns-zones
 ./tools/build-terraform-project.sh -c apply -p infra-stack-dns-zones
 ```
@@ -67,7 +63,6 @@ export STACKNAME=blue
 ```
 # Note that security groups are in the 'govuk' stack
 export STACKNAME=govuk
-./tools/build-terraform-project.sh -c init -p infra-security-groups
 ./tools/build-terraform-project.sh -c plan -p infra-security-groups
 ./tools/build-terraform-project.sh -c apply -p infra-security-groups
 ```
@@ -76,7 +71,6 @@ export STACKNAME=govuk
 
 ```
 export STACKNAME=blue
-./tools/build-terraform-project.sh -c init -p app-puppetmaster
 ./tools/build-terraform-project.sh -c plan -p app-puppetmaster
 ./tools/build-terraform-project.sh -c apply -p app-puppetmaster
 ```
@@ -131,7 +125,6 @@ sudo ./aws-copy-puppet-setup.sh -e integration -s blue
 
 ```
 export STACKNAME=blue
- $ ./tools/build-terraform-project.sh -c init -p app-jumpbox
  $ ./tools/build-terraform-project.sh -c plan -p app-jumpbox
  $ ./tools/build-terraform-project.sh -c apply -p app-jumpbox
 ```
@@ -140,7 +133,6 @@ export STACKNAME=blue
 
 ```
 export STACKNAME=blue
- $ ./tools/build-terraform-project.sh -c init -p app-monitoring
  $ ./tools/build-terraform-project.sh -c plan -p app-monitoring
  $ ./tools/build-terraform-project.sh -c apply -p app-monitoring
 ```
@@ -149,7 +141,6 @@ export STACKNAME=blue
 
 ```
 export STACKNAME=blue
- $ ./tools/build-terraform-project.sh -c init -p app-deploy
  $ ./tools/build-terraform-project.sh -c plan -p app-deploy
  $ ./tools/build-terraform-project.sh -c apply -p app-deploy
 ```
