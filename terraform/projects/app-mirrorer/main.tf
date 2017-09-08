@@ -33,6 +33,11 @@ variable "ssh_public_key" {
   description = "mirrorer default public key material"
 }
 
+variable "mirrorer_subnet" {
+  type        = "string"
+  description = "Subnet to contain mirrorer and its EBS volume"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -49,7 +54,7 @@ module "mirrorer" {
   name                          = "${var.stackname}-mirrorer"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mirrorer", "aws_hostname", "mirrorer-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mirrorer_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mirrorer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.micro"
   create_instance_key           = true
@@ -60,6 +65,34 @@ module "mirrorer" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
+  root_block_device_volume_size = "30"
+}
+
+resource "aws_ebs_volume" "mirrorer" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mirrorer_subnet)}"
+  size              = 100
+  type              = "gp2"
+
+  tags {
+    Name            = "${var.stackname}-mirrorer"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "mirrorer-1"
+    aws_migration   = "mirrorer"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_iam_policy" "mirrorer_iam_policy" {
+  name   = "${var.stackname}-mirrorer-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "mirrorer_iam_role_policy_attachment" {
+  role       = "${module.mirrorer.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mirrorer_iam_policy.arn}"
 }
 
 # Outputs
