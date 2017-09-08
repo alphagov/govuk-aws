@@ -127,6 +127,16 @@ resource "aws_route53_record" "cache_service_record" {
   }
 }
 
+# TODO publicapi is a special set of nginx config that routes /api requests to
+# their relevant apps upstream.
+resource "aws_route53_record" "cache_publicapi_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "publicapi.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["cache.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = 300
+}
+
 resource "aws_elb" "cache_external_elb" {
   name            = "${var.stackname}-cache-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]

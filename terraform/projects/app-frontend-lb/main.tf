@@ -116,16 +116,6 @@ resource "aws_route53_record" "frontend-lb_service_record" {
   }
 }
 
-# TODO publicapi is a special set of nginx config that routes /api requests to
-# their relevant apps upstream. Replace with an ALB?
-resource "aws_route53_record" "frontend-lb_publicapi_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "publicapi.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
-  type    = "CNAME"
-  records = ["frontend-lb.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
-  ttl     = 300
-}
-
 resource "aws_elb" "frontend-lb_external_elb" {
   name            = "${var.stackname}-frontend-lb-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
