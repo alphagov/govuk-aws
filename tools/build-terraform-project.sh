@@ -124,33 +124,35 @@ fi
 # Run everything from the appropriate project
 cd "$PROJECT_DIR"
 
+
+
 # Actually run the command
-if [[ $CMD == "init" ]]; then
+function init() {
   rm -rf .terraform && \
   rm -rf terraform.tfstate.backup && \
-  terraform "$CMD" \
+  terraform init \
             -backend-config "$BACKEND_FILE"
-else
-  # Build the command to run
-  TO_RUN="terraform $CMD"
-  # Append which ever tfvar files exist
-  for TFVAR_FILE in "$COMMON_DATA" \
-                    "$STACK_COMMON_DATA" \
-                    "$COMMON_PROJECT_DATA" \
-                    "$SECRET_COMMON_PROJECT_DATA" \
-                    "$STACK_PROJECT_DATA" \
-                    "$SECRET_PROJECT_DATA"
-  do
-    if [[ -f $TFVAR_FILE ]] &&
-       (
-        [[ "$TFVAR_FILE" == "$SECRET_PROJECT_DATA" ]] ||
-        [[ "$TFVAR_FILE" == "$SECRET_COMMON_PROJECT_DATA" ]]
-       ) ; then
-      TO_RUN="$TO_RUN -var-file <(sops -d $TFVAR_FILE)"
-    elif [[ -f $TFVAR_FILE ]]; then
-      TO_RUN="$TO_RUN -var-file $TFVAR_FILE"
-    fi
-  done
+}
 
-  eval "$TO_RUN $@"
-fi
+# Build the command to run
+TO_RUN="init && terraform $CMD"
+# Append which ever tfvar files exist
+for TFVAR_FILE in "$COMMON_DATA" \
+                  "$STACK_COMMON_DATA" \
+                  "$COMMON_PROJECT_DATA" \
+                  "$SECRET_COMMON_PROJECT_DATA" \
+                  "$STACK_PROJECT_DATA" \
+                  "$SECRET_PROJECT_DATA"
+do
+  if [[ -f $TFVAR_FILE ]] &&
+     (
+      [[ "$TFVAR_FILE" == "$SECRET_PROJECT_DATA" ]] ||
+      [[ "$TFVAR_FILE" == "$SECRET_COMMON_PROJECT_DATA" ]]
+     ) ; then
+    TO_RUN="$TO_RUN -var-file <(sops -d $TFVAR_FILE)"
+  elif [[ -f $TFVAR_FILE ]]; then
+    TO_RUN="$TO_RUN -var-file $TFVAR_FILE"
+  fi
+done
+
+eval "$TO_RUN $@"
