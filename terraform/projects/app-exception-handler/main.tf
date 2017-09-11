@@ -42,7 +42,7 @@ variable "exception_handler_subnet" {
   description = "Name of the subnet to place the exception_handler instance 1 and EBS volume"
 }
 
-variable "elb_certname" {
+variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -58,8 +58,8 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -75,7 +75,7 @@ resource "aws_elb" "exception_handler_internal_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
@@ -105,6 +105,14 @@ resource "aws_route53_record" "exception_handler_internal_service_record" {
     zone_id                = "${aws_elb.exception_handler_internal_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_route53_record" "errbit_internal_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "errbit.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["exception-handler.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = 300
 }
 
 module "exception_handler" {
@@ -171,5 +179,10 @@ resource "aws_iam_role_policy_attachment" "exception_handler_iam_role_policy_att
 
 output "exception_handler_internal_service_dns_name" {
   value       = "${aws_route53_record.exception_handler_internal_service_record.fqdn}"
+  description = "DNS name to access the exception_handler internal service"
+}
+
+output "errbit_internal_service_dns_name" {
+  value       = "${aws_route53_record.errbit_internal_service_record.fqdn}"
   description = "DNS name to access the exception_handler internal service"
 }
