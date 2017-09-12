@@ -44,16 +44,6 @@ resource "aws_security_group" "publishing-api_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_backend-lb_https_to_publishing-api_elb" {
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-
-  security_group_id        = "${aws_security_group.publishing-api_elb.id}"
-  source_security_group_id = "${aws_security_group.backend-lb.id}"
-}
-
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_publishing-api_elb_egress" {
   type              = "egress"
