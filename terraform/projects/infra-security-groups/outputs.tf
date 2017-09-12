@@ -238,8 +238,12 @@ output "sg_mysql-primary_id" {
   value = "${aws_security_group.mysql-primary.id}"
 }
 
-output "sg_publishing-api_elb_id" {
-  value = "${aws_security_group.publishing-api_elb.id}"
+output "sg_publishing-api_elb_internal_id" {
+  value = "${aws_security_group.publishing-api_elb_internal.id}"
+}
+
+output "sg_publishing-api_elb_external_id" {
+  value = "${aws_security_group.publishing-api_elb_external.id}"
 }
 
 output "sg_publishing-api_id" {
