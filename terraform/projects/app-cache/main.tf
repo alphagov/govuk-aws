@@ -38,7 +38,12 @@ variable "ssh_public_key" {
   description = "Default public key material"
 }
 
-variable "elb_certname" {
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "elb_external_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -78,8 +83,13 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -95,7 +105,7 @@ resource "aws_elb" "cache_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
@@ -127,6 +137,16 @@ resource "aws_route53_record" "cache_service_record" {
   }
 }
 
+# TODO publicapi is a special set of nginx config that routes /api requests to
+# their relevant apps upstream.
+resource "aws_route53_record" "cache_publicapi_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "publicapi.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["cache.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = 300
+}
+
 resource "aws_elb" "cache_external_elb" {
   name            = "${var.stackname}-cache-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
@@ -139,7 +159,7 @@ resource "aws_elb" "cache_external_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {

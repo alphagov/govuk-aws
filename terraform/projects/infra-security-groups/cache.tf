@@ -71,6 +71,21 @@ resource "aws_security_group" "cache_elb" {
   }
 }
 
+# Allow cache to speak to it's own ELB to reroute publicapi traffic
+# to itself
+resource "aws_security_group_rule" "allow_cache_to_cache_elb" {
+  type      = "ingress"
+  to_port   = 443
+  from_port = 443
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.cache_elb.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.cache.id}"
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_cache_elb_egress" {
   type              = "egress"
