@@ -44,15 +44,16 @@ resource "aws_security_group" "frontend_elb" {
   }
 }
 
-# Allow apps on frontend speak to themselves via the ELB
-resource "aws_security_group_rule" "allow_frontend_to_frontend_elb_https" {
+# TODO: most application instances need to talk to frontend - we could
+# split out some security for application and service instances?
+resource "aws_security_group_rule" "allow_management_to_frontend_elb_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
   security_group_id        = "${aws_security_group.frontend_elb.id}"
-  source_security_group_id = "${aws_security_group.frontend.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
 }
 
 # TODO test whether egress rules are needed on ELBs
