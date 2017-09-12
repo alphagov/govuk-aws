@@ -22,8 +22,12 @@ output "sg_apt_internal_elb_id" {
   value = "${aws_security_group.apt_internal_elb.id}"
 }
 
-output "sg_backend_elb_id" {
-  value = "${aws_security_group.backend_elb.id}"
+output "sg_backend_elb_internal_id" {
+  value = "${aws_security_group.backend_elb_internal.id}"
+}
+
+output "sg_backend_elb_external_id" {
+  value = "${aws_security_group.backend_elb_external.id}"
 }
 
 output "sg_backend_id" {
