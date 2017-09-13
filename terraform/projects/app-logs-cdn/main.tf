@@ -8,6 +8,7 @@
 # stackname
 # aws_environment
 # ssh_public_key
+# instance_ami_filter_name
 # logs_cdn_subnet
 #
 # === Outputs:
@@ -34,6 +35,12 @@ variable "aws_environment" {
 variable "ssh_public_key" {
   type        = "string"
   description = "logs-cdn default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 variable "logs_cdn_subnet" {
@@ -120,6 +127,7 @@ module "logs-cdn" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.logs-cdn_external_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"

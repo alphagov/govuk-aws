@@ -8,6 +8,7 @@
 # aws_region
 # stackname
 # ssh_public_key
+# instance_ami_filter_name
 # apt_1_subnet
 #
 # === Outputs:
@@ -32,6 +33,12 @@ variable "stackname" {
 variable "ssh_public_key" {
   type        = "string"
   description = "Default public key material"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
 }
 
 variable "apt_1_subnet" {
@@ -147,6 +154,7 @@ module "apt" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.apt_internal_elb.id}", "${aws_elb.apt_external_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
 }
 
