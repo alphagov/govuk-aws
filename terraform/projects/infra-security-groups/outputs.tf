@@ -2,26 +2,6 @@
 # Outputs of the security group project
 #
 
-output "sg_api_elb_id" {
-  value = "${aws_security_group.api_elb.id}"
-}
-
-output "sg_api_id" {
-  value = "${aws_security_group.api.id}"
-}
-
-output "sg_api-lb_elb_id" {
-  value = "${aws_security_group.api-lb_elb.id}"
-}
-
-output "sg_api-lb_external_elb_id" {
-  value = "${aws_security_group.api-lb_external_elb.id}"
-}
-
-output "sg_api-lb_id" {
-  value = "${aws_security_group.api-lb.id}"
-}
-
 output "sg_api-mongo_elb_id" {
   value = "${aws_security_group.api-mongo_elb.id}"
 }
