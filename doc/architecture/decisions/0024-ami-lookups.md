@@ -4,7 +4,7 @@ Date: 2017-08-29
 
 ## Status
 
-Pending
+Accepted
 
 ## Context
 
@@ -27,17 +27,15 @@ it causes issues with machines that need a number of manual deployment steps
 applied to them. Examples of these include the app servers and the puppet
 master.
 
-The other alternative is to specify a literal AMI ID. This has the benefit that
+The other alternative is to specify a specific image name. This has the benefit that
 we know exactly which version we deploy and it cannot change without our intervention.
-
-The second point of discussion is how to implement this. We could use a `coalesce`
-to allow the specification of a literal AMI in some places and fall back to the
-newest Ubuntu AMI when no explicit value is provided. The main alternative is to remove
-all the lookup code and 'just' have a hard coded value passed in as a config option.
 
 ## Decision
 
-TBD
+We override the `instance_ami_filter_name` parameter of the `node_group` module in all
+the projects. In the data directory, there is a common variable that sets the default
+value of the parameter for an environment. This can be customised per project in the
+project tfvars file.
 
 ## Consequences
 
