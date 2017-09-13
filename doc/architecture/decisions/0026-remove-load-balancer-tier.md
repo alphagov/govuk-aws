@@ -1,4 +1,4 @@
-# 23. Remove load balancer tier
+# 26. Remove load balancer tier
 
 Date: 2017-08-16
 
