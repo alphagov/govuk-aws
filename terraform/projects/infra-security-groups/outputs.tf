@@ -322,6 +322,18 @@ output "sg_search_id" {
   value = "${aws_security_group.search.id}"
 }
 
+output "sg_transition-db-admin_elb_id" {
+  value = "${aws_security_group.transition-db-admin_elb.id}"
+}
+
+output "sg_transition-db-admin_id" {
+  value = "${aws_security_group.transition-db-admin.id}"
+}
+
+output "sg_transition-postgresql-primary_id" {
+  value = "${aws_security_group.transition-postgresql-primary.id}"
+}
+
 output "sg_offsite_ssh_id" {
   value = "${aws_security_group.offsite_ssh.id}"
 }
