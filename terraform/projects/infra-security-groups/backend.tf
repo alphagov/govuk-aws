@@ -77,3 +77,32 @@ resource "aws_security_group_rule" "allow_backend_elb_egress" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.backend_elb.id}"
 }
+
+resource "aws_security_group" "backend_external_elb" {
+  name        = "${var.stackname}_backend_external_elb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the external backend ELB"
+
+  tags {
+    Name = "${var.stackname}_backend_external_elb_access"
+  }
+}
+
+resource "aws_security_group_rule" "allow_public_to_backend_external_elb" {
+  type              = "ingress"
+  to_port           = 443
+  from_port         = 443
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.backend_external_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
+}
+
+# TODO test whether egress rules are needed on ELBs
+resource "aws_security_group_rule" "allow_backend_external_elb_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.backend_external_elb.id}"
+}
