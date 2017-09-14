@@ -140,11 +140,6 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "attach_read_artefact_bucket_policy" {
-  role       = "${module.deploy.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
-}
-
 # Outputs
 # --------------------------------------------------------------
 
