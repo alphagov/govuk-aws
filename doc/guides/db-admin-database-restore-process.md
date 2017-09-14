@@ -30,7 +30,7 @@ it's key to make everything work.
    (`-A`), and copy the file to the dbadmin machine. You'll need to find the
    `db_admin` machine, so use `govuk_node_list` for this.
 
-        scp -C publishing_api_integration.dump `govuk_node_list -c db_admin`
+        scp -C publishing_api_integration.dump `govuk_node_list -c db_admin`:.
 
 7. Now, the "fun" starts. The db\_admin machine is an Amazon RDS instance, so
    it has one user to administer the database with. The username and password
