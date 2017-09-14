@@ -2,24 +2,12 @@
 # Outputs of the security group project
 #
 
-output "sg_api-mongo_elb_id" {
-  value = "${aws_security_group.api-mongo_elb.id}"
-}
-
-output "sg_api-mongo_id" {
-  value = "${aws_security_group.api-mongo.id}"
-}
-
 output "sg_asset-master_id" {
   value = "${aws_security_group.asset-master.id}"
 }
 
 output "sg_postgresql-primary_id" {
   value = "${aws_security_group.postgresql-primary.id}"
-}
-
-output "sg_api-redis_id" {
-  value = "${aws_security_group.api-redis.id}"
 }
 
 output "sg_apt_external_elb_id" {
