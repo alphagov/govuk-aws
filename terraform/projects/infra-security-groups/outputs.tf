@@ -22,24 +22,16 @@ output "sg_apt_internal_elb_id" {
   value = "${aws_security_group.apt_internal_elb.id}"
 }
 
-output "sg_backend_elb_id" {
-  value = "${aws_security_group.backend_elb.id}"
+output "sg_backend_elb_internal_id" {
+  value = "${aws_security_group.backend_elb_internal.id}"
+}
+
+output "sg_backend_elb_external_id" {
+  value = "${aws_security_group.backend_elb_external.id}"
 }
 
 output "sg_backend_id" {
   value = "${aws_security_group.backend.id}"
-}
-
-output "sg_backend-lb_elb_id" {
-  value = "${aws_security_group.backend-lb_elb.id}"
-}
-
-output "sg_backend-lb_external_elb_id" {
-  value = "${aws_security_group.backend-lb_external_elb.id}"
-}
-
-output "sg_backend-lb_id" {
-  value = "${aws_security_group.backend-lb.id}"
 }
 
 output "sg_backend-redis_id" {
@@ -246,8 +238,12 @@ output "sg_mysql-primary_id" {
   value = "${aws_security_group.mysql-primary.id}"
 }
 
-output "sg_publishing-api_elb_id" {
-  value = "${aws_security_group.publishing-api_elb.id}"
+output "sg_publishing-api_elb_internal_id" {
+  value = "${aws_security_group.publishing-api_elb_internal.id}"
+}
+
+output "sg_publishing-api_elb_external_id" {
+  value = "${aws_security_group.publishing-api_elb_external.id}"
 }
 
 output "sg_publishing-api_id" {

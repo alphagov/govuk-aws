@@ -54,16 +54,6 @@ resource "aws_security_group_rule" "allow_management_to_exception_handler_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_backend-lb_https_to_exception_handler_elb" {
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-
-  security_group_id        = "${aws_security_group.exception_handler_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.backend-lb.id}"
-}
-
 # TODO: test and remove
 resource "aws_security_group_rule" "allow_exception_handler_internal_elb_egress" {
   type              = "egress"
