@@ -81,7 +81,7 @@ data "aws_acm_certificate" "elb_internal_cert" {
 }
 
 resource "aws_elb" "whitehall-backend_internal_elb" {
-  name            = "${var.stackname}-whitehall-backend"
+  name            = "${var.stackname}-whitehall-backend-internal"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_internal_elb_id}"]
   internal        = "true"

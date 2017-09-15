@@ -38,7 +38,7 @@ resource "aws_security_group_rule" "allow_publishing-api_external_elb_in" {
 }
 
 resource "aws_security_group" "publishing-api_elb_external" {
-  name        = "${var.stackname}_publishing-api_elb_access"
+  name        = "${var.stackname}_publishing-api_elb_external_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the publishing-api ELB"
 
@@ -59,7 +59,7 @@ resource "aws_security_group_rule" "allow_office_to_publishing-api_https" {
 }
 
 resource "aws_security_group" "publishing-api_elb_internal" {
-  name        = "${var.stackname}_publishing-api_elb_access"
+  name        = "${var.stackname}_publishing-api_elb_internal_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the publishing-api ELB"
 
