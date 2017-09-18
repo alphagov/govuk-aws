@@ -10,11 +10,13 @@
 # ssh_public_key
 # instance_ami_filter_name
 # exception_handler_subnet
-# elb_certname
+# elb_internal_certname
+# elb_external_certname
 #
 # === Outputs:
 #
 # exception_handler_internal_service_dns_name
+# exception_handler_external_service_dns_name
 #
 
 variable "aws_region" {
@@ -54,6 +56,11 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "elb_external_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -67,6 +74,11 @@ provider "aws" {
 
 data "aws_acm_certificate" "elb_internal_cert" {
   domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -122,6 +134,58 @@ resource "aws_route53_record" "errbit_internal_service_record" {
   ttl     = 300
 }
 
+resource "aws_elb" "exception_handler_external_elb" {
+  name            = "${var.stackname}-exception-handler-external"
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_exception_handler_external_elb_id}"]
+  internal        = "false"
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 443
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:80"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-exception_handler-external", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "exception_handler")}"
+}
+
+resource "aws_route53_record" "exception_handler_external_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "exception-handler.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.exception_handler_external_elb.dns_name}"
+    zone_id                = "${aws_elb.exception_handler_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "errbit_external_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
+  name    = "errbit.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "CNAME"
+  records = ["exception-handler.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  ttl     = 300
+}
+
 module "exception_handler" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-exception_handler"
@@ -134,7 +198,7 @@ module "exception_handler" {
   instance_key_name             = "${var.stackname}-exception_handler"
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.exception_handler_internal_elb.id}"]
+  instance_elb_ids              = ["${aws_elb.exception_handler_internal_elb.id}", "${aws_elb.exception_handler_external_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
 }
@@ -193,4 +257,9 @@ output "exception_handler_internal_service_dns_name" {
 output "errbit_internal_service_dns_name" {
   value       = "${aws_route53_record.errbit_internal_service_record.fqdn}"
   description = "DNS name to access the exception_handler internal service"
+}
+
+output "errbit_external_service_dns_name" {
+  value       = "${aws_route53_record.errbit_external_service_record.fqdn}"
+  description = "DNS name to access the exception_handler external service"
 }
