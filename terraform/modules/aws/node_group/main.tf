@@ -136,7 +136,7 @@ variable "asg_min_size" {
 variable "root_block_device_volume_size" {
   type        = "string"
   description = "The size of the instance root volume in gigabytes"
-  default     = "8"
+  default     = "20"
 }
 
 # Resources
