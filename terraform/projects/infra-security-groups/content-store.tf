@@ -21,7 +21,7 @@ resource "aws_security_group" "content-store" {
   }
 }
 
-resource "aws_security_group_rule" "allow_content-store_elb_in" {
+resource "aws_security_group_rule" "allow_content-store_internal_elb_in" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -31,36 +31,80 @@ resource "aws_security_group_rule" "allow_content-store_elb_in" {
   security_group_id = "${aws_security_group.content-store.id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.content-store_elb.id}"
+  source_security_group_id = "${aws_security_group.content-store_internal_elb.id}"
 }
 
-resource "aws_security_group" "content-store_elb" {
-  name        = "${var.stackname}_content-store_elb_access"
+resource "aws_security_group_rule" "allow_content-store_external_elb_in" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.content-store.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.content-store_external_elb.id}"
+}
+
+resource "aws_security_group" "content-store_internal_elb" {
+  name        = "${var.stackname}_content-store_internal_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access the content-store ELB"
+  description = "Access the content-store internal ELB"
 
   tags {
-    Name = "${var.stackname}_content-store_elb_access"
+    Name = "${var.stackname}_content-store_internal_elb_access"
   }
 }
 
-# Content Store should be available externally
-resource "aws_security_group_rule" "allow_public_to_content-store_elb" {
+# Content Store should be available internally
+resource "aws_security_group_rule" "allow_management_to_content-store_internal_elb" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.content-store_elb.id}"
-  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
+  security_group_id        = "${aws_security_group.content-store_internal_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
 }
 
 # TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_content-store_elb_egress" {
+resource "aws_security_group_rule" "allow_content-store_internal_elb_egress" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.content-store_elb.id}"
+  security_group_id = "${aws_security_group.content-store_internal_elb.id}"
+}
+
+resource "aws_security_group" "content-store_external_elb" {
+  name        = "${var.stackname}_content-store_external_elb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the content-store external ELB"
+
+  tags {
+    Name = "${var.stackname}_content-store_external_elb_access"
+  }
+}
+
+# Content Store should be available externally
+resource "aws_security_group_rule" "allow_public_to_content-store_external_elb" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.content-store_external_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
+}
+
+# TODO test whether egress rules are needed on ELBs
+resource "aws_security_group_rule" "allow_content-store_external_elb_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.content-store_external_elb.id}"
 }

@@ -74,8 +74,12 @@ output "sg_calculators-frontend_id" {
   value = "${aws_security_group.calculators-frontend.id}"
 }
 
-output "sg_content-store_elb_id" {
-  value = "${aws_security_group.content-store_elb.id}"
+output "sg_content-store_external_elb_id" {
+  value = "${aws_security_group.content-store_external_elb.id}"
+}
+
+output "sg_content-store_internal_elb_id" {
+  value = "${aws_security_group.content-store_internal_elb.id}"
 }
 
 output "sg_content-store_id" {
@@ -114,8 +118,12 @@ output "sg_draft-cache_elb_id" {
   value = "${aws_security_group.draft-cache_elb.id}"
 }
 
-output "sg_draft-content-store_elb_id" {
-  value = "${aws_security_group.draft-content-store_elb.id}"
+output "sg_draft-content-store_external_elb_id" {
+  value = "${aws_security_group.draft-content-store_external_elb.id}"
+}
+
+output "sg_draft-content-store_internal_elb_id" {
+  value = "${aws_security_group.draft-content-store_internal_elb.id}"
 }
 
 output "sg_draft-content-store_id" {
