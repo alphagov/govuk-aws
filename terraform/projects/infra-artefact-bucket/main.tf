@@ -71,6 +71,7 @@ resource "aws_s3_bucket" "artefact_replication_destination" {
 # Main bucket
 resource "aws_s3_bucket" "artefact" {
   bucket = "govuk-${var.aws_environment}-artefact"
+  acl    = "public-read"
 
   tags {
     Name            = "govuk-${var.aws_environment}-artefact"
