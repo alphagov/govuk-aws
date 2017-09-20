@@ -75,7 +75,7 @@ data "aws_acm_certificate" "elb_internal_cert" {
 resource "aws_elb" "content-store_external_elb" {
   name            = "${var.stackname}-content-store-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_elb_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_external_elb_id}"]
   internal        = "false"
 
   listener {
@@ -117,8 +117,8 @@ resource "aws_route53_record" "external_service_record" {
 
 resource "aws_elb" "content-store_internal_elb" {
   name            = "${var.stackname}-content-store-internal"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_internal_elb_id}"]
   internal        = "true"
 
   listener {
