@@ -9,7 +9,8 @@
 # aws_environment
 # ssh_public_key
 # instance_ami_filter_name
-# elb_certname
+# elb_internal_certname
+# app_service_records
 #
 # === Outputs:
 #
@@ -41,9 +42,15 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
-variable "elb_certname" {
+variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "app_service_records" {
+  type        = "list"
+  description = "List of application service names that get traffic via this loadbalancer"
+  default     = []
 }
 
 # Resources
@@ -58,7 +65,7 @@ provider "aws" {
 }
 
 data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -104,6 +111,15 @@ resource "aws_route53_record" "draft-frontend_service_record" {
     zone_id                = "${aws_elb.draft-frontend_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_route53_record" "app_service_records" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["draft-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = "300"
 }
 
 module "draft-frontend" {
