@@ -41,7 +41,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 resource "aws_efs_file_system" "assets-efs-fs" {

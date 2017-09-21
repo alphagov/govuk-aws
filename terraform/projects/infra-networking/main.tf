@@ -117,7 +117,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 data "terraform_remote_state" "infra_vpc" {

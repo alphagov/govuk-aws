@@ -39,12 +39,14 @@ terraform {
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 provider "aws" {
-  alias  = "secondary"
-  region = "${var.aws_secondary_region}"
+  alias   = "secondary"
+  region  = "${var.aws_secondary_region}"
+  version = "1.0.0"
 }
 
 # Create the buckets

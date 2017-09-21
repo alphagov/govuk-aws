@@ -74,7 +74,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 resource "aws_elb" "rummager-elasticsearch_elb" {

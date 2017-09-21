@@ -4,13 +4,15 @@ terraform {
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 # used by the fastly ip ranges provider.
 # an API key is needed but 'fake' seems to work.
 provider "fastly" {
   api_key = "fake"
+  version = "0.1.2"
 }
 
 data "fastly_ip_ranges" "fastly" {}
