@@ -76,3 +76,15 @@ finder-frontend
 licencefinder
 smartanswers
 ```
+
+## Draft Frontend
+
+```
+collections
+email-alert-frontend
+frontend
+government-frontend
+manuals-frontend
+service-manual-frontend
+static
+```
