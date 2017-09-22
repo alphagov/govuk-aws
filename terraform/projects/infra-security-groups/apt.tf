@@ -98,6 +98,16 @@ resource "aws_security_group_rule" "allow_management_to_apt_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
+resource "aws_security_group_rule" "allow_management_to_apt_elb_80" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.apt_internal_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
 resource "aws_security_group_rule" "allow_apt_internal_elb_egress" {
   type              = "egress"
   from_port         = 0
