@@ -59,6 +59,20 @@ resource "aws_security_group" "draft-cache_elb" {
   }
 }
 
+# This is required to commit routes using router-api at the end of the data sync
+resource "aws_security_group_rule" "allow_draft-cache_from_draft-content-store" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.draft-cache_elb.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.draft-content-store.id}"
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_draft-cache_elb_egress" {
   type              = "egress"
