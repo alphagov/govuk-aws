@@ -41,6 +41,16 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
+variable "elb_external_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 variable "apt_1_subnet" {
   type        = "string"
   description = "Name of the subnet to place the apt instance 1 and EBS volume"
@@ -57,6 +67,16 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_elb" "apt_external_elb" {
   name            = "${var.stackname}-apt-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
@@ -64,10 +84,12 @@ resource "aws_elb" "apt_external_elb" {
   internal        = "false"
 
   listener {
-    instance_port     = 443
-    instance_protocol = "tcp"
+    instance_port     = 80
+    instance_protocol = "http"
     lb_port           = 443
-    lb_protocol       = "tcp"
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {
@@ -75,7 +97,7 @@ resource "aws_elb" "apt_external_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:443"
+    target   = "TCP:80"
     interval = 30
   }
 
@@ -107,9 +129,11 @@ resource "aws_elb" "apt_internal_elb" {
 
   listener {
     instance_port     = 80
-    instance_protocol = "tcp"
-    lb_port           = 80
-    lb_protocol       = "tcp"
+    instance_protocol = "http"
+    lb_port           = 443
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {

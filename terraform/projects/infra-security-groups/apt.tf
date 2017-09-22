@@ -25,8 +25,8 @@ resource "aws_security_group" "apt" {
 
 resource "aws_security_group_rule" "allow_apt_external_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -90,8 +90,8 @@ resource "aws_security_group" "apt_internal_elb" {
 
 resource "aws_security_group_rule" "allow_management_to_apt_elb" {
   type      = "ingress"
-  from_port = 80
-  to_port   = 80
+  from_port = 443
+  to_port   = 443
   protocol  = "tcp"
 
   security_group_id        = "${aws_security_group.apt_internal_elb.id}"
