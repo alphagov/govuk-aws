@@ -44,6 +44,18 @@ resource "aws_security_group" "draft-frontend_elb" {
   }
 }
 
+# TODO: most application instances need to talk to draft-frontend - we could
+# split out some security for application and service instances?
+resource "aws_security_group_rule" "allow_management_to_draft-frontend_elb_https" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.draft-frontend_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_draft-frontend_elb_egress" {
   type              = "egress"
