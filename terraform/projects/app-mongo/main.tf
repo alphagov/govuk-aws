@@ -12,6 +12,12 @@
 # mongo_1_subnet
 # mongo_2_subnet
 # mongo_3_subnet
+# mongo_1_reserved_ips_subnet
+# mongo_2_reserved_ips_subnet
+# mongo_3_reserved_ips_subnet
+# mongo_1_ip
+# mongo_2_ip
+# mongo_3_ip
 #
 # === Outputs:
 #
@@ -48,17 +54,47 @@ variable "instance_ami_filter_name" {
 
 variable "mongo_1_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Router Mongo instance 1 and EBS volume"
+  description = "Name of the subnet to place the Mongo instance 1 and EBS volume"
 }
 
 variable "mongo_2_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Router Mongo 2 and EBS volume"
+  description = "Name of the subnet to place the Mongo 2 and EBS volume"
 }
 
 variable "mongo_3_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the Router Mongo 3 and EBS volume"
+  description = "Name of the subnet to place the Mongo 3 and EBS volume"
+}
+
+variable "mongo_1_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "mongo_2_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "mongo_3_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "mongo_1_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "mongo_2_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "mongo_3_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
 }
 
 # Resources
@@ -78,46 +114,27 @@ resource "aws_key_pair" "mongo_key" {
 }
 
 # Instance 1
-resource "aws_elb" "mongo_1_elb" {
-  name            = "${var.stackname}-mongo-1"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_elb_id}"]
-  internal        = "true"
+resource "aws_network_interface" "mongo-1_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_1_reserved_ips_subnet)}"
+  private_ips     = ["${var.mongo_1_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
 
-  listener {
-    instance_port     = 27017
-    instance_protocol = "tcp"
-    lb_port           = 27017
-    lb_protocol       = "tcp"
+  tags {
+    Name            = "${var.stackname}-mongo-1"
+    Project         = "${var.stackname}"
+    aws_hostname    = "mongo-1"
+    aws_migration   = "mongo"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
   }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:27017"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-mongo-1", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo")}"
 }
 
 resource "aws_route53_record" "mongo_1_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
   name    = "mongo-1.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
-
-  alias {
-    name                   = "${aws_elb.mongo_1_elb.dns_name}"
-    zone_id                = "${aws_elb.mongo_1_elb.zone_id}"
-    evaluate_target_health = true
-  }
+  records = ["${var.mongo_1_ip}"]
+  ttl     = 300
 }
 
 module "mongo-1" {
@@ -131,52 +148,33 @@ module "mongo-1" {
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.mongo_1_elb.id}"]
+  instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "150"
 }
 
 # Instance 2
-resource "aws_elb" "mongo_2_elb" {
-  name            = "${var.stackname}-mongo-2"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_elb_id}"]
-  internal        = "true"
+resource "aws_network_interface" "mongo-2_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_2_reserved_ips_subnet)}"
+  private_ips     = ["${var.mongo_2_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
 
-  listener {
-    instance_port     = 27017
-    instance_protocol = "tcp"
-    lb_port           = 27017
-    lb_protocol       = "tcp"
+  tags {
+    Name            = "${var.stackname}-mongo-2"
+    Project         = "${var.stackname}"
+    aws_hostname    = "mongo-2"
+    aws_migration   = "mongo"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
   }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:27017"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-mongo-2", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo")}"
 }
 
 resource "aws_route53_record" "mongo_2_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
   name    = "mongo-2.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
-
-  alias {
-    name                   = "${aws_elb.mongo_2_elb.dns_name}"
-    zone_id                = "${aws_elb.mongo_2_elb.zone_id}"
-    evaluate_target_health = true
-  }
+  records = ["${var.mongo_2_ip}"]
+  ttl     = 300
 }
 
 module "mongo-2" {
@@ -186,56 +184,37 @@ module "mongo-2" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-2")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "m4.large"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.mongo_2_elb.id}"]
+  instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "150"
 }
 
 # Instance 3
-resource "aws_elb" "mongo_3_elb" {
-  name            = "${var.stackname}-mongo-3"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_elb_id}"]
-  internal        = "true"
+resource "aws_network_interface" "mongo-3_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_3_reserved_ips_subnet)}"
+  private_ips     = ["${var.mongo_3_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
 
-  listener {
-    instance_port     = 27017
-    instance_protocol = "tcp"
-    lb_port           = 27017
-    lb_protocol       = "tcp"
+  tags {
+    Name            = "${var.stackname}-mongo-3"
+    Project         = "${var.stackname}"
+    aws_hostname    = "mongo-3"
+    aws_migration   = "mongo"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
   }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:27017"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-mongo-3", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo")}"
 }
 
 resource "aws_route53_record" "mongo_3_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
   name    = "mongo-3.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
-
-  alias {
-    name                   = "${aws_elb.mongo_3_elb.dns_name}"
-    zone_id                = "${aws_elb.mongo_3_elb.zone_id}"
-    evaluate_target_health = true
-  }
+  records = ["${var.mongo_3_ip}"]
+  ttl     = 300
 }
 
 module "mongo-3" {
@@ -245,13 +224,34 @@ module "mongo-3" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-3")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "m4.large"
   create_instance_key           = false
   instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.mongo_3_elb.id}"]
+  instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "150"
+}
+
+resource "aws_iam_policy" "mongo-iam_policy" {
+  name   = "${var.stackname}-mongo-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "mongo-1_iam_role_policy_attachment" {
+  role       = "${module.mongo-1.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mongo-iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mongo-2_iam_role_policy_attachment" {
+  role       = "${module.mongo-2.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mongo-iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mongo-3_iam_role_policy_attachment" {
+  role       = "${module.mongo-3.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mongo-iam_policy.arn}"
 }
 
 # Outputs
@@ -259,15 +259,15 @@ module "mongo-3" {
 
 output "mongo_1_service_dns_name" {
   value       = "${aws_route53_record.mongo_1_service_record.fqdn}"
-  description = "DNS name to access the Router Mongo 1 internal service"
+  description = "DNS name to access the Mongo 1 internal service"
 }
 
 output "mongo_2_service_dns_name" {
   value       = "${aws_route53_record.mongo_2_service_record.fqdn}"
-  description = "DNS name to access the Router Mongo 2 internal service"
+  description = "DNS name to access the Mongo 2 internal service"
 }
 
 output "mongo_3_service_dns_name" {
   value       = "${aws_route53_record.mongo_3_service_record.fqdn}"
-  description = "DNS name to access the Router Mongo 3 internal service"
+  description = "DNS name to access the Mongo 3 internal service"
 }
