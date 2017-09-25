@@ -15,3 +15,9 @@
       entry: tools/json-check.sh
       language: script
       files: \.json$
+    - id: terraform-version-check
+      name: ===> Checking consistent versions of Terraform
+      entry: tools/terraform-version-check.rb
+      language: ruby
+      files: \.tf$
+
