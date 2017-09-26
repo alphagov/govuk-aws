@@ -54,6 +54,17 @@ resource "aws_security_group_rule" "allow_office_to_deploy" {
   cidr_blocks       = ["${var.office_ips}"]
 }
 
+# Allow Carrenza Integration access to trigger automated deployments
+resource "aws_security_group_rule" "allow_carrenza_to_deploy" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.deploy_elb.id}"
+  cidr_blocks       = ["${var.carrenza_integration_ips}"]
+}
+
 # TODO test whether egress rules are needed on ELBs
 resource "aws_security_group_rule" "allow_deploy_elb_egress" {
   type              = "egress"
