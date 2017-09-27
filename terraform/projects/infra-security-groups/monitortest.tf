@@ -34,19 +34,6 @@ resource "aws_security_group_rule" "allow_monitortest_external_elb_in" {
   source_security_group_id = "${aws_security_group.monitortest_external_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_monitortest_internal_elb_in" {
-  type      = "ingress"
-  from_port = 5667
-  to_port   = 5667
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitortest.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitortest_internal_elb.id}"
-}
-
 resource "aws_security_group" "monitortest_external_elb" {
   name        = "${var.stackname}_monitortest_external_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
@@ -77,34 +64,18 @@ resource "aws_security_group_rule" "allow_monitortest_external_elb_egress" {
   security_group_id = "${aws_security_group.monitortest_external_elb.id}"
 }
 
-resource "aws_security_group" "monitortest_internal_elb" {
-  name        = "${var.stackname}_monitortest_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access the monitortest ELB"
-
-  tags {
-    Name = "${var.stackname}_monitortest_internal_elb_access"
-  }
-}
-
-resource "aws_security_group_rule" "allow_management_to_monitortest_internal_elb_ncsa" {
+## MANAGEMENT RULES
+resource "aws_security_group_rule" "allow_node_exporter_ingress_from_monitortest" {
   type      = "ingress"
-  from_port = 5667
-  to_port   = 5667
+  from_port = 9091
+  to_port   = 9091
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.monitortest_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
-}
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.management.id}"
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_monitortest_internal_elb_egress" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.monitortest_internal_elb.id}"
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.monitortest.id}"
 }
 
 output "sg_monitortest_id" {
@@ -113,8 +84,4 @@ output "sg_monitortest_id" {
 
 output "sg_monitortest_external_elb_id" {
   value = "${aws_security_group.monitortest_external_elb.id}"
-}
-
-output "sg_monitortest_internal_elb_id" {
-  value = "${aws_security_group.monitortest_internal_elb.id}"
 }
