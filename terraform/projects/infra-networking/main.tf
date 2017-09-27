@@ -99,6 +99,16 @@ variable "private_subnet_rds_availability_zones" {
   description = "Map containing private rds subnet names and availability zones associated"
 }
 
+variable "private_subnet_reserved_ips_cidrs" {
+  type        = "map"
+  description = "Map containing private ENI subnet names and CIDR associated"
+}
+
+variable "private_subnet_reserved_ips_availability_zones" {
+  type        = "map"
+  description = "Map containing private ENI subnet names and availability zones associated"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -188,6 +198,15 @@ module "infra_private_subnet_rds" {
   subnet_nat_gateways_length = "0"
 }
 
+module "infra_private_subnet_reserved_ips" {
+  source                     = "../../modules/aws/network/private_subnet"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags               = "${map("Project", var.stackname, "aws_migration", "eni")}"
+  subnet_cidrs               = "${var.private_subnet_reserved_ips_cidrs}"
+  subnet_availability_zones  = "${var.private_subnet_reserved_ips_availability_zones}"
+  subnet_nat_gateways_length = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 output "vpc_id" {
@@ -263,5 +282,24 @@ output "private_subnet_rds_names_azs_map" {
 
 output "private_subnet_rds_names_route_tables_map" {
   value       = "${module.infra_private_subnet_rds.subnet_names_route_tables_map}"
+  description = "Map containing the name of each private subnet and route_table ID associated"
+}
+
+output "private_subnet_reserved_ips_ids" {
+  value       = "${module.infra_private_subnet_reserved_ips.subnet_ids}"
+  description = "List of private subnet IDs"
+}
+
+output "private_subnet_reserved_ips_names_ids_map" {
+  value       = "${module.infra_private_subnet_reserved_ips.subnet_names_ids_map}"
+  description = "Map containing the pair name-id for each private subnet created"
+}
+
+output "private_subnet_reserved_ips_names_azs_map" {
+  value = "${var.private_subnet_reserved_ips_availability_zones}"
+}
+
+output "private_subnet_reserved_ips_names_route_tables_map" {
+  value       = "${module.infra_private_subnet_reserved_ips.subnet_names_route_tables_map}"
   description = "Map containing the name of each private subnet and route_table ID associated"
 }

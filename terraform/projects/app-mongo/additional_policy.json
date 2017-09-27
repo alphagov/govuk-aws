@@ -1,0 +1,16 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1499854881000",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:AttachNetworkInterface"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
