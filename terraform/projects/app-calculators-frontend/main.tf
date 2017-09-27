@@ -9,7 +9,7 @@
 # aws_environment
 # ssh_public_key
 # instance_ami_filter_name
-# elb_certname
+# elb_internal_certname
 # asg_max_size
 # asg_min_size
 # asg_desired_capacity

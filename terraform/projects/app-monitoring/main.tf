@@ -9,7 +9,7 @@
 # aws_environment
 # ssh_public_key
 # instance_ami_filter_name
-# elb_certname
+# elb_external_certname
 #
 # === Outputs:
 #
@@ -41,7 +41,7 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
-variable "elb_certname" {
+variable "elb_external_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -57,8 +57,8 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-data "aws_acm_certificate" "elb_cert" {
-  domain   = "${var.elb_certname}"
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -74,7 +74,7 @@ resource "aws_elb" "monitoring_external_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {
