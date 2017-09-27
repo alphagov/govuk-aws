@@ -7,13 +7,14 @@
 
 set -e
 
-while getopts "c:d:e:p:s:h" option
+while getopts "c:d:e:p:s:r:h" option
 do
   case $option in
     c ) CMD=$OPTARG ;;
     d ) DATA_DIR=$OPTARG ;;
     e ) ENVIRONMENT=$OPTARG ;;
     p ) PROJECT=$OPTARG ;;
+    r ) GOVUK_AWS_REPO=$OPTARG ;;
     s ) STACKNAME=$OPTARG ;;
     h ) HELP=1 ;;
   esac
@@ -23,10 +24,11 @@ function usage() {
   cat <<EOM
 usage: $0 -c -e -p -s
 
-     -c   The Terraform command (CMD) to run, eg "init", "plan" or "apply".
+     -c   The Terraform command (CMD) to run, eg "plan", "apply" or "destroy".
      -d   The root of the data directory (DATA_DIR) to take .tfvars files from.
      -e   The ENVIRONMENT to deploy to eg "aws-integration".
      -s   Specify the STACKNAME of the ".tfvars" and ".backend" files.
+     -r   Specify the GOVUK_AWS_REPO location (ie the root of this repository).
      -p   Specify which PROJECT to create, eg "infra-networking".
      -h   Display this message.
 
@@ -52,15 +54,24 @@ fi
 # un-shift all the parsed arguments
 shift $(expr $OPTIND - 1)
 
+# Unless we set the argument or env var, assume we're running this from the
+# root of the project
+if [[ -z $GOVUK_AWS_REPO ]]; then
+  GOVUK_AWS_REPO=$(pwd)
+fi
+
+# Move to AWS repo to run commands
+cd $GOVUK_AWS_REPO
+
 # Set up our locations
-TERRAFORM_DIR='./terraform'
+TERRAFORM_DIR="${GOVUK_AWS_REPO}/terraform"
 
 PROJECT_DIR="${TERRAFORM_DIR}/projects/${PROJECT}"
 BACKEND_FILE="${ENVIRONMENT}.${STACKNAME}.backend"
 
-# We're going to CD into $PROJECT_DIR so make paths relative to that.
+# Make DATA_DIR path absolute so we can run script from anywhere
+DATA_DIR="$(cd ${DATA_DIR} && pwd)"
 echo "data dir is " $DATA_DIR
-DATA_DIR="../../../${DATA_DIR}"
 
 COMMON_DATA_DIR="${DATA_DIR}/common/${ENVIRONMENT}"
 
@@ -100,19 +111,19 @@ elif [[ $CMD == "init" ]] && [[ ! -f $PROJECT_DIR/$BACKEND_FILE ]]; then
   log_error "Could not find backend file '$PROJECT_DIR/$BACKEND_FILE'"
 
 # e.g. terraform/projects/app-foo/../../data/app-foo/
-elif [[ ! -f $PROJECT_DIR/$STACK_COMMON_DATA ]] && \
-     [[ ! -f $PROJECT_DIR/$STACK_PROJECT_DATA ]] && \
-     [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]] && \
-     [[ ! -f $PROJECT_DIR/$COMMON_DATA ]]  && \
-     [[ ! -f $PROJECT_DIR/$SECRET_COMMON_PROJECT_DATA ]]  && \
-     [[ ! -f $PROJECT_DIR/$COMMON_PROJECT_DATA ]]; then
+elif [[ ! -f $STACK_COMMON_DATA ]] && \
+     [[ ! -f $STACK_PROJECT_DATA ]] && \
+     [[ ! -f $SECRET_PROJECT_DATA ]] && \
+     [[ ! -f $COMMON_DATA ]]  && \
+     [[ ! -f $SECRET_COMMON_PROJECT_DATA ]]  && \
+     [[ ! -f $COMMON_PROJECT_DATA ]]; then
   log_error 'Could not find any tfvar files. Looked for:\n' \
-            "\t$PROJECT_DIR/$STACK_COMMON_DATA \n " \
-            "\t$PROJECT_DIR/$STACK_PROJECT_DATA \n " \
-            "\t$PROJECT_DIR/$SECRET_PROJECT_DATA \n " \
-            "\t$PROJECT_DIR/$COMMON_DATA\n " \
-            "\t$PROJECT_DIR/$SECRET_COMMON_PROJECT_DATA\n " \
-            "\t$PROJECT_DIR/$COMMON_PROJECT_DATA"
+            "\t$STACK_COMMON_DATA \n " \
+            "\t$STACK_PROJECT_DATA \n " \
+            "\t$SECRET_PROJECT_DATA \n " \
+            "\t$COMMON_DATA\n " \
+            "\t$SECRET_COMMON_PROJECT_DATA\n " \
+            "\t$COMMON_PROJECT_DATA"
 fi
 
 # If there's been an error print the usage & exit
