@@ -34,6 +34,19 @@ resource "aws_security_group_rule" "allow_monitortest_external_elb_in" {
   source_security_group_id = "${aws_security_group.monitortest_external_elb.id}"
 }
 
+resource "aws_security_group_rule" "allow_monitortest_external_elb_alertmanager_in" {
+  type      = "ingress"
+  from_port = 9093
+  to_port   = 9093
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.monitortest.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.monitortest_external_elb.id}"
+}
+
 resource "aws_security_group" "monitortest_external_elb" {
   name        = "${var.stackname}_monitortest_external_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
