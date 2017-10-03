@@ -28,7 +28,6 @@ content-performance-manager
 content-tagger
 email-alert-api
 email-alert-service
-govuk-delivery
 hmrc-manuals-api
 imminence
 link-checker-api
