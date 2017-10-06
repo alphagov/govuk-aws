@@ -1,16 +1,18 @@
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.9.10"
+  required_version = "= 0.10.7"
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 # used by the fastly ip ranges provider.
 # an API key is needed but 'fake' seems to work.
 provider "fastly" {
   api_key = "fake"
+  version = "0.1.2"
 }
 
 data "fastly_ip_ranges" "fastly" {}

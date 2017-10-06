@@ -70,11 +70,12 @@ variable "cluster_name" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.9.10"
+  required_version = "= 0.10.7"
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 resource "aws_elb" "rummager-elasticsearch_elb" {

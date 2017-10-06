@@ -90,7 +90,7 @@ variable "remote_state_infra_artefact_bucket_stack" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.9.10"
+  required_version = "= 0.10.7"
 }
 
 # This is one of two places that should need to use this particular remote state
@@ -106,7 +106,8 @@ data "terraform_remote_state" "artefact_bucket" {
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {

@@ -35,16 +35,18 @@ variable "aws_environment" {
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.9.10"
+  required_version = "= 0.10.7"
 }
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
+  version = "1.0.0"
 }
 
 provider "aws" {
-  alias  = "secondary"
-  region = "${var.aws_secondary_region}"
+  alias   = "secondary"
+  region  = "${var.aws_secondary_region}"
+  version = "1.0.0"
 }
 
 # Create the buckets
