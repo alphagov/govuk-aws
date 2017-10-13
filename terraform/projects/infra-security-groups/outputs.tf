@@ -102,6 +102,18 @@ output "sg_deploy_id" {
   value = "${aws_security_group.deploy.id}"
 }
 
+output "sg_docker-frontend_elb_internal_id" {
+  value = "${aws_security_group.docker-frontend_elb_internal.id}"
+}
+
+output "sg_docker-frontend_elb_external_id" {
+  value = "${aws_security_group.docker-frontend_elb_external.id}"
+}
+
+output "sg_docker-frontend_id" {
+  value = "${aws_security_group.docker-frontend.id}"
+}
+
 output "sg_docker_management_etcd_elb_id" {
   value = "${aws_security_group.docker_management_etcd_elb.id}"
 }
