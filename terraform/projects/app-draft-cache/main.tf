@@ -69,6 +69,12 @@ resource "aws_elb" "draft-cache_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_draft-cache_elb_id}"]
   internal        = "true"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-draft-cache-internal-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 80
     instance_protocol = "http"

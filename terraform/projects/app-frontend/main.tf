@@ -76,6 +76,12 @@ resource "aws_elb" "frontend_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_elb_id}"]
   internal        = "true"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-frontend-internal-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 80
     instance_protocol = "http"

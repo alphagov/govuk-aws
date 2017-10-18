@@ -84,6 +84,12 @@ resource "aws_elb" "apt_external_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_apt_external_elb_id}"]
   internal        = "false"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-apt-external-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 80
     instance_protocol = "http"
@@ -127,6 +133,12 @@ resource "aws_elb" "apt_internal_elb" {
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_apt_internal_elb_id}"]
   internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-apt-internal-elb"
+    interval      = 60
+  }
 
   listener {
     instance_port     = 80

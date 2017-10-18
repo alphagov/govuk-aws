@@ -58,6 +58,12 @@ resource "aws_elb" "rabbitmq_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_elb_id}"]
   internal        = "true"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-rabbitmq-internal-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 5672
     instance_protocol = "tcp"

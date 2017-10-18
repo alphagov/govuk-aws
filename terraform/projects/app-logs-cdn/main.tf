@@ -66,6 +66,12 @@ resource "aws_elb" "logs-cdn_external_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
   internal        = "false"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-logs-cdn-external-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = "6514"
     instance_protocol = "tcp"

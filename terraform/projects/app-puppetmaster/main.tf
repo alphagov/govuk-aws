@@ -57,6 +57,12 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-puppetmaster-bootstrap-external-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 22
     instance_protocol = "tcp"
@@ -97,6 +103,12 @@ resource "aws_elb" "puppetmaster_internal_elb" {
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_elb_id}"]
   internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-puppetmaster-internal-elb"
+    interval      = 60
+  }
 
   listener {
     instance_port     = "8140"
