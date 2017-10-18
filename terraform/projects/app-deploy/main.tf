@@ -92,6 +92,12 @@ resource "aws_elb" "deploy_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_elb_id}"]
   internal        = "false"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "AWSLogs/${var.stackname}-deploy_elb"
+    interval      = 5
+  }
+
   listener {
     instance_port     = 80
     instance_protocol = "http"
