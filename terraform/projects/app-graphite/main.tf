@@ -237,6 +237,11 @@ resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_attachment
   policy_arn = "${aws_iam_policy.graphite_1_iam_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_cloudwatch_attachment" {
+  role       = "${module.graphite-1.instance_iam_role_name}"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
