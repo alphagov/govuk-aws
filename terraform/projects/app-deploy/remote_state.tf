@@ -88,7 +88,7 @@ data "terraform_remote_state" "infra_aws_logging" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_stack_dns_zones_key_stack, var.stackname)}/infra-aws-logging.tfstate"
+    key    = "${coalesce(var.remote_state_infra_aws_logging_key_stack, var.stackname)}/infra-aws-logging.tfstate"
     region = "eu-west-1"
   }
 }
