@@ -86,6 +86,12 @@ resource "aws_elb" "graphite_external_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_external_elb_id}"]
   internal        = "false"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-graphite-external-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 80
     instance_protocol = "http"
@@ -141,6 +147,12 @@ resource "aws_elb" "graphite_internal_elb" {
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_internal_elb_id}"]
   internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-graphite-internal-elb"
+    interval      = 60
+  }
 
   listener {
     instance_port     = 2003

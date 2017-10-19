@@ -84,6 +84,12 @@ resource "aws_elb" "backend_elb_external" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_external_id}"]
   internal        = "false"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-backend-external-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = "80"
     instance_protocol = "http"
@@ -135,6 +141,12 @@ resource "aws_elb" "backend_elb_internal" {
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_internal_id}"]
   internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-backend-internal-elb"
+    interval      = 60
+  }
 
   listener {
     instance_port     = "80"

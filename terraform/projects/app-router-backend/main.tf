@@ -95,6 +95,12 @@ resource "aws_elb" "router_api_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-api_elb_id}"]
   internal        = "true"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-router-api-internal-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 80
     instance_protocol = "http"
@@ -139,6 +145,12 @@ resource "aws_elb" "router_backend_1_elb" {
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
   internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-router-backend-1-internal-elb"
+    interval      = 60
+  }
 
   listener {
     instance_port     = 27017
@@ -199,6 +211,12 @@ resource "aws_elb" "router_backend_2_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
   internal        = "true"
 
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-router-backend-2-internal-elb"
+    interval      = 60
+  }
+
   listener {
     instance_port     = 27017
     instance_protocol = "tcp"
@@ -257,6 +275,12 @@ resource "aws_elb" "router_backend_3_elb" {
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
   internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "${var.stackname}-router-backend-3-internal-elb"
+    interval      = 60
+  }
 
   listener {
     instance_port     = 27017

@@ -34,6 +34,12 @@ variable "remote_state_infra_stack_dns_zones_key_stack" {
   default     = ""
 }
 
+variable "remote_state_infra_aws_logging_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_aws_logging remote state "
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -73,6 +79,16 @@ data "terraform_remote_state" "infra_stack_dns_zones" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_stack_dns_zones_key_stack, var.stackname)}/infra-stack-dns-zones.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+data "terraform_remote_state" "infra_aws_logging" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_aws_logging_key_stack, var.stackname)}/infra-aws-logging.tfstate"
     region = "eu-west-1"
   }
 }
