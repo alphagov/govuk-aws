@@ -35,6 +35,7 @@
 # === Outputs:
 #
 # instance_iam_role_id
+# autoscaling_group_name
 #
 
 variable "name" {
@@ -278,4 +279,9 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
 output "instance_iam_role_name" {
   value       = "${aws_iam_role.node_iam_role.name}"
   description = "Node IAM Role Name. Use with aws_iam_role_policy_attachment to attach specific policies to the node role"
+}
+
+output "autoscaling_group_name" {
+  value       = "${aws_autoscaling_group.node_autoscaling_group.name}"
+  description = "The name of the node auto scaling group."
 }
