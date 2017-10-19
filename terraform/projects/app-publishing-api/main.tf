@@ -1,20 +1,8 @@
-# == Manifest: projects::app-publishing-api
-#
-# publishing-api node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# elb_external_certname
-# elb_internal_certname
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-publishing-api
+*
+* publishing-api node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

@@ -1,55 +1,35 @@
-# == Modules: aws::alarms::elb
-#
-# This module creates the following CloudWatch alarms in the
-# AWS/ELB namespace:
-#
-#   - HTTPCode_Backend_4XX greater than or equal to threshold
-#   - HTTPCode_Backend_5XX greater than or equal to threshold
-#   - HTTPCode_ELB_4XX greater than or equal to threshold
-#   - HTTPCode_ELB_5XX greater than or equal to threshold
-#   - SurgeQueueLength greater than or equal to threshold
-#   - HealthyHostCount less than threshold
-#
-# All metrics are measured during a period of 60 seconds and evaluated
-# during 5 consecutive periods.
-#
-# HTTPCode_* metrics are only reported for HTTP listeners. These metrics
-# should encapsulate errors caused by high SurgeQueueLength values and
-# lack of healthy backends.
-#
-# For HTTP listeners we can disable SurgeQueueLength and HealthyHostCount
-# alarms. For TCP listeners, we should disable HTTPCode_* alarms.
-#
-# To disable HTTPCode_* alarms, set the `httpcode_*_threshold` parameters to 0.
-# To disable the SurgeQueueLength alarm, set the `surgequeuelength_threshold`
-# parameter to 0.
-# To disable the HealthyHostCount alarm, set the `healthyhostcount_threshold`
-# parameter to 0.
-#
-# AWS/ELB metrics reference:
-# http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html
-#
-# === Variables:
-#
-# name_prefix
-# alarm_actions
-# elb_name
-# httpcode_backend_4xx_threshold
-# httpcode_backend_5xx_threshold
-# httpcode_elb_4xx_threshold
-# httpcode_elb_5xx_threshold
-# surgequeuelength_threshold
-# healthyhostcount_threshold
-#
-# === Outputs:
-#
-# alarm_elb_httpcode_backend_4xx_id
-# alarm_elb_httpcode_backend_5xx_id
-# alarm_elb_httpcode_elb_4xx_id
-# alarm_elb_httpcode_elb_5xx_id
-# alarm_elb_surgequeuelength_id
-# alarm_elb_healthyhostcount_id
-#
+/**
+* ## Module: aws::alarms::elb
+*
+* This module creates the following CloudWatch alarms in the
+* AWS/ELB namespace:
+*
+*   - HTTPCode_Backend_4XX greater than or equal to threshold
+*   - HTTPCode_Backend_5XX greater than or equal to threshold
+*   - HTTPCode_ELB_4XX greater than or equal to threshold
+*   - HTTPCode_ELB_5XX greater than or equal to threshold
+*   - SurgeQueueLength greater than or equal to threshold
+*   - HealthyHostCount less than threshold
+*
+* All metrics are measured during a period of 60 seconds and evaluated
+* during 5 consecutive periods.
+*
+* HTTPCode_* metrics are only reported for HTTP listeners. These metrics
+* should encapsulate errors caused by high SurgeQueueLength values and
+* lack of healthy backends.
+*
+* For HTTP listeners we can disable SurgeQueueLength and HealthyHostCount
+* alarms. For TCP listeners, we should disable HTTPCode_* alarms.
+*
+* To disable HTTPCode_* alarms, set the `httpcode_*_threshold` parameters to 0.
+* To disable the SurgeQueueLength alarm, set the `surgequeuelength_threshold`
+* parameter to 0.
+* To disable the HealthyHostCount alarm, set the `healthyhostcount_threshold`
+* parameter to 0.
+*
+* AWS/ELB metrics reference:
+* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html
+*/
 variable "name_prefix" {
   type        = "string"
   description = "The alarm name prefix."

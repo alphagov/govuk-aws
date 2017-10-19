@@ -1,21 +1,8 @@
-# == Manifest: projects::infra-root-dns-zones
-#
-# This module creates the internal and external root DNS zones.
-#
-# === Variables:
-#
-# aws_region
-# create_internal_zone
-# root_domain_internal_name
-# create_external_zone
-# root_domain_external_name
-#
-# === Outputs:
-#
-# internal_root_zone_id
-# external_root_zone_id
-#
-
+/**
+* ## Project: infra-root-dns-zones
+*
+* This module creates the internal and external root DNS zones.
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

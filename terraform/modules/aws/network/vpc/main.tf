@@ -1,20 +1,8 @@
-# == Modules: aws::network::vpc
-#
-# This module creates a VPC, Internet Gateway and route associated
-#
-# === Variables:
-#
-# default_tags
-# name
-# cidr
-#
-# === Outputs:
-#
-# vpc_id
-# vpc_cidr
-# internet_gateway_id
-# route_table_public_id
-#
+/**
+* ## Modules: aws::network::vpc
+*
+* This module creates a VPC, Internet Gateway and route associated
+*/
 variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"

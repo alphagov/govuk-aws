@@ -1,18 +1,8 @@
-# == Manifest: projects::app-docker_management
-#
-# Docker node from the 'management' VDC
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-docker_management
+*
+* Docker management node, used to run run adhoc containers.
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

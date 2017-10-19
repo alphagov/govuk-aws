@@ -1,30 +1,8 @@
-# == Manifest: projects::app-mongo
-#
-# Mongo hosts
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# mongo_1_subnet
-# mongo_2_subnet
-# mongo_3_subnet
-# mongo_1_reserved_ips_subnet
-# mongo_2_reserved_ips_subnet
-# mongo_3_reserved_ips_subnet
-# mongo_1_ip
-# mongo_2_ip
-# mongo_3_ip
-#
-# === Outputs:
-#
-# mongo_1_service_dns_name
-# mongo_2_service_dns_name
-# mongo_3_service_dns_name
-#
+/**
+* ## Project: app-mongo
+*
+* Mongo hosts
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

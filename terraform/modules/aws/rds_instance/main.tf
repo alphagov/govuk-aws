@@ -1,31 +1,8 @@
-# == Module: aws::rds_instance
-#
-# Create a RDS instance
-#
-# === Variables:
-#
-# name
-# engine_name
-# engine_version
-# default_tags
-# subnet_ids
-# username
-# password
-# allocated_storage
-# storage_type
-# instance_class
-# security_group_ids
-# multi_az
-# create_replicate_source_db
-# replicate_source_db
-#
-# === Outputs:
-#
-# rds_instance_id
-# rds_instance_resource_id
-# rds_instance_endpoint
-# rds_instance_address
-
+/**
+* ## Module: aws::rds_instance
+*
+* Create an RDS instance
+*/
 variable "name" {
   type        = "string"
   description = "The common name for all the resources created by this module"

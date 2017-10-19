@@ -1,19 +1,8 @@
-# == Manifest: projects::app-apt
-#
-# Apt node
-#
-# === Variables:
-#
-# aws_environment
-# aws_region
-# stackname
-# ssh_public_key
-# instance_ami_filter_name
-# apt_1_subnet
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-apt
+*
+* Apt node
+*/
 variable "aws_environment" {
   type        = "string"
   description = "AWS environment"

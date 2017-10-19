@@ -1,23 +1,8 @@
-# == Manifest: projects::app-search
-#
-# Search application servers
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# asg_max_size
-# asg_min_size
-# asg_desired_capacity
-# elb_internal_certname
-# app_service_records
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-search
+*
+* Search application servers
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

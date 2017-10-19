@@ -1,43 +1,19 @@
-# == Module: aws::node_group
-#
-# This module creates an instance in a autoscaling group that expands
-# in the subnets specified by the variable instance_subnet_ids. An ELB
-# is also provisioned to access the instance. The instance AMI is Ubuntu,
-# you can specify the version with the instance_ami_filter_name variable.
-# The machine type can also be configured with a variable.
-#
-# When the variable create_service_dns_name is set to true, this module
-# will create a DNS name service_dns_name in the zone_id specified pointing
-# to the ELB record.
-#
-# Additionally, this module will create an IAM role that we can attach
-# policies to in other modules.
-#
-# === Variables:
-#
-# name
-# vpc_id
-# default_tags
-# instance_subnet_ids
-# instance_security_group_ids
-# instance_ami_filter_name
-# instance_type
-# create_instance_key
-# instance_key_name
-# instance_public_key
-# instance_user_data
-# instance_additional_user_data
-# asg_desired_capacity
-# asg_min_size
-# asg_max_size
-# root_block_device_volume_size
-#
-# === Outputs:
-#
-# instance_iam_role_id
-# autoscaling_group_name
-#
-
+/**
+* ## Module: aws::node_group
+*
+* This module creates an instance in a autoscaling group that expands
+* in the subnets specified by the variable instance_subnet_ids. An ELB
+* is also provisioned to access the instance. The instance AMI is Ubuntu,
+* you can specify the version with the instance_ami_filter_name variable.
+* The machine type can also be configured with a variable.
+*
+* When the variable create_service_dns_name is set to true, this module
+* will create a DNS name service_dns_name in the zone_id specified pointing
+* to the ELB record.
+*
+* Additionally, this module will create an IAM role that we can attach
+* policies to in other modules.
+*/
 variable "name" {
   type        = "string"
   description = "Jumpbox resources name. Only alphanumeric characters and hyphens allowed"

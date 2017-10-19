@@ -1,28 +1,17 @@
-# == Modules: aws::alarms::ec2
-#
-# This module creates the following CloudWatch alarms in the
-# AWS/EC2 namespace:
-#
-#   - CPUUtilization greater than or equal to threshold threshold, where
-#     `cpuutilization_threshold` is a given parameter
-#   - StatusCheckFailed_Instance greater than or equal to 1 (instance status
-#     check failed)
-#
-# Alarms are created for all the instances that belong to a given
-# autoscaling group name.
-#
-# === Variables:
-#
-# name_prefix
-# cpuutilization_threshold
-# alarm_actions
-# autoscaling_group_name
-#
-# === Outputs:
-#
-# alarm_ec2_cpuutilization_id
-# alarm_ec2_statuscheckfailed_instance_id
-#
+/**
+* ## Module: aws::alarms::ec2
+*
+* This module creates the following CloudWatch alarms in the
+* AWS/EC2 namespace:
+*
+*   - CPUUtilization greater than or equal to threshold threshold, where
+*     `cpuutilization_threshold` is a given parameter
+*   - StatusCheckFailed_Instance greater than or equal to 1 (instance status
+*     check failed)
+*
+* Alarms are created for all the instances that belong to a given
+* autoscaling group name.
+*/
 variable "name_prefix" {
   type        = "string"
   description = "The alarm name prefix."

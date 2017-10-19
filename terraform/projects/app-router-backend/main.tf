@@ -1,25 +1,8 @@
-# == Manifest: projects::app-router-backend
-#
-# Router backend hosts both Mongo and router-api
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# router-backend_1_subnet
-# router-backend_2_subnet
-# router-backend_3_subnet
-# elb_internal_certname
-#
-# === Outputs:
-#
-# router_backend_1_service_dns_name
-# router_backend_2_service_dns_name
-# router_backend_3_service_dns_name
-#
+/**
+* ## Project: app-router-backend
+*
+* Router backend hosts both Mongo and router-api
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

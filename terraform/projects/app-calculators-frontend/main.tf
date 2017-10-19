@@ -1,23 +1,8 @@
-# == Manifest: projects::app-calculators-frontend
-#
-# Calculators Frontend application servers
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# elb_internal_certname
-# asg_max_size
-# asg_min_size
-# asg_desired_capacity
-# app_service_records
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-calculators-frontend
+*
+* Calculators Frontend application servers
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

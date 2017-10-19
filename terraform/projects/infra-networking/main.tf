@@ -1,32 +1,8 @@
-# == Manifest: projects::infra-networking
-#
-# This module governs the creation of full network stacks.
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# public_subnet_cidrs
-# public_subnet_availability_zones
-# public_subnet_nat_gateway_enable
-# private_subnet_cidrs
-# private_subnet_availability_zones
-# private_subnet_nat_gateway_association
-# private_subnet_elasticache_cidrs
-# private_subnet_elasticache_availability_zones
-#
-# === Outputs:
-#
-# public_subnet_ids
-# public_subnet_names_ids_map
-# private_subnet_ids
-# private_subnet_names_ids_map
-# private_subnet_names_route_tables_map
-# private_subnet_elasticache_ids
-# private_subnet_elasticache_names_ids_map
-# private_subnet_elasticache_names_route_tables_map
-#
-
+/**
+* ## Project: infra-networking
+*
+* This module governs the creation of full network stacks.
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

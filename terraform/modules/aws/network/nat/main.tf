@@ -1,18 +1,9 @@
-# == Module: aws::network::nat
-#
-# Create a NAT gateway and associated EIP on each one of the public
-# subnets provided.
-#
-# === Variables:
-#
-# subnet_ids
-# subnet_ids_length
-#
-# === Outputs:
-#
-# nat_gateway_ids
-# nat_gateway_subnets_ids_map
-#
+/**
+* ## Module: aws::network::nat
+*
+* Create a NAT gateway and associated EIP on each one of the public
+* subnets provided.
+*/
 
 variable "subnet_ids" {
   type        = "list"

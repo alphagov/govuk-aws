@@ -1,18 +1,8 @@
-# == Manifest: projects::app-rabbitmq
-#
-# rabbitmq nodes (1 - 3)
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-rabbitmq
+*
+* Rabbitmq cluster
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

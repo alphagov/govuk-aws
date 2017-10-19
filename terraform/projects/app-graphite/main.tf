@@ -1,21 +1,8 @@
-# == Manifest: projects::app-graphite
-#
-# Graphite node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# graphite_1_subnet
-# elb_external_certname
-# elb_internal_certname
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-graphite
+*
+* Graphite node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

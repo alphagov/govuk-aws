@@ -1,34 +1,19 @@
-# == Modules: aws::network::private_subnet
-#
-# This module creates AWS private subnets on a given VPC, each one
-# with a route table and route table association.
-#
-# You can optionally provide a subnet_nat_gateways variable, indicating
-# the NAT Gateway ID that a subnet can use. If specified, then a
-# route will also be added by this module, enabling Internet access.
-#
-# If you provide subnet_nat_gateways, then subnet_nat_gateways_length
-# must also be provided with the number of elements in the subnet_nat_gateways
-# map. This is necessary to get around a Terraform issue that prevents a
-# "count" from evaluating computed values. Probably referenced here:
-# https://github.com/hashicorp/terraform/issues/10857
-#
-# === Variables:
-#
-# default_tags
-# vpc_id
-# subnet_cidrs
-# subnet_availability_zones
-# subnet_nat_gateways
-# subnet_nat_gateways_length
-#
-# === Outputs:
-#
-# subnet_ids
-# subnet_names_ids_map
-# subnet_route_table_ids
-# subnet_names_route_tables_map
-#
+/**
+* ## Modules: aws::network::private_subnet
+*
+* This module creates AWS private subnets on a given VPC, each one
+* with a route table and route table association.
+*
+* You can optionally provide a subnet_nat_gateways variable, indicating
+* the NAT Gateway ID that a subnet can use. If specified, then a
+* route will also be added by this module, enabling Internet access.
+*
+* If you provide subnet_nat_gateways, then subnet_nat_gateways_length
+* must also be provided with the number of elements in the subnet_nat_gateways
+* map. This is necessary to get around a Terraform issue that prevents a
+* "count" from evaluating computed values. Probably referenced here:
+* https://github.com/hashicorp/terraform/issues/10857
+*/
 variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"

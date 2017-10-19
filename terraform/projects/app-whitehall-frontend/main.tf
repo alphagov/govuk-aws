@@ -1,19 +1,8 @@
-# == Manifest: projects::app-whitehall-frontend
-#
-# Backend node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# elb_internal_certname
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-whitehall-frontend
+*
+* Whitehall Frontend nodes
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

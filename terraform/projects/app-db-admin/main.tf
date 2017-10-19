@@ -1,18 +1,10 @@
-# == Manifest: projects::app-db-admin
-#
-# Frontend application servers
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-db-admin
+*
+* Database administrator servers.
+*
+* These nodes connect to RDS instances and administer them.
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"
