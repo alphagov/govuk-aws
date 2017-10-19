@@ -40,6 +40,12 @@ variable "remote_state_infra_aws_logging_key_stack" {
   default     = ""
 }
 
+variable "remote_state_infra_stack_sns_alerts_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_stack_sns_alerts remote state "
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -89,6 +95,16 @@ data "terraform_remote_state" "infra_aws_logging" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_aws_logging_key_stack, var.stackname)}/infra-aws-logging.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+data "terraform_remote_state" "infra_stack_sns_alerts" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_stack_sns_alerts_key_stack, var.stackname)}/infra-stack-sns-alerts.tfstate"
     region = "eu-west-1"
   }
 }
