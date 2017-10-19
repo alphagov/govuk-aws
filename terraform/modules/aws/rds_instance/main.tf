@@ -34,11 +34,13 @@ variable "name" {
 variable "engine_name" {
   type        = "string"
   description = "RDS engine (eg mysql, postgresql)"
+  default     = ""
 }
 
 variable "engine_version" {
   type        = "string"
   description = "Which version of MySQL to use (eg 5.5.46)"
+  default     = ""
 }
 
 variable "default_tags" {
@@ -50,16 +52,19 @@ variable "default_tags" {
 variable "subnet_ids" {
   type        = "list"
   description = "Subnet IDs to assign to the aws_elasticache_subnet_group"
+  default     = []
 }
 
 variable "username" {
   type        = "string"
   description = "User to create on the database"
+  default     = ""
 }
 
 variable "password" {
   type        = "string"
   description = "Password for accessing the database."
+  default     = ""
 }
 
 variable "allocated_storage" {
@@ -137,6 +142,7 @@ variable "backup_window" {
 # --------------------------------------------------------------
 
 resource "aws_db_subnet_group" "subnet_group" {
+  count      = "${1 - var.create_replicate_source_db}"
   name       = "${var.name}"
   subnet_ids = ["${var.subnet_ids}"]
 
@@ -148,13 +154,8 @@ resource "aws_db_instance" "db_instance_replica" {
   # of that name in the instance. Which we don't want.
   count = "${var.create_replicate_source_db}"
 
-  engine                 = "${var.engine_name}"
-  engine_version         = "${var.engine_version}"
-  username               = "${var.username}"
-  password               = "${var.password}"
   instance_class         = "${var.instance_class}"
   storage_type           = "${var.storage_type}"
-  db_subnet_group_name   = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"

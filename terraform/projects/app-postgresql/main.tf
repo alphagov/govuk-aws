@@ -85,14 +85,8 @@ module "postgresql-standby_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
   name                       = "${var.stackname}-postgresql-standby"
-  engine_name                = "postgres"
-  engine_version             = "9.3.14"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_standby")}"
-  subnet_ids                 = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username                   = "${var.username}"
-  password                   = "${var.password}"
   instance_class             = "db.m4.large"
-  multi_az                   = "${var.multi_az}"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.postgresql-primary_rds_instance.rds_instance_id}"
