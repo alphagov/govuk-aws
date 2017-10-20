@@ -34,11 +34,13 @@ variable "name" {
 variable "engine_name" {
   type        = "string"
   description = "RDS engine (eg mysql, postgresql)"
+  default     = ""
 }
 
 variable "engine_version" {
   type        = "string"
   description = "Which version of MySQL to use (eg 5.5.46)"
+  default     = ""
 }
 
 variable "default_tags" {
@@ -50,16 +52,19 @@ variable "default_tags" {
 variable "subnet_ids" {
   type        = "list"
   description = "Subnet IDs to assign to the aws_elasticache_subnet_group"
+  default     = []
 }
 
 variable "username" {
   type        = "string"
   description = "User to create on the database"
+  default     = ""
 }
 
 variable "password" {
   type        = "string"
   description = "Password for accessing the database."
+  default     = ""
 }
 
 variable "allocated_storage" {
@@ -109,10 +114,35 @@ variable "parameter_group_name" {
   default     = ""
 }
 
+variable "skip_final_snapshot" {
+  type        = "string"
+  description = "Set to false to create a final snapshot when the cluster is deleted."
+  default     = "true"
+}
+
+variable "maintenance_window" {
+  type        = "string"
+  description = "The window to perform maintenance in."
+  default     = "Mon:01:00-Mon:03:00"
+}
+
+variable "backup_retention_period" {
+  type        = "string"
+  description = "The days to retain backups for."
+  default     = "7"
+}
+
+variable "backup_window" {
+  type        = "string"
+  description = "The daily time range during which automated backups are created if automated backups are enabled."
+  default     = "04:00-06:00"
+}
+
 # Resources
 # --------------------------------------------------------------
 
 resource "aws_db_subnet_group" "subnet_group" {
+  count      = "${1 - var.create_replicate_source_db}"
   name       = "${var.name}"
   subnet_ids = ["${var.subnet_ids}"]
 
@@ -124,21 +154,15 @@ resource "aws_db_instance" "db_instance_replica" {
   # of that name in the instance. Which we don't want.
   count = "${var.create_replicate_source_db}"
 
-  engine                 = "${var.engine_name}"
-  engine_version         = "${var.engine_version}"
-  username               = "${var.username}"
-  password               = "${var.password}"
-  allocated_storage      = "${var.allocated_storage}"
   instance_class         = "${var.instance_class}"
   storage_type           = "${var.storage_type}"
-  db_subnet_group_name   = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"
 
-  # TODO in production we probably want to re-enable this, possibly using:
-  # final_snapshot_identifier = "${var.name}-final-snapshot"
-  skip_final_snapshot = true
+  # TODO this should be enabled in a Production environment:
+  final_snapshot_identifier = "${var.name}-final-snapshot"
+  skip_final_snapshot       = "${var.skip_final_snapshot}"
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
@@ -148,21 +172,24 @@ resource "aws_db_instance" "db_instance" {
   # of that name in the instance. Which we don't want.
   count = "${1 - var.create_replicate_source_db}"
 
-  engine                 = "${var.engine_name}"
-  engine_version         = "${var.engine_version}"
-  username               = "${var.username}"
-  password               = "${var.password}"
-  allocated_storage      = "${var.allocated_storage}"
-  instance_class         = "${var.instance_class}"
-  storage_type           = "${var.storage_type}"
-  db_subnet_group_name   = "${aws_db_subnet_group.subnet_group.name}"
-  vpc_security_group_ids = ["${var.security_group_ids}"]
-  multi_az               = "${var.multi_az}"
-  parameter_group_name   = "${var.parameter_group_name}"
+  engine                  = "${var.engine_name}"
+  engine_version          = "${var.engine_version}"
+  username                = "${var.username}"
+  password                = "${var.password}"
+  allocated_storage       = "${var.allocated_storage}"
+  instance_class          = "${var.instance_class}"
+  storage_type            = "${var.storage_type}"
+  db_subnet_group_name    = "${aws_db_subnet_group.subnet_group.name}"
+  vpc_security_group_ids  = ["${var.security_group_ids}"]
+  multi_az                = "${var.multi_az}"
+  parameter_group_name    = "${var.parameter_group_name}"
+  maintenance_window      = "${var.maintenance_window}"
+  backup_retention_period = "${var.backup_retention_period}"
+  backup_window           = "${var.backup_window}"
 
-  # TODO in production we probably want to re-enable this, possibly using:
-  # final_snapshot_identifier = "${var.name}-final-snapshot"
-  skip_final_snapshot = true
+  # TODO this should be enabled in a Production environment:
+  final_snapshot_identifier = "${var.name}-final-snapshot"
+  skip_final_snapshot       = "${var.skip_final_snapshot}"
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
@@ -182,17 +209,33 @@ resource "aws_db_instance" "db_instance" {
 #
 
 output "rds_instance_id" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.id) : aws_db_instance.db_instance.id}"
+  value = "${aws_db_instance.db_instance.id}"
+}
+
+output "rds_replica_id" {
+  value = "${aws_db_instance.db_instance_replica.id}"
 }
 
 output "rds_instance_resource_id" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.resource_id) : aws_db_instance.db_instance.resource_id}"
+  value = "${aws_db_instance.db_instance.resource_id}"
+}
+
+output "rds_replica_resource_id" {
+  value = "${aws_db_instance.db_instance_replica.resource_id}"
 }
 
 output "rds_instance_endpoint" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.endpoint) : aws_db_instance.db_instance.endpoint}"
+  value = "${aws_db_instance.db_instance.endpoint}"
+}
+
+output "rds_replica_endpoint" {
+  value = "${aws_db_instance.db_instance_replica.endpoint}"
 }
 
 output "rds_instance_address" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.address) : aws_db_instance.db_instance.address}"
+  value = "${aws_db_instance.db_instance.address}"
+}
+
+output "rds_replica_address" {
+  value = "${aws_db_instance.db_instance_replica.address}"
 }

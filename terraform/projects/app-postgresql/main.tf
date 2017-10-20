@@ -63,7 +63,7 @@ module "postgresql-primary_rds_instance" {
   name               = "${var.stackname}-postgresql-primary"
   engine_name        = "postgres"
   engine_version     = "9.3.14"
-  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "api_postgresql_primary")}"
+  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_primary")}"
   subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username           = "${var.username}"
   password           = "${var.password}"
@@ -79,6 +79,25 @@ resource "aws_route53_record" "service_record" {
   type    = "CNAME"
   ttl     = 300
   records = ["${module.postgresql-primary_rds_instance.rds_instance_address}"]
+}
+
+module "postgresql-standby_rds_instance" {
+  source = "../../modules/aws/rds_instance"
+
+  name                       = "${var.stackname}-postgresql-standby"
+  default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_standby")}"
+  instance_class             = "db.m4.large"
+  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
+  create_replicate_source_db = "1"
+  replicate_source_db        = "${module.postgresql-primary_rds_instance.rds_instance_id}"
+}
+
+resource "aws_route53_record" "replica_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "postgresql-standby.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${module.postgresql-standby_rds_instance.rds_replica_address}"]
 }
 
 # Outputs
@@ -102,4 +121,14 @@ output "postgresql-primary_endpoint" {
 output "postgresql-primary_address" {
   value       = "${module.postgresql-primary_rds_instance.rds_instance_address}"
   description = "postgresql instance address"
+}
+
+output "postgresql-standby_endpoint" {
+  value       = "${module.postgresql-standby_rds_instance.rds_replica_endpoint}"
+  description = "postgresql replica instance endpoint"
+}
+
+output "postgresql-standby_address" {
+  value       = "${module.postgresql-standby_rds_instance.rds_replica_address}"
+  description = "postgresql replica instance address"
 }
