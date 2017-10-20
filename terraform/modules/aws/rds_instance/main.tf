@@ -209,17 +209,33 @@ resource "aws_db_instance" "db_instance" {
 #
 
 output "rds_instance_id" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.id) : aws_db_instance.db_instance.id}"
+  value = "${aws_db_instance.db_instance.id}"
+}
+
+output "rds_replica_id" {
+  value = "${aws_db_instance.db_instance_replica.id}"
 }
 
 output "rds_instance_resource_id" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.resource_id) : aws_db_instance.db_instance.resource_id}"
+  value = "${aws_db_instance.db_instance.resource_id}"
+}
+
+output "rds_replica_resource_id" {
+  value = "${aws_db_instance.db_instance_replica.resource_id}"
 }
 
 output "rds_instance_endpoint" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.endpoint) : aws_db_instance.db_instance.endpoint}"
+  value = "${aws_db_instance.db_instance.endpoint}"
+}
+
+output "rds_replica_endpoint" {
+  value = "${aws_db_instance.db_instance_replica.endpoint}"
 }
 
 output "rds_instance_address" {
-  value = "${var.create_replicate_source_db > 0 ? join("", aws_db_instance.db_instance_replica.*.address) : aws_db_instance.db_instance.address}"
+  value = "${aws_db_instance.db_instance.address}"
+}
+
+output "rds_replica_address" {
+  value = "${aws_db_instance.db_instance_replica.address}"
 }

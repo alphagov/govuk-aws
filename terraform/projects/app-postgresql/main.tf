@@ -97,7 +97,7 @@ resource "aws_route53_record" "replica_service_record" {
   name    = "postgresql-standby.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
-  records = ["${module.postgresql-standby_rds_instance.rds_instance_address}"]
+  records = ["${module.postgresql-standby_rds_instance.rds_replica_address}"]
 }
 
 # Outputs
@@ -124,11 +124,11 @@ output "postgresql-primary_address" {
 }
 
 output "postgresql-standby_endpoint" {
-  value       = "${module.postgresql-standby_rds_instance.rds_instance_endpoint}"
+  value       = "${module.postgresql-standby_rds_instance.rds_replica_endpoint}"
   description = "postgresql replica instance endpoint"
 }
 
 output "postgresql-standby_address" {
-  value       = "${module.postgresql-standby_rds_instance.rds_instance_address}"
+  value       = "${module.postgresql-standby_rds_instance.rds_replica_address}"
   description = "postgresql replica instance address"
 }
