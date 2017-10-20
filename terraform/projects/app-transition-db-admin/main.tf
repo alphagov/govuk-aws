@@ -1,17 +1,8 @@
-# == Manifest: projects::app-transition-db-admin
-#
-# DB admin boxes for Transition's RDS instance
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-transition-db-admin
+*
+* DB admin boxes for Transition's RDS instance
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

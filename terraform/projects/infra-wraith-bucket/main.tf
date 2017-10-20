@@ -1,18 +1,11 @@
-# == Manifest: projects:: Wraith-bucket :: buckets
-#
-# This creates 2 s3 buckets
-#
-# * wraith-logs -- The bucket that will hold the logs produced by wraith
-# * wraith_access_logs -- Bucket for logs to go to
-#
-# === Variables:
-#
-# aws_region
-# aws_environment
-#
-# === Outputs:
-#
-
+/**
+* ## Project: wraith-bucket
+*
+* This creates 2 S3 buckets
+*
+* wraith-logs: The bucket that will hold the logs produced by wraith
+* wraith_access_logs: Bucket for logs to go to
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

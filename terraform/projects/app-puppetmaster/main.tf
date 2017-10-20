@@ -1,18 +1,8 @@
-# == Manifest: projects::app-puppetmaster
-#
-# Puppetmaster node
-#
-# === Variables:
-#
-# aws_region
-# aws_environment
-# stackname
-# ssh_public_key
-# instance_ami_filter_name
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-puppetmaster
+*
+* Puppetmaster node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

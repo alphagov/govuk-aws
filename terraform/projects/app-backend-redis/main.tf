@@ -1,16 +1,8 @@
-# == Manifest: projects::app-backend-redis
-#
-# Backend VDC Redis Elasticache cluster
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-backend-redis
+*
+* Backend VDC Redis Elasticache cluster
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

@@ -1,18 +1,8 @@
-# == Manifest: projects::app-jumpbox
-#
-# Jumpbox node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-jumpbox
+*
+* Jumpbox node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

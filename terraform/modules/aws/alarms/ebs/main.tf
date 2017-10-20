@@ -1,25 +1,15 @@
-# == Modules: aws::alarms::ebs
-#
-# This module creates the following CloudWatch alarms in the
-# AWS/EBS namespace:
-#
-#   - VolumeQueueLength greater than or equal to threshold, where
-#     `volumequeuelength_threshold` is a given parameter
-#
-# AWS/EBS metrics reference:
-# http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ebs-metricscollected.html
-#
-# === Variables:
-#
-# name_prefix
-# volumequeuelength_threshold
-# alarm_actions
-# volume_id
-#
-# === Outputs:
-#
-# alarm_ebs_volumequeuelength_id
-#
+/**
+* ## Module: aws::alarms::ebs
+*
+* This module creates the following CloudWatch alarms in the
+* AWS/EBS namespace:
+*
+*   - VolumeQueueLength greater than or equal to threshold, where
+*     `volumequeuelength_threshold` is a given parameter
+*
+* AWS/EBS metrics reference:
+* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ebs-metricscollected.html
+*/
 variable "name_prefix" {
   type        = "string"
   description = "The alarm name prefix."

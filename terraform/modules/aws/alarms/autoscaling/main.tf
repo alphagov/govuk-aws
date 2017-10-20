@@ -1,22 +1,12 @@
-# == Modules: aws::alarms::autoscaling
-#
-# This module creates the following CloudWatch alarms in the
-# AWS/Autoscaling namespace:
-#
-#   - GroupInServiceInstances less than threshold, where
-#     `groupinserviceinstances_threshold` is a given parameter
-#
-# === Variables:
-#
-# name_prefix
-# groupinserviceinstances_threshold
-# alarm_actions
-# autoscaling_group_name
-#
-# === Outputs:
-#
-# alarm_autoscaling_groupinserviceinstances_id
-#
+/**
+* ## Module: aws::alarms::autoscaling
+*
+* This module creates the following CloudWatch alarms in the
+* AWS/Autoscaling namespace:
+*
+*   - GroupInServiceInstances less than threshold, where
+*     `groupinserviceinstances_threshold` is a given parameter
+*/
 variable "name_prefix" {
   type        = "string"
   description = "The alarm name prefix."

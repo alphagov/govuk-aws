@@ -1,18 +1,8 @@
-# == Manifest: projects::app-postgresql
-#
-# RDS PostgreSQL Primary instance
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# username
-# password
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-postgresql
+*
+* RDS PostgreSQL instances
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

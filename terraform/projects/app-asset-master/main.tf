@@ -1,17 +1,8 @@
-# == Manifest: projects::app-asset-master
-#
-# Asset Master node.
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-asset-master
+*
+* Asset Master node.
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

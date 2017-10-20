@@ -1,19 +1,8 @@
-# == Manifest: projects::app-draft-cache
-#
-# Frontend application servers
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# elb_internal_certname
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-draft-cache
+*
+* Draft Cache servers
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

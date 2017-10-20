@@ -1,18 +1,8 @@
-# == Manifest: projects::app-mirrorer
-#
-# Frontend application servers
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-mirrorer
+*
+* Mirrorer node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

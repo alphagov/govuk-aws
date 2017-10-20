@@ -1,15 +1,8 @@
-# == Module: aws::elasticache_redis_cluster
-#
-# Create a redis replication cluster and elasticache subnet group
-#
-# === Variables:
-#
-# subnet_ids
-# security_group_ids
-#
-# === Outputs:
-#
-#
+/**
+* ## Module: aws::elasticache_redis_cluster
+*
+* Create a redis replication cluster and elasticache subnet group
+*/
 
 variable "name" {
   type        = "string"

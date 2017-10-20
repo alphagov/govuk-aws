@@ -1,24 +1,8 @@
-# == Manifest: projects::app-rummager-elasticsearch
-#
-# Elasticsearch node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# rummager_elasticsearch_1_subnet
-# rummager_elasticsearch_2_subnet
-# rummager_elasticsearch_3_subnet
-# cluster_name
-#
-# === Outputs:
-#
-# service_dns_name
-# rummager_elasticsearch_elb_dns_name
-#
+/**
+* ## Project: app-rummager-elasticsearch
+*
+* Rummager Elasticsearch cluster
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

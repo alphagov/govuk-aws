@@ -1,19 +1,8 @@
-# == Manifest: projects::app-draft-content-store
-#
-# draft-content-store node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# elb_external_certname
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-draft-content-store
+*
+* draft-content-store node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

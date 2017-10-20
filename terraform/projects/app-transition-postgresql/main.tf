@@ -1,18 +1,8 @@
-# == Manifest: projects::app-transition-postgresql
-#
-# RDS Transition PostgreSQL Primary instance
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# username
-# password
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-transition-postgresql
+*
+* RDS Transition PostgreSQL Primary instance
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

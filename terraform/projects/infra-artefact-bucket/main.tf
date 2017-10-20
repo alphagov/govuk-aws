@@ -1,20 +1,12 @@
-# == Manifest: projects:: Artefact-bucket :: buckets
-#
-# This creates 3 s3 buckets
-#
-# * artefact -- The bucket that will hold the artefacts
-# * artefact_access_logs -- Bucket for logs to go to
-# * artefact_replication_destination -- Bucket in another region to replicate to
-#
-# === Variables:
-#
-# aws_region
-# aws_secondary_region
-# aws_environment
-#
-# === Outputs:
-#
-
+/**
+*  ## Project: artefact-bucket
+*
+* This creates 3 s3 buckets
+*
+* artefact: The bucket that will hold the artefacts
+* artefact_access_logs: Bucket for logs to go to
+* artefact_replication_destination: Bucket in another region to replicate to
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

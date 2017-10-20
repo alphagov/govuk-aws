@@ -1,3 +1,9 @@
+/**
+* ## Project: infra-security-groups
+*
+* Manage the security groups for the entire infrastructure
+*/
+
 terraform {
   backend          "s3"             {}
   required_version = "= 0.10.7"

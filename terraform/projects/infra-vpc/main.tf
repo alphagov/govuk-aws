@@ -1,24 +1,8 @@
-# == Manifest: projects::infra-vpc
-#
-# Creates the base VPC layer for an AWS stack.
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# vpc_name
-# vpc_cidr
-# traffic_type
-# log_retention
-#
-# === Outputs:
-#
-# vpc_id
-# vpc_cidr
-# internet_gateway_id
-# route_table_public_id
-# flow_log_id
-
+/**
+* ## Project: infra-vpc
+*
+* Creates the base VPC layer for an AWS stack.
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

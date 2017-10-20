@@ -1,22 +1,9 @@
-# == Modules: aws::network::public_subnet
-#
-# This module creates all resources necessary for a AWS public
-# subnet
-#
-# === Variables:
-#
-# default_tags
-# vpc_id
-# route_table_public_id
-# subnet_cidrs
-# subnet_availability_zones
-#
-# === Outputs:
-#
-# subnet_ids
-# subnet_names_ids_map
-#
-
+/**
+* ## Modules: aws::network::public_subnet
+*
+* This module creates all resources necessary for a AWS public
+* subnet
+*/
 variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"

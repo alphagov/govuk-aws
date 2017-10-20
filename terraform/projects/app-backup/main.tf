@@ -1,19 +1,9 @@
-# == Manifest: projects::app-backup
-#
-# Backup node
-#
-# === Variables:
-#
-# aws_region
-# aws_environment
-# stackname
-# ssh_public_key
-# instance_ami_filter_name
-# backup_subnet
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-backup
+*
+* Backup node
+*
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

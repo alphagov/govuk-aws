@@ -1,16 +1,8 @@
-# == Manifest: projects::app-mysql-primary
-#
-# RDS Mysql Primary instance
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-mysql-primary
+*
+* RDS Mysql Primary instance
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

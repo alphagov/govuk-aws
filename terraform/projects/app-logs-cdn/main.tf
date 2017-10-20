@@ -1,21 +1,8 @@
-# == Manifest: projects::app-logs-cdn
-#
-# logs-cdn node
-#
-# === Variables:
-#
-# aws_region
-# stackname
-# aws_environment
-# ssh_public_key
-# instance_ami_filter_name
-# logs_cdn_subnet
-#
-# === Outputs:
-#
-# logs-cdn_elb_address
-# service_dns_name
-
+/**
+* ## Project: app-logs-cdn
+*
+* logs-cdn node
+*/
 variable "aws_region" {
   type        = "string"
   description = "AWS region"

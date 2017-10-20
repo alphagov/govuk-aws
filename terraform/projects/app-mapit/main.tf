@@ -1,20 +1,8 @@
-# == Manifest: projects::app-mapit
-#
-# Mapit node
-#
-# === Variables:
-#
-# aws_environment
-# aws_region
-# stackname
-# ssh_public_key
-# instance_ami_filter_name
-# mapit_1_subnet
-# mapit_2_subnet
-#
-# === Outputs:
-#
-
+/**
+* ## Project: app-mapit
+*
+* Mapit node
+*/
 variable "aws_environment" {
   type        = "string"
   description = "AWS environment"
