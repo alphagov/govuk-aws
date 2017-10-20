@@ -65,6 +65,25 @@ This might be useful, for example, as part of a PR builder job:
 The code for this, and this documentation itself, were taken from excellent work
 done by the GDS Verify team.
 
+### Writing Terraform files
+
+We use [terraform-docs](https://github.com/segmentio/terraform-docs) to create
+documentation for our Terraform code.
+
+The `main.tf` file should contain a comment with the module or project name, and
+a small description:
+
+```
+/**
+* ## Module: my-module
+*
+* This module does super awesome things
+*/
+```
+
+Run `terraform-docs` across the code and add a `README.md`:
+
+`terraform-docs md my-module/ > my-module/README.md`
 
 ## Tools
 
