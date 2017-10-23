@@ -48,8 +48,8 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
 
   access_logs {
-    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-puppetmaster-bootstrap-external-elb"
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-puppetmaster-bootstrap-external-elb"
     interval      = 60
   }
 
@@ -95,8 +95,8 @@ resource "aws_elb" "puppetmaster_internal_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-puppetmaster-internal-elb"
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-puppetmaster-internal-elb"
     interval      = 60
   }
 

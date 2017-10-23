@@ -43,8 +43,8 @@ resource "aws_elb" "transition-db-admin_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-transition-db-admin-internal-elb"
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-transition-db-admin-internal-elb"
     interval      = 60
   }
 

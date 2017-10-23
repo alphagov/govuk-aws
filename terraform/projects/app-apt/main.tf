@@ -74,8 +74,8 @@ resource "aws_elb" "apt_external_elb" {
   internal        = "false"
 
   access_logs {
-    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-apt-external-elb"
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-apt-external-elb"
     interval      = 60
   }
 
@@ -124,8 +124,8 @@ resource "aws_elb" "apt_internal_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-apt-internal-elb"
+    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-apt-internal-elb"
     interval      = 60
   }
 
