@@ -1,13 +1,16 @@
 /**
-* ## Module: aws::alarms::ebs
+* ## Module: aws/alarms/ebs
 *
 * This module creates the following CloudWatch alarms in the
 * AWS/EBS namespace:
 *
-*   - VolumeQueueLength greater than or equal to threshold, where
-*     `volumequeuelength_threshold` is a given parameter
+*   - VolumeQueueLength greater than or equal to threshold
+*
+* All metrics are measured during a period of 120 seconds and evaluated
+* during 2 consecutive periods.
 *
 * AWS/EBS metrics reference:
+*
 * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ebs-metricscollected.html
 */
 variable "name_prefix" {
@@ -17,13 +20,13 @@ variable "name_prefix" {
 
 variable "volumequeuelength_threshold" {
   type        = "string"
-  description = "The value against which the EBS VolumeQueueLength metric is compared. Defaults to 10."
+  description = "The value against which the EBS VolumeQueueLength metric is compared."
   default     = "10"
 }
 
 variable "alarm_actions" {
   type        = "list"
-  description = "The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Number (ARN)."
+  description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "volume_id" {
@@ -53,6 +56,8 @@ resource "aws_cloudwatch_metric_alarm" "ebs_volumequeuelength" {
 
 # Outputs
 #--------------------------------------------------------------
+
+// The ID of the EBS VolumeQueueLength health check.
 output "alarm_ebs_volumequeuelength_id" {
   value       = "${aws_cloudwatch_metric_alarm.ebs_volumequeuelength.id}"
   description = "The ID of the EBS VolumeQueueLength health check."
