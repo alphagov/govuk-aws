@@ -69,7 +69,7 @@ resource "aws_elb" "rummager-elasticsearch_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
     bucket_prefix = "${var.stackname}-rummager-elasticsearch-internal-elb"
     interval      = 60
   }

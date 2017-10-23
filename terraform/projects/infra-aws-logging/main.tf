@@ -90,11 +90,19 @@ resource "aws_iam_policy" "aws-logging_logit-read_iam_policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "SidID",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+             ],
+            "Resource": [
+                "arn:aws:s3:::govuk-${var.aws_environment}-aws-logging"
+            ]
+        },
+        {
             "Effect": "Allow",
             "Action": [
                 "s3:GetObject",
-                "s3:ListBucket"
+                "s3:ListObjects"
              ],
             "Resource": [
                 "arn:aws:s3:::govuk-${var.aws_environment}-aws-logging/*"

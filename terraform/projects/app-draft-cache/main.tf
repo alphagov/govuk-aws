@@ -59,7 +59,7 @@ resource "aws_elb" "draft-cache_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
     bucket_prefix = "${var.stackname}-draft-cache-internal-elb"
     interval      = 60
   }
