@@ -75,7 +75,7 @@ resource "aws_elb" "backend_elb_external" {
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
     bucket_prefix = "${var.stackname}-backend-external-elb"
     interval      = 60
   }
@@ -133,7 +133,7 @@ resource "aws_elb" "backend_elb_internal" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
     bucket_prefix = "${var.stackname}-backend-internal-elb"
     interval      = 60
   }

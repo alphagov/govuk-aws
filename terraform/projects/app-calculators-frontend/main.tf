@@ -83,7 +83,7 @@ resource "aws_elb" "calculators-frontend_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "elb/${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
     bucket_prefix = "${var.stackname}-calculators-frontend-internal-elb"
     interval      = 60
   }
