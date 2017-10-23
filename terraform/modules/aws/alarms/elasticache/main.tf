@@ -24,9 +24,9 @@ variable "alarm_actions" {
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
-variable "cache_node_id" {
+variable "cache_cluster_id" {
   type        = "string"
-  description = "The ID of the cache node that we want to monitor."
+  description = "The ID of the cache cluster that we want to monitor."
 }
 
 variable "cpuutilization_threshold" {
@@ -57,7 +57,7 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_cpuutilization" {
   alarm_description   = "This metric monitors the percentage of CPU utilization."
 
   dimensions {
-    CacheNodeId = "${var.cache_node_id}"
+    CacheClusterId = "${var.cache_cluster_id}"
   }
 }
 
@@ -75,7 +75,7 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_freeablememory" {
   alarm_description   = "This metric monitors the amount of free memory available on the host."
 
   dimensions {
-    CacheNodeId = "${var.cache_node_id}"
+    CacheClusterId = "${var.cache_cluster_id}"
   }
 }
 

@@ -19,7 +19,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elasticache-metric
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | alarm_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | list | - | yes |
-| cache_node_id | The ID of the cache node that we want to monitor. | string | - | yes |
+| cache_cluster_id | The ID of the cache cluster that we want to monitor. | string | - | yes |
 | cpuutilization_threshold | The value against which the CPUUtilization metric is compared, in percent. | string | `80` | no |
 | freeablememory_threshold | The value against which the FreeableMemory metric is compared, in Bytes. | string | `2147483648` | no |
 | name_prefix | The alarm name prefix. | string | - | yes |
