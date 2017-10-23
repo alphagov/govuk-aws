@@ -1,5 +1,5 @@
 /**
-* ## Modules: aws::alarms::natgateway
+* ## Modules: aws/alarms/natgateway
 *
 * This module creates the following CloudWatch alarms in the
 * AWS/NATGateway namespace:
@@ -11,8 +11,8 @@
 * during 5 consecutive periods.
 *
 * AWS/NATGateway metrics reference:
-* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/nat-gateway-metricscollected.html
 *
+* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/nat-gateway-metricscollected.html
 */
 variable "name_prefix" {
   type        = "string"
@@ -21,7 +21,7 @@ variable "name_prefix" {
 
 variable "alarm_actions" {
   type        = "list"
-  description = "The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Number (ARN)."
+  description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "nat_gateway_id" {
@@ -31,13 +31,13 @@ variable "nat_gateway_id" {
 
 variable "errorportallocation_threshold" {
   type        = "string"
-  description = "The value against which the ErrorPortAllocation metric is compared. Defaults to 10."
+  description = "The value against which the ErrorPortAllocation metric is compared."
   default     = "10"
 }
 
 variable "packetsdropcount_threshold" {
   type        = "string"
-  description = "The value against which the PacketsDropCount metric is compared. Defaults to 100."
+  description = "The value against which the PacketsDropCount metric is compared."
   default     = "100"
 }
 
