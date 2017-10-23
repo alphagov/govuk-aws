@@ -1,4 +1,4 @@
-## Modules: aws::alarms::rds
+## Modules: aws/alarms/rds
 
 This module creates the following CloudWatch alarms in the
 AWS/RDS namespace:
@@ -16,21 +16,21 @@ disable the ReplicaLag alarm, set the `replicalag_threshold`
 parameter to 0.
 
 AWS/RDS metrics reference:
-http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/rds-metricscollected.html
 
+http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/rds-metricscollected.html
 
 
 ## Inputs
 
-| Name | Description | Default | Required |
-|------|-------------|:-----:|:-----:|
-| alarm_actions | The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Number (ARN). | - | yes |
-| cpuutilization_threshold | The value against which the CPUUtilization metric is compared. Defaults to 80. | `80` | no |
-| db_instance_id | The ID of the database instance that we want to monitor. | - | yes |
-| freeablememory_threshold | The value against which the FreeableMemory metric is compared. Defaults to 2147483648 Bytes (2 Gb). | `2147483648` | no |
-| freestoragespace_threshold | The value against which the FreeStorageSpace metric is compared. Defaults to 10737418240 Bytes (10 Gb). | `10737418240` | no |
-| name_prefix | The alarm name prefix. | - | yes |
-| replicalag_threshold | The value against which the ReplicaLag metric is compared. Defaults to 0 (disabled) | `0` | no |
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| alarm_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | list | - | yes |
+| cpuutilization_threshold | The value against which the CPUUtilization metric is compared, in percent. | string | `80` | no |
+| db_instance_id | The ID of the database instance that we want to monitor. | string | - | yes |
+| freeablememory_threshold | The value against which the FreeableMemory metric is compared, in Bytes. | string | `2147483648` | no |
+| freestoragespace_threshold | The value against which the FreeStorageSpace metric is compared, in Bytes. | string | `10737418240` | no |
+| name_prefix | The alarm name prefix. | string | - | yes |
+| replicalag_threshold | The value against which the ReplicaLag metric is compared, in seconds. | string | `0` | no |
 
 ## Outputs
 

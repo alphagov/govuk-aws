@@ -1,5 +1,5 @@
 /**
-* ## Modules: aws::alarms::rds
+* ## Modules: aws/alarms/rds
 *
 * This module creates the following CloudWatch alarms in the
 * AWS/RDS namespace:
@@ -17,8 +17,8 @@
 * parameter to 0.
 *
 * AWS/RDS metrics reference:
-* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/rds-metricscollected.html
 *
+* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/rds-metricscollected.html
 */
 variable "name_prefix" {
   type        = "string"
@@ -27,7 +27,7 @@ variable "name_prefix" {
 
 variable "alarm_actions" {
   type        = "list"
-  description = "The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Number (ARN)."
+  description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "db_instance_id" {
@@ -37,25 +37,25 @@ variable "db_instance_id" {
 
 variable "cpuutilization_threshold" {
   type        = "string"
-  description = "The value against which the CPUUtilization metric is compared. Defaults to 80."
+  description = "The value against which the CPUUtilization metric is compared, in percent."
   default     = "80"
 }
 
 variable "freeablememory_threshold" {
   type        = "string"
-  description = "The value against which the FreeableMemory metric is compared. Defaults to 2147483648 Bytes (2 Gb)."
+  description = "The value against which the FreeableMemory metric is compared, in Bytes."
   default     = "2147483648"
 }
 
 variable "freestoragespace_threshold" {
   type        = "string"
-  description = "The value against which the FreeStorageSpace metric is compared. Defaults to 10737418240 Bytes (10 Gb)."
+  description = "The value against which the FreeStorageSpace metric is compared, in Bytes."
   default     = "10737418240"
 }
 
 variable "replicalag_threshold" {
   type        = "string"
-  description = "The value against which the ReplicaLag metric is compared. Defaults to 0 (disabled)"
+  description = "The value against which the ReplicaLag metric is compared, in seconds."
   default     = "0"
 }
 

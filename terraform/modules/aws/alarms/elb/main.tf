@@ -1,5 +1,5 @@
 /**
-* ## Module: aws::alarms::elb
+* ## Module: aws/alarms/elb
 *
 * This module creates the following CloudWatch alarms in the
 * AWS/ELB namespace:
@@ -28,6 +28,7 @@
 * parameter to 0.
 *
 * AWS/ELB metrics reference:
+*
 * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html
 */
 variable "name_prefix" {
@@ -37,7 +38,7 @@ variable "name_prefix" {
 
 variable "alarm_actions" {
   type        = "list"
-  description = "The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Number (ARN)."
+  description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "elb_name" {
@@ -47,37 +48,37 @@ variable "elb_name" {
 
 variable "httpcode_backend_4xx_threshold" {
   type        = "string"
-  description = "The value against which the HTTPCode_Backend_4XX metric is compared. Defaults to 80."
+  description = "The value against which the HTTPCode_Backend_4XX metric is compared."
   default     = "80"
 }
 
 variable "httpcode_backend_5xx_threshold" {
   type        = "string"
-  description = "The value against which the HTTPCode_Backend_5XX metric is compared. Defaults to 80."
+  description = "The value against which the HTTPCode_Backend_5XX metric is compared."
   default     = "80"
 }
 
 variable "httpcode_elb_4xx_threshold" {
   type        = "string"
-  description = "The value against which the HTTPCode_ELB_4XX metric is compared. Defaults to 80."
+  description = "The value against which the HTTPCode_ELB_4XX metric is compared."
   default     = "80"
 }
 
 variable "httpcode_elb_5xx_threshold" {
   type        = "string"
-  description = "The value against which the HTTPCode_ELB_5XX metric is compared. Defaults to 80."
+  description = "The value against which the HTTPCode_ELB_5XX metric is compared."
   default     = "80"
 }
 
 variable "surgequeuelength_threshold" {
   type        = "string"
-  description = "The value against which the SurgeQueueLength metric is compared. The maximum size of the queue is 1,024. Additional requests are rejected when the queue is full. Defaults to 0 (disabled)"
+  description = "The value against which the SurgeQueueLength metric is compared. The maximum size of the queue is 1,024. Additional requests are rejected when the queue is full."
   default     = "0"
 }
 
 variable "healthyhostcount_threshold" {
   type        = "string"
-  description = "The value against which the HealthyHostCount metric is compared. Defaults to 0 (disabled)"
+  description = "The value against which the HealthyHostCount metric is compared."
   default     = "0"
 }
 
@@ -199,31 +200,38 @@ resource "aws_cloudwatch_metric_alarm" "elb_healthyhostcount" {
 
 # Outputs
 #--------------------------------------------------------------
+
+// The ID of the ELB HTTPCode_Backend_4XX health check.
 output "alarm_elb_httpcode_backend_4xx_id" {
   value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_backend_4xx.id}"
   description = "The ID of the ELB HTTPCode_Backend_4XX health check."
 }
 
+// The ID of the ELB HTTPCode_Backend_5XX health check.
 output "alarm_elb_httpcode_backend_5xx_id" {
   value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_backend_5xx.id}"
   description = "The ID of the ELB HTTPCode_Backend_5XX health check."
 }
 
+// The ID of the ELB HTTPCode_ELB_4XX health check.
 output "alarm_elb_httpcode_elb_4xx_id" {
   value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_elb_4xx.id}"
   description = "The ID of the ELB HTTPCode_ELB_4XX health check."
 }
 
+// The ID of the ELB HTTPCode_ELB_5XX health check.
 output "alarm_elb_httpcode_elb_5xx_id" {
   value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_elb_5xx.id}"
   description = "The ID of the ELB HTTPCode_ELB_5XX health check."
 }
 
+// The ID of the ELB SurgeQueueLength health check.
 output "alarm_elb_surgequeuelength_id" {
   value       = "${aws_cloudwatch_metric_alarm.elb_surgequeuelength.id}"
   description = "The ID of the ELB SurgeQueueLength health check."
 }
 
+// The ID of the ELB HealthyHostCount health check.
 output "alarm_elb_healthyhostcount_id" {
   value       = "${aws_cloudwatch_metric_alarm.elb_healthyhostcount.id}"
   description = "The ID of the ELB HealthyHostCount health check."
