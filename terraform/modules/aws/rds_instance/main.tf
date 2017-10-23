@@ -100,7 +100,7 @@ variable "skip_final_snapshot" {
 variable "maintenance_window" {
   type        = "string"
   description = "The window to perform maintenance in."
-  default     = "Mon:01:00-Mon:03:00"
+  default     = "Mon:04:00-Mon:06:00"
 }
 
 variable "backup_retention_period" {
@@ -112,7 +112,7 @@ variable "backup_retention_period" {
 variable "backup_window" {
   type        = "string"
   description = "The daily time range during which automated backups are created if automated backups are enabled."
-  default     = "04:00-06:00"
+  default     = "01:00-03:00"
 }
 
 # Resources
