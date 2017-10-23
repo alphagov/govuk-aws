@@ -60,7 +60,7 @@ resource "aws_elb" "monitoring_external_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-monitoring-external-elb"
+    bucket_prefix = "elb/${var.stackname}-monitoring-external-elb"
     interval      = 60
   }
 

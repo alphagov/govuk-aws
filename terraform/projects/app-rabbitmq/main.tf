@@ -50,7 +50,7 @@ resource "aws_elb" "rabbitmq_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-rabbitmq-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-rabbitmq-internal-elb"
     interval      = 60
   }
 

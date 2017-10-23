@@ -50,7 +50,7 @@ resource "aws_elb" "docker_management_etcd_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-docker-management-etcd-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-docker-management-etcd-internal-elb"
     interval      = 60
   }
 

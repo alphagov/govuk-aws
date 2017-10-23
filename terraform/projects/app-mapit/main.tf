@@ -76,7 +76,7 @@ resource "aws_elb" "mapit_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-mapit-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-mapit-internal-elb"
     interval      = 60
   }
 

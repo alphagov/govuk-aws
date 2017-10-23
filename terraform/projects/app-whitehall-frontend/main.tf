@@ -60,7 +60,7 @@ resource "aws_elb" "whitehall-frontend_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-whitehall-frontend-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-whitehall-frontend-internal-elb"
     interval      = 60
   }
 

@@ -49,7 +49,7 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-puppetmaster-bootstrap-external-elb"
+    bucket_prefix = "elb/${var.stackname}-puppetmaster-bootstrap-external-elb"
     interval      = 60
   }
 
@@ -96,7 +96,7 @@ resource "aws_elb" "puppetmaster_internal_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-puppetmaster-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-puppetmaster-internal-elb"
     interval      = 60
   }
 

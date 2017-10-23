@@ -66,7 +66,7 @@ resource "aws_elb" "draft-frontend_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-draft-frontend-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-draft-frontend-internal-elb"
     interval      = 60
   }
 

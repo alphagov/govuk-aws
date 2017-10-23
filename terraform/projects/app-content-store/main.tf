@@ -70,7 +70,7 @@ resource "aws_elb" "content-store_external_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-content-store-external-elb"
+    bucket_prefix = "elb/${var.stackname}-content-store-external-elb"
     interval      = 60
   }
 
@@ -119,7 +119,7 @@ resource "aws_elb" "content-store_internal_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-content-store-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-content-store-internal-elb"
     interval      = 60
   }
 

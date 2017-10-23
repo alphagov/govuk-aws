@@ -75,7 +75,7 @@ resource "aws_elb" "graphite_external_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-graphite-external-elb"
+    bucket_prefix = "elb/${var.stackname}-graphite-external-elb"
     interval      = 60
   }
 
@@ -137,7 +137,7 @@ resource "aws_elb" "graphite_internal_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-graphite-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-graphite-internal-elb"
     interval      = 60
   }
 

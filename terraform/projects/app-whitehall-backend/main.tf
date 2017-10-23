@@ -76,7 +76,7 @@ resource "aws_elb" "whitehall-backend_internal_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-whitehall-backend-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-whitehall-backend-internal-elb"
     interval      = 60
   }
 
@@ -125,7 +125,7 @@ resource "aws_elb" "whitehall-backend_external_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-whitehall-backend-external-elb"
+    bucket_prefix = "elb/${var.stackname}-whitehall-backend-external-elb"
     interval      = 60
   }
 

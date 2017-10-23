@@ -83,7 +83,7 @@ resource "aws_elb" "deploy_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-deploy-external-elb"
+    bucket_prefix = "elb/${var.stackname}-deploy-external-elb"
     interval      = 60
   }
 

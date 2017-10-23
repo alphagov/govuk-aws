@@ -84,7 +84,7 @@ resource "aws_elb" "search_elb" {
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
-    bucket_prefix = "${var.stackname}-search-internal-elb"
+    bucket_prefix = "elb/${var.stackname}-search-internal-elb"
     interval      = 60
   }
 
