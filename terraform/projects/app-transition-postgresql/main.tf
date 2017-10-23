@@ -71,6 +71,25 @@ resource "aws_route53_record" "service_record" {
   records = ["${module.transition-postgresql-primary_rds_instance.rds_instance_address}"]
 }
 
+module "transition-postgresql-standby_rds_instance" {
+  source = "../../modules/aws/rds_instance"
+
+  name                       = "${var.stackname}-transition-postgresql-standby"
+  default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_standby")}"
+  instance_class             = "db.m4.large"
+  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
+  create_replicate_source_db = "1"
+  replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
+}
+
+resource "aws_route53_record" "replica_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "transition-postgresql-standby.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${module.transition-postgresql-standby_rds_instance.rds_replica_address}"]
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -92,4 +111,14 @@ output "transition-postgresql-primary_endpoint" {
 output "transition-postgresql-primary_address" {
   value       = "${module.transition-postgresql-primary_rds_instance.rds_instance_address}"
   description = "transition-postgresql instance address"
+}
+
+output "transition-postgresql-standby-endpoint" {
+  value       = "${module.transition-postgresql-standby_rds_instance.rds_replica_endpoint}"
+  description = "transition-postgresql replica instance endpoint"
+}
+
+output "transition-postgresql-standby-address" {
+  value       = "${module.transition-postgresql-standby_rds_instance.rds_replica_address}"
+  description = "transition-postgresql replica instance address"
 }
