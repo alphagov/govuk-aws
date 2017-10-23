@@ -94,6 +94,22 @@ resource "aws_iam_role_policy_attachment" "mirrorer_iam_role_policy_attachment" 
   policy_arn = "${aws_iam_policy.mirrorer_iam_policy.arn}"
 }
 
+module "alarms-autoscaling-mirrorer" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mirrorer"
+  autoscaling_group_name            = "${module.mirrorer.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mirrorer" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mirrorer"
+  autoscaling_group_name   = "${module.mirrorer.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cpuutilization_threshold = "85"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

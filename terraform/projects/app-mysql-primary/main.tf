@@ -78,6 +78,13 @@ resource "aws_route53_record" "service_record" {
   records = ["${module.mysql_primary_rds_instance.rds_instance_address}"]
 }
 
+module "alarms-rds-mysql-primary" {
+  source         = "../../modules/aws/alarms/rds"
+  name_prefix    = "${var.stackname}-mysql-primary"
+  alarm_actions  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  db_instance_id = "${module.mysql_primary_rds_instance.rds_instance_id}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

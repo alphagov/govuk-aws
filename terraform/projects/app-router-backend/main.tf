@@ -317,6 +317,58 @@ module "router-backend-3" {
   root_block_device_volume_size = "20"
 }
 
+module "alarms-elb-router-api-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-router-api-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.router_api_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "100"
+  httpcode_elb_4xx_threshold     = "100"
+  httpcode_elb_5xx_threshold     = "100"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
+module "alarms-elb-router-backend-1-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-router-backend-1-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.router_backend_1_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
+}
+
+module "alarms-elb-router-backend-2-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-router-backend-2-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.router_backend_2_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
+}
+
+module "alarms-elb-router-backend-3-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-router-backend-3-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.router_backend_3_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

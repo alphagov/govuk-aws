@@ -235,6 +235,19 @@ resource "aws_iam_role_policy_attachment" "rummager-elasticsearch_3_iam_role_pol
   policy_arn = "${aws_iam_policy.rummager-elasticsearch_iam_policy.arn}"
 }
 
+module "alarms-elb-rummager-elasticsearch-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-rummager-elasticsearch-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.rummager-elasticsearch_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

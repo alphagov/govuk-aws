@@ -54,6 +54,13 @@ module "backend_redis_cluster" {
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
 }
 
+module "alarms-elasticache-backend-redis" {
+  source           = "../../modules/aws/alarms/elasticache"
+  name_prefix      = "${var.stackname}-backend-redis"
+  alarm_actions    = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cache_cluster_id = "${module.backend_redis_cluster.replication_group_id}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

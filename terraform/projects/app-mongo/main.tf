@@ -233,6 +233,54 @@ resource "aws_iam_role_policy_attachment" "mongo-3_iam_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.mongo-iam_policy.arn}"
 }
 
+module "alarms-autoscaling-mongo-1" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mongo-1"
+  autoscaling_group_name            = "${module.mongo-1.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mongo-1" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mongo-1"
+  autoscaling_group_name   = "${module.mongo-1.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cpuutilization_threshold = "85"
+}
+
+module "alarms-autoscaling-mongo-2" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mongo-2"
+  autoscaling_group_name            = "${module.mongo-2.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mongo-2" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mongo-2"
+  autoscaling_group_name   = "${module.mongo-2.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cpuutilization_threshold = "85"
+}
+
+module "alarms-autoscaling-mongo-3" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mongo-3"
+  autoscaling_group_name            = "${module.mongo-3.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mongo-3" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mongo-3"
+  autoscaling_group_name   = "${module.mongo-3.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cpuutilization_threshold = "85"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

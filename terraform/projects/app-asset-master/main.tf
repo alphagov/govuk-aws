@@ -75,6 +75,22 @@ module "asset-master" {
   root_block_device_volume_size = "30"
 }
 
+module "alarms-autoscaling-asset-master" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-asset-master"
+  autoscaling_group_name            = "${module.asset-master.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-asset-master" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-asset-master"
+  autoscaling_group_name   = "${module.asset-master.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cpuutilization_threshold = "85"
+}
+
 # Outputs
 # --------------------------------------------------------------
 output "efs_mount_target_dns_names" {
