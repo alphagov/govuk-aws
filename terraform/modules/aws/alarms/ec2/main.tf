@@ -1,16 +1,20 @@
 /**
-* ## Module: aws::alarms::ec2
+* ## Module: aws/alarms/ec2
 *
 * This module creates the following CloudWatch alarms in the
 * AWS/EC2 namespace:
 *
-*   - CPUUtilization greater than or equal to threshold threshold, where
-*     `cpuutilization_threshold` is a given parameter
+*   - CPUUtilization greater than or equal to threshold threshold
 *   - StatusCheckFailed_Instance greater than or equal to 1 (instance status
 *     check failed)
 *
 * Alarms are created for all the instances that belong to a given
-* autoscaling group name.
+* autoscaling group name. All metrics are measured during a period of 60 seconds
+* and evaluated during 2 consecutive periods.
+*
+* AWS/EC2 metrics reference:
+*
+* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ec2-metricscollected.html
 */
 variable "name_prefix" {
   type        = "string"
@@ -19,13 +23,13 @@ variable "name_prefix" {
 
 variable "cpuutilization_threshold" {
   type        = "string"
-  description = "The value against which the CPUUtilization metric is compared. Defaults to 80."
+  description = "The value against which the CPUUtilization metric is compared, in percent."
   default     = "80"
 }
 
 variable "alarm_actions" {
   type        = "list"
-  description = "The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Number (ARN)."
+  description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "autoscaling_group_name" {
@@ -73,11 +77,14 @@ resource "aws_cloudwatch_metric_alarm" "ec2_statuscheckfailed_instance" {
 
 # Outputs
 #--------------------------------------------------------------
+
+// The ID of the instance CPUUtilization health check.
 output "alarm_ec2_cpuutilization_id" {
   value       = "${aws_cloudwatch_metric_alarm.ec2_cpuutilization.id}"
   description = "The ID of the instance CPUUtilization health check."
 }
 
+// The ID of the instance StatusCheckFailed_Instance health check.
 output "alarm_ec2_statuscheckfailed_instance_id" {
   value       = "${aws_cloudwatch_metric_alarm.ec2_statuscheckfailed_instance.id}"
   description = "The ID of the instance StatusCheckFailed_Instance health check."
