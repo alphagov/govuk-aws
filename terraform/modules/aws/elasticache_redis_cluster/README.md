@@ -1,4 +1,4 @@
-## Module: aws::elasticache_redis_cluster
+## Module: aws/elasticache_redis_cluster
 
 Create a redis replication cluster and elasticache subnet group
 
@@ -18,5 +18,6 @@ Create a redis replication cluster and elasticache subnet group
 
 | Name | Description |
 |------|-------------|
-| configuration_endpoint_address | Configuration endpoint address of the redis cluster |
+| configuration_endpoint_address | Configuration endpoint address of the redis cluster. |
+| replication_group_id | The ID of the ElastiCache Replication Group. |
 

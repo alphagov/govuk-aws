@@ -1,5 +1,5 @@
 /**
-* ## Module: aws::elasticache_redis_cluster
+* ## Module: aws/elasticache_redis_cluster
 *
 * Create a redis replication cluster and elasticache subnet group
 */
@@ -86,7 +86,14 @@ resource "aws_elasticache_replication_group" "redis_master_with_replica" {
 # Outputs
 #--------------------------------------------------------------
 
+// Configuration endpoint address of the redis cluster.
 output "configuration_endpoint_address" {
   value       = "${var.enable_clustering > 0 ? join("", aws_elasticache_replication_group.redis_cluster.*.configuration_endpoint_address) : aws_elasticache_replication_group.redis_master_with_replica.primary_endpoint_address}"
-  description = "Configuration endpoint address of the redis cluster"
+  description = "Configuration endpoint address of the redis cluster."
+}
+
+// The ID of the ElastiCache Replication Group.
+output "replication_group_id" {
+  value       = "${var.enable_clustering > 0 ? aws_elasticache_replication_group.redis_cluster.0.id : aws_elasticache_replication_group.redis_master_with_replica.id}"
+  description = "The ID of the ElastiCache Replication Group."
 }
