@@ -5,14 +5,14 @@ Manage the security groups for the entire infrastructure
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| aws_region | AWS region | string | `eu-west-1` | no |
-| carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
-| office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
-| stackname | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | string | - | yes |
+| Name | Description | Default | Required |
+|------|-------------|:-----:|:-----:|
+| aws_region | AWS region | `eu-west-1` | no |
+| carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | - | yes |
+| office_ips | An array of CIDR blocks that will be allowed offsite access. | - | yes |
+| remote_state_bucket | S3 bucket we store our terraform state in | - | yes |
+| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | `` | no |
+| stackname | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | - | yes |
 
 ## Outputs
 
@@ -26,8 +26,6 @@ Manage the security groups for the entire infrastructure
 | sg_backend_elb_external_id |  |
 | sg_backend_elb_internal_id |  |
 | sg_backend_id |  |
-| sg_backup_elb_id |  |
-| sg_backup_id |  |
 | sg_bouncer_elb_id |  |
 | sg_bouncer_id |  |
 | sg_cache_elb_id |  |
