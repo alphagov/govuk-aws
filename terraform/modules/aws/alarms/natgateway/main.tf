@@ -24,9 +24,9 @@ variable "alarm_actions" {
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
-variable "nat_gateway_id" {
-  type        = "string"
-  description = "The ID of the NAT Gateway that we want to monitor."
+variable "nat_gateway_ids" {
+  type        = "list"
+  description = "List of IDs of the NAT Gateways that we want to monitor."
 }
 
 variable "errorportallocation_threshold" {
@@ -44,7 +44,8 @@ variable "packetsdropcount_threshold" {
 # Resources
 #--------------------------------------------------------------
 resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
-  alarm_name          = "${var.name_prefix}-natgateway-errorportallocation"
+  count               = "${length(var.nat_gateway_ids)}"
+  alarm_name          = "${var.name_prefix}-natgateway-errorportallocation-${element(var.nat_gateway_ids, count.index)}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
   metric_name         = "ErrorPortAllocation"
@@ -57,12 +58,13 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
   alarm_description   = "This metric monitors the sum of the number of times the NAT gateway could not allocate a source port."
 
   dimensions {
-    NatGatewayId = "${var.nat_gateway_id}"
+    NatGatewayId = "${element(var.nat_gateway_ids, count.index)}"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
-  alarm_name          = "${var.name_prefix}-natgateway-packetsdropcount"
+  count               = "${length(var.nat_gateway_ids)}"
+  alarm_name          = "${var.name_prefix}-natgateway-packetsdropcount-${element(var.nat_gateway_ids, count.index)}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
   metric_name         = "PacketsDropCount"
@@ -75,7 +77,7 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
   alarm_description   = "This metric monitors the number of packets dropped by the NAT gateway."
 
   dimensions {
-    NatGatewayId = "${var.nat_gateway_id}"
+    NatGatewayId = "${element(var.nat_gateway_ids, count.index)}"
   }
 }
 
@@ -84,12 +86,12 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
 
 // The ID of the NAT Gateway ErrorPortAllocation health check.
 output "alarm_natgateway_errorportallocation_id" {
-  value       = "${aws_cloudwatch_metric_alarm.natgateway_errorportallocation.id}"
+  value       = "${aws_cloudwatch_metric_alarm.natgateway_errorportallocation.*.id}"
   description = "The ID of the NAT Gateway ErrorPortAllocation health check."
 }
 
 // The ID of the NAT Gateway PacketsDropCount health check.
 output "alarm_natgateway_packetsdropcount_id" {
-  value       = "${aws_cloudwatch_metric_alarm.natgateway_packetsdropcount.id}"
+  value       = "${aws_cloudwatch_metric_alarm.natgateway_packetsdropcount.*.id}"
   description = "The ID of the NAT Gateway PacketsDropCount health check."
 }
