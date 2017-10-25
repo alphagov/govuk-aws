@@ -77,7 +77,7 @@ module "transition-postgresql-standby_rds_instance" {
   name                       = "${var.stackname}-transition-postgresql-standby"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_standby")}"
   instance_class             = "db.m4.large"
-  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
+  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
 }

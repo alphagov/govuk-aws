@@ -266,6 +266,10 @@ output "sg_transition-postgresql-primary_id" {
   value = "${aws_security_group.transition-postgresql-primary.id}"
 }
 
+output "sg_transition-postgresql-standby_id" {
+  value = "${aws_security_group.transition-postgresql-standby.id}"
+}
+
 output "sg_offsite_ssh_id" {
   value = "${aws_security_group.offsite_ssh.id}"
 }
