@@ -204,6 +204,32 @@ module "backend" {
   root_block_device_volume_size = "30"
 }
 
+module "alarms-elb-backend-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-backend-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.backend_elb_internal.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "100"
+  httpcode_elb_4xx_threshold     = "100"
+  httpcode_elb_5xx_threshold     = "100"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
+module "alarms-elb-backend-external" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-backend-external"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.backend_elb_external.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "100"
+  httpcode_elb_4xx_threshold     = "100"
+  httpcode_elb_5xx_threshold     = "100"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

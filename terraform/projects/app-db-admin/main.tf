@@ -112,6 +112,22 @@ resource "aws_route53_record" "db_admin_service_record" {
   }
 }
 
+module "alarms-autoscaling-db-admin" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-db-admin"
+  autoscaling_group_name            = "${module.db-admin.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-db-admin" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-db-admin"
+  autoscaling_group_name   = "${module.db-admin.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  cpuutilization_threshold = "85"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

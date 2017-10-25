@@ -218,6 +218,32 @@ resource "aws_iam_role_policy_attachment" "apt_1_iam_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.apt_1_iam_policy.arn}"
 }
 
+module "alarms-elb-apt-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-apt-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.apt_internal_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
+module "alarms-elb-apt-external" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-apt-external"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.apt_external_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

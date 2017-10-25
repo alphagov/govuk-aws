@@ -106,6 +106,19 @@ module "jumpbox" {
   root_block_device_volume_size = "64"
 }
 
+module "alarms-elb-jumpbox-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-jumpbox-external"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.jumpbox_external_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

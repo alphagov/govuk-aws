@@ -242,6 +242,32 @@ module "cache" {
   asg_desired_capacity          = "${var.asg_desired_capacity}"
 }
 
+module "alarms-elb-cache-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-cache-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.cache_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
+module "alarms-elb-cache-external" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-cache-external"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.cache_external_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

@@ -120,6 +120,19 @@ module "whitehall-frontend" {
   asg_desired_capacity          = "2"
 }
 
+module "alarms-elb-whitehall-frontend-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-whitehall-frontend-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  elb_name                       = "${aws_elb.whitehall-frontend_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "100"
+  httpcode_elb_4xx_threshold     = "100"
+  httpcode_elb_5xx_threshold     = "100"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
