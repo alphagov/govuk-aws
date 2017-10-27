@@ -31,6 +31,11 @@ variable "traffic_type" {
   default     = "REJECT"
 }
 
+variable "vpc_flow_log_group_name" {
+  type        = "string"
+  description = "The name of the VPC flow log group"
+}
+
 variable "log_retention" {
   type        = "string"
   description = "Number of days to retain flow logs for"
@@ -58,41 +63,21 @@ module "vpc" {
 }
 
 resource "aws_flow_log" "vpc_flow_log" {
-  log_group_name = "${aws_cloudwatch_log_group.vpc_flow_log.name}"
+  log_group_name = "${var.vpc_flow_log_group_name}"
   iam_role_arn   = "${aws_iam_role.vpc_flow_logs_role.arn}"
   vpc_id         = "${module.vpc.vpc_id}"
   traffic_type   = "${var.traffic_type}"
 }
 
-resource "aws_cloudwatch_log_group" "vpc_flow_log" {
-  name              = "vpc_flow_logs-${var.stackname}"
-  retention_in_days = "${var.log_retention}"
-}
-
 resource "aws_iam_role" "vpc_flow_logs_role" {
-  name = "vpc_flow_logs_${var.stackname}"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "vpc-flow-logs.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  name               = "${var.stackname}-vpc-flow-logs"
+  assume_role_policy = "${file("${path.module}/../../policies/vpc_flow_logs_assume_policy.json")}"
 }
 
 resource "aws_iam_policy" "vpc_flow_logs_policy" {
-  name   = "vpc_flow_logs_policy-${var.stackname}"
+  name   = "${var.stackname}-vpc-flow-logs-policy"
   path   = "/"
-  policy = "${file("${path.module}/vpc_flow_logs_policy.json")}"
+  policy = "${file("${path.module}/../../policies/vpc_flow_logs_policy.json")}"
 }
 
 resource "aws_iam_role_policy_attachment" "vpc_flow_logs_policy_attachment" {
