@@ -179,7 +179,7 @@ resource "aws_key_pair" "node_key" {
 }
 
 resource "aws_launch_configuration" "node_launch_configuration" {
-  name          = "${var.name}"
+  name_prefix   = "${var.name}-"
   image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
   instance_type = "${var.instance_type}"
   user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
