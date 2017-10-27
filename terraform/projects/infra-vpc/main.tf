@@ -36,7 +36,7 @@ variable "vpc_flow_log_group_name" {
   description = "The name of the VPC flow log group"
 }
 
-variable "log_retention" {
+variable "cloudwatch_log_retention" {
   type        = "string"
   description = "Number of days to retain flow logs for"
   default     = "3"
@@ -62,8 +62,18 @@ module "vpc" {
   default_tags = "${map("Project", var.stackname)}"
 }
 
+resource "aws_cloudwatch_log_group" "log" {
+  name              = "${var.vpc_flow_log_group_name}"
+  retention_in_days = "${var.cloudwatch_log_retention}"
+
+  tags {
+    Project         = "${var.stackname}"
+    aws_stackname   = "${var.stackname}"
+  }
+}
+
 resource "aws_flow_log" "vpc_flow_log" {
-  log_group_name = "${var.vpc_flow_log_group_name}"
+  log_group_name = "${aws_cloudwatch_log_group.log.name}"
   iam_role_arn   = "${aws_iam_role.vpc_flow_logs_role.arn}"
   vpc_id         = "${module.vpc.vpc_id}"
   traffic_type   = "${var.traffic_type}"
