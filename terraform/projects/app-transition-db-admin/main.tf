@@ -119,6 +119,21 @@ module "alarms-ec2-transition-db-admin" {
   cpuutilization_threshold = "85"
 }
 
+data "terraform_remote_state" "infra_database_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "transition-db-admin_database_backups_iam_role_policy_attachment" {
+  role       = "${module.transition-db-admin.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.write_database_backups_bucket_policy_arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

@@ -281,6 +281,22 @@ module "alarms-ec2-mongo-3" {
   cpuutilization_threshold = "85"
 }
 
+data "terraform_remote_state" "infra_database_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "mongo_database_backups_iam_role_policy_attachment" {
+  count      = 3
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.write_database_backups_bucket_policy_arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
