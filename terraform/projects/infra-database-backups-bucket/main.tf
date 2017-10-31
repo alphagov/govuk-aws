@@ -36,4 +36,70 @@ resource "aws_s3_bucket" "database_backups" {
     Name            = "govuk-${var.aws_environment}-database-backups"
     aws_environment = "${var.aws_environment}"
   }
+
+  lifecycle_rule {
+    prefix  = "mysql/"
+    enabled = true
+
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = 30
+    }
+
+    transition {
+      storage_class = "GLACIER"
+      days          = 60
+    }
+
+    expiration {
+      days = 90
+    }
+  }
+
+  lifecycle_rule {
+    prefix  = "postgres/"
+    enabled = true
+
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = 30
+    }
+
+    transition {
+      storage_class = "GLACIER"
+      days          = 60
+    }
+
+    expiration {
+      days = 90
+    }
+  }
+
+  lifecycle_rule {
+    prefix  = "mongodb/daily"
+    enabled = true
+
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = 30
+    }
+
+    transition {
+      storage_class = "GLACIER"
+      days          = 60
+    }
+
+    expiration {
+      days = 90
+    }
+  }
+
+  lifecycle_rule {
+    prefix  = "mongodb/regular"
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
 }
