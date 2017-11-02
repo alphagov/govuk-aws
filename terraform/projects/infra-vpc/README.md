@@ -1,6 +1,7 @@
-## Project: infra-vpc
+## Module: projects/infra-vpc
 
-Creates the base VPC layer for an AWS stack.
+Creates the base VPC layer for an AWS stack, with VPC flow logs
+and resources to export these logs to S3
 
 
 ## Inputs
@@ -8,7 +9,9 @@ Creates the base VPC layer for an AWS stack.
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aws_region | AWS region | string | `eu-west-1` | no |
-| log_retention | Number of days to retain flow logs for | string | `3` | no |
+| cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
+| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
+| remote_state_infra_aws_logging_key_stack | Override stackname path to infra_aws_logging remote state | string | `` | no |
 | stackname | Stackname | string | `` | no |
 | traffic_type | The traffic type to capture. Allows ACCEPT, ALL or REJECT | string | `REJECT` | no |
 | vpc_cidr | VPC IP address range, represented as a CIDR block | string | - | yes |
@@ -18,9 +21,8 @@ Creates the base VPC layer for an AWS stack.
 
 | Name | Description |
 |------|-------------|
-| flow_log_id | AWS VPC Flog log ID |
-| internet_gateway_id |  |
-| route_table_public_id |  |
-| vpc_cidr |  |
-| vpc_id |  |
+| internet_gateway_id | The ID of the Internet Gateway |
+| route_table_public_id | The ID of the public routing table |
+| vpc_cidr | The CIDR block of the VPC |
+| vpc_id | The ID of the VPC |
 
