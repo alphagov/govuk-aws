@@ -164,6 +164,32 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_to_firehose_policy_attach
   policy_arn = "${aws_iam_policy.lambda_logs_to_firehose_policy.arn}"
 }
 
+# Lambda RDS logs to S3 role
+resource "aws_iam_role" "lambda_rds_logs_to_s3_role" {
+  name               = "${var.stackname}-rds-logs-to-s3"
+  path               = "/"
+  assume_role_policy = "${file("${path.module}/../../policies/lambda_assume_policy.json")}"
+}
+
+data "template_file" "lambda_rds_logs_to_s3_policy_template" {
+  template = "${file("${path.module}/../../policies/lambda_rds_logs_to_s3_policy.tpl")}"
+
+  vars {
+    bucket_name = "${aws_s3_bucket.aws-logging.id}"
+  }
+}
+
+resource "aws_iam_policy" "lambda_rds_logs_to_s3_policy" {
+  name   = "${var.stackname}-rds-logs-to-s3-policy"
+  path   = "/"
+  policy = "${data.template_file.lambda_rds_logs_to_s3_policy_template.rendered}"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_rds_logs_to_s3_policy_attachment" {
+  role       = "${aws_iam_role.lambda_rds_logs_to_s3_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_rds_logs_to_s3_policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -185,4 +211,9 @@ output "firehose_logs_role_arn" {
 output "lambda_logs_role_arn" {
   value       = "${aws_iam_role.lambda_logs_to_firehose_role.arn}"
   description = "ARN of the IAM role attached to the Lambda logs Function"
+}
+
+output "lambda_rds_logs_to_s3_role_arn" {
+  value       = "${aws_iam_role.lambda_rds_logs_to_s3_role.arn}"
+  description = "ARN of the IAM role attached to the Lambda RDS logs to S3 Function"
 }
