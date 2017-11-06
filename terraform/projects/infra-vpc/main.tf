@@ -1,8 +1,10 @@
 /**
-* ## Project: infra-vpc
+* ## Module: projects/infra-vpc
 *
-* Creates the base VPC layer for an AWS stack.
+* Creates the base VPC layer for an AWS stack, with VPC flow logs
+* and resources to export these logs to S3
 */
+
 variable "aws_region" {
   type        = "string"
   description = "AWS region"
@@ -31,15 +33,20 @@ variable "traffic_type" {
   default     = "REJECT"
 }
 
-variable "vpc_flow_log_group_name" {
+variable "cloudwatch_log_retention" {
   type        = "string"
-  description = "The name of the VPC flow log group"
+  description = "Number of days to retain Cloudwatch logs for"
 }
 
-variable "log_retention" {
+variable "remote_state_bucket" {
   type        = "string"
-  description = "Number of days to retain flow logs for"
-  default     = "3"
+  description = "S3 bucket we store our terraform state in"
+}
+
+variable "remote_state_infra_aws_logging_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_aws_logging remote state "
+  default     = ""
 }
 
 # Resources
@@ -55,6 +62,16 @@ provider "aws" {
   version = "1.0.0"
 }
 
+data "terraform_remote_state" "infra_aws_logging" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_aws_logging_key_stack, var.stackname)}/infra-aws-logging.tfstate"
+    region = "eu-west-1"
+  }
+}
+
 module "vpc" {
   source       = "../../modules/aws/network/vpc"
   name         = "${var.vpc_name}"
@@ -62,8 +79,18 @@ module "vpc" {
   default_tags = "${map("Project", var.stackname)}"
 }
 
+resource "aws_cloudwatch_log_group" "log" {
+  name              = "${var.stackname}-vpc-flow-log"
+  retention_in_days = "${var.cloudwatch_log_retention}"
+
+  tags {
+    Project       = "${var.stackname}"
+    aws_stackname = "${var.stackname}"
+  }
+}
+
 resource "aws_flow_log" "vpc_flow_log" {
-  log_group_name = "${var.vpc_flow_log_group_name}"
+  log_group_name = "${aws_cloudwatch_log_group.log.name}"
   iam_role_arn   = "${aws_iam_role.vpc_flow_logs_role.arn}"
   vpc_id         = "${module.vpc.vpc_id}"
   traffic_type   = "${var.traffic_type}"
@@ -85,26 +112,36 @@ resource "aws_iam_role_policy_attachment" "vpc_flow_logs_policy_attachment" {
   policy_arn = "${aws_iam_policy.vpc_flow_logs_policy.arn}"
 }
 
+module "vpc_flow_log_exporter" {
+  source                       = "../../modules/aws/cloudwatch_log_exporter"
+  log_group_name               = "${aws_cloudwatch_log_group.log.name}"
+  firehose_role_arn            = "${data.terraform_remote_state.infra_aws_logging.firehose_logs_role_arn}"
+  firehose_bucket_arn          = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_arn}"
+  firehose_bucket_prefix       = "${aws_cloudwatch_log_group.log.name}"
+  lambda_filename              = "${path.module}/../../lambda/VPCFlowLogsToFirehose/VPCFlowLogsToFirehose.zip"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_aws_logging.lambda_logs_role_arn}"
+  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
 output "vpc_id" {
-  value = "${module.vpc.vpc_id}"
+  value       = "${module.vpc.vpc_id}"
+  description = "The ID of the VPC"
 }
 
 output "vpc_cidr" {
-  value = "${module.vpc.vpc_cidr}"
+  value       = "${module.vpc.vpc_cidr}"
+  description = "The CIDR block of the VPC"
 }
 
 output "internet_gateway_id" {
-  value = "${module.vpc.internet_gateway_id}"
+  value       = "${module.vpc.internet_gateway_id}"
+  description = "The ID of the Internet Gateway"
 }
 
 output "route_table_public_id" {
-  value = "${module.vpc.route_table_public_id}"
-}
-
-output "flow_log_id" {
-  value       = "${aws_flow_log.vpc_flow_log.id}"
-  description = "AWS VPC Flog log ID"
+  value       = "${module.vpc.route_table_public_id}"
+  description = "The ID of the public routing table"
 }
