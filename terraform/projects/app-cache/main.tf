@@ -64,7 +64,7 @@ variable "asg_desired_capacity" {
   default     = "2"
 }
 
-variable "remote_state_infra_artefact_bucket_stack" {
+variable "remote_state_infra_artefact_bucket_key_stack" {
   type        = "string"
   description = "Override infra_artefact_bucket remote state path"
   default     = ""
@@ -84,7 +84,7 @@ data "terraform_remote_state" "artefact_bucket" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_artefact_bucket_stack, var.stackname)}/artefact-bucket.tfstate"
+    key    = "${coalesce(var.remote_state_infra_artefact_bucket_key_stack, var.stackname)}/artefact-bucket.tfstate"
     region = "eu-west-1"
   }
 }

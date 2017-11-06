@@ -40,7 +40,7 @@ variable "deploy_subnet" {
   description = "Name of the subnet to place the apt instance 1 and EBS volume"
 }
 
-variable "remote_state_infra_artefact_bucket_stack" {
+variable "remote_state_infra_artefact_bucket_key_stack" {
   type        = "string"
   description = "Override infra_artefact_bucket remote state path"
   default     = ""
@@ -60,7 +60,7 @@ data "terraform_remote_state" "artefact_bucket" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_artefact_bucket_stack, var.stackname)}/artefact-bucket.tfstate"
+    key    = "${coalesce(var.remote_state_infra_artefact_bucket_key_stack, var.stackname)}/artefact-bucket.tfstate"
     region = "eu-west-1"
   }
 }

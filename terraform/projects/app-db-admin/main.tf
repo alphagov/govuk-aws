@@ -32,6 +32,12 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "remote_state_infra_database_backups_bucket_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_database_backups_bucket remote state"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -133,7 +139,7 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
     region = "eu-west-1"
   }
 }
