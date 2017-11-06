@@ -50,6 +50,24 @@ variable "cluster_name" {
   description = "Name of the Elasticsearch cluster to use for discovery"
 }
 
+variable "rummager_elasticsearch_1_backups_enabled" {
+  type        = "string"
+  description = "Whether or not this machine takes the ES backups"
+  default     = "0"
+}
+
+variable "rummager_elasticsearch_2_backups_enabled" {
+  type        = "string"
+  description = "Whether or not this machine takes the ES backups"
+  default     = "0"
+}
+
+variable "rummager_elasticsearch_3_backups_enabled" {
+  type        = "string"
+  description = "Whether or not this machine takes the ES backups"
+  default     = "0"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -120,7 +138,7 @@ module "rummager-elasticsearch-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-rummager-elasticsearch-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rummager_elasticsearch", "aws_hostname", "rummager-elasticsearch-1", "cluster_name", var.cluster_name)}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rummager_elasticsearch", "aws_hostname", "rummager-elasticsearch-1", "cluster_name", var.cluster_name, "backups_enabled", var.rummager_elasticsearch_1_backups_enabled)}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rummager_elasticsearch_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m4.large"
@@ -153,7 +171,7 @@ module "rummager-elasticsearch-2" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-rummager-elasticsearch-2"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rummager_elasticsearch", "aws_hostname", "rummager-elasticsearch-2", "cluster_name", var.cluster_name)}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rummager_elasticsearch", "aws_hostname", "rummager-elasticsearch-2", "cluster_name", var.cluster_name, "backups_enabled", var.rummager_elasticsearch_2_backups_enabled)}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rummager_elasticsearch_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m4.large"
@@ -186,7 +204,7 @@ module "rummager-elasticsearch-3" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-rummager-elasticsearch-3"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rummager_elasticsearch", "aws_hostname", "rummager-elasticsearch-3", "cluster_name", var.cluster_name)}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rummager_elasticsearch", "aws_hostname", "rummager-elasticsearch-3", "cluster_name", var.cluster_name, "backups_enabled", var.rummager_elasticsearch_3_backups_enabled)}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rummager_elasticsearch_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m4.large"
