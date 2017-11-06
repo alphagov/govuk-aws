@@ -99,6 +99,10 @@ The projects that need to be initially run in this way are:
 3. `infra-root-dns-zones`
 4. `infra-stack-dns-zones`
 5. `infra-security-groups`
+6. `infra-stack-sns-alerts`
+7. `infra-aws-logging`
+8. `infra-database-backups-bucket`
+9. `infra-artefact-bucket`
 
 ### Creating backend files for a new stack
 
