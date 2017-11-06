@@ -68,6 +68,11 @@ variable "rummager_elasticsearch_3_backups_enabled" {
   default     = "0"
 }
 
+variable "remote_state_infra_database_backups_bucket_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_database_backups_bucket remote state"
+  default     = ""
+}
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -264,6 +269,22 @@ module "alarms-elb-rummager-elasticsearch-internal" {
   httpcode_elb_5xx_threshold     = "0"
   surgequeuelength_threshold     = "200"
   healthyhostcount_threshold     = "1"
+}
+
+data "terraform_remote_state" "infra_database_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "rummager-elasticsearch-1_database_backups_iam_role_policy_attachment" {
+  count      = 3
+  role       = "${element(list(module.rummager-elasticsearch-1.instance_iam_role_name, module.rummager-elasticsearch-2.instance_iam_role_name, module.rummager-elasticsearch-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.write_database_backups_bucket_policy_arn}"
 }
 
 # Outputs
