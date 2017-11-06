@@ -4,7 +4,7 @@ This document discusses how to create a new environment in AWS. Discussion as to
 
 To clarify terms used here there is a [glossary](#glossary). Throughout this document `<foo>` indicates a value you supply (e.g. a stack name) and:
 ```
-$ bar
+bar
 ```
 indicates a command to be run from a shell.
 
@@ -30,7 +30,7 @@ The general steps for provisioning a new environment are:
 
 If you've not used the aws-cli before run
 ```
-$ aws configure
+aws configure
 ```
 to set your access id, secret and the region to use.
 
@@ -45,16 +45,16 @@ You will need to have cloned the following repositories to your local machine
 
 e.g.
 ```
-$ git clone git@github.com:alphagov/govuk-secrets.git
+git clone git@github.com:alphagov/govuk-secrets.git
 ```
 
 ## Build the S3 bucket
 
 An [S3](https://aws.amazon.com/s3/) bucket needs to be created to store state for Terraform. If you're using an account that already has this set up you can skip this step, check by running:
 ```
-$ export ENVIRONMENT=<environment>
-$ export TERRAFORM_BUCKET="govuk-terraform-steppingstone-${ENVIRONMENT}"
-$ aws s3 ls $TERRAFORM_BUCKET
+export ENVIRONMENT=<environment>
+export TERRAFORM_BUCKET="govuk-terraform-steppingstone-${ENVIRONMENT}"
+aws s3 ls $TERRAFORM_BUCKET
 ```
 
 If the bucket is missing you'll see an error:
@@ -70,10 +70,10 @@ PRE govuk/
 
 To create an S3 bucket run the following in order to create a bucket and enable versioning on it:
 ```
-$ aws s3 mb "s3://${TERRAFORM_BUCKET}"
-$ aws s3api put-bucket-versioning  \
-        --bucket ${TERRAFORM_BUCKET} \
-        --versioning-configuration Status=Enabled
+aws s3 mb "s3://${TERRAFORM_BUCKET}"
+aws s3api put-bucket-versioning  \
+      --bucket ${TERRAFORM_BUCKET} \
+      --versioning-configuration Status=Enabled
 ```
 
 
@@ -82,13 +82,13 @@ $ aws s3api put-bucket-versioning  \
 There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `deana`).
 
 ```
-$ export DATA_DIR=<path to govuk-aws-data repository>/data
-$ export STACKNAME=<stackname>
-# NOTE: the ENVIRONMENT variable also needs to be set or passed to this script.
+export DATA_DIR=<path to govuk-aws-data repository>/data
+export STACKNAME=<stackname>
+NOTE: the ENVIRONMENT variable also needs to be set or passed to this script.
 
-$ tools/build-terraform-project.sh -c plan -p name>
+tools/build-terraform-project.sh -c plan -p name>
 ...terraform output...
-$ tools/build-terraform-project.sh -c apply -p project name>
+tools/build-terraform-project.sh -c apply -p project name>
 ...terraform output...
 ```
 
@@ -120,9 +120,9 @@ Now run
 
 ```
 # Make sure STACKNAME & ENVIRONMENT are set
-$ tools/build-terraform-project.sh -c plan -p app-puppetmaster
+tools/build-terraform-project.sh -c plan -p app-puppetmaster
 ...terraform output...
-$ tools/build-terraform-project.sh -c apply -p app-puppetmaster
+tools/build-terraform-project.sh -c apply -p app-puppetmaster
 ...terraform output...
 ```
 
@@ -136,15 +136,15 @@ puppetmaster_bootstrap_elb_dns_name = <stack name>-puppetmaster-bootstrap-123456
 puppetmaster_internal_elb_dns_name = internal-<stack name>-puppetmaster-0987654321.eu-west-1.elb.amazonaws.com
 service_dns_name = puppet.<stack name>.<environment>.govuk-internal.digital
 
-$ export PUPPETMASTER_ELB=<stack name>-puppetmaster-bootstrap-1234567890.eu-west-1.elb.amazonaws.com
-$ ssh ubuntu@$PUPPETMASTER_ELB
+export PUPPETMASTER_ELB=<stack name>-puppetmaster-bootstrap-1234567890.eu-west-1.elb.amazonaws.com
+ssh ubuntu@$PUPPETMASTER_ELB
 ```
 
 ## Deploy the Puppet code and secrets
 
 We currently get the GPG key from the integration puppet master (in future this should be kept in the `deployment/pass` store)
 ```
-$ ssh puppetmaster-1.integration.publishing.service.gov.uk
+ssh puppetmaster-1.integration.publishing.service.gov.uk
 sudo -i
 
 gpg --homedir /etc/puppet/gpg --export-secret-key -a "Hiera eYAML GPG key for Preview (To be placed on the Puppet Master)"
@@ -157,13 +157,13 @@ Save the output of the `gpg` command to a suitable file.
 
 Now run these commands to initialise the puppet master:
 ```
-$ cd tools
-$ bash -x ./aws-push-puppet.sh -e ${ENVIRONMENT} \
-                               -g <path to the gpg key you copied> \
-                               -p <path to puppet repo> \
-                               -d <path to govuk-secrets repo> \
-                               -t $PUPPETMASTER_ELB
-$ ssh ubuntu@$PUPPETMASTER_ELB
+cd tools
+bash -x ./aws-push-puppet.sh -e ${ENVIRONMENT} \
+                             -g <path to the gpg key you copied> \
+                             -p <path to puppet repo> \
+                             -d <path to govuk-secrets repo> \
+                             -t $PUPPETMASTER_ELB
+ssh ubuntu@$PUPPETMASTER_ELB
 > sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
 ```
 
@@ -181,9 +181,9 @@ Notice: Finished catalog run in 0.01 seconds
 
 You now need to build the deploy Jenkins:
 ```
-$ tools/build-terraform-project.sh -c plan -p app-deploy
+tools/build-terraform-project.sh -c plan -p app-deploy
 ...terraform output...
-$ tools/build-terraform-project.sh -c apply -p app-deploy
+tools/build-terraform-project.sh -c apply -p app-deploy
 ...terraform output...
 ```
 
