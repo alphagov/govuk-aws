@@ -73,6 +73,7 @@ variable "remote_state_infra_database_backups_bucket_key_stack" {
   description = "Override stackname path to infra_database_backups_bucket remote state"
   default     = ""
 }
+
 # Resources
 # --------------------------------------------------------------
 terraform {
