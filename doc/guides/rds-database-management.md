@@ -27,6 +27,16 @@ All commands such as `mysqldump` work as normal.
 
 ### PostgreSQL
 
-Connect to the PostgreSQL database:
+If a `db_admin` instance is managing a PostgreSQL RDS instance, then it should have a `pgpass` file provided. To view details on connections, view the file:
 
-`sudo -i psql`
+`sudo less /root/.pgpass`
+
+This is in the format of:
+
+`<hostname>:<port>:<database>:<username>:<password>`
+
+To connect to the PostgreSQL database, you need to provide the username and hostname that is provided in the `pgpass` file:
+
+`sudo psql -U <username> -h <hostname> postgres`
+
+The `pgpass` file will provide authentication when connecting, so there should be no prompt for a password.
