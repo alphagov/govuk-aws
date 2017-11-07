@@ -1,5 +1,5 @@
 /**
-* ## Project: app-mysql-primary
+* ## Project: app-mysql
 *
 * RDS Mysql Primary instance
 */
