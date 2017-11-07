@@ -48,11 +48,11 @@ resource "aws_s3_bucket" "database_backups" {
 
     transition {
       storage_class = "GLACIER"
-      days          = 60
+      days          = 90
     }
 
     expiration {
-      days = 90
+      days = 120
     }
   }
 
@@ -67,11 +67,11 @@ resource "aws_s3_bucket" "database_backups" {
 
     transition {
       storage_class = "GLACIER"
-      days          = 60
+      days          = 90
     }
 
     expiration {
-      days = 90
+      days = 120
     }
   }
 
@@ -86,11 +86,11 @@ resource "aws_s3_bucket" "database_backups" {
 
     transition {
       storage_class = "GLACIER"
-      days          = 60
+      days          = 90
     }
 
     expiration {
-      days = 90
+      days = 120
     }
   }
 
