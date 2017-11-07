@@ -15,9 +15,11 @@ Mapit node
 | mapit_1_subnet | Name of the subnet to place the mapit instance 1 and EBS volume | string | - | yes |
 | mapit_2_subnet | Name of the subnet to place the mapit instance 1 and EBS volume | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
+| remote_state_infra_aws_logging_key_stack | Override stackname path to infra_aws_logging remote state | string | `` | no |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
 | remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_vpc remote state | string | `` | no |
+| remote_state_infra_stack_sns_alerts_key_stack | Override stackname path to infra_stack_sns_alerts remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | ssh_public_key | Default public key material | string | - | yes |
 | stackname | Stackname | string | - | yes |

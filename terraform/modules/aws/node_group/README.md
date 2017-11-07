@@ -41,5 +41,6 @@ policies to in other modules.
 
 | Name | Description |
 |------|-------------|
+| autoscaling_group_name | The name of the node auto scaling group. |
 | instance_iam_role_name | Node IAM Role Name. Use with aws_iam_role_policy_attachment to attach specific policies to the node role |
 

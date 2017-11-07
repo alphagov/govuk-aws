@@ -1,17 +1,9 @@
-# == Manifest: projects::infra-stack-sns-alerts
-#
-# This module creates a SNS topic for alert notifications. It creates
-# and subscribes a SQS queue for further integration.
-#
-# === Variables:
-#
-# aws_region
-# stackname
-#
-# === Outputs:
-#
-# sns_topic_alerts_arn
-#
+/** 
+* ## Module: projects/infra-stack-sns-alerts
+*
+* This module creates a SNS topic for alert notifications. It creates
+* and subscribes a SQS queue for further integration.
+*/
 
 variable "aws_region" {
   type        = "string"
@@ -26,6 +18,7 @@ variable "stackname" {
 
 # Resources
 # --------------------------------------------------------------
+
 terraform {
   backend          "s3"             {}
   required_version = "= 0.10.7"
@@ -52,7 +45,8 @@ resource "aws_sns_topic_subscription" "alerts_sqs_target" {
 
 # Outputs
 # --------------------------------------------------------------
+
 output "sns_topic_alerts_arn" {
   value       = "${aws_sns_topic.alerts.arn}"
-  description = ""
+  description = "The ARN of the SNS topic"
 }
