@@ -19,6 +19,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "cloudwatch_log_retention" {
+  type        = "string"
+  description = "Number of days to retain Cloudwatch logs for"
+}
+
 variable "username" {
   type        = "string"
   description = "PostgreSQL username"
@@ -103,6 +108,24 @@ module "alarms-rds-transition-postgresql-standby" {
   alarm_actions        = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
   db_instance_id       = "${module.transition-postgresql-standby_rds_instance.rds_replica_id}"
   replicalag_threshold = "120"
+}
+
+module "transition-postgresql-primary_log_exporter" {
+  source                       = "../../modules/aws/rds_log_exporter"
+  rds_instance_id              = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
+  s3_logging_bucket_name       = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+  lambda_filename              = "${path.module}/../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_aws_logging.lambda_rds_logs_to_s3_role_arn}"
+  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
+}
+
+module "transition-postgresql-standby_log_exporter" {
+  source                       = "../../modules/aws/rds_log_exporter"
+  rds_instance_id              = "${module.transition-postgresql-standby_rds_instance.rds_replica_id}"
+  s3_logging_bucket_name       = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+  lambda_filename              = "${path.module}/../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_aws_logging.lambda_rds_logs_to_s3_role_arn}"
+  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
 # Outputs
