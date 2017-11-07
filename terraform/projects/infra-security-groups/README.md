@@ -5,14 +5,14 @@ Manage the security groups for the entire infrastructure
 
 ## Inputs
 
-| Name | Description | Default | Required |
-|------|-------------|:-----:|:-----:|
-| aws_region | AWS region | `eu-west-1` | no |
-| carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | - | yes |
-| office_ips | An array of CIDR blocks that will be allowed offsite access. | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | - | yes |
-| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | `` | no |
-| stackname | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | - | yes |
+| Name | Description | Type | Default | Required |
+|------|-------------|:----:|:-----:|:-----:|
+| aws_region | AWS region | string | `eu-west-1` | no |
+| carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
+| office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
+| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
+| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
+| stackname | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | string | - | yes |
 
 ## Outputs
 
@@ -68,6 +68,7 @@ Manage the security groups for the entire infrastructure
 | sg_monitortest_external_elb_id |  |
 | sg_monitortest_id |  |
 | sg_mysql-primary_id |  |
+| sg_mysql-replica_id |  |
 | sg_offsite_ssh_id |  |
 | sg_postgresql-primary_id |  |
 | sg_publishing-api_elb_external_id |  |
@@ -87,6 +88,7 @@ Manage the security groups for the entire infrastructure
 | sg_transition-db-admin_elb_id |  |
 | sg_transition-db-admin_id |  |
 | sg_transition-postgresql-primary_id |  |
+| sg_transition-postgresql-standby_id |  |
 | sg_whitehall-backend_external_elb_id |  |
 | sg_whitehall-backend_id |  |
 | sg_whitehall-backend_internal_elb_id |  |
