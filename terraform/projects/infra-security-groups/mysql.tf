@@ -69,3 +69,27 @@ resource "aws_security_group_rule" "allow_mysql-primary_db-admin_in" {
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.db-admin.id}"
 }
+
+resource "aws_security_group" "mysql-replica" {
+  name        = "${var.stackname}_mysql-replica_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to mysql-replica from its clients"
+
+  tags {
+    Name = "${var.stackname}_mysql-replica_access"
+  }
+}
+
+# Contacts is the only application that reads from the MySQL replica
+resource "aws_security_group_rule" "allow_frontend_to_mysql-replica_3306" {
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.mysql-replica.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.frontend.id}"
+}

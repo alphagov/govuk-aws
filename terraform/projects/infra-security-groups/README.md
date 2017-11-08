@@ -68,6 +68,7 @@ Manage the security groups for the entire infrastructure
 | sg_monitortest_external_elb_id |  |
 | sg_monitortest_id |  |
 | sg_mysql-primary_id |  |
+| sg_mysql-replica_id |  |
 | sg_offsite_ssh_id |  |
 | sg_postgresql-primary_id |  |
 | sg_publishing-api_elb_external_id |  |

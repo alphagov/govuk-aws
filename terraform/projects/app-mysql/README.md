@@ -29,4 +29,6 @@ RDS Mysql Primary instance
 | mysql_primary_endpoint | Mysql instance endpoint |
 | mysql_primary_id | Mysql instance ID |
 | mysql_primary_resource_id | Mysql instance resource ID |
+| mysql_replica_address | Mysql instance address |
+| mysql_replica_endpoint | Mysql instance endpoint |
 
