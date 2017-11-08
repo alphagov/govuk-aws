@@ -19,12 +19,12 @@ Rummager Elasticsearch cluster
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_stack_sns_alerts_key_stack | Override stackname path to infra_stack_sns_alerts remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
+| rummager_elasticsearch_1_backups_enabled | Whether or not this machine takes the ES backups | string | `0` | no |
 | rummager_elasticsearch_1_subnet | Name of the subnet to place the Elasticsearch instance 1 and EBS volume | string | - | yes |
+| rummager_elasticsearch_2_backups_enabled | Whether or not this machine takes the ES backups | string | `0` | no |
 | rummager_elasticsearch_2_subnet | Name of the subnet to place the Elasticsearch 2 and EBS volume | string | - | yes |
+| rummager_elasticsearch_3_backups_enabled | Whether or not this machine takes the ES backups | string | `0` | no |
 | rummager_elasticsearch_3_subnet | Name of the subnet to place the Elasticsearch instance 3 and EBS volume | string | - | yes |
-| rummager_elasticsearch_1_backups_enabled | Whether or not this machine takes the ES backups (0 or 1 for false or true) | string | `0` | no |
-| rummager_elasticsearch_2_backups_enabled | Whether or not this machine takes the ES backups (0 or 1 for false or true) | string | `0` | no |
-| rummager_elasticsearch_3_backups_enabled | Whether or not this machine takes the ES backups (0 or 1 for false or true) | string | `0` | no |
 | ssh_public_key | Default public key material | string | - | yes |
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
