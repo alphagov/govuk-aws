@@ -1,5 +1,5 @@
 /**
-* ## Modules: aws::network::vpc
+* ## Modules: aws/network/vpc
 *
 * This module creates a VPC, Internet Gateway and route associated
 */
@@ -21,6 +21,7 @@ variable "cidr" {
 
 # Resources
 #--------------------------------------------------------------
+
 resource "aws_vpc" "vpc" {
   cidr_block           = "${var.cidr}"
   enable_dns_support   = true
@@ -52,18 +53,23 @@ resource "aws_route_table" "public" {
 
 # Outputs
 #--------------------------------------------------------------
+
 output "vpc_id" {
-  value = "${aws_vpc.vpc.id}"
+  value       = "${aws_vpc.vpc.id}"
+  description = "The ID of the VPC."
 }
 
 output "vpc_cidr" {
-  value = "${aws_vpc.vpc.cidr_block}"
+  value       = "${aws_vpc.vpc.cidr_block}"
+  description = "The CIDR block of the VPC."
 }
 
 output "internet_gateway_id" {
-  value = "${aws_internet_gateway.public.id}"
+  value       = "${aws_internet_gateway.public.id}"
+  description = "The ID of the Internet Gateway."
 }
 
 output "route_table_public_id" {
-  value = "${aws_route_table.public.id}"
+  value       = "${aws_route_table.public.id}"
+  description = "The ID of the public routing table associated with the Internet Gateway."
 }

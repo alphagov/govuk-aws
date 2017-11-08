@@ -1,12 +1,33 @@
 /**
-* ## Modules: aws::network::private_subnet
+* ## Modules: aws/network/private_subnet
 *
 * This module creates AWS private subnets on a given VPC, each one
 * with a route table and route table association.
 *
+* Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and
+* `subnet_availability_zones`, where the key is the name of the
+* subnet and must be the same in both maps.
+*
+* For instance, to create two private subnets named "my_subnet_a"
+* and "my_subnet_b" on eu-west-1a and eu-west-1b, you can do:
+*
+*```
+* subnet_cidrs = {
+*   "my_subnet_a" = "10.0.0.0/24"
+*   "my_subnet_b" = "10.0.1.0/24"
+* }
+*
+* subnet_availability_zones = {
+*   "my_subnet_a" = "eu-west-1a"
+*   "my_subnet_b" = "eu-west-1b"
+* }
+*```
+*
 * You can optionally provide a subnet_nat_gateways variable, indicating
 * the NAT Gateway ID that a subnet can use. If specified, then a
-* route will also be added by this module, enabling Internet access.
+* route will also be added by this module, enabling Internet access. The
+* keys in subnet_nat_gateways that identify the subnet name must match the
+* keys provided in subnet_cidrs and subnet_availability_zones.
 *
 * If you provide subnet_nat_gateways, then subnet_nat_gateways_length
 * must also be provided with the number of elements in the subnet_nat_gateways
@@ -14,6 +35,7 @@
 * "count" from evaluating computed values. Probably referenced here:
 * https://github.com/hashicorp/terraform/issues/10857
 */
+
 variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"
@@ -43,12 +65,13 @@ variable "subnet_nat_gateways" {
 
 variable "subnet_nat_gateways_length" {
   type        = "string"
-  description = "Provide the number of elements in the map subnet_nat_gateways (https://github"
+  description = "Provide the number of elements in the map subnet_nat_gateways."
   default     = "0"
 }
 
 # Resources
 #--------------------------------------------------------------
+
 resource "aws_subnet" "private" {
   count             = "${length(keys(var.subnet_cidrs))}"
   vpc_id            = "${var.vpc_id}"
@@ -90,6 +113,7 @@ resource "aws_route" "nat" {
 
 # Outputs
 #--------------------------------------------------------------
+
 output "subnet_ids" {
   value       = ["${aws_subnet.private.*.id}"]
   description = "List of private subnet IDs"

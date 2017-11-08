@@ -1,5 +1,5 @@
 /**
-* ## Module: aws::network::nat
+* ## Module: aws/network/nat
 *
 * Create a NAT gateway and associated EIP on each one of the public
 * subnets provided.
@@ -38,6 +38,7 @@ resource "aws_nat_gateway" "nat" {
 
 # Outputs
 #--------------------------------------------------------------
+
 output "nat_gateway_ids" {
   value       = ["${aws_nat_gateway.nat.*.id}"]
   description = "List containing the IDs of the NAT gateways"
