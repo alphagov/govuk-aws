@@ -207,13 +207,12 @@ module "graphite-1" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.graphite_internal_elb.id}", "${aws_elb.graphite_external_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  root_block_device_volume_size = "20"
 }
 
 resource "aws_ebs_volume" "graphite-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
-  size              = 100
-  type              = "gp2"
+  size              = 250
+  type              = "io1"
 
   tags {
     Name            = "${var.stackname}-graphite-1"
