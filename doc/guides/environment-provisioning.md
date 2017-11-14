@@ -24,7 +24,7 @@ The general steps for provisioning a new environment are:
 ## Requirements
 
 * [Git](https://git-scm.com/) installed via [Xcode cli tools](http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/)/[brew](https://brew.sh/)
-* [Terraform = 0.10.7](https://www.terraform.io/downloads.html) installed via that link 
+* [Terraform = 0.10.8](https://www.terraform.io/downloads.html) installed via that link 
 * [ssh-copy-id](https://www.ssh.com/ssh/copy-id) installed via `brew install ssh-copy-id`
 * [aws-cli](https://aws.amazon.com/cli) installed via `brew install awscli` or `pip install awscli`
 

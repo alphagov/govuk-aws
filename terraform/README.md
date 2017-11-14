@@ -3,7 +3,7 @@
 ## Installation
 
 - [Terraform](https://www.terraform.io/): we use remote state files, which means you can't plan/apply changes if the
-version of your local Terraform doesn't match the version that generated the remote state. Currently we assume 0.10.7
+version of your local Terraform doesn't match the version that generated the remote state. Currently we assume 0.10.8
 
 ## Manage resources
 
