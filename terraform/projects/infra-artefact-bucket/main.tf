@@ -27,7 +27,7 @@ variable "aws_environment" {
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.10.7"
+  required_version = "= 0.10.8"
 }
 
 provider "aws" {
