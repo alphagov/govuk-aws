@@ -117,6 +117,15 @@ resource "aws_route53_record" "internal_service_record" {
   }
 }
 
+resource "aws_route53_record" "internal_app_service_records" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  records = ["whitehall-backend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  ttl     = "300"
+}
+
 resource "aws_elb" "whitehall-backend_external_elb" {
   name            = "${var.stackname}-whitehall-backend-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
