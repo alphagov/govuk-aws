@@ -30,6 +30,11 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "elb_external_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -42,10 +47,15 @@ provider "aws" {
   version = "1.0.0"
 }
 
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_elb" "bouncer_external_elb" {
   name            = "${var.stackname}-bouncer"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_elb_id}"]
   internal        = "false"
 
   access_logs {
@@ -55,17 +65,26 @@ resource "aws_elb" "bouncer_external_elb" {
   }
 
   listener {
-    instance_port     = "443"
-    instance_protocol = "tcp"
+    instance_port     = "80"
+    instance_protocol = "http"
     lb_port           = "443"
-    lb_protocol       = "tcp"
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  listener {
+    instance_port     = "80"
+    instance_protocol = "http"
+    lb_port           = "80"
+    lb_protocol       = "http"
   }
 
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TCP:443"
+    target              = "TCP:80"
     interval            = 30
   }
 
