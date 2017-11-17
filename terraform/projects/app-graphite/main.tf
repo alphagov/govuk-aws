@@ -213,7 +213,7 @@ resource "aws_ebs_volume" "graphite-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
   size              = 250
   type              = "io1"
-  iops              = 100
+  iops              = 1000
 
   tags {
     Name            = "${var.stackname}-graphite-1"
