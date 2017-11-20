@@ -33,3 +33,8 @@ variable "carrenza_integration_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will be allowed to SSH to the jumpbox."
 }
+
+variable "traffic_replay_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will replay traffic against an environment"
+}

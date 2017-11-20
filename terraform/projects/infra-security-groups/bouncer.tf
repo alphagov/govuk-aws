@@ -24,8 +24,8 @@ resource "aws_security_group" "bouncer" {
 
 resource "aws_security_group_rule" "allow_bouncer_elb_in" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -45,7 +45,25 @@ resource "aws_security_group" "bouncer_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb" {
+resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_http" {
+  type              = "ingress"
+  to_port           = 80
+  from_port         = 80
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.bouncer_elb.id}"
+  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"]
+}
+
+resource "aws_security_group_rule" "allow_traffic-replay_to_bouncer_elb_http" {
+  type              = "ingress"
+  to_port           = 80
+  from_port         = 80
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.bouncer_elb.id}"
+  cidr_blocks       = ["${var.traffic_replay_ips}"]
+}
+
+resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_https" {
   type              = "ingress"
   to_port           = 443
   from_port         = 443

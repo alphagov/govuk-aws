@@ -13,6 +13,7 @@ Manage the security groups for the entire infrastructure
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | string | - | yes |
+| traffic_replay_ips | An array of CIDR blocks that will replay traffic against an environment | list | - | yes |
 
 ## Outputs
 
