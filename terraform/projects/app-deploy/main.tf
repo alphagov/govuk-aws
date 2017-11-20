@@ -35,6 +35,11 @@ variable "elb_external_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 variable "deploy_subnet" {
   type        = "string"
   description = "Name of the subnet to place the apt instance 1 and EBS volume"
@@ -113,6 +118,49 @@ resource "aws_elb" "deploy_elb" {
   tags = "${map("Name", "${var.stackname}-deploy", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins")}"
 }
 
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
+resource "aws_elb" "deploy_internal_elb" {
+  name            = "${var.stackname}-deploy-internal"
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_internal_elb_id}"]
+  internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-deploy-internal-elb"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 443
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:80"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-deploy-internal", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins")}"
+}
+
 resource "aws_route53_record" "service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
   name    = "deploy.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
@@ -121,6 +169,18 @@ resource "aws_route53_record" "service_record" {
   alias {
     name                   = "${aws_elb.deploy_elb.dns_name}"
     zone_id                = "${aws_elb.deploy_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "service_record_internal" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "deploy.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.deploy_internal_elb.dns_name}"
+    zone_id                = "${aws_elb.deploy_internal_elb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -137,7 +197,7 @@ module "deploy" {
   instance_key_name             = "${var.stackname}-deploy"
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.deploy_elb.id}"]
+  instance_elb_ids              = ["${aws_elb.deploy_elb.id}", "${aws_elb.deploy_internal_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
 }

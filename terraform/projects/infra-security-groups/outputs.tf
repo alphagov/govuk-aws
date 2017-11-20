@@ -90,6 +90,10 @@ output "sg_deploy_elb_id" {
   value = "${aws_security_group.deploy_elb.id}"
 }
 
+output "sg_deploy_internal_elb_id" {
+  value = "${aws_security_group.deploy_internal_elb.id}"
+}
+
 output "sg_deploy_id" {
   value = "${aws_security_group.deploy.id}"
 }
