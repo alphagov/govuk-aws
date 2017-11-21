@@ -94,15 +94,14 @@ tools/build-terraform-project.sh -c apply -p project name>
 
 The projects that need to be initially run in this way are:
 
-1. `infra-vpc`
-2. `infra-networking`
-3. `infra-root-dns-zones`
-4. `infra-stack-dns-zones`
-5. `infra-security-groups`
-6. `infra-stack-sns-alerts`
-7. `infra-aws-logging`
-8. `infra-database-backups-bucket`
-9. `infra-artefact-bucket`
+1. `infra-monitoring`
+2. `infra-vpc`
+3. `infra-networking`
+4. `infra-root-dns-zones`
+5. `infra-stack-dns-zones`
+6. `infra-security-groups`
+7. `infra-database-backups-bucket`
+8. `infra-artefact-bucket`
 
 ### Creating backend files for a new stack
 
