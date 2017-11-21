@@ -71,6 +71,13 @@ resource "aws_db_parameter_group" "mysql-primary" {
     value = 1073741824
   }
 
+  # TODO: this should be set to 0 when we have migrated to Production
+  # as it not recommended to set this option
+  parameter {
+    name  = "log_bin_trust_function_creators"
+    value = 1
+  }
+
   tags {
     aws_stackname = "${var.stackname}"
   }
