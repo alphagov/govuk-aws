@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-integration"
-key     = "govuk/infra-aws-logging.tfstate"
+key     = "govuk/infra-monitoring.tfstate"
 encrypt = true
 region  = "eu-west-1"
