@@ -116,6 +116,29 @@ variable "root_block_device_volume_size" {
   default     = "20"
 }
 
+variable "create_asg_notifications" {
+  type        = "string"
+  description = "Enable Autoscaling Group notifications"
+  default     = true
+}
+
+variable "asg_notification_types" {
+  type        = "list"
+  description = "A list of Notification Types that trigger Autoscaling Group notifications. Acceptable values are documented in https://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_NotificationConfiguration.html"
+
+  default = [
+    "autoscaling:EC2_INSTANCE_LAUNCH",
+    "autoscaling:EC2_INSTANCE_TERMINATE",
+    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+  ]
+}
+
+variable "asg_notification_topic_arn" {
+  type        = "string"
+  description = "The Topic ARN for Autoscaling Group notifications to be sent to"
+  default     = ""
+}
+
 # Resources
 #--------------------------------------------------------------
 
@@ -247,6 +270,13 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {
+  count         = "${var.create_asg_notifications}"
+  group_names   = ["${aws_autoscaling_group.node_autoscaling_group.name}"]
+  notifications = ["${var.asg_notification_types}"]
+  topic_arn     = "${var.asg_notification_topic_arn}"
 }
 
 # Outputs

@@ -21,6 +21,9 @@ policies to in other modules.
 | asg_desired_capacity | The autoscaling groups desired capacity | string | `1` | no |
 | asg_max_size | The autoscaling groups max_size | string | `1` | no |
 | asg_min_size | The autoscaling groups max_size | string | `1` | no |
+| asg_notification_topic_arn | The Topic ARN for Autoscaling Group notifications to be sent to | string | `` | no |
+| asg_notification_types | A list of Notification Types that trigger Autoscaling Group notifications. Acceptable values are documented in https://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_NotificationConfiguration.html | list | `<list>` | no |
+| create_asg_notifications | Enable Autoscaling Group notifications | string | `true` | no |
 | create_instance_key | Whether to create a key pair for the instance launch configuration | string | `false` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
 | instance_additional_user_data | Append additional user-data script | string | `` | no |
