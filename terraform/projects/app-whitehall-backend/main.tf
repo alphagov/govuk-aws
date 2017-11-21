@@ -75,7 +75,7 @@ resource "aws_elb" "whitehall-backend_internal_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-whitehall-backend-internal-elb"
     interval      = 60
   }
@@ -133,7 +133,7 @@ resource "aws_elb" "whitehall-backend_external_elb" {
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-whitehall-backend-external-elb"
     interval      = 60
   }
@@ -206,7 +206,7 @@ module "whitehall-backend" {
 module "alarms-elb-whitehall-backend-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-whitehall-backend-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   elb_name                       = "${aws_elb.whitehall-backend_internal_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -219,7 +219,7 @@ module "alarms-elb-whitehall-backend-internal" {
 module "alarms-elb-whitehall-backend-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-whitehall-backend-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   elb_name                       = "${aws_elb.whitehall-backend_external_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"

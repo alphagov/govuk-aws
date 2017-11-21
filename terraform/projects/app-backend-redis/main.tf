@@ -57,7 +57,7 @@ module "backend_redis_cluster" {
 module "alarms-elasticache-backend-redis" {
   source           = "../../modules/aws/alarms/elasticache"
   name_prefix      = "${var.stackname}-backend-redis"
-  alarm_actions    = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   cache_cluster_id = "${module.backend_redis_cluster.replication_group_id}"
 }
 

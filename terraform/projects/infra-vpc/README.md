@@ -11,7 +11,7 @@ and resources to export these logs to S3
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_aws_logging_key_stack | Override stackname path to infra_aws_logging remote state | string | `` | no |
+| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | stackname | Stackname | string | `` | no |
 | traffic_type | The traffic type to capture. Allows ACCEPT, ALL or REJECT | string | `REJECT` | no |
 | vpc_cidr | VPC IP address range, represented as a CIDR block | string | - | yes |

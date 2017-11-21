@@ -21,7 +21,7 @@ This module governs the creation of full network stacks.
 | public_subnet_cidrs | Map containing public subnet names and CIDR associated | map | - | yes |
 | public_subnet_nat_gateway_enable | List of public subnet names where we want to create a NAT Gateway | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_stack_sns_alerts_key_stack | Override stackname path to infra_stack_sns_alerts remote state | string | `` | no |
+| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | Stackname | string | - | yes |
 

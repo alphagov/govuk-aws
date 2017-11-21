@@ -20,9 +20,9 @@ variable "remote_state_infra_vpc_key_stack" {
   default     = ""
 }
 
-variable "remote_state_infra_stack_sns_alerts_key_stack" {
+variable "remote_state_infra_monitoring_key_stack" {
   type        = "string"
-  description = "Override stackname path to infra_stack_sns_alerts remote state "
+  description = "Override stackname path to infra_monitoring remote state "
   default     = ""
 }
 
@@ -113,12 +113,12 @@ data "terraform_remote_state" "infra_vpc" {
   }
 }
 
-data "terraform_remote_state" "infra_stack_sns_alerts" {
+data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_stack_sns_alerts_key_stack, var.stackname)}/infra-stack-sns-alerts.tfstate"
+    key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "eu-west-1"
   }
 }
@@ -203,7 +203,7 @@ module "infra_private_subnet_reserved_ips" {
 module "infra_alarms_natgateway" {
   source          = "../../modules/aws/alarms/natgateway"
   name_prefix     = "${var.stackname}-natgateway"
-  alarm_actions   = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   nat_gateway_ids = ["${module.infra_nat.nat_gateway_ids}"]
 }
 

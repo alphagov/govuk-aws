@@ -43,9 +43,9 @@ variable "remote_state_bucket" {
   description = "S3 bucket we store our terraform state in"
 }
 
-variable "remote_state_infra_aws_logging_key_stack" {
+variable "remote_state_infra_monitoring_key_stack" {
   type        = "string"
-  description = "Override stackname path to infra_aws_logging remote state "
+  description = "Override stackname path to infra_monitoring remote state "
   default     = ""
 }
 
@@ -62,12 +62,12 @@ provider "aws" {
   version = "1.0.0"
 }
 
-data "terraform_remote_state" "infra_aws_logging" {
+data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_aws_logging_key_stack, var.stackname)}/infra-aws-logging.tfstate"
+    key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "eu-west-1"
   }
 }
@@ -115,11 +115,11 @@ resource "aws_iam_role_policy_attachment" "vpc_flow_logs_policy_attachment" {
 module "vpc_flow_log_exporter" {
   source                       = "../../modules/aws/cloudwatch_log_exporter"
   log_group_name               = "${aws_cloudwatch_log_group.log.name}"
-  firehose_role_arn            = "${data.terraform_remote_state.infra_aws_logging.firehose_logs_role_arn}"
-  firehose_bucket_arn          = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_arn}"
+  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
+  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
   firehose_bucket_prefix       = "${aws_cloudwatch_log_group.log.name}"
   lambda_filename              = "${path.module}/../../lambda/VPCFlowLogsToFirehose/VPCFlowLogsToFirehose.zip"
-  lambda_role_arn              = "${data.terraform_remote_state.infra_aws_logging.lambda_logs_role_arn}"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
   lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
 

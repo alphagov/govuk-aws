@@ -69,7 +69,7 @@ resource "aws_elb" "publishing-api_elb_internal" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-publishing-api-internal-elb"
     interval      = 60
   }
@@ -118,7 +118,7 @@ resource "aws_elb" "publishing-api_elb_external" {
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-publishing-api-external-elb"
     interval      = 60
   }
@@ -182,7 +182,7 @@ module "publishing-api" {
 module "alarms-elb-publishing-api-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-publishing-api-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   elb_name                       = "${aws_elb.publishing-api_elb_internal.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -195,7 +195,7 @@ module "alarms-elb-publishing-api-internal" {
 module "alarms-elb-publishing-api-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-publishing-api-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   elb_name                       = "${aws_elb.publishing-api_elb_external.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"

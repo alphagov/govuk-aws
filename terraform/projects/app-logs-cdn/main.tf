@@ -54,7 +54,7 @@ resource "aws_elb" "logs-cdn_external_elb" {
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-logs-cdn-external-elb"
     interval      = 60
   }
@@ -157,7 +157,7 @@ resource "aws_iam_role_policy_attachment" "logs-cdn_iam_role_policy_attachment" 
 module "alarms-elb-logs-cdn-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-logs-cdn-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   elb_name                       = "${aws_elb.logs-cdn_external_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "0"

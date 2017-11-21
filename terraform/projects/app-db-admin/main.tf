@@ -57,7 +57,7 @@ resource "aws_elb" "db-admin_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-db-admin-internal-elb"
     interval      = 60
   }
@@ -122,7 +122,7 @@ module "alarms-autoscaling-db-admin" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-db-admin"
   autoscaling_group_name            = "${module.db-admin.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -130,7 +130,7 @@ module "alarms-ec2-db-admin" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-db-admin"
   autoscaling_group_name   = "${module.db-admin.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   cpuutilization_threshold = "85"
 }
 

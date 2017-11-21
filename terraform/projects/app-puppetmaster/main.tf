@@ -48,7 +48,7 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-puppetmaster-bootstrap-external-elb"
     interval      = 60
   }
@@ -95,7 +95,7 @@ resource "aws_elb" "puppetmaster_internal_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_aws_logging.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-puppetmaster-internal-elb"
     interval      = 60
   }
@@ -178,7 +178,7 @@ resource "aws_iam_role_policy_attachment" "puppetmaster_iam_role_policy_attachme
 module "alarms-elb-puppetmaster-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-puppetmaster-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_stack_sns_alerts.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
   elb_name                       = "${aws_elb.puppetmaster_internal_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "0"
