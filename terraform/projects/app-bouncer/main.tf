@@ -125,6 +125,7 @@ module "bouncer" {
   asg_max_size                  = "2"
   asg_min_size                  = "2"
   asg_desired_capacity          = "2"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
 }
 
 module "alarms-elb-bouncer-external" {

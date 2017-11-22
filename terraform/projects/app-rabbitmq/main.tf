@@ -108,6 +108,7 @@ module "rabbitmq" {
   asg_max_size                  = "3"
   asg_min_size                  = "3"
   asg_desired_capacity          = "3"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
 }
 
 resource "aws_iam_policy" "rabbitmq_iam_policy" {

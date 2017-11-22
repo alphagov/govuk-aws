@@ -152,6 +152,7 @@ module "search" {
   asg_max_size                  = "${var.asg_max_size}"
   asg_min_size                  = "${var.asg_min_size}"
   asg_desired_capacity          = "${var.asg_desired_capacity}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
 }
 
 module "alarms-elb-search-internal" {

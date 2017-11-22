@@ -64,6 +64,7 @@ module "mirrorer" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
   root_block_device_volume_size = "30"
 }
 
