@@ -153,6 +153,7 @@ module "rummager-elasticsearch-1" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
   root_block_device_volume_size = "20"
 }
 
@@ -186,6 +187,7 @@ module "rummager-elasticsearch-2" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
   root_block_device_volume_size = "20"
 }
 
@@ -219,6 +221,7 @@ module "rummager-elasticsearch-3" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
   root_block_device_volume_size = "20"
 }
 
