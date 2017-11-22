@@ -1,0 +1,27 @@
+#
+# Snippet: puppetmaster
+#
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: puppetmaster"
+
+useradd deploy -m -s /bin/bash 
+mkdir -p /etc/puppet /usr/share/puppet/production/releases /usr/share/puppet/production/shared/cached-copy
+chown -R deploy: /usr/share/puppet/*
+
+export PATH=/opt/puppetlabs/bin:$PATH
+
+cat <<EOF >/etc/puppet/csr_attributes.yaml
+extension_requests:
+ pp_instance_id: $(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+ pp_image_name: $(curl -s http://169.254.169.254/latest/meta-data/ami-id)
+ pp_role: $(facter aws_migration)
+ pp_region:  $(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/.$//')
+EOF
+
+puppet config set certname $(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+# on the machine run a verify
+puppet apply -e 'notify { "Hello from Puppet 5": }'
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: puppetmaster"
+
