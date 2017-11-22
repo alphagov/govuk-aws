@@ -1,10 +1,12 @@
 /**
-* ## Module: projects/infra-aws-logging
+* ## Module: projects/infra-monitoring
 *
-* Create resources to manage infrastructure logging:
+* Create resources to manage infrastructure monitoring:
 *   - Create an S3 bucket which allows AWS infrastructure to send logs to, for
 *     instance, ELB logs
 *   - Create resources to export CloudWatch log groups to S3 via Lambda-Kinesis_Firehose
+*   - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
+*     the topic
 */
 
 variable "aws_region" {
@@ -190,6 +192,39 @@ resource "aws_iam_role_policy_attachment" "lambda_rds_logs_to_s3_policy_attachme
   policy_arn = "${aws_iam_policy.lambda_rds_logs_to_s3_policy.arn}"
 }
 
+#
+# Create SNS topic with SQS queue subscription to send CloudWatch alerts and infrastructure
+# notifications
+#
+
+resource "aws_sns_topic" "alerts" {
+  name = "${var.stackname}-alerts"
+}
+
+resource "aws_sqs_queue" "alerts_queue" {
+  name = "${var.stackname}-alerts"
+}
+
+resource "aws_sns_topic_subscription" "alerts_sqs_target" {
+  topic_arn = "${aws_sns_topic.alerts.arn}"
+  protocol  = "sqs"
+  endpoint  = "${aws_sqs_queue.alerts_queue.arn}"
+}
+
+data "template_file" "alerts_sqs_queue_policy_template" {
+  template = "${file("${path.module}/../../policies/sqs_allow_sns_policy.tpl")}"
+
+  vars {
+    sns_topic_arn = "${aws_sns_topic.alerts.arn}"
+    sqs_queue_arn = "${aws_sqs_queue.alerts_queue.arn}"
+  }
+}
+
+resource "aws_sqs_queue_policy" "alerts_sqs_queue_policy" {
+  queue_url = "${aws_sqs_queue.alerts_queue.id}"
+  policy    = "${data.template_file.alerts_sqs_queue_policy_template.rendered}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -216,4 +251,9 @@ output "lambda_logs_role_arn" {
 output "lambda_rds_logs_to_s3_role_arn" {
   value       = "${aws_iam_role.lambda_rds_logs_to_s3_role.arn}"
   description = "ARN of the IAM role attached to the Lambda RDS logs to S3 Function"
+}
+
+output "sns_topic_alerts_arn" {
+  value       = "${aws_sns_topic.alerts.arn}"
+  description = "ARN of the SNS alerts topic"
 }
