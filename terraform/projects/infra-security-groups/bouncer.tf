@@ -45,6 +45,16 @@ resource "aws_security_group" "bouncer_elb" {
   }
 }
 
+resource "aws_security_group_rule" "allow_management_to_bouncer_elb" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.bouncer_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
 resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_http" {
   type              = "ingress"
   to_port           = 80
