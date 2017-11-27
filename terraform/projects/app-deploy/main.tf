@@ -229,6 +229,16 @@ resource "aws_iam_role_policy_attachment" "deploy_iam_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.deploy_iam_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "allow_writes_from_artefact_bucket" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.artefact_bucket.write_artefact_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
+}
+
 module "alarms-elb-deploy-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-deploy-external"

@@ -1,11 +1,18 @@
 /**
 *  ## Project: artefact-bucket
 *
-* This creates 3 s3 buckets
+* This creates 3 S3 buckets:
 *
 * artefact: The bucket that will hold the artefacts
 * artefact_access_logs: Bucket for logs to go to
 * artefact_replication_destination: Bucket in another region to replicate to
+*
+* It creates two IAM roles:
+* artefact_writer: used by CI to write new artefacts, and deploy instances
+* to write to "deployed-to-environment" branches
+*
+* artefact_reader: used by instances to fetch artefacts
+*
 */
 variable "aws_region" {
   type        = "string"
@@ -24,7 +31,8 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-# Set up the backend & provider for each region
+# Resources
+# --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
   required_version = "= 0.10.8"
@@ -65,7 +73,7 @@ resource "aws_s3_bucket" "artefact_replication_destination" {
 # Main bucket
 resource "aws_s3_bucket" "artefact" {
   bucket = "govuk-${var.aws_environment}-artefact"
-  acl    = "public-read"
+  acl    = "private"
 
   tags {
     Name            = "govuk-${var.aws_environment}-artefact"
@@ -93,4 +101,60 @@ resource "aws_s3_bucket" "artefact" {
       }
     }
   }
+}
+
+# Artefact Writer
+resource "aws_iam_policy" "artefact_writer" {
+  name        = "govuk-${var.aws_environment}-artefact-writer-policy"
+  policy      = "${data.template_file.artefact_writer_policy_template.rendered}"
+  description = "Allows writing of the artefacts bucket"
+}
+
+# We require a user for the CI environment which is not in AWS
+resource "aws_iam_user" "artefact_writer" {
+  name = "govuk-${var.aws_environment}-artefact-writer"
+}
+
+resource "aws_iam_policy_attachment" "artefact_writer" {
+  name       = "artefact-writer-policy-attachment"
+  users      = ["${aws_iam_user.artefact_writer.name}"]
+  policy_arn = "${aws_iam_policy.artefact_writer.arn}"
+}
+
+data "template_file" "artefact_writer_policy_template" {
+  template = "${file("${path.module}/../../policies/artefact_writer_policy.tpl")}"
+
+  vars {
+    aws_environment = "${var.aws_environment}"
+    artefact_bucket = "${aws_s3_bucket.artefact.id}"
+  }
+}
+
+# Artefact Reader
+resource "aws_iam_policy" "artefact_reader" {
+  name        = "govuk-${var.aws_environment}-artefact-reader-policy"
+  policy      = "${data.template_file.artefact_reader_policy_template.rendered}"
+  description = "Allows writing of the artefacts bucket"
+}
+
+data "template_file" "artefact_reader_policy_template" {
+  template = "${file("${path.module}/../../policies/artefact_reader_policy.tpl")}"
+
+  vars {
+    aws_environment = "${var.aws_environment}"
+    artefact_bucket = "${aws_s3_bucket.artefact.id}"
+  }
+}
+
+# Outputs
+# --------------------------------------------------------------
+
+output "write_artefact_bucket_policy_arn" {
+  value       = "${aws_iam_policy.artefact_writer.arn}"
+  description = "ARN of the write artefact-bucket policy"
+}
+
+output "read_artefact_bucket_policy_arn" {
+  value       = "${aws_iam_policy.artefact_reader.arn}"
+  description = "ARN of the read artefact-bucket policy"
 }
