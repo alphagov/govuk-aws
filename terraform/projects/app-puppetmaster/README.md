@@ -9,6 +9,7 @@ Puppetmaster node
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| enable_bootstrap | Whether to create the ELB which allows a user to SSH to the Puppetmaster from the office | string | `false` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
