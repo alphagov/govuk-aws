@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename $0} <terraform-code-directory> [options]"
+
+  opts.on("-d", "--[no-]debug", "Run debug information") do |v|
+    options[:debug] = v
+  end
+
+  opts.on("-m", "--matched", "Show all valid rules") do |v|
+    options[:matched] = v
+  end
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+end.parse!
+
+code = ARGV.shift
+
+Dir["#{code}/**/*.tf"].each do |file|
+  puts "Working on [#{file}]" if options[:verbose]
+
+  File.open(file).readlines.each do |line|
+    line.chomp!
+    puts " -- processing [#{line}]" if options[:debug]
+
+    next unless line.match(/resource "aws_security_group_rule"/)
+    puts " -- matched [#{line}]" if options[:verbose]
+
+    m = line.match(/\s*resource\s+"aws_security_group_rule"\s+"(?<name>(?<source>[^_]+)_(?<direction>(ingress|egress))_(?<destination>.+)_(?<service>.+))"/)
+    resource_name = line.match(/\s*resource\s+"aws_security_group_rule"\s+"(?<name>.+)"/) 
+
+    if m.nil?
+      puts "#{resource_name[:name]} from #{file} did not pass validation"
+    else
+      if m[:source] == 'allow'
+        puts "#{resource_name[:name]} from #{file} did not pass validation"
+      else
+        puts "Matched #{line}" if options[:matched]
+      end
+    end
+  end
+end
