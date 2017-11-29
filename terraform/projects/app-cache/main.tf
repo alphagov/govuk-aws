@@ -64,29 +64,11 @@ variable "asg_desired_capacity" {
   default     = "2"
 }
 
-variable "remote_state_infra_artefact_bucket_key_stack" {
-  type        = "string"
-  description = "Override infra_artefact_bucket remote state path"
-  default     = ""
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
   required_version = "= 0.10.8"
-}
-
-# This is one of two places that should need to use this particular remote state
-# so keep it in main
-data "terraform_remote_state" "artefact_bucket" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_artefact_bucket_key_stack, var.stackname)}/artefact-bucket.tfstate"
-    region = "eu-west-1"
-  }
 }
 
 provider "aws" {
