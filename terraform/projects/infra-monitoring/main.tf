@@ -197,32 +197,32 @@ resource "aws_iam_role_policy_attachment" "lambda_rds_logs_to_s3_policy_attachme
 # notifications
 #
 
-resource "aws_sns_topic" "alerts" {
-  name = "${var.stackname}-alerts"
+resource "aws_sns_topic" "notifications" {
+  name = "${var.stackname}-notifications"
 }
 
-resource "aws_sqs_queue" "alerts_queue" {
-  name = "${var.stackname}-alerts"
+resource "aws_sqs_queue" "notifications" {
+  name = "${var.stackname}-notifications"
 }
 
-resource "aws_sns_topic_subscription" "alerts_sqs_target" {
-  topic_arn = "${aws_sns_topic.alerts.arn}"
+resource "aws_sns_topic_subscription" "notifications_sqs_target" {
+  topic_arn = "${aws_sns_topic.notifications.arn}"
   protocol  = "sqs"
-  endpoint  = "${aws_sqs_queue.alerts_queue.arn}"
+  endpoint  = "${aws_sqs_queue.notifications.arn}"
 }
 
-data "template_file" "alerts_sqs_queue_policy_template" {
+data "template_file" "notifications_sqs_queue_policy_template" {
   template = "${file("${path.module}/../../policies/sqs_allow_sns_policy.tpl")}"
 
   vars {
-    sns_topic_arn = "${aws_sns_topic.alerts.arn}"
-    sqs_queue_arn = "${aws_sqs_queue.alerts_queue.arn}"
+    sns_topic_arn = "${aws_sns_topic.notifications.arn}"
+    sqs_queue_arn = "${aws_sqs_queue.notifications.arn}"
   }
 }
 
-resource "aws_sqs_queue_policy" "alerts_sqs_queue_policy" {
-  queue_url = "${aws_sqs_queue.alerts_queue.id}"
-  policy    = "${data.template_file.alerts_sqs_queue_policy_template.rendered}"
+resource "aws_sqs_queue_policy" "notifications_sqs_queue_policy" {
+  queue_url = "${aws_sqs_queue.notifications.id}"
+  policy    = "${data.template_file.notifications_sqs_queue_policy_template.rendered}"
 }
 
 # Outputs
@@ -253,7 +253,17 @@ output "lambda_rds_logs_to_s3_role_arn" {
   description = "ARN of the IAM role attached to the Lambda RDS logs to S3 Function"
 }
 
-output "sns_topic_alerts_arn" {
-  value       = "${aws_sns_topic.alerts.arn}"
-  description = "ARN of the SNS alerts topic"
+output "sns_topic_cloudwatch_alarms_arn" {
+  value       = "${aws_sns_topic.notifications.arn}"
+  description = "ARN of the SNS topic for CloudWatch alarms"
+}
+
+output "sns_topic_autoscaling_group_events_arn" {
+  value       = "${aws_sns_topic.notifications.arn}"
+  description = "ARN of the SNS topic for ASG events"
+}
+
+output "sns_topic_rds_events_arn" {
+  value       = "${aws_sns_topic.notifications.arn}"
+  description = "ARN of the SNS topic for RDS events"
 }

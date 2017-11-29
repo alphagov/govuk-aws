@@ -203,7 +203,7 @@ module "infra_private_subnet_reserved_ips" {
 module "infra_alarms_natgateway" {
   source          = "../../modules/aws/alarms/natgateway"
   name_prefix     = "${var.stackname}-natgateway"
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   nat_gateway_ids = ["${module.infra_nat.nat_gateway_ids}"]
 }
 

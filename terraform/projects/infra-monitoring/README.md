@@ -25,5 +25,7 @@ Create resources to manage infrastructure monitoring:
 | firehose_logs_role_arn | ARN of the Kinesis Firehose stream AWS credentials |
 | lambda_logs_role_arn | ARN of the IAM role attached to the Lambda logs Function |
 | lambda_rds_logs_to_s3_role_arn | ARN of the IAM role attached to the Lambda RDS logs to S3 Function |
-| sns_topic_alerts_arn | ARN of the SNS alerts topic |
+| sns_topic_autoscaling_group_events_arn | ARN of the SNS topic for ASG events |
+| sns_topic_cloudwatch_alarms_arn | ARN of the SNS topic for CloudWatch alarms |
+| sns_topic_rds_events_arn | ARN of the SNS topic for RDS events |
 

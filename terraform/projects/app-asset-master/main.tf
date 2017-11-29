@@ -72,7 +72,7 @@ module "asset-master" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "30"
 }
 
@@ -80,7 +80,7 @@ module "alarms-autoscaling-asset-master" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-asset-master"
   autoscaling_group_name            = "${module.asset-master.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -88,7 +88,7 @@ module "alarms-ec2-asset-master" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-asset-master"
   autoscaling_group_name   = "${module.asset-master.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
 

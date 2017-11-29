@@ -10,10 +10,13 @@ Create an RDS instance
 | allocated_storage | The allocated storage in gigabytes. | string | `10` | no |
 | backup_retention_period | The days to retain backups for. | string | `7` | no |
 | backup_window | The daily time range during which automated backups are created if automated backups are enabled. | string | `01:00-03:00` | no |
+| create_rds_notifications | Enable RDS events notifications | string | `true` | no |
 | create_replicate_source_db | Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate | string | `0` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
 | engine_name | RDS engine (eg mysql, postgresql) | string | `` | no |
 | engine_version | Which version of MySQL to use (eg 5.5.46) | string | `` | no |
+| event_categories | A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html | list | `<list>` | no |
+| event_sns_topic_arn | The SNS topic to send events to. | string | `` | no |
 | instance_class | The instance type of the RDS instance. | string | `db.t1.micro` | no |
 | maintenance_window | The window to perform maintenance in. | string | `Mon:04:00-Mon:06:00` | no |
 | multi_az | Specifies if the RDS instance is multi-AZ | string | `false` | no |
