@@ -30,6 +30,12 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "enable_bootstrap" {
+  type        = "string"
+  description = "Whether to create the ELB which allows a user to SSH to the Puppetmaster from the office"
+  default     = false
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -43,6 +49,7 @@ provider "aws" {
 }
 
 resource "aws_elb" "puppetmaster_bootstrap_elb" {
+  count           = "${var.enable_bootstrap}"
   name            = "${var.stackname}-puppetmaster-bootstrap"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
@@ -80,6 +87,7 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
 }
 
 resource "aws_security_group_rule" "puppetmaster_from_elb_in_22" {
+  count                    = "${var.enable_bootstrap}"
   type                     = "ingress"
   from_port                = "22"
   to_port                  = "22"

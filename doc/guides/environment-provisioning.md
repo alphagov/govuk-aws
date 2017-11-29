@@ -119,13 +119,13 @@ region  = "<region>"
 
 Puppet master is provisioned similarly to other Terraform projects but you'll need to make sure that you set the `ssh_public_key` value in `common/<environment>/<stack name>.tfvars` to the public portion of a key that you have the private portion of.
 
-Now run
+When you run the Terraform below, explicitly setting the `enable_bootstrap` variable will create an ELB which will allow you to SSH to the Puppetmaster.
 
 ```
 # Make sure STACKNAME & ENVIRONMENT are set
-tools/build-terraform-project.sh -c plan -p app-puppetmaster
+tools/build-terraform-project.sh -c plan -p app-puppetmaster -- -var 'enable_bootstrap=true'
 ...terraform output...
-tools/build-terraform-project.sh -c apply -p app-puppetmaster
+tools/build-terraform-project.sh -c apply -p app-puppetmaster -- -var 'enable_bootstrap=true'
 ...terraform output...
 ```
 
@@ -178,6 +178,17 @@ Notice: Compiled catalog for ip-10-1-2-123.eu-west-1.compute.internal in environ
 Notice: hello world
 Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hello world'
 Notice: Finished catalog run in 0.01 seconds
+```
+
+## Remove the Puppetmaster bootstrap ELB
+
+Run the Terraform again for the Puppetmaster, but removing the variable should destroy the load balancer and security group.
+
+```
+tools/build-terraform-project.sh -c plan -p app-puppetmaster
+...terraform output...
+tools/build-terraform-project.sh -c apply -p app-puppetmaster
+...terraform output...
 ```
 
 ## Build the deploy Jenkins
