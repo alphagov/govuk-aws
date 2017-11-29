@@ -135,7 +135,7 @@ module "mongo-1" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "150"
 }
 
@@ -176,7 +176,7 @@ module "mongo-2" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "150"
 }
 
@@ -217,7 +217,7 @@ module "mongo-3" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "150"
 }
 
@@ -246,7 +246,7 @@ module "alarms-autoscaling-mongo-1" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-mongo-1"
   autoscaling_group_name            = "${module.mongo-1.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -254,7 +254,7 @@ module "alarms-ec2-mongo-1" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-mongo-1"
   autoscaling_group_name   = "${module.mongo-1.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
 
@@ -262,7 +262,7 @@ module "alarms-autoscaling-mongo-2" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-mongo-2"
   autoscaling_group_name            = "${module.mongo-2.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -270,7 +270,7 @@ module "alarms-ec2-mongo-2" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-mongo-2"
   autoscaling_group_name   = "${module.mongo-2.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
 
@@ -278,7 +278,7 @@ module "alarms-autoscaling-mongo-3" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-mongo-3"
   autoscaling_group_name            = "${module.mongo-3.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -286,7 +286,7 @@ module "alarms-ec2-mongo-3" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-mongo-3"
   autoscaling_group_name   = "${module.mongo-3.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
 

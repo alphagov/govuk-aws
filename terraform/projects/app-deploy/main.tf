@@ -199,7 +199,7 @@ module "deploy" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.deploy_elb.id}", "${aws_elb.deploy_internal_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
 resource "aws_ebs_volume" "deploy" {
@@ -232,7 +232,7 @@ resource "aws_iam_role_policy_attachment" "deploy_iam_role_policy_attachment" {
 module "alarms-elb-deploy-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-deploy-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.deploy_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"

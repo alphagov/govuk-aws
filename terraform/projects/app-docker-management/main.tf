@@ -106,13 +106,13 @@ module "docker_management" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.docker_management_etcd_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
 module "alarms-elb-docker-management-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-docker-management-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.docker_management_etcd_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"

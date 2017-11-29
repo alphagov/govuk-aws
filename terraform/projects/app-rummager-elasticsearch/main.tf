@@ -153,7 +153,7 @@ module "rummager-elasticsearch-1" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
 }
 
@@ -187,7 +187,7 @@ module "rummager-elasticsearch-2" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
 }
 
@@ -221,7 +221,7 @@ module "rummager-elasticsearch-3" {
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
 }
 
@@ -265,7 +265,7 @@ resource "aws_iam_role_policy_attachment" "rummager-elasticsearch_3_iam_role_pol
 module "alarms-elb-rummager-elasticsearch-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-rummager-elasticsearch-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_alerts_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.rummager-elasticsearch_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "0"
