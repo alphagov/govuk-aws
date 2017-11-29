@@ -115,6 +115,31 @@ variable "backup_window" {
   default     = "01:00-03:00"
 }
 
+variable "create_rds_notifications" {
+  type        = "string"
+  description = "Enable RDS events notifications"
+  default     = true
+}
+
+variable "event_categories" {
+  type        = "list"
+  description = "A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html"
+
+  default = [
+    "availability",
+    "deletion",
+    "failure",
+    "low storage",
+    "security",
+  ]
+}
+
+variable "event_sns_topic_arn" {
+  type        = "string"
+  description = "The SNS topic to send events to."
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -169,6 +194,26 @@ resource "aws_db_instance" "db_instance" {
   skip_final_snapshot       = "${var.skip_final_snapshot}"
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
+}
+
+resource "aws_db_event_subscription" "event_subscription" {
+  count     = "${(1 - var.create_replicate_source_db) * var.create_rds_notifications}"
+  name      = "${var.name}-event-subscription"
+  sns_topic = "${var.event_sns_topic_arn}"
+
+  source_type      = "db-instance"
+  source_ids       = ["${aws_db_instance.db_instance.id}"]
+  event_categories = ["${var.event_categories}"]
+}
+
+resource "aws_db_event_subscription" "event_subscription_replica" {
+  count     = "${var.create_replicate_source_db * var.create_rds_notifications}"
+  name      = "${var.name}-event-subscription"
+  sns_topic = "${var.event_sns_topic_arn}"
+
+  source_type      = "db-instance"
+  source_ids       = ["${aws_db_instance.db_instance_replica.id}"]
+  event_categories = ["${var.event_categories}"]
 }
 
 # Outputs

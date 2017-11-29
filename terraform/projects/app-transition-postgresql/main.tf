@@ -55,17 +55,18 @@ provider "aws" {
 module "transition-postgresql-primary_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
-  name               = "${var.stackname}-transition-postgresql-primary"
-  engine_name        = "postgres"
-  engine_version     = "9.3.14"
-  default_tags       = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
-  subnet_ids         = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username           = "${var.username}"
-  password           = "${var.password}"
-  allocated_storage  = "120"
-  instance_class     = "db.m4.large"
-  multi_az           = "${var.multi_az}"
-  security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
+  name                = "${var.stackname}-transition-postgresql-primary"
+  engine_name         = "postgres"
+  engine_version      = "9.3.14"
+  default_tags        = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
+  subnet_ids          = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username            = "${var.username}"
+  password            = "${var.password}"
+  allocated_storage   = "120"
+  instance_class      = "db.m4.large"
+  multi_az            = "${var.multi_az}"
+  security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
+  event_sns_topic_arn = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -85,6 +86,7 @@ module "transition-postgresql-standby_rds_instance" {
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
+  event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
 }
 
 resource "aws_route53_record" "replica_service_record" {

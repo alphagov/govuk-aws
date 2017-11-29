@@ -60,6 +60,7 @@ module "mysql_primary_rds_instance" {
   instance_class       = "db.m4.xlarge"
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
+  event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
 }
 
 resource "aws_db_parameter_group" "mysql-primary" {
@@ -116,6 +117,7 @@ module "mysql_replica_rds_instance" {
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-replica_id}"]
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.mysql_primary_rds_instance.rds_instance_id}"
+  event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
 }
 
 resource "aws_route53_record" "replica_service_record" {
