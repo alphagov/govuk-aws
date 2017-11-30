@@ -108,7 +108,7 @@ module "whitehall-frontend" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "whitehall_frontend", "aws_hostname", "whitehall-frontend-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m4.large"
+  instance_type                 = "m5.large"
   create_instance_key           = true
   instance_key_name             = "${var.stackname}-whitehall-frontend"
   instance_public_key           = "${var.ssh_public_key}"
