@@ -36,6 +36,11 @@ variable "enable_bootstrap" {
   default     = false
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -46,6 +51,11 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.0.0"
+}
+
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
 }
 
 resource "aws_elb" "puppetmaster_bootstrap_elb" {
@@ -113,6 +123,15 @@ resource "aws_elb" "puppetmaster_internal_elb" {
     instance_protocol = "tcp"
     lb_port           = "8140"
     lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port     = "80"
+    instance_protocol = "http"
+    lb_port           = "443"
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
