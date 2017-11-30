@@ -35,6 +35,11 @@ variable "elb_external_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -49,6 +54,11 @@ provider "aws" {
 
 data "aws_acm_certificate" "elb_external_cert" {
   domain   = "${var.elb_external_certname}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -101,6 +111,15 @@ resource "aws_elb" "monitoring_internal_elb" {
     instance_protocol = "tcp"
     lb_port           = 5667
     lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 443
+    lb_protocol       = "https"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
   health_check {
