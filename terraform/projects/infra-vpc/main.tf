@@ -118,7 +118,7 @@ module "vpc_flow_log_exporter" {
   firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
   firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
   firehose_bucket_prefix       = "${aws_cloudwatch_log_group.log.name}"
-  lambda_filename              = "${path.module}/../../lambda/VPCFlowLogsToFirehose/VPCFlowLogsToFirehose.zip"
+  lambda_filename              = "../../lambda/VPCFlowLogsToFirehose/VPCFlowLogsToFirehose.zip"
   lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
   lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }

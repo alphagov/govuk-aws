@@ -103,7 +103,7 @@ module "mysql_primary_log_exporter" {
   source                       = "../../modules/aws/rds_log_exporter"
   rds_instance_id              = "${module.mysql_primary_rds_instance.rds_instance_id}"
   s3_logging_bucket_name       = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  lambda_filename              = "${path.module}/../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
+  lambda_filename              = "../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
   lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_rds_logs_to_s3_role_arn}"
   lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
@@ -140,7 +140,7 @@ module "mysql_replica_log_exporter" {
   source                       = "../../modules/aws/rds_log_exporter"
   rds_instance_id              = "${module.mysql_replica_rds_instance.rds_replica_id}"
   s3_logging_bucket_name       = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  lambda_filename              = "${path.module}/../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
+  lambda_filename              = "../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
   lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_rds_logs_to_s3_role_arn}"
   lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
