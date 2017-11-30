@@ -34,6 +34,12 @@ variable "password" {
   description = "DB password"
 }
 
+variable "snapshot_identifier" {
+  type        = "string"
+  description = "Specifies whether or not to create the database from this snapshot"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -61,6 +67,7 @@ module "mysql_primary_rds_instance" {
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
   event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  snapshot_identifier  = "${var.snapshot_identifier}"
 }
 
 resource "aws_db_parameter_group" "mysql-primary" {

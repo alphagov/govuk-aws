@@ -145,6 +145,12 @@ variable "copy_tags_to_snapshot" {
   default     = "true"
 }
 
+variable "snapshot_identifier" {
+  type        = "string"
+  description = "Specifies whether or not to create this database from a snapshot."
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -194,6 +200,7 @@ resource "aws_db_instance" "db_instance" {
   backup_retention_period = "${var.backup_retention_period}"
   backup_window           = "${var.backup_window}"
   copy_tags_to_snapshot   = "${var.copy_tags_to_snapshot}"
+  snapshot_identifier     = "${var.snapshot_identifier}"
 
   # TODO this should be enabled in a Production environment:
   final_snapshot_identifier = "${var.name}-final-snapshot"
