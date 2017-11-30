@@ -29,6 +29,7 @@ Create an RDS instance
 | storage_type | One of standard (magnetic), gp2 (general purpose SSD), or io1 (provisioned IOPS SSD). The default is gp2 | string | `gp2` | no |
 | subnet_ids | Subnet IDs to assign to the aws_elasticache_subnet_group | list | `<list>` | no |
 | username | User to create on the database | string | `` | no |
+| copy_tags_to_snapshot | Whether to copy the instance tags to the snapshot. | string | `true` | no
 
 ## Outputs
 

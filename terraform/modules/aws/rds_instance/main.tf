@@ -140,6 +140,12 @@ variable "event_sns_topic_arn" {
   default     = ""
 }
 
+variable "copy_tags_to_snapshot" {
+  type        = "string"
+  description = "Whether to copy the instance tags to the snapshot."
+  default     = "true"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -188,6 +194,7 @@ resource "aws_db_instance" "db_instance" {
   maintenance_window      = "${var.maintenance_window}"
   backup_retention_period = "${var.backup_retention_period}"
   backup_window           = "${var.backup_window}"
+  copy_tags_to_snapshot   = "${var.copy_tags_to_snapshot}"
 
   # TODO this should be enabled in a Production environment:
   final_snapshot_identifier = "${var.name}-final-snapshot"
