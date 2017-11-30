@@ -40,6 +40,12 @@ variable "multi_az" {
   default     = false
 }
 
+variable "snapshot_identifier" {
+  type        = "string"
+  description = "Specifies whether or not to create the database from this snapshot"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -67,6 +73,7 @@ module "transition-postgresql-primary_rds_instance" {
   multi_az            = "${var.multi_az}"
   security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
   event_sns_topic_arn = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  snapshot_identifier = "${var.snapshot_identifier}"
 }
 
 resource "aws_route53_record" "service_record" {
