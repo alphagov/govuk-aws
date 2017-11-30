@@ -123,9 +123,9 @@ When you run the Terraform below, explicitly setting the `enable_bootstrap` vari
 
 ```
 # Make sure STACKNAME & ENVIRONMENT are set
-tools/build-terraform-project.sh -c plan -p app-puppetmaster -- -var 'enable_bootstrap=true'
+tools/build-terraform-project.sh -c plan -p app-puppetmaster -- -var 'enable_bootstrap=1'
 ...terraform output...
-tools/build-terraform-project.sh -c apply -p app-puppetmaster -- -var 'enable_bootstrap=true'
+tools/build-terraform-project.sh -c apply -p app-puppetmaster -- -var 'enable_bootstrap=1'
 ...terraform output...
 ```
 
