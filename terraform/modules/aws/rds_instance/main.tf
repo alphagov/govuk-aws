@@ -130,7 +130,6 @@ variable "event_categories" {
     "deletion",
     "failure",
     "low storage",
-    "security",
   ]
 }
 

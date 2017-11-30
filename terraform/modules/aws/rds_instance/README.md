@@ -10,6 +10,7 @@ Create an RDS instance
 | allocated_storage | The allocated storage in gigabytes. | string | `10` | no |
 | backup_retention_period | The days to retain backups for. | string | `7` | no |
 | backup_window | The daily time range during which automated backups are created if automated backups are enabled. | string | `01:00-03:00` | no |
+| copy_tags_to_snapshot | Whether to copy the instance tags to the snapshot. | string | `true` | no |
 | create_rds_notifications | Enable RDS events notifications | string | `true` | no |
 | create_replicate_source_db | Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate | string | `0` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
@@ -29,7 +30,6 @@ Create an RDS instance
 | storage_type | One of standard (magnetic), gp2 (general purpose SSD), or io1 (provisioned IOPS SSD). The default is gp2 | string | `gp2` | no |
 | subnet_ids | Subnet IDs to assign to the aws_elasticache_subnet_group | list | `<list>` | no |
 | username | User to create on the database | string | `` | no |
-| copy_tags_to_snapshot | Whether to copy the instance tags to the snapshot. | string | `true` | no
 
 ## Outputs
 
