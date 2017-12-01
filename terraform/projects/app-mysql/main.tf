@@ -140,7 +140,7 @@ module "alarms-rds-mysql-replica" {
   name_prefix          = "${var.stackname}-mysql-replica"
   alarm_actions        = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   db_instance_id       = "${module.mysql_replica_rds_instance.rds_replica_id}"
-  replicalag_threshold = "120"
+  replicalag_threshold = "300"
 }
 
 module "mysql_replica_log_exporter" {

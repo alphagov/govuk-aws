@@ -116,7 +116,7 @@ module "alarms-rds-transition-postgresql-standby" {
   name_prefix          = "${var.stackname}-transition-postgresql-standby"
   alarm_actions        = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   db_instance_id       = "${module.transition-postgresql-standby_rds_instance.rds_replica_id}"
-  replicalag_threshold = "120"
+  replicalag_threshold = "300"
 }
 
 module "transition-postgresql-primary_log_exporter" {
