@@ -1,0 +1,7 @@
+#
+# Snippet: deploy-apps
+#
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: deploy-apps"
+test -f /usr/local/bin/govuk_sync_apps && /usr/local/bin/govuk_sync_apps
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: deploy-apps"
+
