@@ -2,10 +2,9 @@
 * ## Module: aws::node_group
 *
 * This module creates an instance in a autoscaling group that expands
-* in the subnets specified by the variable instance_subnet_ids. An ELB
-* is also provisioned to access the instance. The instance AMI is Ubuntu,
-* you can specify the version with the instance_ami_filter_name variable.
-* The machine type can also be configured with a variable.
+* in the subnets specified by the variable instance_subnet_ids. The instance
+* AMI is Ubuntu, you can specify the version with the instance_ami_filter_name
+* variable. The machine type can also be configured with a variable.
 *
 * When the variable create_service_dns_name is set to true, this module
 * will create a DNS name service_dns_name in the zone_id specified pointing
@@ -13,6 +12,10 @@
 *
 * Additionally, this module will create an IAM role that we can attach
 * policies to in other modules.
+*
+* You can specify a list of Classic ELB ids to attach to the Autoscaling Group
+* with the `instance_elb_ids` variable, or alternatively a list of Target Group ARNs
+* to use with Application Load Balancers with the `instance_target_group_arns` variable.
 */
 variable "name" {
   type        = "string"
@@ -90,6 +93,13 @@ variable "instance_default_policy" {
 variable "instance_elb_ids" {
   type        = "list"
   description = "A list of the ELB IDs to attach this ASG to"
+  default     = []
+}
+
+variable "instance_target_group_arns" {
+  type        = "list"
+  description = "The ARN of the target group with which to register targets."
+  default     = []
 }
 
 variable "asg_desired_capacity" {
@@ -270,6 +280,12 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment" {
+  count                  = "${length(var.instance_target_group_arns)}"
+  autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
+  alb_target_group_arn   = "${element(var.instance_target_group_arns, count.index)}"
 }
 
 resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {
