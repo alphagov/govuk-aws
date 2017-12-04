@@ -135,8 +135,8 @@ resource "aws_lb_listener" "listener" {
   load_balancer_arn = "${aws_lb.lb.arn}"
   port              = "${element(split(":", element(keys(var.listener_action), count.index)), 1)}"
   protocol          = "${element(split(":", element(keys(var.listener_action), count.index)), 0)}"
-  ssl_policy        = "${var.listener_ssl_policy}"
-  certificate_arn   = "${length(var.listener_certificate_domain_name) > 0 ? data.aws_acm_certificate.cert.arn : ""}"
+  ssl_policy        = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
+  certificate_arn   = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? data.aws_acm_certificate.cert.arn : ""}"
 
   default_action {
     target_group_arn = "${lookup(local.target_groups_arns, "${var.name}-${replace(element(values(var.listener_action), count.index), ":", "-")}")}"
@@ -158,6 +158,8 @@ resource "aws_lb_target_group" "tg_default" {
 
   health_check {
     interval            = "${var.target_group_health_check_interval}"
+    path                = "/"
+    matcher             = "200-499"
     port                = "traffic-port"
     protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
     healthy_threshold   = 2
@@ -191,4 +193,9 @@ output "lb_dns_name" {
 output "lb_zone_id" {
   value       = "${aws_lb.lb.zone_id}"
   description = "The canonical hosted zone ID of the load balancer (to be used in a Route 53 Alias record)."
+}
+
+output "target_group_arns" {
+  value       = ["${aws_lb_target_group.tg_default.*.arn}"]
+  description = "List of the default target group ARNs."
 }
