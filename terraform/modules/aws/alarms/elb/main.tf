@@ -206,36 +206,36 @@ resource "aws_cloudwatch_metric_alarm" "elb_healthyhostcount" {
 
 // The ID of the ELB HTTPCode_Backend_4XX health check.
 output "alarm_elb_httpcode_backend_4xx_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_backend_4xx.id}"
+  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_backend_4xx.*.id}"
   description = "The ID of the ELB HTTPCode_Backend_4XX health check."
 }
 
 // The ID of the ELB HTTPCode_Backend_5XX health check.
 output "alarm_elb_httpcode_backend_5xx_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_backend_5xx.id}"
+  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_backend_5xx.*.id}"
   description = "The ID of the ELB HTTPCode_Backend_5XX health check."
 }
 
 // The ID of the ELB HTTPCode_ELB_4XX health check.
 output "alarm_elb_httpcode_elb_4xx_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_elb_4xx.id}"
+  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_elb_4xx.*.id}"
   description = "The ID of the ELB HTTPCode_ELB_4XX health check."
 }
 
 // The ID of the ELB HTTPCode_ELB_5XX health check.
 output "alarm_elb_httpcode_elb_5xx_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_elb_5xx.id}"
+  value       = "${aws_cloudwatch_metric_alarm.elb_httpcode_elb_5xx.*.id}"
   description = "The ID of the ELB HTTPCode_ELB_5XX health check."
 }
 
 // The ID of the ELB SurgeQueueLength health check.
 output "alarm_elb_surgequeuelength_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elb_surgequeuelength.id}"
+  value       = "${aws_cloudwatch_metric_alarm.elb_surgequeuelength.*.id}"
   description = "The ID of the ELB SurgeQueueLength health check."
 }
 
 // The ID of the ELB HealthyHostCount health check.
 output "alarm_elb_healthyhostcount_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elb_healthyhostcount.id}"
+  value       = "${aws_cloudwatch_metric_alarm.elb_healthyhostcount.*.id}"
   description = "The ID of the ELB HealthyHostCount health check."
 }
