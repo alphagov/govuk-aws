@@ -139,7 +139,7 @@ module "apt" {
   instance_key_name             = "${var.stackname}-apt"
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${module.apt_internal_lb.lb_id}", "${module.apt_external_lb.lb_id}"]
+  instance_target_group_arns    = ["${concat(module.apt_internal_lb.target_group_arns, module.apt_external_lb.target_group_arns)}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
