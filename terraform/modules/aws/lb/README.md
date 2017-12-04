@@ -43,4 +43,5 @@ listener_action = {
 | lb_dns_name | The DNS name of the load balancer. |
 | lb_id | The ARN of the load balancer (matches arn). |
 | lb_zone_id | The canonical hosted zone ID of the load balancer (to be used in a Route 53 Alias record). |
+| target_group_arns | List of the default target group ARNs. |
 
