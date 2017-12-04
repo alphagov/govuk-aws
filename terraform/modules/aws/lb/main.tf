@@ -2,39 +2,17 @@
 * ## Modules: aws/lb
 *
 * This module creates a Load Balancer resource, with associated
-* listeners and target groups.
+* listeners and default target groups.
 *
-* Listeners and target groups are defined with map variables,
-* where the key is the name of the resource, and the value is
-* the port and protocol of the resource, specified as `PROTOCOL:PORT`.
-*
-* Listeners are associated to target groups with the `listener_target_groups`
-* map, that uses the name of the resources.
-*
-* When using a listener on HTTPS, we can specify the certificate with
-* the `listener_certificates` variable, where the value is the domain name
-* of the certificate as registered on AWS. The value is used by an
-* `aws_acm_certificate` data resource to find the certificate ARN.
+* The listeners and default actions are configured in the `listener_action`
+* map. The keys are the listeners PROTOCOL:PORT parameters, and the values
+* are the PROTOCOL:PORT parameters of the default target group of that listener.
 *
 *```
-* listeners = {
-*   "myapp-http-80"   = "HTTP:80"
-*   "myapp-https-443" = "HTTPS:443"
+* listener_action = {
+*   "HTTP:80"   = "HTTP:8080"
+*   "HTTPS:443" = "HTTP:8080"
 * }
-*
-* target_groups = {
-*   "http-80" = "HTTP:80"
-* }
-*
-* listener_target_groups = {
-*   "myapp-http-80"   = "http-80"
-*   "myapp-https-443" = "http-80"
-* }
-*
-* listener_certificates = {
-*   "myapp-https-443" = "mydomain.com"
-* }
-*
 *```
 */
 
@@ -42,11 +20,6 @@ variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"
   default     = {}
-}
-
-variable "vpc_id" {
-  type        = "string"
-  description = "The ID of the VPC in which the target groups are created."
 }
 
 variable "load_balancer_type" {
@@ -60,24 +33,27 @@ variable "access_logs_bucket_name" {
   description = "The S3 bucket name to store the logs in."
 }
 
-variable "listeners" {
-  type        = "map"
-  description = "A map of Load Balancer Listener resources."
+variable "access_logs_bucket_prefix" {
+  type        = "string"
+  description = "The S3 prefix name to store the logs in."
+  default     = ""
 }
 
-variable "listener_certificates" {
+variable "listener_action" {
   type        = "map"
-  description = "A map of Load Balancer Listener certificate domain names."
+  description = "A map of Load Balancer Listener and default target group action, both specified as PROTOCOL:PORT."
 }
 
-variable "target_groups" {
-  type        = "map"
-  description = "A map of Load Balancer Target group resources."
+variable "listener_certificate_domain_name" {
+  type        = "string"
+  description = "HTTPS Listener certificate domain name."
+  default     = ""
 }
 
-variable "listener_target_groups" {
-  type        = "map"
-  description = "A map matching Load Balancer Listeners and Target groups"
+variable "listener_ssl_policy" {
+  type        = "string"
+  description = "The name of the SSL Policy for HTTPS listeners."
+  default     = "ELBSecurityPolicy-2015-05"
 }
 
 variable "internal" {
@@ -102,6 +78,11 @@ variable "security_groups" {
   default     = []
 }
 
+variable "vpc_id" {
+  type        = "string"
+  description = "The ID of the VPC in which the default target groups are created."
+}
+
 variable "target_group_deregistration_delay" {
   type        = "string"
   description = "The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused."
@@ -124,13 +105,8 @@ variable "target_group_health_check_timeout" {
 #--------------------------------------------------------------
 
 data "aws_acm_certificate" "cert" {
-  count    = "${length(keys(var.listener_certificates))}"
-  domain   = "${element(values(var.listener_certificates), count.index)}"
+  domain   = "${var.listener_certificate_domain_name}"
   statuses = ["ISSUED"]
-}
-
-locals {
-  listener_certificate_arns = "${zipmap(keys(var.listener_certificates), data.aws_acm_certificate.cert.*.arn)}"
 }
 
 resource "aws_lb" "lb" {
@@ -143,7 +119,7 @@ resource "aws_lb" "lb" {
   access_logs {
     enabled = true
     bucket  = "${var.access_logs_bucket_name}"
-    prefix  = "lb/${var.name}"
+    prefix  = "${var.access_logs_bucket_prefix != "" ? var.access_logs_bucket_prefix : "lb/${var.name}"}"
   }
 
   tags = "${merge(
@@ -155,31 +131,35 @@ resource "aws_lb" "lb" {
 }
 
 resource "aws_lb_listener" "listener" {
-  count             = "${length(keys(var.listeners))}"
+  count             = "${length(keys(var.listener_action))}"
   load_balancer_arn = "${aws_lb.lb.arn}"
-  port              = "${element(split(":", lookup(var.listeners, element(keys(var.listeners), count.index))), 1)}"
-  protocol          = "${element(split(":", lookup(var.listeners, element(keys(var.listeners), count.index))), 0)}"
-  ssl_policy        = "ELBSecurityPolicy-2015-05"
-  certificate_arn   = "${lookup(local.listener_certificate_arns, element(keys(var.listeners), count.index), "")}"
+  port              = "${element(split(":", element(keys(var.listener_action), count.index)), 1)}"
+  protocol          = "${element(split(":", element(keys(var.listener_action), count.index)), 0)}"
+  ssl_policy        = "${var.listener_ssl_policy}"
+  certificate_arn   = "${length(var.listener_certificate_domain_name) > 0 ? data.aws_acm_certificate.cert.arn : ""}"
 
   default_action {
-    target_group_arn = "${matchkeys(values(local.target_groups_arns), keys(local.target_groups_arns), lookup(var.listener_target_groups, element(keys(var.listeners), count.index)))}"
+    target_group_arn = "${lookup(local.target_groups_arns, "${var.name}-${replace(element(values(var.listener_action), count.index), ":", "-")}")}"
     type             = "forward"
   }
 }
 
-resource "aws_lb_target_group" "tg" {
-  count                = "${length(keys(var.target_groups))}"
-  name                 = "${element(keys(var.target_groups), count.index)}"
-  port                 = "${element(split(":", lookup(var.target_groups, element(keys(var.target_groups), count.index))), 1)}"
-  protocol             = "${element(split(":", lookup(var.target_groups, element(keys(var.target_groups), count.index))), 0)}"
+locals {
+  target_groups = "${distinct(values(var.listener_action))}"
+}
+
+resource "aws_lb_target_group" "tg_default" {
+  count                = "${length(local.target_groups)}"
+  name                 = "${var.name}-${replace(element(local.target_groups, count.index), ":", "-")}"
+  port                 = "${element(split(":", element(local.target_groups, count.index)), 1)}"
+  protocol             = "${element(split(":", element(local.target_groups, count.index)), 0)}"
   vpc_id               = "${var.vpc_id}"
   deregistration_delay = "${var.target_group_deregistration_delay}"
 
   health_check {
     interval            = "${var.target_group_health_check_interval}"
     port                = "traffic-port"
-    protocol            = "${element(split(":", lookup(var.target_groups, element(keys(var.target_groups), count.index))), 0)}"
+    protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = "${var.target_group_health_check_timeout}"
@@ -187,7 +167,7 @@ resource "aws_lb_target_group" "tg" {
 }
 
 locals {
-  target_groups_arns = "${zipmap(aws_lb_target_group.tg.*.name, aws_lb_target_group.tg.*.arn)}"
+  target_groups_arns = "${zipmap(aws_lb_target_group.tg_default.*.name, aws_lb_target_group.tg_default.*.arn)}"
 }
 
 # Outputs
