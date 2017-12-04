@@ -1,4 +1,4 @@
-terraform_version = "\"= 0.10.8\""
+terraform_version = "\"= 0.11.1\""
 
 @all_tf_version_files = []
 @uptodate_tf_version_files = []
