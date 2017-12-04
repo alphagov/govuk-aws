@@ -114,6 +114,8 @@ resource "aws_lb_target_group" "tg" {
 
   health_check {
     interval            = "${var.target_group_health_check_interval}"
+    path                = "/"
+    matcher             = "200-499"
     port                = "traffic-port"
     protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
     healthy_threshold   = 2
@@ -140,4 +142,12 @@ resource "aws_lb_listener_rule" "routing" {
     field  = "${element(split(":", element(keys(local.rules), count.index)), 0)}"
     values = ["${element(split(":", element(keys(local.rules), count.index)), 1)}"]
   }
+}
+
+# Outputs
+#--------------------------------------------------------------
+
+output "target_group_arns" {
+  value       = ["${aws_lb_target_group.tg.*.arn}"]
+  description = "List of the target group ARNs."
 }

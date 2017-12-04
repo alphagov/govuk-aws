@@ -53,3 +53,9 @@ so at the moment only one condition can be specified per rule
 | target_group_health_check_timeout | The amount of time, in seconds, during which no response means a failed health check. | string | `5` | no |
 | vpc_id | The ID of the VPC in which the default target groups are created. | string | - | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| target_group_arns | List of the target group ARNs. |
+
