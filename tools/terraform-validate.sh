@@ -8,6 +8,6 @@ done \
     while read -r dir; do
       rm -rf ${dir}/.terraform;
       rm -f ${dir}/terraform.tfstate.backup;
-      terraform init "${dir}";
-      terraform validate "${dir}";
+      terraform init -backend=false "${dir}";
+      terraform validate -check-variables=false "${dir}";
     done
