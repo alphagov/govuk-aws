@@ -259,7 +259,6 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   force_delete              = false
   wait_for_capacity_timeout = 0
   launch_configuration      = "${aws_launch_configuration.node_launch_configuration.name}"
-  load_balancers            = ["${var.instance_elb_ids}"]
 
   enabled_metrics = [
     "GroupMinSize",
@@ -282,10 +281,16 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   }
 }
 
-resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment" {
+resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
   count                  = "${length(var.instance_target_group_arns)}"
   autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
   alb_target_group_arn   = "${element(var.instance_target_group_arns, count.index)}"
+}
+
+resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic" {
+  count                  = "${length(var.instance_elb_ids)}"
+  autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
+  elb                    = "${element(var.instance_elb_ids, count.index)}"
 }
 
 resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {
