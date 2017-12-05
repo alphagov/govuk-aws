@@ -10,4 +10,9 @@
       entry: tools/json-check.sh
       language: script
       files: \.json$
+    - id: terraform-validate
+      name: ===> Validating syntax of all .tf files
+      entry: tools/terraform-validate.sh
+      language: script
+      files: \.tf$
 
