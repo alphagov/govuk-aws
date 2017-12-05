@@ -20,6 +20,8 @@ This module creates the internal and external root DNS zones.
 
 | Name | Description |
 |------|-------------|
+| external_root_domain_name | Route53 External Root Domain Name |
 | external_root_zone_id | Route53 External Root Zone ID |
-| internal_root_zone_id | Outputs -------------------------------------------------------------- |
+| internal_root_domain_name | Route53 Internal Root Domain Name |
+| internal_root_zone_id | Route53 Internal Root Zone ID |
 
