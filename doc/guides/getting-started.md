@@ -122,19 +122,23 @@ commands can be simplified with a config file:
 ```
 $ cat ~/.terragov.yml
 ---
-environment: 'integration'
-stack: 'blue'
-repo_dir: '~/govuk/govuk-aws'
-data_dir: '~/govuk/govuk-aws-data/data'
+default:
+  environment: 'integration'
+  stack: 'blue'
+  repo_dir: '~/govuk/govuk-aws'
+  data_dir: '~/govuk/govuk-aws-data/data'
+
+infra-security-groups:
+  stack: 'govuk'
 ```
 
 Add the config file location to your shell:
 
 Bash:
-`echo "export TERRAGOV_CONFIG_FILE=~/.terragov.yml" >> /.bashrc`
+`echo "export TERRAGOV_CONFIG_FILE=~/.terragov.yml" >> ~/.bashrc`
 
 Zsh:
-`echo "export TERRAGOV_CONFIG_FILE=~/.terragov.yml" >> /.zshrc`
+`echo "export TERRAGOV_CONFIG_FILE=~/.terragov.yml" >> ~/.zshrc`
 
 This tool can be run from within any directory.
 
