@@ -24,7 +24,7 @@ The general steps for provisioning a new environment are:
 ## Requirements
 
 * [Git](https://git-scm.com/) installed via [Xcode cli tools](http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/)/[brew](https://brew.sh/)
-* [Terraform = 0.11.1](https://www.terraform.io/downloads.html) installed via that link 
+* [Terraform = 0.11.1](https://www.terraform.io/downloads.html) installed via that link
 * [ssh-copy-id](https://www.ssh.com/ssh/copy-id) installed via `brew install ssh-copy-id`
 * [aws-cli](https://aws.amazon.com/cli) installed via `brew install awscli` or `pip install awscli`
 
@@ -63,9 +63,10 @@ An error occurred (NoSuchBucket) when calling the ListObjects operation: The spe
 ```
 otherwise you'll see the bucket's contents, one directory per existing stack:
 ```
-PRE deana/
-PRE delana/
+PRE blue/
+PRE green/
 PRE govuk/
+...
 ```
 
 To create an S3 bucket run the following in order to create a bucket and enable versioning on it:
@@ -79,7 +80,7 @@ aws s3api put-bucket-versioning  \
 
 ## Provision the base infrastructure
 
-There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `deana`).
+There are several Terraform projects that need to be run to set up the base infrastructure. For each of these you should run `plan` and `apply` in the build script. If you're setting up a new stack you'll also need to create `.backend` files for each project (see [below](#creating-backend-files-for-a-new-stack)), otherwise you should use an existing one (e.g. `integration-green` or `integration-blue`).
 
 ```
 export DATA_DIR=<path to govuk-aws-data repository>/data
