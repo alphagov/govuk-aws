@@ -2,7 +2,7 @@
 * ## Modules: aws/lb
 *
 * This module creates a Load Balancer resource, with associated
-* listeners and default target groups.
+* listeners and default target groups, and CloudWatch alarms
 *
 * The listeners and default actions are configured in the `listener_action`
 * map. The keys are the listeners PROTOCOL:PORT parameters, and the values
@@ -14,6 +14,23 @@
 *   "HTTPS:443" = "HTTP:8080"
 * }
 *```
+*
+* This module creates the following CloudWatch alarms in the
+* AWS/ApplicationELB namespace:
+*
+*   - HTTPCode_Target_4XX_Count greater than or equal to threshold
+*   - HTTPCode_Target_5XX_Count greater than or equal to threshold
+*   - HTTPCode_ELB_4XX_Count greater than or equal to threshold
+*   - HTTPCode_ELB_5XX_Count greater than or equal to threshold
+*
+* All metrics are measured during a period of 60 seconds and evaluated
+* during 5 consecutive periods.
+*
+* To disable any alarm, set the threshold parameter to 0.
+*
+* AWS/ApplicationELB metrics reference:
+*
+* http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html#load-balancer-metric-dimensions-alb
 */
 
 variable "default_tags" {
@@ -83,6 +100,12 @@ variable "vpc_id" {
   description = "The ID of the VPC in which the default target groups are created."
 }
 
+variable "target_group_health_check_path" {
+  type        = "string"
+  description = "The health check path."
+  default     = "/_healthcheck"
+}
+
 variable "target_group_deregistration_delay" {
   type        = "string"
   description = "The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused."
@@ -101,10 +124,41 @@ variable "target_group_health_check_timeout" {
   default     = 5
 }
 
+variable "alarm_actions" {
+  type        = "list"
+  description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
+  default     = []
+}
+
+variable "httpcode_target_4xx_count_threshold" {
+  type        = "string"
+  description = "The value against which the HTTPCode_Target_4XX_Count metric is compared."
+  default     = "0"
+}
+
+variable "httpcode_target_5xx_count_threshold" {
+  type        = "string"
+  description = "The value against which the HTTPCode_Target_5XX_Count metric is compared."
+  default     = "80"
+}
+
+variable "httpcode_elb_4xx_count_threshold" {
+  type        = "string"
+  description = "The value against which the HTTPCode_ELB_4XX_Count metric is compared."
+  default     = "0"
+}
+
+variable "httpcode_elb_5xx_count_threshold" {
+  type        = "string"
+  description = "The value against which the HTTPCode_ELB_5XX_Count metric is compared."
+  default     = "80"
+}
+
 # Resources
 #--------------------------------------------------------------
 
 data "aws_acm_certificate" "cert" {
+  count    = "${var.listener_certificate_domain_name == "" ? 0 : 1}"
   domain   = "${var.listener_certificate_domain_name}"
   statuses = ["ISSUED"]
 }
@@ -136,7 +190,7 @@ resource "aws_lb_listener" "listener" {
   port              = "${element(split(":", element(keys(var.listener_action), count.index)), 1)}"
   protocol          = "${element(split(":", element(keys(var.listener_action), count.index)), 0)}"
   ssl_policy        = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
-  certificate_arn   = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? data.aws_acm_certificate.cert.arn : ""}"
+  certificate_arn   = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
 
   default_action {
     target_group_arn = "${lookup(local.target_groups_arns, "${var.name}-${replace(element(values(var.listener_action), count.index), ":", "-")}")}"
@@ -158,9 +212,9 @@ resource "aws_lb_target_group" "tg_default" {
 
   health_check {
     interval            = "${var.target_group_health_check_interval}"
-    path                = "/"
-    matcher             = "200-499"
-    port                = "traffic-port"
+    path                = "${var.target_group_health_check_path}"
+    matcher             = "200"
+    port                = "${element(split(":", element(local.target_groups, count.index)), 1)}"
     protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
     healthy_threshold   = 2
     unhealthy_threshold = 2
@@ -170,6 +224,90 @@ resource "aws_lb_target_group" "tg_default" {
 
 locals {
   target_groups_arns = "${zipmap(aws_lb_target_group.tg_default.*.name, aws_lb_target_group.tg_default.*.arn)}"
+}
+
+locals {
+  alarm_dimensions_loadbalancer = "app/${aws_lb.lb.name}/${element(split("/", aws_lb.lb.arn), 3)}"
+}
+
+resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_4xx_count" {
+  count               = "${var.httpcode_elb_4xx_count_threshold > 0 ? 1 : 0}"
+  alarm_name          = "${var.name}-elb-httpcode_elb_4xx_count"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "5"
+  metric_name         = "HTTPCode_ELB_4XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "${var.httpcode_elb_4xx_count_threshold}"
+  actions_enabled     = true
+  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_description   = "This metric monitors the sum of HTTP 4XX response codes generated by the Application LB."
+  treat_missing_data  = "notBreaching"
+
+  dimensions {
+    LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_5xx_count" {
+  count               = "${var.httpcode_elb_5xx_count_threshold > 0 ? 1 : 0}"
+  alarm_name          = "${var.name}-elb-httpcode_elb_5xx_count"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "5"
+  metric_name         = "HTTPCode_ELB_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "${var.httpcode_elb_5xx_count_threshold}"
+  actions_enabled     = true
+  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_description   = "This metric monitors the sum of HTTP 5XX response codes generated by the Application LB."
+  treat_missing_data  = "notBreaching"
+
+  dimensions {
+    LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_4xx_count" {
+  count               = "${var.httpcode_target_4xx_count_threshold > 0 ? 1 : 0}"
+  alarm_name          = "${var.name}-elb-httpcode_target_4xx_count"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "5"
+  metric_name         = "HTTPCode_Target_4XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "${var.httpcode_target_4xx_count_threshold}"
+  actions_enabled     = true
+  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_description   = "This metric monitors the sum of HTTP 4XX response codes generated by the Target Groups."
+  treat_missing_data  = "notBreaching"
+
+  dimensions {
+    LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_5xx_count" {
+  count               = "${var.httpcode_target_5xx_count_threshold > 0 ? 1 : 0}"
+  alarm_name          = "${var.name}-elb-httpcode_target_5xx_count"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "5"
+  metric_name         = "HTTPCode_Target_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "${var.httpcode_target_5xx_count_threshold}"
+  actions_enabled     = true
+  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_description   = "This metric monitors the sum of HTTP 5XX response codes generated by the Target Groups."
+  treat_missing_data  = "notBreaching"
+
+  dimensions {
+    LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
+  }
 }
 
 # Outputs
