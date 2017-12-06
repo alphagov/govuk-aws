@@ -68,6 +68,7 @@ module "apt_external_lb" {
   listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
   subnets                          = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_apt_external_elb_id}"]
+  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                     = "${map("Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
 }
 
@@ -83,15 +84,6 @@ resource "aws_route53_record" "apt_external_service_record" {
   }
 }
 
-module "alarms-elb-apt-external" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-apt-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${var.stackname}-apt-external"
-  httpcode_backend_5xx_threshold = "50"
-  httpcode_elb_5xx_threshold     = "50"
-}
-
 module "apt_internal_lb" {
   source                           = "../../modules/aws/lb"
   name                             = "${var.stackname}-apt-internal"
@@ -103,6 +95,7 @@ module "apt_internal_lb" {
   listener_action                  = "${map("HTTP:80", "HTTP:80", "HTTPS:443", "HTTP:80")}"
   subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_apt_internal_elb_id}"]
+  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                     = "${map("Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
 }
 
@@ -116,15 +109,6 @@ resource "aws_route53_record" "gemstash_internal_service_record" {
     zone_id                = "${module.apt_internal_lb.lb_zone_id}"
     evaluate_target_health = true
   }
-}
-
-module "alarms-elb-apt-internal" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-apt-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${var.stackname}-apt-internal"
-  httpcode_backend_5xx_threshold = "50"
-  httpcode_elb_5xx_threshold     = "50"
 }
 
 module "apt" {
