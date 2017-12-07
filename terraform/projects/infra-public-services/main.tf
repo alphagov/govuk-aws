@@ -73,19 +73,7 @@ variable "cache_public_service_cnames" {
   default     = []
 }
 
-variable "content_store_public_service_names" {
-  type        = "list"
-  description = "List of application service names that get traffic via this loadbalancer"
-  default     = []
-}
-
 variable "deploy_public_service_names" {
-  type        = "list"
-  description = "List of application service names that get traffic via this loadbalancer"
-  default     = []
-}
-
-variable "draft_content_store_public_service_names" {
   type        = "list"
   description = "List of application service names that get traffic via this loadbalancer"
   default     = []
@@ -110,12 +98,6 @@ variable "logs_cdn_public_service_names" {
 }
 
 variable "monitoring_public_service_names" {
-  type        = "list"
-  description = "List of application service names that get traffic via this loadbalancer"
-  default     = []
-}
-
-variable "publishing_api_public_service_names" {
   type        = "list"
   description = "List of application service names that get traffic via this loadbalancer"
   default     = []
@@ -324,55 +306,6 @@ resource "aws_autoscaling_attachment" "cache_asg_attachment_alb" {
   alb_target_group_arn   = "${element(module.cache_public_lb.target_group_arns, 0)}"
 }
 
-#
-# Content-store
-#
-
-module "content_store_public_lb" {
-  source                           = "../../modules/aws/lb"
-  name                             = "${var.stackname}-content-store-pub"
-  internal                         = false
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix        = "elb/${var.stackname}-content-store-public-elb"
-  listener_certificate_domain_name = "${var.elb_public_certname}"
-  listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_external_elb_id}"]
-  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                     = "${map("Project", var.stackname, "aws_migration", "content-store", "aws_environment", var.aws_environment)}"
-}
-
-resource "aws_route53_record" "content_store_public_service_names" {
-  count   = "${length(var.content_store_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.content_store_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${module.content_store_public_lb.lb_dns_name}"
-    zone_id                = "${module.content_store_public_lb.lb_zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-data "aws_autoscaling_groups" "content_store" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-content-store"]
-  }
-}
-
-resource "aws_autoscaling_attachment" "content_store_asg_attachment_alb" {
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.content_store.names, 0)}"
-  alb_target_group_arn   = "${element(module.content_store_public_lb.target_group_arns, 0)}"
-}
-
 # Deploy
 
 module "deploy_public_lb" {
@@ -423,55 +356,6 @@ resource "aws_autoscaling_attachment" "deploy_asg_attachment_alb" {
 #
 # Draft-cache ?????
 #
-
-#
-# Draft-content-store
-#
-
-module "draft_content_store_public_lb" {
-  source                           = "../../modules/aws/lb"
-  name                             = "${var.stackname}-draft-content-pub"
-  internal                         = false
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix        = "elb/${var.stackname}-draft-content-store-public-elb"
-  listener_certificate_domain_name = "${var.elb_public_certname}"
-  listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_draft-content-store_external_elb_id}"]
-  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                     = "${map("Project", var.stackname, "aws_migration", "draft-content-store", "aws_environment", var.aws_environment)}"
-}
-
-resource "aws_route53_record" "draft_content_store_public_service_names" {
-  count   = "${length(var.draft_content_store_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.draft_content_store_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${module.draft_content_store_public_lb.lb_dns_name}"
-    zone_id                = "${module.draft_content_store_public_lb.lb_zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-data "aws_autoscaling_groups" "draft_content_store" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-draft-content-store"]
-  }
-}
-
-resource "aws_autoscaling_attachment" "draft_content_store_asg_attachment_alb" {
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.draft_content_store.names, 0)}"
-  alb_target_group_arn   = "${element(module.draft_content_store_public_lb.target_group_arns, 0)}"
-}
 
 #
 # Graphite
@@ -687,55 +571,6 @@ data "aws_autoscaling_groups" "monitoring" {
 resource "aws_autoscaling_attachment" "monitoring_asg_attachment_alb" {
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.monitoring.names, 0)}"
   alb_target_group_arn   = "${element(module.monitoring_public_lb.target_group_arns, 0)}"
-}
-
-#
-# Publishing-api
-#
-
-module "publishing_api_public_lb" {
-  source                           = "../../modules/aws/lb"
-  name                             = "${var.stackname}-publishing-api-pub"
-  internal                         = false
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix        = "elb/${var.stackname}-graphite-public-elb"
-  listener_certificate_domain_name = "${var.elb_public_certname}"
-  listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_publishing-api_elb_external_id}"]
-  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                     = "${map("Project", var.stackname, "aws_migration", "publishing_api", "aws_environment", var.aws_environment)}"
-}
-
-resource "aws_route53_record" "publishing_api_public_service_names" {
-  count   = "${length(var.publishing_api_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.publishing_api_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${module.publishing_api_public_lb.lb_dns_name}"
-    zone_id                = "${module.publishing_api_public_lb.lb_zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-data "aws_autoscaling_groups" "publishing_api" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-publishing-api"]
-  }
-}
-
-resource "aws_autoscaling_attachment" "publishing_api_asg_attachment_alb" {
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.publishing_api.names, 0)}"
-  alb_target_group_arn   = "${element(module.publishing_api_public_lb.target_group_arns, 0)}"
 }
 
 #
