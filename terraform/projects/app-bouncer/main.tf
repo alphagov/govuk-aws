@@ -35,6 +35,11 @@ variable "elb_external_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -108,6 +113,33 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
+module "bouncer_internal_lb" {
+  source                           = "../../modules/aws/lb"
+  name                             = "${var.stackname}-bouncer-internal"
+  internal                         = true
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix        = "elb/${var.stackname}-bouncer-internal-elb"
+  listener_certificate_domain_name = "${var.elb_internal_certname}"
+  listener_action                  = "${map("HTTP:80", "HTTP:80", "HTTPS:443", "HTTP:80")}"
+  subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_internal_elb_id}"]
+  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                     = "${map("Project", var.stackname, "aws_migration", "bouncer", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_route53_record" "service_record_internal" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "bouncer.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.bouncer_internal_lb.lb_dns_name}"
+    zone_id                = "${module.bouncer_internal_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "bouncer" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-bouncer"
@@ -121,6 +153,7 @@ module "bouncer" {
   instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.bouncer_external_elb.id}"]
+  instance_target_group_arns    = ["${module.bouncer_internal_lb.target_group_arns}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "2"
   asg_min_size                  = "2"
