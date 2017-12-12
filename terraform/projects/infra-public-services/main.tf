@@ -20,12 +20,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "remote_state_infra_root_dns_zones_key_stack" {
-  type        = "string"
-  description = "Override stackname path to infra_root_dns_zones remote state "
-  default     = ""
-}
-
 variable "elb_public_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
@@ -125,16 +119,6 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.3.0"
-}
-
-data "terraform_remote_state" "infra_root_dns_zones" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_root_dns_zones_key_stack, var.stackname)}/infra-root-dns-zones.tfstate"
-    region = "eu-west-1"
-  }
 }
 
 #
