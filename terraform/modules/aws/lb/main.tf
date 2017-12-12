@@ -106,6 +106,12 @@ variable "target_group_health_check_path" {
   default     = "/_healthcheck"
 }
 
+variable "target_group_health_check_matcher" {
+  type        = "string"
+  description = "The health check match response code."
+  default     = "200"
+}
+
 variable "target_group_deregistration_delay" {
   type        = "string"
   description = "The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused."
@@ -213,7 +219,7 @@ resource "aws_lb_target_group" "tg_default" {
   health_check {
     interval            = "${var.target_group_health_check_interval}"
     path                = "${var.target_group_health_check_path}"
-    matcher             = "200"
+    matcher             = "${var.target_group_health_check_matcher}"
     port                = "${element(split(":", element(local.target_groups, count.index)), 1)}"
     protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
     healthy_threshold   = 2
