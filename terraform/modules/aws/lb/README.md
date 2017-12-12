@@ -54,6 +54,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollect
 | subnets | A list of subnet IDs to attach to the LB. | list | - | yes |
 | target_group_deregistration_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused. | string | `300` | no |
 | target_group_health_check_interval | The approximate amount of time, in seconds, between health checks of an individual target. Minimum value 5 seconds, Maximum value 300 seconds. | string | `30` | no |
+| target_group_health_check_matcher | The health check match response code. | string | `200` | no |
 | target_group_health_check_path | The health check path. | string | `/_healthcheck` | no |
 | target_group_health_check_timeout | The amount of time, in seconds, during which no response means a failed health check. | string | `5` | no |
 | vpc_id | The ID of the VPC in which the default target groups are created. | string | - | yes |
