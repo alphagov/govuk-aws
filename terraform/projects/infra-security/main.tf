@@ -70,3 +70,12 @@ module "role_user" {
   role_user_arns   = ["${var.role_user_user_arns}"]
   role_policy_arns = ["${var.role_user_policy_arns}"]
 }
+
+resource "aws_iam_account_password_policy" "tighten_passwords" {
+  allow_users_to_change_password = true
+  minimum_password_length        = 12
+  require_lowercase_characters   = true
+  require_numbers                = true
+  require_symbols                = true
+  require_uppercase_characters   = true
+}
