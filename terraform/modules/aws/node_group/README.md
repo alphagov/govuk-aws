@@ -38,6 +38,7 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | instance_security_group_ids | List of security group ids to attach to the ASG | list | - | yes |
 | instance_subnet_ids | List of subnet ids where the instance can be deployed | list | - | yes |
 | instance_target_group_arns | The ARN of the target group with which to register targets. | list | `<list>` | no |
+| instance_target_group_arns_length | Length of instance_target_group_arns | string | `0` | no |
 | instance_type | Instance type | string | `t2.micro` | no |
 | instance_user_data | User_data provisioning script (default user_data.sh in module directory) | string | `user_data.sh` | no |
 | name | Jumpbox resources name. Only alphanumeric characters and hyphens allowed | string | - | yes |
