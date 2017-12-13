@@ -244,33 +244,33 @@ resource "aws_db_event_subscription" "event_subscription_replica" {
 #
 
 output "rds_instance_id" {
-  value = "${aws_db_instance.db_instance.id}"
+  value = "${join("", aws_db_instance.db_instance.*.id)}"
 }
 
 output "rds_replica_id" {
-  value = "${aws_db_instance.db_instance_replica.id}"
+  value = "${join("", aws_db_instance.db_instance_replica.*.id)}"
 }
 
 output "rds_instance_resource_id" {
-  value = "${aws_db_instance.db_instance.resource_id}"
+  value = "${join("", aws_db_instance.db_instance.*.resource_id)}"
 }
 
 output "rds_replica_resource_id" {
-  value = "${aws_db_instance.db_instance_replica.resource_id}"
+  value = "${join("", aws_db_instance.db_instance_replica.*.resource_id)}"
 }
 
 output "rds_instance_endpoint" {
-  value = "${aws_db_instance.db_instance.endpoint}"
+  value = "${join("", aws_db_instance.db_instance.*.endpoint)}"
 }
 
 output "rds_replica_endpoint" {
-  value = "${aws_db_instance.db_instance_replica.endpoint}"
+  value = "${join("", aws_db_instance.db_instance_replica.*.endpoint)}"
 }
 
 output "rds_instance_address" {
-  value = "${aws_db_instance.db_instance.address}"
+  value = "${join("", aws_db_instance.db_instance.*.address)}"
 }
 
 output "rds_replica_address" {
-  value = "${aws_db_instance.db_instance_replica.address}"
+  value = "${join("", aws_db_instance.db_instance_replica.*.address)}"
 }
