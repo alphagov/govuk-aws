@@ -38,6 +38,10 @@ output "sg_backend-redis_id" {
   value = "${aws_security_group.backend-redis.id}"
 }
 
+output "sg_bouncer_internal_elb_id" {
+  value = "${aws_security_group.bouncer_internal_elb.id}"
+}
+
 output "sg_bouncer_elb_id" {
   value = "${aws_security_group.bouncer_elb.id}"
 }
