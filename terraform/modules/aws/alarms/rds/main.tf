@@ -157,6 +157,6 @@ output "alarm_rds_freestoragespace_id" {
 
 // The ID of the RDS ReplicaLag health check.
 output "alarm_rds_replicalag_id" {
-  value       = "${aws_cloudwatch_metric_alarm.rds_replicalag.id}"
+  value       = "${join("", aws_cloudwatch_metric_alarm.rds_replicalag.*.id)}"
   description = "The ID of the RDS ReplicaLag health check."
 }
