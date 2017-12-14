@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "whitehall-backend default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -192,9 +187,6 @@ module "whitehall-backend" {
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = true
-  instance_key_name             = "${var.stackname}-whitehall-backend"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.whitehall-backend_internal_elb.id}", "${aws_elb.whitehall-backend_external_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

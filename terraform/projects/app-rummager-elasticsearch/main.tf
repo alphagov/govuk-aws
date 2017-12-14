@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -134,11 +129,6 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
-resource "aws_key_pair" "rummager-elasticsearch_key" {
-  key_name   = "${var.stackname}-rummager-elasticsearch"
-  public_key = "${var.ssh_public_key}"
-}
-
 # Instance 1
 module "rummager-elasticsearch-1" {
   source                        = "../../modules/aws/node_group"
@@ -148,8 +138,6 @@ module "rummager-elasticsearch-1" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rummager_elasticsearch_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-rummager-elasticsearch"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -182,8 +170,6 @@ module "rummager-elasticsearch-2" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rummager_elasticsearch_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-rummager-elasticsearch"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -216,8 +202,6 @@ module "rummager-elasticsearch-3" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.rummager_elasticsearch_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-rummager-elasticsearch"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

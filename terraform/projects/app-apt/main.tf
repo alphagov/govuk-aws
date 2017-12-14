@@ -19,11 +19,6 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -119,9 +114,6 @@ module "apt" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.apt_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_apt_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
-  create_instance_key           = true
-  instance_key_name             = "${var.stackname}-apt"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_target_group_arns    = ["${concat(module.apt_internal_lb.target_group_arns, module.apt_external_lb.target_group_arns)}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

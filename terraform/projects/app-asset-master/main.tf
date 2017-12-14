@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "asset-master default public key material"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -64,9 +59,6 @@ module "asset-master" {
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_asset-master_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = true
-  instance_key_name             = "${var.stackname}-asset-master"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   asg_max_size                  = "1"

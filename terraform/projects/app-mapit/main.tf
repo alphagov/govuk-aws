@@ -19,11 +19,6 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -118,11 +113,6 @@ resource "aws_route53_record" "mapit_service_record" {
   }
 }
 
-resource "aws_key_pair" "mapit_key" {
-  key_name   = "${var.stackname}-mapit"
-  public_key = "${var.ssh_public_key}"
-}
-
 module "mapit-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-1"
@@ -131,9 +121,6 @@ module "mapit-1" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-mapit"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -164,9 +151,6 @@ module "mapit-2" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-mapit"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

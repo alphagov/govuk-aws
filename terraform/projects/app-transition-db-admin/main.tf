@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Default public key material"
-}
-
 variable "remote_state_infra_database_backups_bucket_key_stack" {
   type        = "string"
   description = "Override stackname path to infra_database_backups_bucket remote state"
@@ -86,9 +81,6 @@ module "transition-db-admin" {
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_transition-db-admin_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
-  create_instance_key           = true
-  instance_key_name             = "${var.stackname}-transition-db-admin"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.transition-db-admin_elb.id}"]
   asg_max_size                  = "1"
