@@ -1,10 +1,17 @@
  ## Project: artefact-bucket
 
-This creates 3 s3 buckets
+This creates 3 S3 buckets:
 
 artefact: The bucket that will hold the artefacts
 artefact_access_logs: Bucket for logs to go to
 artefact_replication_destination: Bucket in another region to replicate to
+
+It creates two IAM roles:
+artefact_writer: used by CI to write new artefacts, and deploy instances
+to write to "deployed-to-environment" branches
+
+artefact_reader: used by instances to fetch artefacts
+
 
 
 ## Inputs
@@ -19,5 +26,6 @@ artefact_replication_destination: Bucket in another region to replicate to
 
 | Name | Description |
 |------|-------------|
+| read_artefact_bucket_policy_arn | ARN of the read artefact-bucket policy |
 | write_artefact_bucket_policy_arn | ARN of the write artefact-bucket policy |
 

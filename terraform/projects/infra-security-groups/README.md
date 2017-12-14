@@ -29,6 +29,7 @@ Manage the security groups for the entire infrastructure
 | sg_backend_id |  |
 | sg_bouncer_elb_id |  |
 | sg_bouncer_id |  |
+| sg_bouncer_internal_elb_id |  |
 | sg_cache_elb_id |  |
 | sg_cache_external_elb_id |  |
 | sg_cache_id |  |
@@ -41,6 +42,7 @@ Manage the security groups for the entire infrastructure
 | sg_db-admin_id |  |
 | sg_deploy_elb_id |  |
 | sg_deploy_id |  |
+| sg_deploy_internal_elb_id |  |
 | sg_docker_management_etcd_elb_id |  |
 | sg_docker_management_id |  |
 | sg_draft-cache_elb_id |  |
@@ -66,8 +68,6 @@ Manage the security groups for the entire infrastructure
 | sg_monitoring_external_elb_id |  |
 | sg_monitoring_id |  |
 | sg_monitoring_internal_elb_id |  |
-| sg_monitortest_external_elb_id |  |
-| sg_monitortest_id |  |
 | sg_mysql-primary_id |  |
 | sg_mysql-replica_id |  |
 | sg_offsite_ssh_id |  |
