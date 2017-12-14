@@ -44,7 +44,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.0.0"
+  version = "1.3.0"
 }
 
 data "aws_acm_certificate" "elb_external_cert" {
@@ -108,6 +108,13 @@ resource "aws_route53_record" "service_record" {
   }
 }
 
+locals {
+  internal_lb_map = {
+    "HTTP:80"   = "HTTP:80"
+    "HTTPS:443" = "HTTP:80"
+  }
+}
+
 module "bouncer_internal_lb" {
   source                           = "../../modules/aws/lb"
   name                             = "${var.stackname}-bouncer-internal"
@@ -116,7 +123,7 @@ module "bouncer_internal_lb" {
   access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/${var.stackname}-bouncer-internal-elb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
-  listener_action                  = "${map("HTTP:80", "HTTP:80", "HTTPS:443", "HTTP:80")}"
+  listener_action                  = "${local.internal_lb_map}"
   subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_internal_elb_id}"]
   alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -136,21 +143,22 @@ resource "aws_route53_record" "service_record_internal" {
 }
 
 module "bouncer" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-bouncer"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "bouncer", "aws_hostname", "bouncer-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids              = ["${aws_elb.bouncer_external_elb.id}"]
-  instance_target_group_arns    = ["${module.bouncer_internal_lb.target_group_arns}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_max_size                  = "2"
-  asg_min_size                  = "2"
-  asg_desired_capacity          = "2"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  source                            = "../../modules/aws/node_group"
+  name                              = "${var.stackname}-bouncer"
+  vpc_id                            = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "bouncer", "aws_hostname", "bouncer-1")}"
+  instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                     = "t2.medium"
+  instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids                  = ["${aws_elb.bouncer_external_elb.id}"]
+  instance_target_group_arns        = ["${module.bouncer_internal_lb.target_group_arns}"]
+  instance_target_group_arns_length = "${length(distinct(values(local.internal_lb_map)))}"
+  instance_ami_filter_name          = "${var.instance_ami_filter_name}"
+  asg_max_size                      = "2"
+  asg_min_size                      = "2"
+  asg_desired_capacity              = "2"
+  asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
 module "alarms-elb-bouncer-external" {

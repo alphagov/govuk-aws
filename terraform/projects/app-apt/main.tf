@@ -52,19 +52,32 @@ provider "aws" {
   version = "1.3.0"
 }
 
+locals {
+  external_lb_map = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  internal_lb_map = {
+    "HTTPS:443" = "HTTP:80"
+    "HTTP:80"   = "HTTP:80"
+  }
+}
+
 module "apt_external_lb" {
-  source                           = "../../modules/aws/lb"
-  name                             = "${var.stackname}-apt-external"
-  internal                         = false
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix        = "elb/${var.stackname}-apt-external-elb"
-  listener_certificate_domain_name = "${var.elb_external_certname}"
-  listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_apt_external_elb_id}"]
-  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                     = "${map("Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
+  source                            = "../../modules/aws/lb"
+  name                              = "${var.stackname}-apt-external"
+  internal                          = false
+  vpc_id                            = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name           = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix         = "elb/${var.stackname}-apt-external-elb"
+  listener_certificate_domain_name  = "${var.elb_external_certname}"
+  listener_action                   = "${local.external_lb_map}"
+  subnets                           = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                   = ["${data.terraform_remote_state.infra_security_groups.sg_apt_external_elb_id}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  target_group_health_check_path    = "/"
+  target_group_health_check_matcher = "200-499"
+  default_tags                      = "${map("Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
 }
 
 resource "aws_route53_record" "apt_external_service_record" {
@@ -80,18 +93,20 @@ resource "aws_route53_record" "apt_external_service_record" {
 }
 
 module "apt_internal_lb" {
-  source                           = "../../modules/aws/lb"
-  name                             = "${var.stackname}-apt-internal"
-  internal                         = true
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix        = "elb/${var.stackname}-apt-internal-elb"
-  listener_certificate_domain_name = "${var.elb_internal_certname}"
-  listener_action                  = "${map("HTTP:80", "HTTP:80", "HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_apt_internal_elb_id}"]
-  alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                     = "${map("Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
+  source                            = "../../modules/aws/lb"
+  name                              = "${var.stackname}-apt-internal"
+  internal                          = true
+  vpc_id                            = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name           = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix         = "elb/${var.stackname}-apt-internal-elb"
+  listener_certificate_domain_name  = "${var.elb_internal_certname}"
+  listener_action                   = "${local.internal_lb_map}"
+  subnets                           = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups                   = ["${data.terraform_remote_state.infra_security_groups.sg_apt_internal_elb_id}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  target_group_health_check_path    = "/"
+  target_group_health_check_matcher = "200-499"
+  default_tags                      = "${map("Project", var.stackname, "aws_migration", "apt", "aws_environment", var.aws_environment)}"
 }
 
 resource "aws_route53_record" "gemstash_internal_service_record" {
@@ -107,18 +122,19 @@ resource "aws_route53_record" "gemstash_internal_service_record" {
 }
 
 module "apt" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-apt"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "apt", "aws_hostname", "apt-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.apt_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_apt_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_target_group_arns    = ["${concat(module.apt_internal_lb.target_group_arns, module.apt_external_lb.target_group_arns)}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "20"
+  source                            = "../../modules/aws/node_group"
+  name                              = "${var.stackname}-apt"
+  vpc_id                            = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "apt", "aws_hostname", "apt-1")}"
+  instance_subnet_ids               = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.apt_1_subnet))}"
+  instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_apt_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                     = "t2.medium"
+  instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_target_group_arns        = ["${concat(module.apt_internal_lb.target_group_arns, module.apt_external_lb.target_group_arns)}"]
+  instance_target_group_arns_length = "${length(distinct(values(local.external_lb_map))) + length(distinct(values(local.internal_lb_map)))}"
+  instance_ami_filter_name          = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size     = "20"
 }
 
 resource "aws_ebs_volume" "apt" {

@@ -103,6 +103,12 @@ variable "instance_target_group_arns" {
   default     = []
 }
 
+variable "instance_target_group_arns_length" {
+  type        = "string"
+  description = "Length of instance_target_group_arns"
+  default     = 0
+}
+
 variable "asg_desired_capacity" {
   type        = "string"
   description = "The autoscaling groups desired capacity"
@@ -283,7 +289,7 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
 }
 
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
-  count                  = "${length(var.instance_target_group_arns)}"
+  count                  = "${var.instance_target_group_arns_length}"
   autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
   alb_target_group_arn   = "${element(var.instance_target_group_arns, count.index)}"
 }
