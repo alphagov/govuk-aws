@@ -237,7 +237,7 @@ output "service_dns_name_internal" {
 }
 
 output "app_service_records_internal_dns_name" {
-  value       = "${aws_route53_record.app_service_records_internal.name}"
+  value       = "${aws_route53_record.app_service_records_internal.*.name}"
   description = "DNS name to access the app service records"
 }
 
@@ -252,6 +252,6 @@ output "service_dns_name_external" {
 }
 
 output "app_service_records_external_dns_name" {
-  value       = "${aws_route53_record.app_service_records_external.name}"
+  value       = "${aws_route53_record.app_service_records_external.*.name}"
   description = "DNS name to access the app service records"
 }
