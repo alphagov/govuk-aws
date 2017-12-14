@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -93,11 +88,6 @@ provider "aws" {
   version = "1.0.0"
 }
 
-resource "aws_key_pair" "mongo_key" {
-  key_name   = "${var.stackname}-mongo"
-  public_key = "${var.ssh_public_key}"
-}
-
 # Instance 1
 resource "aws_network_interface" "mongo-1_eni" {
   subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_1_reserved_ips_subnet)}"
@@ -130,8 +120,6 @@ module "mongo-1" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -171,8 +159,6 @@ module "mongo-2" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -212,8 +198,6 @@ module "mongo-3" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-mongo"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

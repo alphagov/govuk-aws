@@ -12,5 +12,8 @@ Infrastructure security settings:
 | aws_region | AWS region | string | `eu-west-1` | no |
 | role_admin_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
 | role_admin_user_arns | List of ARNs of external users that can assume the role | list | - | yes |
+| role_user_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role_user_user_arns | List of ARNs of external users that can assume the role | list | - | yes |
+| ssh_public_key | The public part of an SSH keypair | string | - | yes |
 | stackname | Stackname | string | `` | no |
 

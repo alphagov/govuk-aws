@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "mirrorer default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -55,9 +50,6 @@ module "mirrorer" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mirrorer_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mirrorer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.micro"
-  create_instance_key           = true
-  instance_key_name             = "${var.stackname}-mirrorer"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

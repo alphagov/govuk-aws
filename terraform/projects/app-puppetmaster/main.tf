@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Puppetmaster default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -182,9 +177,6 @@ module "puppetmaster" {
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.xlarge"
-  create_instance_key           = true
-  instance_key_name             = "${var.stackname}-puppetmaster_bootstrap"
-  instance_public_key           = "${var.ssh_public_key}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.puppetmaster_bootstrap_elb.*.id}", "${aws_elb.puppetmaster_internal_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"

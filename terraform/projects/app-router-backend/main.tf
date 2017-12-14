@@ -19,11 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "ssh_public_key" {
-  type        = "string"
-  description = "Default public key material"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -71,11 +66,6 @@ provider "aws" {
 data "aws_acm_certificate" "elb_internal_cert" {
   domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
-}
-
-resource "aws_key_pair" "router_backend_key" {
-  key_name   = "${var.stackname}-router-backend"
-  public_key = "${var.ssh_public_key}"
 }
 
 resource "aws_elb" "router_api_elb" {
@@ -185,8 +175,6 @@ module "router-backend-1" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router-backend_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-router-backend"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.router_backend_1_elb.id}", "${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -251,8 +239,6 @@ module "router-backend-2" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router-backend_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-router-backend"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.router_backend_2_elb.id}", "${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
@@ -317,8 +303,6 @@ module "router-backend-3" {
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.router-backend_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
-  create_instance_key           = false
-  instance_key_name             = "${var.stackname}-router-backend"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.router_backend_3_elb.id}", "${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
