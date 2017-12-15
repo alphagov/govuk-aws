@@ -97,6 +97,11 @@ variable "whitehall_backend_public_service_cnames" {
   default = []
 }
 
+variable "asset_master_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "apt_internal_service_names" {
   type    = "list"
   default = []
@@ -313,6 +318,19 @@ resource "aws_route53_record" "apt_internal_service_names" {
 }
 
 #
+# asset-master
+#
+
+resource "aws_route53_record" "asset_master_internal_service_names" {
+  count   = "${length(var.asset_master_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.asset_master_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.asset_master_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
 # Backend-redis
 #
 
@@ -379,6 +397,7 @@ data "aws_autoscaling_groups" "backend" {
 }
 
 resource "aws_autoscaling_attachment" "backend_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.backend.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.backend.names, 0)}"
   alb_target_group_arn   = "${element(module.backend_public_lb.target_group_arns, 0)}"
 }
@@ -446,6 +465,7 @@ data "aws_autoscaling_groups" "bouncer" {
 }
 
 resource "aws_autoscaling_attachment" "bouncer_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.bouncer.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.bouncer.names, 0)}"
   alb_target_group_arn   = "${element(module.bouncer_public_lb.target_group_arns, 0)}"
 }
@@ -513,6 +533,7 @@ data "aws_autoscaling_groups" "cache" {
 }
 
 resource "aws_autoscaling_attachment" "cache_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.cache.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.cache.names, 0)}"
   alb_target_group_arn   = "${element(module.cache_public_lb.target_group_arns, 0)}"
 }
@@ -620,6 +641,7 @@ data "aws_autoscaling_groups" "deploy" {
 }
 
 resource "aws_autoscaling_attachment" "deploy_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.deploy.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.deploy.names, 0)}"
   alb_target_group_arn   = "${element(module.deploy_public_lb.target_group_arns, 0)}"
 }
@@ -770,6 +792,7 @@ data "aws_autoscaling_groups" "graphite" {
 }
 
 resource "aws_autoscaling_attachment" "graphite_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.graphite.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.graphite.names, 0)}"
   alb_target_group_arn   = "${element(module.graphite_public_lb.target_group_arns, 0)}"
 }
@@ -848,6 +871,7 @@ data "aws_autoscaling_groups" "jumpbox" {
 }
 
 resource "aws_autoscaling_attachment" "jumpbox_asg_attachment_elb" {
+  count                  = "${length(data.aws_autoscaling_groups.jumpbox.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.jumpbox.names, 0)}"
   elb                    = "${aws_elb.jumpbox_public_elb.id}"
 }
@@ -897,6 +921,7 @@ data "aws_autoscaling_groups" "logs_cdn" {
 }
 
 resource "aws_autoscaling_attachment" "logs_cdn_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.logs_cdn.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.logs_cdn.names, 0)}"
   alb_target_group_arn   = "${element(module.logs_cdn_public_lb.target_group_arns, 0)}"
 }
@@ -972,6 +997,7 @@ data "aws_autoscaling_groups" "monitoring" {
 }
 
 resource "aws_autoscaling_attachment" "monitoring_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.monitoring.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.monitoring.names, 0)}"
   alb_target_group_arn   = "${element(module.monitoring_public_lb.target_group_arns, 0)}"
 }
@@ -1178,6 +1204,7 @@ data "aws_autoscaling_groups" "whitehall_backend" {
 }
 
 resource "aws_autoscaling_attachment" "whitehall_backend_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.whitehall_backend.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.whitehall_backend.names, 0)}"
   alb_target_group_arn   = "${element(module.whitehall_backend_public_lb.target_group_arns, 0)}"
 }
