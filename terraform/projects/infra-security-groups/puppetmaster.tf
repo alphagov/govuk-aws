@@ -68,6 +68,7 @@ resource "aws_security_group_rule" "allow_management_to_puppet" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
+# This allows the unattended reboot monitoring script to work
 resource "aws_security_group_rule" "allow_monitoring_to_puppetdb" {
   type      = "ingress"
   from_port = 443
@@ -76,6 +77,17 @@ resource "aws_security_group_rule" "allow_monitoring_to_puppetdb" {
 
   security_group_id        = "${aws_security_group.puppetmaster_elb.id}"
   source_security_group_id = "${aws_security_group.monitoring.id}"
+}
+
+# This allows full use of our Fabric scripts
+resource "aws_security_group_rule" "allow_jumpbox_to_puppetdb" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.puppetmaster_elb.id}"
+  source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
 
 # TODO test whether egress rules are needed on ELBs
