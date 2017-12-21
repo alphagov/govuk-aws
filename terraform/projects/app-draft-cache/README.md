@@ -7,8 +7,10 @@ Draft Cache servers
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| app_service_records | List of application service names that get traffic via this loadbalancer | list | `<list>` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
