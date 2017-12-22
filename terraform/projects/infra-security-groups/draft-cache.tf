@@ -34,6 +34,19 @@ resource "aws_security_group_rule" "allow_draft-cache_elb_in" {
   source_security_group_id = "${aws_security_group.draft-cache_elb.id}"
 }
 
+resource "aws_security_group_rule" "allow_draft-cache_external_elb_in" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.draft-cache.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.draft-cache_external_elb.id}"
+}
+
 # We need to allow draft-cache instances to speak to their own to reload router
 # routes
 resource "aws_security_group_rule" "allow_draft-cache_from_draft-cache" {
@@ -57,6 +70,25 @@ resource "aws_security_group" "draft-cache_elb" {
   tags {
     Name = "${var.stackname}_draft-cache_elb_access"
   }
+}
+
+resource "aws_security_group" "draft-cache_external_elb" {
+  name        = "${var.stackname}_draft-cache_elb_external_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the draft-cache external ELB"
+
+  tags {
+    Name = "${var.stackname}_draft-cache_external_elb_access"
+  }
+}
+
+resource "aws_security_group_rule" "allow_public_to_draft-cache_external_elb" {
+  type              = "ingress"
+  to_port           = 443
+  from_port         = 443
+  protocol          = "tcp"
+  security_group_id = "${aws_security_group.draft-cache_external_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
 # This is required to commit routes using router-api at the end of the data sync
