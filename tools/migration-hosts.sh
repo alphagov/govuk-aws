@@ -11,6 +11,7 @@ contacts-admin
 content-performance-manager
 content-tagger
 deploy
+draft-origin
 docs
 grafana
 graphite
