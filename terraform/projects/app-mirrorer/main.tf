@@ -51,6 +51,7 @@ module "mirrorer" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mirrorer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.micro"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "0"
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "1"

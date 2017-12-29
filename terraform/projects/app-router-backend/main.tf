@@ -176,6 +176,7 @@ module "router-backend-1" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.router_backend_1_elb.id}", "${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
@@ -240,6 +241,7 @@ module "router-backend-2" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.router_backend_2_elb.id}", "${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
@@ -304,6 +306,7 @@ module "router-backend-3" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.router_backend_3_elb.id}", "${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
