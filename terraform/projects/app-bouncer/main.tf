@@ -151,6 +151,7 @@ module "bouncer" {
   instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                     = "t2.medium"
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length           = "1"
   instance_elb_ids                  = ["${aws_elb.bouncer_external_elb.id}"]
   instance_target_group_arns        = ["${module.bouncer_internal_lb.target_group_arns}"]
   instance_target_group_arns_length = "${length(distinct(values(local.internal_lb_map)))}"

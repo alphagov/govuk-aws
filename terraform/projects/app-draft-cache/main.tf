@@ -193,6 +193,7 @@ module "draft-cache" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_draft-cache_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.draft-cache_elb.id}", "${aws_elb.draft-cache_external_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "2"

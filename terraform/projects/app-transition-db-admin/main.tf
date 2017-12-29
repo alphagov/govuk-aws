@@ -82,6 +82,7 @@ module "transition-db-admin" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_transition-db-admin_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.transition-db-admin_elb.id}"]
   asg_max_size                  = "1"
   asg_min_size                  = "1"

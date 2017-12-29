@@ -97,6 +97,12 @@ variable "instance_elb_ids" {
   default     = []
 }
 
+variable "instance_elb_ids_length" {
+  type        = "string"
+  description = "Length of instance_elb_ids"
+  default     = 0
+}
+
 variable "instance_target_group_arns" {
   type        = "list"
   description = "The ARN of the target group with which to register targets."
@@ -295,7 +301,7 @@ resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
 }
 
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic" {
-  count                  = "${length(var.instance_elb_ids)}"
+  count                  = "${var.instance_elb_ids_length}"
   autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
   elb                    = "${element(var.instance_elb_ids, count.index)}"
 }

@@ -96,6 +96,7 @@ module "docker_management" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_docker_management_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.docker_management_etcd_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"

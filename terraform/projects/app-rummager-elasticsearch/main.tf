@@ -139,6 +139,7 @@ module "rummager-elasticsearch-1" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
@@ -171,6 +172,7 @@ module "rummager-elasticsearch-2" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
@@ -203,6 +205,7 @@ module "rummager-elasticsearch-3" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rummager-elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.rummager-elasticsearch_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
