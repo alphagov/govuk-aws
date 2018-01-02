@@ -21,8 +21,7 @@ resource "aws_security_group" "puppetmaster" {
   }
 }
 
-# All VMs will need to talk to the puppetmaster.
-resource "aws_security_group_rule" "allow_puppet_elb_in" {
+resource "aws_security_group_rule" "puppetmaster_ingress_puppetmaster-elb_puppet" {
   type      = "ingress"
   from_port = 8140
   to_port   = 8140
@@ -35,7 +34,8 @@ resource "aws_security_group_rule" "allow_puppet_elb_in" {
   source_security_group_id = "${aws_security_group.puppetmaster_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_puppetdb_elb_in" {
+# PuppetDB
+resource "aws_security_group_rule" "puppetmaster_ingress_puppetmaster-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -58,7 +58,7 @@ resource "aws_security_group" "puppetmaster_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_puppet" {
+resource "aws_security_group_rule" "puppetmaster-elb_ingress_management_puppet" {
   type      = "ingress"
   from_port = 8140
   to_port   = 8140
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "allow_management_to_puppet" {
 }
 
 # This allows the unattended reboot monitoring script to work
-resource "aws_security_group_rule" "allow_monitoring_to_puppetdb" {
+resource "aws_security_group_rule" "puppetmaster-elb_ingress_monitoring_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "allow_monitoring_to_puppetdb" {
 }
 
 # This allows full use of our Fabric scripts
-resource "aws_security_group_rule" "allow_jumpbox_to_puppetdb" {
+resource "aws_security_group_rule" "puppetmaster-elb_ingress_jumpbox_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -90,8 +90,7 @@ resource "aws_security_group_rule" "allow_jumpbox_to_puppetdb" {
   source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_puppetmaster_elb_egress" {
+resource "aws_security_group_rule" "puppetmaster-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

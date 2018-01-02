@@ -21,7 +21,7 @@ resource "aws_security_group" "monitoring" {
   }
 }
 
-resource "aws_security_group_rule" "allow_monitoring_external_elb_in" {
+resource "aws_security_group_rule" "monitoring_ingress_monitoring-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_monitoring_external_elb_in" {
   source_security_group_id = "${aws_security_group.monitoring_external_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_monitoring_internal_elb_in" {
+resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_nsca" {
   type      = "ingress"
   from_port = 5667
   to_port   = 5667
@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "allow_monitoring_internal_elb_in" {
   source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_monitoring_internal_elb_http_in" {
+resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -70,7 +70,7 @@ resource "aws_security_group" "monitoring_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_office_to_monitoring" {
+resource "aws_security_group_rule" "monitoring-external-elb_ingress_office_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -80,8 +80,7 @@ resource "aws_security_group_rule" "allow_office_to_monitoring" {
   cidr_blocks       = ["${var.office_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_monitoring_external_elb_egress" {
+resource "aws_security_group_rule" "monitoring-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -100,7 +99,7 @@ resource "aws_security_group" "monitoring_internal_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_monitoring_internal_elb_ncsa" {
+resource "aws_security_group_rule" "monitoring-internal-elb_ingress_management_ncsa" {
   type      = "ingress"
   from_port = 5667
   to_port   = 5667
@@ -110,9 +109,9 @@ resource "aws_security_group_rule" "allow_management_to_monitoring_internal_elb_
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_management_to_monitoring_internal_elb_https" {
+resource "aws_security_group_rule" "monitoring-internal-elb_ingress_management_https" {
   type      = "ingress"
-  from_port = 80
+  from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
@@ -120,8 +119,7 @@ resource "aws_security_group_rule" "allow_management_to_monitoring_internal_elb_
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_monitoring_internal_elb_egress" {
+resource "aws_security_group_rule" "monitoring-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

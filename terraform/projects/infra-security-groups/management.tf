@@ -22,7 +22,7 @@ resource "aws_security_group" "management" {
   }
 }
 
-resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
+resource "aws_security_group_rule" "management_ingress_jumpbox_ssh" {
   type      = "ingress"
   from_port = 22
   to_port   = 22
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "allow_ssh_from_jumpbox" {
   source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
 
-resource "aws_security_group_rule" "allow_ssh_from_deploy" {
+resource "aws_security_group_rule" "management_ingress_deploy_ssh" {
   type      = "ingress"
   from_port = 22
   to_port   = 22
@@ -48,7 +48,7 @@ resource "aws_security_group_rule" "allow_ssh_from_deploy" {
   source_security_group_id = "${aws_security_group.deploy.id}"
 }
 
-resource "aws_security_group_rule" "allow_nrpe_ingress_from_monitoring" {
+resource "aws_security_group_rule" "management_ingress_monitoring_nrpe" {
   type      = "ingress"
   from_port = 5666
   to_port   = 5666
@@ -61,7 +61,7 @@ resource "aws_security_group_rule" "allow_nrpe_ingress_from_monitoring" {
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
-resource "aws_security_group_rule" "allow_icmp_ingress_from_monitoring" {
+resource "aws_security_group_rule" "management_ingress_monitoring_ping" {
   type      = "ingress"
   from_port = 8
   to_port   = 0
@@ -74,7 +74,7 @@ resource "aws_security_group_rule" "allow_icmp_ingress_from_monitoring" {
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
-resource "aws_security_group_rule" "allow_mangement_egress" {
+resource "aws_security_group_rule" "mangement_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

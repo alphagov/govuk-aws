@@ -21,7 +21,7 @@ resource "aws_security_group" "offsite_ssh" {
   }
 }
 
-resource "aws_security_group_rule" "allow_offsite_ssh" {
+resource "aws_security_group_rule" "offsite-ssh_ingress_office-and-carrenza_ssh" {
   type        = "ingress"
   from_port   = 22
   to_port     = 22
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "allow_offsite_ssh" {
   security_group_id = "${aws_security_group.offsite_ssh.id}"
 }
 
-resource "aws_security_group_rule" "allow_egress" {
+resource "aws_security_group_rule" "offsite-ssh_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

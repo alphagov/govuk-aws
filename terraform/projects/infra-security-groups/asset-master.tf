@@ -30,7 +30,7 @@ resource "aws_security_group" "asset-master-efs" {
 }
 
 # Allow both TCP and UDP for NFS
-resource "aws_security_group_rule" "allow_asset-master-efs_from_asset-master" {
+resource "aws_security_group_rule" "asset-master-efs_ingress_asset-master_nfs" {
   type      = "ingress"
   from_port = 111
   to_port   = 111
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "allow_asset-master-efs_from_asset-master" {
 }
 
 # Allow both TCP and UDP for NFS
-resource "aws_security_group_rule" "allow_asset-master-efs_from_backend" {
+resource "aws_security_group_rule" "asset-master-efs_ingress_backend_nfs" {
   type      = "ingress"
   from_port = 111
   to_port   = 111
@@ -58,7 +58,7 @@ resource "aws_security_group_rule" "allow_asset-master-efs_from_backend" {
 }
 
 # Allow both TCP and UDP for NFS
-resource "aws_security_group_rule" "allow_asset-master-efs_from_whitehall-backend" {
+resource "aws_security_group_rule" "asset-master-efs_ingress_whitehall-backend_nfs" {
   type      = "ingress"
   from_port = 111
   to_port   = 111

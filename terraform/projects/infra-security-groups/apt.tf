@@ -23,7 +23,7 @@ resource "aws_security_group" "apt" {
   }
 }
 
-resource "aws_security_group_rule" "allow_apt_external_elb_in" {
+resource "aws_security_group_rule" "apt_ingress_apt-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_apt_external_elb_in" {
   source_security_group_id = "${aws_security_group.apt_external_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_apt_internal_elb_in" {
+resource "aws_security_group_rule" "apt_ingress_apt-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -59,7 +59,7 @@ resource "aws_security_group" "apt_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_apt_external_elb_office_in" {
+resource "aws_security_group_rule" "apt-external-elb_ingress_office_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "allow_apt_external_elb_office_in" {
   cidr_blocks       = ["${var.office_ips}"]
 }
 
-resource "aws_security_group_rule" "allow_apt_external_elb_egress" {
+resource "aws_security_group_rule" "apt-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -88,7 +88,7 @@ resource "aws_security_group" "apt_internal_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_apt_elb" {
+resource "aws_security_group_rule" "apt-internal-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -98,7 +98,7 @@ resource "aws_security_group_rule" "allow_management_to_apt_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_management_to_apt_elb_80" {
+resource "aws_security_group_rule" "apt-internal-elb_ingress_management_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -108,7 +108,7 @@ resource "aws_security_group_rule" "allow_management_to_apt_elb_80" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_apt_internal_elb_egress" {
+resource "aws_security_group_rule" "apt-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

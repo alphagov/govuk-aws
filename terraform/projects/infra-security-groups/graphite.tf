@@ -23,7 +23,7 @@ resource "aws_security_group" "graphite" {
   }
 }
 
-resource "aws_security_group_rule" "allow_graphite_external_elb_in" {
+resource "aws_security_group_rule" "graphite_ingress_graphite-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_in" {
   source_security_group_id = "${aws_security_group.graphite_external_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_graphite_internal_elb_in" {
+resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -49,7 +49,7 @@ resource "aws_security_group_rule" "allow_graphite_internal_elb_in" {
   source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_graphite_carbon_aggregator_line_internal_elb_in" {
+resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_carbon" {
   type      = "ingress"
   from_port = 2003
   to_port   = 2003
@@ -62,7 +62,7 @@ resource "aws_security_group_rule" "allow_graphite_carbon_aggregator_line_intern
   source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_graphite_carbon_aggregator_pickle_internal_elb_in" {
+resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_pickle" {
   type      = "ingress"
   from_port = 2004
   to_port   = 2004
@@ -85,7 +85,7 @@ resource "aws_security_group" "graphite_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_graphite_external_elb_office_in" {
+resource "aws_security_group_rule" "graphite-external-elb_ingress_office_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -95,8 +95,8 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_office_in" {
   cidr_blocks       = ["${var.office_ips}"]
 }
 
-# Maybe we don't need this one, depending on what endpoint internal clients are using
-resource "aws_security_group_rule" "allow_graphite_external_elb_management_in" {
+# TODO: Audit
+resource "aws_security_group_rule" "graphite-external-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -106,7 +106,7 @@ resource "aws_security_group_rule" "allow_graphite_external_elb_management_in" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_graphite_external_elb_egress" {
+resource "aws_security_group_rule" "graphite-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -125,7 +125,7 @@ resource "aws_security_group" "graphite_internal_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_graphite_internal_elb_management_in" {
+resource "aws_security_group_rule" "graphite-internal-elb_ingress_monitoring_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -135,7 +135,7 @@ resource "aws_security_group_rule" "allow_graphite_internal_elb_management_in" {
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
-resource "aws_security_group_rule" "allow_management_to_graphite_carbon_aggregator_line_elb" {
+resource "aws_security_group_rule" "graphite-internal-elb_ingress_management_carbon" {
   type      = "ingress"
   from_port = 2003
   to_port   = 2003
@@ -145,7 +145,7 @@ resource "aws_security_group_rule" "allow_management_to_graphite_carbon_aggregat
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_management_to_graphite_carbon_aggregator_pickle_elb" {
+resource "aws_security_group_rule" "graphite-internal-elb_ingress_management_pickle" {
   type      = "ingress"
   from_port = 2004
   to_port   = 2004
@@ -155,7 +155,7 @@ resource "aws_security_group_rule" "allow_management_to_graphite_carbon_aggregat
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_graphite_internal_elb_egress" {
+resource "aws_security_group_rule" "graphite-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

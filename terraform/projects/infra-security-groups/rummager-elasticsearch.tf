@@ -24,7 +24,7 @@ resource "aws_security_group" "rummager-elasticsearch" {
 }
 
 # the nodes need to speak among themselves for clustering
-resource "aws_security_group_rule" "allow_rummager-elasticsearch_cluster_in" {
+resource "aws_security_group_rule" "rummager-elasticsearch_ingress_rummager-elasticsearch_elasticsearch-transport" {
   type      = "ingress"
   from_port = 9300
   to_port   = 9300
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "allow_rummager-elasticsearch_cluster_in" {
   source_security_group_id = "${aws_security_group.rummager-elasticsearch.id}"
 }
 
-resource "aws_security_group_rule" "rummager-elasticsearch_elb_in" {
+resource "aws_security_group_rule" "rummager-elasticsearch_ingress_rummager-elasticsearch-elb_elasticsearch-api" {
   type      = "ingress"
   from_port = 9200
   to_port   = 9200
@@ -60,7 +60,7 @@ resource "aws_security_group" "rummager-elasticsearch_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_search_to_rummager-elasticsearch_elb" {
+resource "aws_security_group_rule" "rummager-elasticsearch-elb_ingress_search_elasticsearch-api" {
   type      = "ingress"
   from_port = 9200
   to_port   = 9200
@@ -71,7 +71,7 @@ resource "aws_security_group_rule" "allow_search_to_rummager-elasticsearch_elb" 
   source_security_group_id = "${aws_security_group.search.id}"
 }
 
-resource "aws_security_group_rule" "allow_backend_to_rummager-elasticsearch_elb" {
+resource "aws_security_group_rule" "rummager-elasticsearch-elb_ingress_backend_elasticsearch-api" {
   type      = "ingress"
   from_port = 9200
   to_port   = 9200
@@ -82,7 +82,7 @@ resource "aws_security_group_rule" "allow_backend_to_rummager-elasticsearch_elb"
   source_security_group_id = "${aws_security_group.backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_calculators-frontend_to_rummager-elasticsearch_elb" {
+resource "aws_security_group_rule" "rummager-elasticsearch-elb_ingress_calculators-frontend_elasticsearch-api" {
   type      = "ingress"
   from_port = 9200
   to_port   = 9200
@@ -93,8 +93,7 @@ resource "aws_security_group_rule" "allow_calculators-frontend_to_rummager-elast
   source_security_group_id = "${aws_security_group.calculators-frontend.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_rummager-elasticsearch_elb_egress" {
+resource "aws_security_group_rule" "rummager-elasticsearch-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

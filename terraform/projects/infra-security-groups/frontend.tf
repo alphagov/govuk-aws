@@ -21,7 +21,7 @@ resource "aws_security_group" "frontend" {
   }
 }
 
-resource "aws_security_group_rule" "allow_frontend_elb_in" {
+resource "aws_security_group_rule" "frontend_ingress_frontend-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -44,9 +44,8 @@ resource "aws_security_group" "frontend_elb" {
   }
 }
 
-# TODO: most application instances need to talk to frontend - we could
-# split out some security for application and service instances?
-resource "aws_security_group_rule" "allow_management_to_frontend_elb_https" {
+# TODO: Audit
+resource "aws_security_group_rule" "frontend-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -56,8 +55,7 @@ resource "aws_security_group_rule" "allow_management_to_frontend_elb_https" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_frontend_elb_egress" {
+resource "aws_security_group_rule" "frontend-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

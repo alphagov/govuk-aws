@@ -24,7 +24,7 @@ resource "aws_security_group" "router-backend" {
 }
 
 # the nodes need to speak among themselves for clustering
-resource "aws_security_group_rule" "allow_router-backend_cluster_in" {
+resource "aws_security_group_rule" "router-backend_ingress_router-backend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "allow_router-backend_cluster_in" {
   source_security_group_id = "${aws_security_group.router-backend.id}"
 }
 
-resource "aws_security_group_rule" "router-backend_elb_in" {
+resource "aws_security_group_rule" "router-backend_ingress_router-backend-elb_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -50,7 +50,7 @@ resource "aws_security_group_rule" "router-backend_elb_in" {
   source_security_group_id = "${aws_security_group.router-backend_elb.id}"
 }
 
-resource "aws_security_group_rule" "router-api_elb_in" {
+resource "aws_security_group_rule" "router-backend_ingress_router-api-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -73,7 +73,7 @@ resource "aws_security_group" "router-backend_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_router-backend_to_router-backend_elb" {
+resource "aws_security_group_rule" "router-backend-elb_ingress_router-backend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "allow_router-backend_to_router-backend_elb" 
   source_security_group_id = "${aws_security_group.router-backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_draft-cache_to_router-backend_elb" {
+resource "aws_security_group_rule" "router-backend-elb_ingress_draft-cache_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -95,7 +95,7 @@ resource "aws_security_group_rule" "allow_draft-cache_to_router-backend_elb" {
   source_security_group_id = "${aws_security_group.draft-cache.id}"
 }
 
-resource "aws_security_group_rule" "allow_cache_to_router-backend_elb" {
+resource "aws_security_group_rule" "router-backend-elb_ingress_cache_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -116,7 +116,8 @@ resource "aws_security_group" "router-api_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_router-api_elb" {
+# TODO: Audit
+resource "aws_security_group_rule" "router-api-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -124,13 +125,10 @@ resource "aws_security_group_rule" "allow_management_to_router-api_elb" {
 
   security_group_id = "${aws_security_group.router-api_elb.id}"
 
-  # TODO: does anything other than icinga and logging need this?
-  # content store needs this.
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_router-backend_elb_egress" {
+resource "aws_security_group_rule" "router-backend-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -139,7 +137,7 @@ resource "aws_security_group_rule" "allow_router-backend_elb_egress" {
   security_group_id = "${aws_security_group.router-backend_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_router-api_elb_egress" {
+resource "aws_security_group_rule" "router-api-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

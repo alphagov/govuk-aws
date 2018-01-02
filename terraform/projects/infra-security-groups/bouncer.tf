@@ -22,7 +22,7 @@ resource "aws_security_group" "bouncer" {
   }
 }
 
-resource "aws_security_group_rule" "allow_bouncer_elb_in" {
+resource "aws_security_group_rule" "bouncer_ingress_bouncer-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "allow_bouncer_elb_in" {
   source_security_group_id = "${aws_security_group.bouncer_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_bouncer_internal_elb_in" {
+resource "aws_security_group_rule" "bouncer_ingress_bouncer-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -58,7 +58,7 @@ resource "aws_security_group" "bouncer_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_http" {
+resource "aws_security_group_rule" "bouncer-elb_ingress_fastly_http" {
   type              = "ingress"
   to_port           = 80
   from_port         = 80
@@ -67,7 +67,7 @@ resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_http" {
   cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"]
 }
 
-resource "aws_security_group_rule" "allow_traffic-replay_to_bouncer_elb_http" {
+resource "aws_security_group_rule" "bouncer-elb_ingress_traffic-replay_http" {
   type              = "ingress"
   to_port           = 80
   from_port         = 80
@@ -76,7 +76,7 @@ resource "aws_security_group_rule" "allow_traffic-replay_to_bouncer_elb_http" {
   cidr_blocks       = ["${var.traffic_replay_ips}"]
 }
 
-resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_https" {
+resource "aws_security_group_rule" "bouncer-elb_ingress_fastly_https" {
   type              = "ingress"
   to_port           = 443
   from_port         = 443
@@ -85,8 +85,7 @@ resource "aws_security_group_rule" "allow_fastly_to_bouncer_elb_https" {
   cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_bouncer_elb_egress" {
+resource "aws_security_group_rule" "bouncer-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -105,7 +104,7 @@ resource "aws_security_group" "bouncer_internal_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_monitoring_to_bouncer_internal_elb_https" {
+resource "aws_security_group_rule" "bouncer-internal-elb_ingress_monitoring_https" {
   type                     = "ingress"
   to_port                  = 443
   from_port                = 443
@@ -114,7 +113,7 @@ resource "aws_security_group_rule" "allow_monitoring_to_bouncer_internal_elb_htt
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
-resource "aws_security_group_rule" "allow_monitoring_to_bouncer_internal_elb_http" {
+resource "aws_security_group_rule" "bouncer-internal-elb_ingress_monitoring_http" {
   type                     = "ingress"
   to_port                  = 80
   from_port                = 80
@@ -123,7 +122,7 @@ resource "aws_security_group_rule" "allow_monitoring_to_bouncer_internal_elb_htt
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
-resource "aws_security_group_rule" "allow_bouncer_internal_elb_egress" {
+resource "aws_security_group_rule" "bouncer-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

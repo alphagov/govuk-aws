@@ -18,7 +18,7 @@ resource "aws_security_group" "postgresql-primary" {
   }
 }
 
-resource "aws_security_group_rule" "allow_postgresql_from_backend_in" {
+resource "aws_security_group_rule" "postgresql-primary_ingress_backend_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "allow_postgresql_from_backend_in" {
   source_security_group_id = "${aws_security_group.backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_postgresql_from_publishing-api_in" {
+resource "aws_security_group_rule" "postgresql-primary_ingress_publishing-api_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "allow_postgresql_from_publishing-api_in" {
   source_security_group_id = "${aws_security_group.publishing-api.id}"
 }
 
-resource "aws_security_group_rule" "allow_postgresql_db-admin_in" {
+resource "aws_security_group_rule" "postgresql-primary_ingress_db-admin_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432

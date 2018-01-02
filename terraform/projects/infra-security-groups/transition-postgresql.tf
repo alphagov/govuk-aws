@@ -28,7 +28,7 @@ resource "aws_security_group" "transition-postgresql-standby" {
   }
 }
 
-resource "aws_security_group_rule" "allow_transition-postgresql_from_backend_in" {
+resource "aws_security_group_rule" "transition-postgresql-primary_ingress_backend_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "allow_transition-postgresql_from_backend_in"
   source_security_group_id = "${aws_security_group.backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_transition-postgresql_db-admin_in" {
+resource "aws_security_group_rule" "transition-postgresql-primary_ingress_db-admin_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
@@ -54,7 +54,7 @@ resource "aws_security_group_rule" "allow_transition-postgresql_db-admin_in" {
   source_security_group_id = "${aws_security_group.transition-db-admin.id}"
 }
 
-resource "aws_security_group_rule" "allow_transition-postgresql-standby_from_bouncer_in" {
+resource "aws_security_group_rule" "transition-postgresql-standby_ingress_bouncer_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432

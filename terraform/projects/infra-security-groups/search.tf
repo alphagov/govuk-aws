@@ -21,7 +21,7 @@ resource "aws_security_group" "search" {
   }
 }
 
-resource "aws_security_group_rule" "allow_search_elb_in" {
+resource "aws_security_group_rule" "search_ingress_search-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -44,8 +44,8 @@ resource "aws_security_group" "search_elb" {
   }
 }
 
-# TODO: replace this with ingress from the frontend LBs when we build them.
-resource "aws_security_group_rule" "allow_management_to_search_elb" {
+# TODO: Audit
+resource "aws_security_group_rule" "search-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -55,8 +55,7 @@ resource "aws_security_group_rule" "allow_management_to_search_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_search_elb_egress" {
+resource "aws_security_group_rule" "search-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
