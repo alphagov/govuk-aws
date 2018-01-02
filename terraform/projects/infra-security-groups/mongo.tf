@@ -22,7 +22,7 @@ resource "aws_security_group" "mongo" {
 }
 
 # the nodes need to speak among themselves for clustering
-resource "aws_security_group_rule" "allow_mongo_cluster_in" {
+resource "aws_security_group_rule" "mongo_ingress_mongo_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "allow_mongo_cluster_in" {
   source_security_group_id = "${aws_security_group.mongo.id}"
 }
 
-resource "aws_security_group_rule" "allow_frontend_to_mongo" {
+resource "aws_security_group_rule" "mongo_ingress_frontend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "allow_frontend_to_mongo" {
   source_security_group_id = "${aws_security_group.frontend.id}"
 }
 
-resource "aws_security_group_rule" "allow_calculators-frontend_to_mongo" {
+resource "aws_security_group_rule" "mongo_ingress_calculators-frontend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -57,7 +57,7 @@ resource "aws_security_group_rule" "allow_calculators-frontend_to_mongo" {
   source_security_group_id = "${aws_security_group.calculators-frontend.id}"
 }
 
-resource "aws_security_group_rule" "allow_backend_to_mongo" {
+resource "aws_security_group_rule" "mongo_ingress_backend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "allow_backend_to_mongo" {
   source_security_group_id = "${aws_security_group.backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_content-store_to_mongo" {
+resource "aws_security_group_rule" "mongo_ingress_content-store_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -79,7 +79,7 @@ resource "aws_security_group_rule" "allow_content-store_to_mongo" {
   source_security_group_id = "${aws_security_group.content-store.id}"
 }
 
-resource "aws_security_group_rule" "allow_draft-content-store_to_mongo" {
+resource "aws_security_group_rule" "mongo_ingress_draft-content-store_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017

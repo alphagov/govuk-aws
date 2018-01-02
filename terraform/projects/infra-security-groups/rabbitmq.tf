@@ -21,7 +21,7 @@ resource "aws_security_group" "rabbitmq" {
   }
 }
 
-resource "aws_security_group_rule" "allow_rabbitmq_elb_amqp_in" {
+resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_amqp" {
   type      = "ingress"
   from_port = 5672
   to_port   = 5672
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_rabbitmq_elb_amqp_in" {
   source_security_group_id = "${aws_security_group.rabbitmq_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_rabbitmq_elb_stomp_in" {
+resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_rabbitmq-stomp" {
   type      = "ingress"
   from_port = 6163
   to_port   = 6163
@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "allow_rabbitmq_elb_stomp_in" {
   source_security_group_id = "${aws_security_group.rabbitmq_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_rabbitmq_clustering_in" {
+resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq_rabbitmq-transport" {
   type      = "ingress"
   from_port = 9100
   to_port   = 9100
@@ -60,7 +60,7 @@ resource "aws_security_group_rule" "allow_rabbitmq_clustering_in" {
   source_security_group_id = "${aws_security_group.rabbitmq.id}"
 }
 
-resource "aws_security_group_rule" "allow_rabbitmq_epmd_in" {
+resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq_rabbitmq-epmd" {
   type      = "ingress"
   from_port = 4369
   to_port   = 4369
@@ -83,7 +83,8 @@ resource "aws_security_group" "rabbitmq_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_rabbitmq_amqp_elb" {
+# TODO: Audit
+resource "aws_security_group_rule" "rabbitmq-elb_ingress_management_amqp" {
   type      = "ingress"
   from_port = 5672
   to_port   = 5672
@@ -93,7 +94,7 @@ resource "aws_security_group_rule" "allow_management_to_rabbitmq_amqp_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_management_to_rabbitmq_stomp_elb" {
+resource "aws_security_group_rule" "rabbitmq-elb_ingress_management_rabbitmq-stomp" {
   type      = "ingress"
   from_port = 6163
   to_port   = 6163
@@ -103,7 +104,7 @@ resource "aws_security_group_rule" "allow_management_to_rabbitmq_stomp_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_rabbitmq_elb_egress" {
+resource "aws_security_group_rule" "rabbitmq-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

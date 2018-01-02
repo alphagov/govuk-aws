@@ -21,7 +21,7 @@ resource "aws_security_group" "transition-db-admin" {
   }
 }
 
-resource "aws_security_group_rule" "allow_transition-db-admin_elb_in" {
+resource "aws_security_group_rule" "transition-db-admin_ingress_transition-db-admin-elb_ssh" {
   type      = "ingress"
   from_port = 22
   to_port   = 22
@@ -44,7 +44,7 @@ resource "aws_security_group" "transition-db-admin_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_transition-db-admin_elb" {
+resource "aws_security_group_rule" "transition-db-admin-elb_ingress_management_ssh" {
   type      = "ingress"
   from_port = 22
   to_port   = 22
@@ -54,8 +54,7 @@ resource "aws_security_group_rule" "allow_management_to_transition-db-admin_elb"
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_transition-db-admin_elb_egress" {
+resource "aws_security_group_rule" "transition-db-admin-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

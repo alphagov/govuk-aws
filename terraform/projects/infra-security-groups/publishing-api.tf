@@ -24,7 +24,7 @@ resource "aws_security_group" "publishing-api" {
   }
 }
 
-resource "aws_security_group_rule" "allow_publishing-api_internal_elb_in" {
+resource "aws_security_group_rule" "publishing-api_ingress_publishing-api-elb-internal_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "allow_publishing-api_internal_elb_in" {
   source_security_group_id = "${aws_security_group.publishing-api_elb_internal.id}"
 }
 
-resource "aws_security_group_rule" "allow_publishing-api_external_elb_in" {
+resource "aws_security_group_rule" "publishing-api_ingress_publishing-api-elb-external_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -60,9 +60,8 @@ resource "aws_security_group" "publishing-api_elb_internal" {
   }
 }
 
-# TODO: application machines need access to publishing-api - create an application
-# group that needs access?
-resource "aws_security_group_rule" "allow_management_to_publishing-api_https" {
+# TODO: Audit
+resource "aws_security_group_rule" "publishing-api-elb-internal_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -75,8 +74,7 @@ resource "aws_security_group_rule" "allow_management_to_publishing-api_https" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO: test whether egress rules are needed on elbs
-resource "aws_security_group_rule" "allow_publishing-api_elb_internal_egress" {
+resource "aws_security_group_rule" "publishing-api-elb-internal_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -95,7 +93,7 @@ resource "aws_security_group" "publishing-api_elb_external" {
   }
 }
 
-resource "aws_security_group_rule" "allow_office_to_publishing-api_https" {
+resource "aws_security_group_rule" "publishing-api-elb-external_ingress_office_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -106,8 +104,7 @@ resource "aws_security_group_rule" "allow_office_to_publishing-api_https" {
   cidr_blocks       = ["${var.office_ips}"]
 }
 
-# TODO: test whether egress rules are needed on elbs
-resource "aws_security_group_rule" "allow_publishing-api_elb_external_egress" {
+resource "aws_security_group_rule" "publishing-api-elb-external_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

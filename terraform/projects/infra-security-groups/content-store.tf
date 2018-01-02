@@ -21,7 +21,7 @@ resource "aws_security_group" "content-store" {
   }
 }
 
-resource "aws_security_group_rule" "allow_content-store_internal_elb_in" {
+resource "aws_security_group_rule" "content-store_ingress_content-store-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_content-store_internal_elb_in" {
   source_security_group_id = "${aws_security_group.content-store_internal_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_content-store_external_elb_in" {
+resource "aws_security_group_rule" "content-store_ingress_content-store-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -57,8 +57,8 @@ resource "aws_security_group" "content-store_internal_elb" {
   }
 }
 
-# Content Store should be available internally
-resource "aws_security_group_rule" "allow_management_to_content-store_internal_elb" {
+# TODO: Audit
+resource "aws_security_group_rule" "content-store-internal-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -68,8 +68,7 @@ resource "aws_security_group_rule" "allow_management_to_content-store_internal_e
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_content-store_internal_elb_egress" {
+resource "aws_security_group_rule" "content-store-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -88,8 +87,8 @@ resource "aws_security_group" "content-store_external_elb" {
   }
 }
 
-# Content Store should be available externally
-resource "aws_security_group_rule" "allow_public_to_content-store_external_elb" {
+# TODO: Audit
+resource "aws_security_group_rule" "content-store-external-elb_ingress_public_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -99,8 +98,7 @@ resource "aws_security_group_rule" "allow_public_to_content-store_external_elb" 
   cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_content-store_external_elb_egress" {
+resource "aws_security_group_rule" "content-store-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

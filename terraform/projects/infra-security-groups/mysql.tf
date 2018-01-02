@@ -18,7 +18,7 @@ resource "aws_security_group" "mysql-primary" {
   }
 }
 
-resource "aws_security_group_rule" "allow_mysql-primary_from_backend" {
+resource "aws_security_group_rule" "mysql-primary_ingress_backend_mysql" {
   type      = "ingress"
   from_port = 3306
   to_port   = 3306
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "allow_mysql-primary_from_backend" {
   source_security_group_id = "${aws_security_group.backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_mysql-primary_from_whitehall-backend" {
+resource "aws_security_group_rule" "mysql-primary_ingress_whitehall-backend_mysql" {
   type      = "ingress"
   from_port = 3306
   to_port   = 3306
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "allow_mysql-primary_from_whitehall-backend" 
   source_security_group_id = "${aws_security_group.whitehall-backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_mysql-primary_from_whitehall-frontend" {
+resource "aws_security_group_rule" "mysql-primary_ingress_whitehall-frontend_mysql" {
   type      = "ingress"
   from_port = 3306
   to_port   = 3306
@@ -57,7 +57,7 @@ resource "aws_security_group_rule" "allow_mysql-primary_from_whitehall-frontend"
   source_security_group_id = "${aws_security_group.whitehall-frontend.id}"
 }
 
-resource "aws_security_group_rule" "allow_mysql-primary_db-admin_in" {
+resource "aws_security_group_rule" "mysql-primary_ingress_db-admin_mysql" {
   type      = "ingress"
   from_port = 3306
   to_port   = 3306
@@ -81,7 +81,7 @@ resource "aws_security_group" "mysql-replica" {
 }
 
 # Contacts is the only application that reads from the MySQL replica
-resource "aws_security_group_rule" "allow_frontend_to_mysql-replica_3306" {
+resource "aws_security_group_rule" "mysql-replica_ingress_frontend_mysql" {
   type      = "ingress"
   from_port = 3306
   to_port   = 3306

@@ -21,7 +21,7 @@ resource "aws_security_group" "cache" {
   }
 }
 
-resource "aws_security_group_rule" "allow_cache_elb_in" {
+resource "aws_security_group_rule" "cache_ingress_cache-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_cache_elb_in" {
   source_security_group_id = "${aws_security_group.cache_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_cache_external_elb_in" {
+resource "aws_security_group_rule" "cache_ingress_cache-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -48,7 +48,7 @@ resource "aws_security_group_rule" "allow_cache_external_elb_in" {
 }
 
 # Allow the router-backend instances to reload router routes
-resource "aws_security_group_rule" "allow_cache_from_router-backend" {
+resource "aws_security_group_rule" "cache_ingress_router-backend_router" {
   type      = "ingress"
   from_port = 3055
   to_port   = 3055
@@ -73,7 +73,7 @@ resource "aws_security_group" "cache_elb" {
 
 # Allow cache to speak to it's own ELB to reroute publicapi traffic
 # to itself
-resource "aws_security_group_rule" "allow_cache_to_cache_elb" {
+resource "aws_security_group_rule" "cache-elb_ingress_cache_https" {
   type      = "ingress"
   to_port   = 443
   from_port = 443
@@ -86,8 +86,7 @@ resource "aws_security_group_rule" "allow_cache_to_cache_elb" {
   source_security_group_id = "${aws_security_group.cache.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_cache_elb_egress" {
+resource "aws_security_group_rule" "cache-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -106,7 +105,7 @@ resource "aws_security_group" "cache_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_public_to_cache_external_elb" {
+resource "aws_security_group_rule" "cache-external-elb_ingress_public_https" {
   type              = "ingress"
   to_port           = 443
   from_port         = 443
@@ -115,8 +114,7 @@ resource "aws_security_group_rule" "allow_public_to_cache_external_elb" {
   cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_cache_external_elb_egress" {
+resource "aws_security_group_rule" "cache-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

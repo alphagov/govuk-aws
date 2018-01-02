@@ -21,7 +21,7 @@ resource "aws_security_group" "deploy" {
   }
 }
 
-resource "aws_security_group_rule" "allow_deploy_elb_in" {
+resource "aws_security_group_rule" "deploy_ingress_deploy-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_deploy_elb_in" {
   source_security_group_id = "${aws_security_group.deploy_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_deploy_internal_elb_in" {
+resource "aws_security_group_rule" "deploy_ingress_deploy-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -57,7 +57,7 @@ resource "aws_security_group" "deploy_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_office_to_deploy" {
+resource "aws_security_group_rule" "deploy-elb_ingress_office_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "allow_office_to_deploy" {
 }
 
 # Allow Carrenza Integration access to trigger automated deployments
-resource "aws_security_group_rule" "allow_carrenza_to_deploy" {
+resource "aws_security_group_rule" "deploy-elb_ingress_carrenza_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -78,8 +78,7 @@ resource "aws_security_group_rule" "allow_carrenza_to_deploy" {
   cidr_blocks       = ["${var.carrenza_integration_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_deploy_elb_egress" {
+resource "aws_security_group_rule" "deploy-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -88,8 +87,7 @@ resource "aws_security_group_rule" "allow_deploy_elb_egress" {
   security_group_id = "${aws_security_group.deploy_elb.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_deploy_internal_elb_egress" {
+resource "aws_security_group_rule" "deploy-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -108,7 +106,7 @@ resource "aws_security_group" "deploy_internal_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_deploy_internal_elb_management_in" {
+resource "aws_security_group_rule" "deploy-internal-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443

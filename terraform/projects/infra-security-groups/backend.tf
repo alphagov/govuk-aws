@@ -22,7 +22,7 @@ resource "aws_security_group" "backend" {
   }
 }
 
-resource "aws_security_group_rule" "allow_backend_elb_internal_in" {
+resource "aws_security_group_rule" "backend_ingress_backend-elb-internal_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "allow_backend_elb_internal_in" {
   source_security_group_id = "${aws_security_group.backend_elb_internal.id}"
 }
 
-resource "aws_security_group_rule" "allow_backend_elb_external_in" {
+resource "aws_security_group_rule" "backend_ingress_backend-elb-external_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -58,8 +58,8 @@ resource "aws_security_group" "backend_elb_internal" {
   }
 }
 
-# TODO: replace this with specific routes from application servers
-resource "aws_security_group_rule" "allow_management_to_backend_elb_internal" {
+# TODO: Audit
+resource "aws_security_group_rule" "backend-elb-internal_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -79,8 +79,8 @@ resource "aws_security_group" "backend_elb_external" {
   }
 }
 
-# Allow office access to access backend services
-resource "aws_security_group_rule" "allow_public_to_backend_elb_external" {
+# Allow public access to access backend services
+resource "aws_security_group_rule" "backend-elb-external_ingress_public_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -90,8 +90,7 @@ resource "aws_security_group_rule" "allow_public_to_backend_elb_external" {
   cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_backend_elb_internal_egress" {
+resource "aws_security_group_rule" "backend-elb-internal_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -100,8 +99,7 @@ resource "aws_security_group_rule" "allow_backend_elb_internal_egress" {
   security_group_id = "${aws_security_group.backend_elb_internal.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_backend_elb_external_egress" {
+resource "aws_security_group_rule" "backend-elb-external_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

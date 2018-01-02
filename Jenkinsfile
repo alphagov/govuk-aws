@@ -22,6 +22,10 @@ node ("terraform") {
       sh "find . -name '*.json' |xargs tools/json-check.sh"
     }
 
+    stage("Security group rule name validation") {
+      sh "tools/validate-sg-rule-names terraform"
+    }
+
     if (env.BRANCH_NAME == 'master'){
       stage("Push release tag") {
         echo 'Pushing tag'

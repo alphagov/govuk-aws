@@ -21,7 +21,7 @@ resource "aws_security_group" "whitehall-backend" {
   }
 }
 
-resource "aws_security_group_rule" "allow_whitehall-backend_internal_elb_in" {
+resource "aws_security_group_rule" "whitehall-backend_ingress_whitehall-backend-internal-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_whitehall-backend_internal_elb_in" {
   source_security_group_id = "${aws_security_group.whitehall-backend_internal_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_whitehall-backend_external_elb_in" {
+resource "aws_security_group_rule" "whitehall-backend_ingress_whitehall-backend-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -57,8 +57,8 @@ resource "aws_security_group" "whitehall-backend_internal_elb" {
   }
 }
 
-# TODO: replace this with ingress from the LBs when we build them.
-resource "aws_security_group_rule" "allow_management_to_whitehall-backend_internal_elb" {
+# TODO: Audit
+resource "aws_security_group_rule" "whitehall-backend-internal-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -68,8 +68,7 @@ resource "aws_security_group_rule" "allow_management_to_whitehall-backend_intern
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_whitehall-backend_internal_elb_egress" {
+resource "aws_security_group_rule" "whitehall-backend-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -88,7 +87,7 @@ resource "aws_security_group" "whitehall-backend_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_public_to_whitehall-backend_external_elb" {
+resource "aws_security_group_rule" "whitehall-backend-external-elb_ingress_public_https" {
   type              = "ingress"
   to_port           = 443
   from_port         = 443
@@ -97,8 +96,7 @@ resource "aws_security_group_rule" "allow_public_to_whitehall-backend_external_e
   cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_whitehall-backend_external_elb_egress" {
+resource "aws_security_group_rule" "whitehall-backend-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

@@ -21,7 +21,7 @@ resource "aws_security_group" "backend-redis" {
   }
 }
 
-resource "aws_security_group_rule" "allow_backend-redis_from_backend" {
+resource "aws_security_group_rule" "backend-redis_ingress_backend_redis" {
   type      = "ingress"
   from_port = 6379
   to_port   = 6379
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_backend-redis_from_backend" {
   source_security_group_id = "${aws_security_group.backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_backend-redis_from_whitehall-backend" {
+resource "aws_security_group_rule" "backend-redis_ingress_whitehall-backend_redis" {
   type      = "ingress"
   from_port = 6379
   to_port   = 6379
@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "allow_backend-redis_from_whitehall-backend" 
   source_security_group_id = "${aws_security_group.whitehall-backend.id}"
 }
 
-resource "aws_security_group_rule" "allow_backend-redis_from_whitehall-frontend" {
+resource "aws_security_group_rule" "backend-redis_ingress_whitehall-frontend_redis" {
   type      = "ingress"
   from_port = 6379
   to_port   = 6379
@@ -60,7 +60,7 @@ resource "aws_security_group_rule" "allow_backend-redis_from_whitehall-frontend"
   source_security_group_id = "${aws_security_group.whitehall-frontend.id}"
 }
 
-resource "aws_security_group_rule" "allow_publishing_api_in_redis" {
+resource "aws_security_group_rule" "backend-redis_ingress_publishing-api_redis" {
   type      = "ingress"
   from_port = 6379
   to_port   = 6379
@@ -73,7 +73,7 @@ resource "aws_security_group_rule" "allow_publishing_api_in_redis" {
   source_security_group_id = "${aws_security_group.publishing-api.id}"
 }
 
-resource "aws_security_group_rule" "allow_search_in_redis" {
+resource "aws_security_group_rule" "backend-redis_ingress_search_redis" {
   type      = "ingress"
   from_port = 6379
   to_port   = 6379

@@ -21,7 +21,7 @@ resource "aws_security_group" "draft-cache" {
   }
 }
 
-resource "aws_security_group_rule" "allow_draft-cache_elb_in" {
+resource "aws_security_group_rule" "draft-cache_ingress_draft-cache-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_draft-cache_elb_in" {
   source_security_group_id = "${aws_security_group.draft-cache_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_draft-cache_external_elb_in" {
+resource "aws_security_group_rule" "draft-cache_ingress_draft-cache-external-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -49,7 +49,7 @@ resource "aws_security_group_rule" "allow_draft-cache_external_elb_in" {
 
 # We need to allow draft-cache instances to speak to their own to reload router
 # routes
-resource "aws_security_group_rule" "allow_draft-cache_from_draft-cache" {
+resource "aws_security_group_rule" "draft-cache_ingress_draft-cache_router" {
   type      = "ingress"
   from_port = 3055
   to_port   = 3055
@@ -82,7 +82,7 @@ resource "aws_security_group" "draft-cache_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_public_to_draft-cache_external_elb" {
+resource "aws_security_group_rule" "draft-cache-external-elb_ingress_public_https" {
   type              = "ingress"
   to_port           = 443
   from_port         = 443
@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "allow_public_to_draft-cache_external_elb" {
 }
 
 # This is required to commit routes using router-api at the end of the data sync
-resource "aws_security_group_rule" "allow_draft-cache_from_draft-content-store" {
+resource "aws_security_group_rule" "draft-cache-elb_ingress_draft-content-store_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -105,8 +105,7 @@ resource "aws_security_group_rule" "allow_draft-cache_from_draft-content-store" 
   source_security_group_id = "${aws_security_group.draft-content-store.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_draft-cache_elb_egress" {
+resource "aws_security_group_rule" "draft-cache-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -115,8 +114,7 @@ resource "aws_security_group_rule" "allow_draft-cache_elb_egress" {
   security_group_id = "${aws_security_group.draft-cache_elb.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_draft-cache_external_elb_egress" {
+resource "aws_security_group_rule" "draft-cache-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

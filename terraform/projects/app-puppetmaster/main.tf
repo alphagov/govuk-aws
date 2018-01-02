@@ -91,7 +91,7 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
   }
 }
 
-resource "aws_security_group_rule" "puppetmaster_from_elb_in_22" {
+resource "aws_security_group_rule" "puppetmaster_ingress_offsite-ssh_22" {
   count                    = "${var.enable_bootstrap}"
   type                     = "ingress"
   from_port                = "22"

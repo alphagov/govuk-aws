@@ -22,7 +22,7 @@ resource "aws_security_group" "docker_management" {
   }
 }
 
-resource "aws_security_group_rule" "allow_docker_management_etcd_elb_in" {
+resource "aws_security_group_rule" "docker-management_ingress_docker-management-etcd-elb_etcd-client" {
   type      = "ingress"
   from_port = 2379
   to_port   = 2379
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "allow_docker_management_etcd_elb_in" {
   source_security_group_id = "${aws_security_group.docker_management_etcd_elb.id}"
 }
 
-resource "aws_security_group_rule" "allow_docker_management_to_docker_management" {
+resource "aws_security_group_rule" "docker-management_ingress_docker-management_etcd-transport" {
   type      = "ingress"
   from_port = 2380
   to_port   = 2380
@@ -55,7 +55,7 @@ resource "aws_security_group" "docker_management_etcd_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_docker_management_etcd_elb" {
+resource "aws_security_group_rule" "docker-management-etcd-elb_ingress_management_etcd-client" {
   type      = "ingress"
   from_port = 2379
   to_port   = 2379
@@ -65,8 +65,7 @@ resource "aws_security_group_rule" "allow_management_to_docker_management_etcd_e
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-# TODO test whether egress rules are needed on ELBs
-resource "aws_security_group_rule" "allow_docker_management_etcd_elb_egress" {
+resource "aws_security_group_rule" "docker-management-etcd-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0

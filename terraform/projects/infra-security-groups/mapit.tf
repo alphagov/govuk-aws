@@ -20,7 +20,7 @@ resource "aws_security_group" "mapit" {
   }
 }
 
-resource "aws_security_group_rule" "allow_mapit_elb_in" {
+resource "aws_security_group_rule" "mapit_ingress_mapit-elb_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -43,7 +43,7 @@ resource "aws_security_group" "mapit_elb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_management_to_mapit_elb" {
+resource "aws_security_group_rule" "mapit-elb_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "allow_management_to_mapit_elb" {
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "allow_mapit_elb_egress" {
+resource "aws_security_group_rule" "mapit-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
