@@ -21,6 +21,8 @@ end.parse!
 
 code = ARGV.shift
 
+$errors = false
+
 Dir["#{code}/**/*.tf"].each do |file|
   puts "Working on [#{file}]" if options[:verbose]
 
@@ -36,6 +38,7 @@ Dir["#{code}/**/*.tf"].each do |file|
 
     if m.nil?
       puts "#{resource_name[:name]} from #{file} did not pass validation"
+      $errors = true
     else
       if m[:source] == 'allow'
         puts "#{resource_name[:name]} from #{file} did not pass validation"
@@ -45,3 +48,5 @@ Dir["#{code}/**/*.tf"].each do |file|
     end
   end
 end
+
+exit 1 if $errors
