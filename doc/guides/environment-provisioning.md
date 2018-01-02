@@ -159,6 +159,14 @@ exit
 
 Save the output of the `gpg` command to a suitable file.
 
+You will also need to ensure the private part of the SSH key exists in
+`~/.ssh/`. This is in the Password Store under:
+
+`infra/govuk-aws-account/aws-migration-integration-keypair`
+
+Save it in `~/.ssh/aws-migration-integration-ssh_id.rsa` and ensure permissions are set
+to `0600`.
+
 Now run these commands to initialise the puppet master:
 ```
 cd tools
