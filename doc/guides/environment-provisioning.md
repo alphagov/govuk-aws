@@ -249,7 +249,7 @@ Jenkins does not allow admins to view other users tokens, so there is a manual s
 4. Save and quit, and restart the Jenkins service: `sudo service jenkins restart`
 5. You should now be able to login by going to https://deploy.\<stackname\>.\<environment\>.govuk.digital
 6. Find the API user you want the token from by searching in the top bar (the default is "jenkins_api_user")
-7. Click configure, and then "Show API token". Save the token, and update the credentials in the [deployment repo](https://github.digital.cabinet-office.gov.uk/gds/deployment)
+7. Click configure, and then "Show API token". Save the token, and update the credentials in the [govuk-secrets repo](https://github.com/alphagov/govuk-secrets)
 8. The hiera key you're looking to update is called: `govuk::node::s_jenkins::jenkins_api_token`
 9. As the Deploy_Puppet job won't yet exist, you will be unable to deploy Puppet at this point. Manually edit `/etc/jenkins_jobs/jenkins_jobs.ini` with the new token, and run the update job by running `sudo jenkins-jobs update /etc/jenkins_jobs/jobs/`.
 
