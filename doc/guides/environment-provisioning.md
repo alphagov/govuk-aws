@@ -157,18 +157,8 @@ tools/build-terraform-project.sh -c apply -p infra-public-services
 
 ## Deploy the Puppet code and secrets
 
-We currently get the GPG key from the integration puppet master (in future this should be kept in the `deployment/pass` store)
-```
-ssh puppetmaster-1.integration.publishing.service.gov.uk
-sudo -i
-
-gpg --homedir /etc/puppet/gpg --export-secret-key -a "Hiera eYAML GPG key for Preview (To be placed on the Puppet Master)"
-# Copy the output
-exit
-exit
-```
-
-Save the output of the `gpg` command to a suitable file.
+The GPG key for Integration is kept in the 2ndline password store under
+`hiera-eyaml-gpg/integration/private-key`. Decrypt it and save it to a file.
 
 You will also need to ensure the private part of the SSH key exists in
 `~/.ssh/`. This is in the Password Store under:
@@ -182,7 +172,7 @@ Now run these commands to initialise the puppet master:
 ```
 cd tools
 bash -x ./aws-push-puppet.sh -e ${ENVIRONMENT} \
-                             -g <path to the gpg key you copied> \
+                             -g <path to the gpg key> \
                              -p <path to puppet repo> \
                              -d <path to govuk-secrets repo> \
                              -t $PUPPETMASTER_ELB
