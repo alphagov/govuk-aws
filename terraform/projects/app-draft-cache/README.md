@@ -28,6 +28,8 @@ Draft Cache servers
 | Name | Description |
 |------|-------------|
 | draft-cache_elb_dns_name | DNS name to access the draft-cache service |
+| draft-cache_external_elb_dns_name | DNS name to access the draft-cache external service |
 | draft-router-api_internal_dns_name | DNS name to access draft-router-api |
+| external_service_dns_name | DNS name to access the external service |
 | service_dns_name | DNS name to access the service |
 
