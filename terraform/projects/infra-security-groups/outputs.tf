@@ -118,7 +118,7 @@ output "sg_draft-cache_elb_id" {
   value = "${aws_security_group.draft-cache_elb.id}"
 }
 
-output "sg_draft-cache_elb_external_id" {
+output "sg_draft-cache_external_elb_id" {
   value = "${aws_security_group.draft-cache_external_elb.id}"
 }
 

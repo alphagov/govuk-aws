@@ -144,6 +144,17 @@ export PUPPETMASTER_ELB=<stack name>-puppetmaster-bootstrap-1234567890.eu-west-1
 ssh ubuntu@$PUPPETMASTER_ELB
 ```
 
+## Build infra-public-services
+
+Before creating an application machines, build the `infra-public-services` project. This creates a set of CNAME DNS records that point the top level internal domain
+to the current live stack service.
+
+All services rely on the top level DNS records, so they must exist before we deploy any instances.
+
+```
+tools/build-terraform-project.sh -c apply -p infra-public-services
+```
+
 ## Deploy the Puppet code and secrets
 
 We currently get the GPG key from the integration puppet master (in future this should be kept in the `deployment/pass` store)
@@ -242,7 +253,11 @@ Jenkins does not allow admins to view other users tokens, so there is a manual s
 8. The hiera key you're looking to update is called: `govuk::node::s_jenkins::jenkins_api_token`
 9. As the Deploy_Puppet job won't yet exist, you will be unable to deploy Puppet at this point. Manually edit `/etc/jenkins_jobs/jenkins_jobs.ini` with the new token, and run the update job by running `sudo jenkins-jobs update /etc/jenkins_jobs/jobs/`.
 
-When Jenkins Job Builder has successfully created jobs, you should then be able to deploy Puppet and applications via Jenkins to finish off the rest of the stack.
+When Jenkins Job Builder has successfully created jobs, deploy Puppet.
+
+## Deploy the rest of the stack
+
+All other projects can now be created. They should automatically deploy their own applications.
 
 ## Glossary
 
