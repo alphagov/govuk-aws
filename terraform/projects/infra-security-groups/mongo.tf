@@ -22,7 +22,7 @@ resource "aws_security_group" "mongo" {
 }
 
 # the nodes need to speak among themselves for clustering
-resource "aws_security_group_rule" "mongo_ingress_mongo_mongo" {
+resource "aws_security_group_rule" "mongo_from_mongo_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "mongo_ingress_mongo_mongo" {
   source_security_group_id = "${aws_security_group.mongo.id}"
 }
 
-resource "aws_security_group_rule" "mongo_ingress_frontend_mongo" {
+resource "aws_security_group_rule" "mongo_from_frontend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "mongo_ingress_frontend_mongo" {
   source_security_group_id = "${aws_security_group.frontend.id}"
 }
 
-resource "aws_security_group_rule" "mongo_ingress_calculators-frontend_mongo" {
+resource "aws_security_group_rule" "mongo_from_calculators-frontend_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
