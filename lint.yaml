@@ -2,3 +2,6 @@ resources:
   aws_security_group_rule:
     # source_ingress_destination_service
     - '(?<name>(?<source>[^_]+)_(?<direction>(ingress|egress))_(?<destination>.+)_(?<service>.+))'
+  aws_elb:
+    # ELB resources should be foo-bar_external or foo-bar_internal
+    - '(?<name>(?<project>[^_]+)_(?<type>external|internal))'

@@ -15,9 +15,17 @@ RSpec.describe ValidateResources do
       end
     end
 
-    it 'if rule matches' do
-      rule = /(?<name>(?<source>[^_]+)_(?<direction>(ingress|egress))_(?<destination>.+)_(?<service>.+))/
-      expect(ValidateResources.new.validate_resource_name('spec/good_file.tf', 'aws_security_group_rule', rule)).to eq({})
+    context 'aws_elb' do
+      it 'should be in format of foo-bar_internal' do
+        resource = 'aws_elb'
+        rule = /(?<name>(?<project>[^_]+)_(?<type>external|internal))/
+        expect(ValidateResources.new.validate_resource_name('spec/aws_elb.tf', resource, rule)).to eq({
+          'aws_elb' => [
+            'foo_bar_elb_external',
+            'foo-bar_elb'
+          ]
+        })
+      end
     end
   end
 end
