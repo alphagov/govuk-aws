@@ -54,7 +54,7 @@ data "template_file" "s3_aws_logging_policy_template" {
 # Create a bucket that allows AWS services to write to it
 resource "aws_s3_bucket" "aws-logging" {
   bucket = "govuk-${var.aws_environment}-aws-logging"
-  acl    = "private"
+  acl    = "log-delivery-write"
 
   tags {
     Name        = "govuk-${var.aws_environment}-aws-logging"
