@@ -22,6 +22,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/nat-gateway-metric
 | errorportallocation_threshold | The value against which the ErrorPortAllocation metric is compared. | string | `10` | no |
 | name_prefix | The alarm name prefix. | string | - | yes |
 | nat_gateway_ids | List of IDs of the NAT Gateways that we want to monitor. | list | - | yes |
+| nat_gateway_ids_length | Length of the list of IDs of the NAT Gateways that we want to monitor. | string | - | yes |
 | packetsdropcount_threshold | The value against which the PacketsDropCount metric is compared. | string | `100` | no |
 
 ## Outputs

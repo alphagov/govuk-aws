@@ -201,10 +201,11 @@ module "infra_private_subnet_reserved_ips" {
 }
 
 module "infra_alarms_natgateway" {
-  source          = "../../modules/aws/alarms/natgateway"
-  name_prefix     = "${var.stackname}-natgateway"
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  nat_gateway_ids = ["${module.infra_nat.nat_gateway_ids}"]
+  source                 = "../../modules/aws/alarms/natgateway"
+  name_prefix            = "${var.stackname}-natgateway"
+  alarm_actions          = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  nat_gateway_ids        = ["${module.infra_nat.nat_gateway_ids}"]
+  nat_gateway_ids_length = "${length(var.public_subnet_nat_gateway_enable)}"
 }
 
 # Outputs
