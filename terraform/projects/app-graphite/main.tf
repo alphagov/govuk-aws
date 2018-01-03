@@ -212,6 +212,7 @@ resource "aws_ebs_volume" "graphite-1" {
   tags {
     Name            = "${var.stackname}-graphite-1"
     Project         = "${var.stackname}"
+    Device          = "xvdf"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
     aws_migration   = "graphite"
