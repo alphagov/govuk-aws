@@ -94,21 +94,21 @@ resource "aws_route53_zone" "external_zone" {
 # --------------------------------------------------------------
 
 output "internal_root_zone_id" {
-  value       = "${aws_route53_zone.internal_zone.zone_id}"
+  value       = "${join("", aws_route53_zone.internal_zone.*.zone_id)}"
   description = "Route53 Internal Root Zone ID"
 }
 
 output "internal_root_domain_name" {
-  value       = "${aws_route53_zone.internal_zone.name}"
+  value       = "${join("", aws_route53_zone.internal_zone.*.name)}"
   description = "Route53 Internal Root Domain Name"
 }
 
 output "external_root_zone_id" {
-  value       = "${aws_route53_zone.external_zone.zone_id}"
+  value       = "${join("", aws_route53_zone.external_zone.*.zone_id)}"
   description = "Route53 External Root Zone ID"
 }
 
 output "external_root_domain_name" {
-  value       = "${aws_route53_zone.external_zone.name}"
+  value       = "${join("", aws_route53_zone.external_zone.*.name)}"
   description = "Route53 External Root Domain Name"
 }
