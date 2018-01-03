@@ -191,9 +191,22 @@ Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hel
 Notice: Finished catalog run in 0.01 seconds
 ```
 
+## Build the jumpbox
+
+Without the jumpbox, it's impossible to SSH into the environment once we've
+deleted the Puppetmaster's ELB.
+
+```
+tools/build-terraform-project.sh -p app-jumpbox -c plan
+...terraform output...
+tools/build-terraform-project.sh -p app-jumpbox -c apply
+```
+
 ## Remove the Puppetmaster bootstrap ELB
 
-Run the Terraform again for the Puppetmaster, but removing the variable should destroy the load balancer and security group.
+Run the Terraform again for the Puppetmaster, and removing the variable should
+destroy the load balancer and security groups, leaving access to the
+environment via SSH only available via the jumpbox.
 
 ```
 tools/build-terraform-project.sh -c plan -p app-puppetmaster
