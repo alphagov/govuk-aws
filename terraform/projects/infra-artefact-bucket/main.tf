@@ -31,6 +31,22 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
+}
+
+variable "remote_state_bucket" {
+  type        = "string"
+  description = "S3 bucket we store our terraform state in"
+}
+
+variable "remote_state_infra_monitoring_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_monitoring remote state "
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -49,14 +65,13 @@ provider "aws" {
   version = "1.0.0"
 }
 
-# Create the buckets
-# Logs bucket
-resource "aws_s3_bucket" "artefact_access_logs" {
-  bucket = "govuk-${var.aws_environment}-artefact-access-logs"
-  acl    = "log-delivery-write"
+data "terraform_remote_state" "infra_monitoring" {
+  backend = "s3"
 
-  versioning {
-    enabled = true
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
+    region = "eu-west-1"
   }
 }
 
@@ -85,8 +100,8 @@ resource "aws_s3_bucket" "artefact" {
   }
 
   logging {
-    target_bucket = "${aws_s3_bucket.artefact_access_logs.id}"
-    target_prefix = "log/"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-artefact/"
   }
 
   replication_configuration {
