@@ -1,0 +1,4 @@
+resources:
+  aws_security_group_rule:
+  # source_ingress_destination_service
+  - '(?<name>(?<source>[^_]+)_(?<direction>(ingress|egress))_(?<destination>.+)_(?<service>.+))'

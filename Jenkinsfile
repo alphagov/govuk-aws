@@ -10,6 +10,10 @@ node ("terraform") {
       govuk.checkoutFromGitHubWithSSH(REPOSITORY)
     }
 
+    stage("Bundle") {
+      govuk.bundleApp()
+    }
+
     stage("ADR check") {
       sh "tools/adr-check.sh"
     }
@@ -22,8 +26,12 @@ node ("terraform") {
       sh "find . -name '*.json' |xargs tools/json-check.sh"
     }
 
-    stage("Security group rule name validation") {
-      sh "tools/validate-sg-rule-names terraform"
+    stage("RSpec") {
+      sh "bundle exec rspec spec/validate_resources_spec.rb"
+    }
+
+    stage("Resource name lint") {
+      sh "bundle exec lib/resource_name_lint.rb"
     }
 
     if (env.BRANCH_NAME == 'master'){
