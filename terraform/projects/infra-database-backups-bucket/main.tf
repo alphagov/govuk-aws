@@ -18,6 +18,22 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
+}
+
+variable "remote_state_bucket" {
+  type        = "string"
+  description = "S3 bucket we store our terraform state in"
+}
+
+variable "remote_state_infra_monitoring_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_monitoring remote state "
+  default     = ""
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
@@ -29,12 +45,27 @@ provider "aws" {
   version = "1.0.0"
 }
 
+data "terraform_remote_state" "infra_monitoring" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
+    region = "eu-west-1"
+  }
+}
+
 resource "aws_s3_bucket" "database_backups" {
   bucket = "govuk-${var.aws_environment}-database-backups"
 
   tags {
     Name            = "govuk-${var.aws_environment}-database-backups"
     aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-database-backups/"
   }
 
   lifecycle_rule {
