@@ -182,10 +182,9 @@ ssh ubuntu@$PUPPETMASTER_ELB
 > sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
 ```
 
-You can now test that the puppet master is working by running
-```
-puppet apply -e "notify {'hello world':}"
+Test that the Puppetmaster works with `puppet apply -e "notify {'hello world':}"`:
 
+```
 Notice: Compiled catalog for ip-10-1-2-123.eu-west-1.compute.internal in environment production in 0.02 seconds
 Notice: hello world
 Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hello world'
@@ -205,7 +204,6 @@ tools/build-terraform-project.sh -c apply -p app-puppetmaster
 
 ## Build the deploy Jenkins
 
-You now need to build the deploy Jenkins:
 ```
 tools/build-terraform-project.sh -c plan -p app-deploy
 ...terraform output...
@@ -213,12 +211,8 @@ tools/build-terraform-project.sh -c apply -p app-deploy
 ...terraform output...
 ```
 
-Once this has built and provisioned you should be able to navigate to:
-```
-deploy.<stackname>.<environment>.govuk.digital
-```
-
-NB currently you'll need to manually build the boxes but in future you'll be able to do that via Jenkins too.
+Once this has built and provisioned, you can navigate to
+`deploy.<stackname>.<environment>.govuk.digital`.
 
 ## Do the Jenkins token shuffle
 
@@ -253,9 +247,9 @@ All other projects can now be created. They should automatically deploy their ow
 
 ## Glossary
 
-This just covers how these terms are used in this document.
+This explains how these terms are used in this document.
 
-**Environment** - A collection of stacks, these generally correspond an AWS account. Multiple stacks may exist within a single environment (e.g. "integration-blue" & "integration-green" may both exist in the integration environment).
+**Environment** - A collection of stacks, these generally correspond to an AWS account. Multiple stacks may exist within a single environment (e.g. "integration-blue" & "integration-green" may both exist in the integration environment).
 
 **Stack** - An arbitrary label for a grouping of deployed resources. In general resources within one stack work together but they may depend on resources from other stacks within the same environment (e.g. blue/green stacks which may share networking resources).
 
