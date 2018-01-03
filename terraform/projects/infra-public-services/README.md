@@ -13,6 +13,7 @@ This project adds global resources for app components:
 | apt_internal_service_names |  | list | `<list>` | no |
 | apt_public_service_cnames |  | list | `<list>` | no |
 | apt_public_service_names |  | list | `<list>` | no |
+| asset_master_internal_service_names |  | list | `<list>` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | backend_internal_service_cnames |  | list | `<list>` | no |
@@ -35,6 +36,8 @@ This project adds global resources for app components:
 | docker_management_internal_service_names |  | list | `<list>` | no |
 | draft_cache_internal_service_cnames |  | list | `<list>` | no |
 | draft_cache_internal_service_names |  | list | `<list>` | no |
+| draft_cache_public_service_cnames |  | list | `<list>` | no |
+| draft_cache_public_service_names |  | list | `<list>` | no |
 | draft_content_store_internal_service_names |  | list | `<list>` | no |
 | draft_frontend_internal_service_cnames |  | list | `<list>` | no |
 | draft_frontend_internal_service_names |  | list | `<list>` | no |
@@ -62,7 +65,15 @@ This project adds global resources for app components:
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | router_backend_internal_service_names |  | list | `<list>` | no |
+| rummager_elasticsearch_internal_service_names |  | list | `<list>` | no |
+| search_internal_service_cnames |  | list | `<list>` | no |
+| search_internal_service_names |  | list | `<list>` | no |
 | stackname | Stackname | string | - | yes |
+| transition_db_admin_internal_service_names |  | list | `<list>` | no |
+| transition_postgresql_internal_service_names |  | list | `<list>` | no |
+| whitehall_backend_internal_service_cnames |  | list | `<list>` | no |
+| whitehall_backend_internal_service_names |  | list | `<list>` | no |
 | whitehall_backend_public_service_cnames |  | list | `<list>` | no |
 | whitehall_backend_public_service_names |  | list | `<list>` | no |
+| whitehall_frontend_internal_service_names |  | list | `<list>` | no |
 

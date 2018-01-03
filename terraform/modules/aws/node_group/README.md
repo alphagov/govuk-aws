@@ -33,6 +33,7 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | instance_ami_filter_name | Name to use to find AMI images for the instance | string | `ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*` | no |
 | instance_default_policy | Name of the JSON file containing the default IAM role policy for the instance | string | `default_policy.json` | no |
 | instance_elb_ids | A list of the ELB IDs to attach this ASG to | list | `<list>` | no |
+| instance_elb_ids_length | Length of instance_elb_ids | string | `0` | no |
 | instance_key_name | Name of the instance key | string | `govuk-infra` | no |
 | instance_public_key | The jumpbox default public key material | string | `` | no |
 | instance_security_group_ids | List of security group ids to attach to the ASG | list | - | yes |
