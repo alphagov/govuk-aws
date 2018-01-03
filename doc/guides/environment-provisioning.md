@@ -229,6 +229,8 @@ Once this has built and provisioned, you can navigate to
 
 ## Do the Jenkins token shuffle
 
+**If Jenkins already has a list of jobs when it launches, this is not required.**
+
 For each user, Jenkins automatically generates an API token which is based upon the machine it's installed on, which means that each token is unique to each instance. Additionally, tokens stored on disk are encrypted so we are not able to manage these with Puppet in the Jenkins configuration.
 
 We use Jenkins Job Builder to manage our jobs. This tool requires a Jenkins API user and token to be able to create jobs, and use Puppet to manage these credentials. Therefore we need to generate a token for the API user that Puppet creates, and add this token to our Puppet credentials.
