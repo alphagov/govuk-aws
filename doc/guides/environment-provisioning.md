@@ -165,8 +165,10 @@ You will also need to ensure the private part of the SSH key exists in
 
 `infra/govuk-aws-account/aws-migration-integration-keypair`
 
-Save it in `~/.ssh/aws-migration-integration-ssh_id.rsa` and ensure permissions are set
-to `0600`.
+Save it in `~/.ssh/aws-migration-integration-ssh_id.rsa` and ensure permissions
+are set to `0600`. Add it to your SSH agent with `ssh-add
+~/.ssh/aws-migration-integration-ssh_id.rsa`, so the script below can use it
+with `ssh-copy-id`.
 
 Now run these commands to initialise the puppet master:
 ```
