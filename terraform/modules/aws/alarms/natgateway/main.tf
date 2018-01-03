@@ -29,6 +29,11 @@ variable "nat_gateway_ids" {
   description = "List of IDs of the NAT Gateways that we want to monitor."
 }
 
+variable "nat_gateway_ids_length" {
+  type        = "string"
+  description = "Length of the list of IDs of the NAT Gateways that we want to monitor."
+}
+
 variable "errorportallocation_threshold" {
   type        = "string"
   description = "The value against which the ErrorPortAllocation metric is compared."
@@ -44,7 +49,7 @@ variable "packetsdropcount_threshold" {
 # Resources
 #--------------------------------------------------------------
 resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
-  count               = "${length(var.nat_gateway_ids)}"
+  count               = "${var.nat_gateway_ids_length}"
   alarm_name          = "${var.name_prefix}-natgateway-errorportallocation-${element(var.nat_gateway_ids, count.index)}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
@@ -63,7 +68,7 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
-  count               = "${length(var.nat_gateway_ids)}"
+  count               = "${var.nat_gateway_ids_length}"
   alarm_name          = "${var.name_prefix}-natgateway-packetsdropcount-${element(var.nat_gateway_ids, count.index)}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
