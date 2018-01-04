@@ -38,9 +38,10 @@ resource "aws_efs_file_system" "assets-efs-fs" {
 }
 
 resource "aws_efs_mount_target" "assets-mount-target" {
-  count          = "${length(data.terraform_remote_state.infra_networking.private_subnet_ids)}"
-  file_system_id = "${aws_efs_file_system.assets-efs-fs.id}"
-  subnet_id      = "${element(data.terraform_remote_state.infra_networking.private_subnet_ids, count.index)}"
+  count           = "${length(data.terraform_remote_state.infra_networking.private_subnet_ids)}"
+  file_system_id  = "${aws_efs_file_system.assets-efs-fs.id}"
+  subnet_id       = "${element(data.terraform_remote_state.infra_networking.private_subnet_ids, count.index)}"
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_asset-master-efs_id}"]
 }
 
 resource "aws_route53_record" "assets_service_record" {

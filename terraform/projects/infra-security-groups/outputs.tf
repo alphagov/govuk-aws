@@ -6,6 +6,10 @@ output "sg_asset-master_id" {
   value = "${aws_security_group.asset-master.id}"
 }
 
+output "sg_asset-master-efs_id" {
+  value = "${aws_security_group.asset-master-efs.id}"
+}
+
 output "sg_postgresql-primary_id" {
   value = "${aws_security_group.postgresql-primary.id}"
 }
