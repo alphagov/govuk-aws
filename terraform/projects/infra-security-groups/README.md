@@ -22,6 +22,7 @@ Manage the security groups for the entire infrastructure
 | sg_apt_external_elb_id |  |
 | sg_apt_id |  |
 | sg_apt_internal_elb_id |  |
+| sg_asset-master-efs_id |  |
 | sg_asset-master_id |  |
 | sg_backend-redis_id |  |
 | sg_backend_elb_external_id |  |
@@ -45,8 +46,8 @@ Manage the security groups for the entire infrastructure
 | sg_deploy_internal_elb_id |  |
 | sg_docker_management_etcd_elb_id |  |
 | sg_docker_management_id |  |
-| sg_draft-cache_elb_external_id |  |
 | sg_draft-cache_elb_id |  |
+| sg_draft-cache_external_elb_id |  |
 | sg_draft-cache_id |  |
 | sg_draft-content-store_external_elb_id |  |
 | sg_draft-content-store_id |  |
