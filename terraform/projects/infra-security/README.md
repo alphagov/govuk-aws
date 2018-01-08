@@ -2,6 +2,10 @@
 
 Infrastructure security settings:
  - Create admin role for trusted users from GDS proxy account
+ - Create users role for trusted users from GDS proxy account
+ - Default IAM password policy
+ - Default SSH key
+ - CloudTrail settings and alarms
 
 
 ## Inputs
