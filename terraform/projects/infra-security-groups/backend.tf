@@ -22,7 +22,7 @@ resource "aws_security_group" "backend" {
   }
 }
 
-resource "aws_security_group_rule" "backend_ingress_backend-elb-internal_http" {
+resource "aws_security_group_rule" "backend_from_backend-elb-internal_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
