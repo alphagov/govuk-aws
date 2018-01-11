@@ -157,32 +157,24 @@ tools/build-terraform-project.sh -c apply -p infra-public-services
 
 ## Deploy the Puppet code and secrets
 
-We currently get the GPG key from the integration puppet master (in future this should be kept in the `deployment/pass` store)
-```
-ssh puppetmaster-1.integration.publishing.service.gov.uk
-sudo -i
-
-gpg --homedir /etc/puppet/gpg --export-secret-key -a "Hiera eYAML GPG key for Preview (To be placed on the Puppet Master)"
-# Copy the output
-exit
-exit
-```
-
-Save the output of the `gpg` command to a suitable file.
+The GPG key for Integration is kept in the 2ndline password store under
+`hiera-eyaml-gpg/integration/private-key`. Decrypt it and save it to a file.
 
 You will also need to ensure the private part of the SSH key exists in
 `~/.ssh/`. This is in the Password Store under:
 
 `infra/govuk-aws-account/aws-migration-integration-keypair`
 
-Save it in `~/.ssh/aws-migration-integration-ssh_id.rsa` and ensure permissions are set
-to `0600`.
+Save it in `~/.ssh/aws-migration-integration-ssh_id.rsa` and ensure permissions
+are set to `0600`. Add it to your SSH agent with `ssh-add
+~/.ssh/aws-migration-integration-ssh_id.rsa`, so the script below can use it
+with `ssh-copy-id`.
 
 Now run these commands to initialise the puppet master:
 ```
 cd tools
 bash -x ./aws-push-puppet.sh -e ${ENVIRONMENT} \
-                             -g <path to the gpg key you copied> \
+                             -g <path to the gpg key> \
                              -p <path to puppet repo> \
                              -d <path to govuk-secrets repo> \
                              -t $PUPPETMASTER_ELB
@@ -190,19 +182,31 @@ ssh ubuntu@$PUPPETMASTER_ELB
 > sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
 ```
 
-You can now test that the puppet master is working by running
-```
-puppet apply -e "notify {'hello world':}"
+Test that the Puppetmaster works with `puppet apply -e "notify {'hello world':}"`:
 
+```
 Notice: Compiled catalog for ip-10-1-2-123.eu-west-1.compute.internal in environment production in 0.02 seconds
 Notice: hello world
 Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hello world'
 Notice: Finished catalog run in 0.01 seconds
 ```
 
+## Build the jumpbox
+
+Without the jumpbox, it's impossible to SSH into the environment once we've
+deleted the Puppetmaster's ELB.
+
+```
+tools/build-terraform-project.sh -p app-jumpbox -c plan
+...terraform output...
+tools/build-terraform-project.sh -p app-jumpbox -c apply
+```
+
 ## Remove the Puppetmaster bootstrap ELB
 
-Run the Terraform again for the Puppetmaster, but removing the variable should destroy the load balancer and security group.
+Run the Terraform again for the Puppetmaster, and removing the variable should
+destroy the load balancer and security groups, leaving access to the
+environment via SSH only available via the jumpbox.
 
 ```
 tools/build-terraform-project.sh -c plan -p app-puppetmaster
@@ -213,7 +217,6 @@ tools/build-terraform-project.sh -c apply -p app-puppetmaster
 
 ## Build the deploy Jenkins
 
-You now need to build the deploy Jenkins:
 ```
 tools/build-terraform-project.sh -c plan -p app-deploy
 ...terraform output...
@@ -221,14 +224,12 @@ tools/build-terraform-project.sh -c apply -p app-deploy
 ...terraform output...
 ```
 
-Once this has built and provisioned you should be able to navigate to:
-```
-deploy.<stackname>.<environment>.govuk.digital
-```
-
-NB currently you'll need to manually build the boxes but in future you'll be able to do that via Jenkins too.
+Once this has built and provisioned, you can navigate to
+`deploy.<stackname>.<environment>.govuk.digital`.
 
 ## Do the Jenkins token shuffle
+
+**If Jenkins already has a list of jobs when it launches, this is not required.**
 
 For each user, Jenkins automatically generates an API token which is based upon the machine it's installed on, which means that each token is unique to each instance. Additionally, tokens stored on disk are encrypted so we are not able to manage these with Puppet in the Jenkins configuration.
 
@@ -249,7 +250,7 @@ Jenkins does not allow admins to view other users tokens, so there is a manual s
 4. Save and quit, and restart the Jenkins service: `sudo service jenkins restart`
 5. You should now be able to login by going to https://deploy.\<stackname\>.\<environment\>.govuk.digital
 6. Find the API user you want the token from by searching in the top bar (the default is "jenkins_api_user")
-7. Click configure, and then "Show API token". Save the token, and update the credentials in the [deployment repo](https://github.digital.cabinet-office.gov.uk/gds/deployment)
+7. Click configure, and then "Show API token". Save the token, and update the credentials in the [govuk-secrets repo](https://github.com/alphagov/govuk-secrets)
 8. The hiera key you're looking to update is called: `govuk::node::s_jenkins::jenkins_api_token`
 9. As the Deploy_Puppet job won't yet exist, you will be unable to deploy Puppet at this point. Manually edit `/etc/jenkins_jobs/jenkins_jobs.ini` with the new token, and run the update job by running `sudo jenkins-jobs update /etc/jenkins_jobs/jobs/`.
 
@@ -261,9 +262,9 @@ All other projects can now be created. They should automatically deploy their ow
 
 ## Glossary
 
-This just covers how these terms are used in this document.
+This explains how these terms are used in this document.
 
-**Environment** - A collection of stacks, these generally correspond an AWS account. Multiple stacks may exist within a single environment (e.g. "integration-blue" & "integration-green" may both exist in the integration environment).
+**Environment** - A collection of stacks, these generally correspond to an AWS account. Multiple stacks may exist within a single environment (e.g. "integration-blue" & "integration-green" may both exist in the integration environment).
 
 **Stack** - An arbitrary label for a grouping of deployed resources. In general resources within one stack work together but they may depend on resources from other stacks within the same environment (e.g. blue/green stacks which may share networking resources).
 
