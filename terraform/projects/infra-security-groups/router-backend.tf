@@ -10,7 +10,6 @@
 #
 # === Outputs:
 # sg_router-backend_id
-# sg_router-backend_elb_id
 # sg_router-api_elb_id
 #
 resource "aws_security_group" "router-backend" {
@@ -37,19 +36,6 @@ resource "aws_security_group_rule" "router-backend_ingress_router-backend_mongo"
   source_security_group_id = "${aws_security_group.router-backend.id}"
 }
 
-resource "aws_security_group_rule" "router-backend_ingress_router-backend-elb_mongo" {
-  type      = "ingress"
-  from_port = 27017
-  to_port   = 27017
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.router-backend.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.router-backend_elb.id}"
-}
-
 resource "aws_security_group_rule" "router-backend_ingress_router-api-elb_http" {
   type      = "ingress"
   from_port = 80
@@ -63,45 +49,24 @@ resource "aws_security_group_rule" "router-backend_ingress_router-api-elb_http" 
   source_security_group_id = "${aws_security_group.router-api_elb.id}"
 }
 
-resource "aws_security_group" "router-backend_elb" {
-  name        = "${var.stackname}_router-backend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access the Router Mongo cluster"
-
-  tags {
-    Name = "${var.stackname}_router-backend_elb_access"
-  }
-}
-
-resource "aws_security_group_rule" "router-backend-elb_ingress_router-backend_mongo" {
+resource "aws_security_group_rule" "router-backend_ingress_draft-cache_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.router-backend_elb.id}"
-
-  source_security_group_id = "${aws_security_group.router-backend.id}"
-}
-
-resource "aws_security_group_rule" "router-backend-elb_ingress_draft-cache_mongo" {
-  type      = "ingress"
-  from_port = 27017
-  to_port   = 27017
-  protocol  = "tcp"
-
-  security_group_id = "${aws_security_group.router-backend_elb.id}"
+  security_group_id = "${aws_security_group.router-backend.id}"
 
   source_security_group_id = "${aws_security_group.draft-cache.id}"
 }
 
-resource "aws_security_group_rule" "router-backend-elb_ingress_cache_mongo" {
+resource "aws_security_group_rule" "router-backend_ingress_cache_mongo" {
   type      = "ingress"
   from_port = 27017
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.router-backend_elb.id}"
+  security_group_id = "${aws_security_group.router-backend.id}"
 
   source_security_group_id = "${aws_security_group.cache.id}"
 }
@@ -126,15 +91,6 @@ resource "aws_security_group_rule" "router-api-elb_ingress_management_https" {
   security_group_id = "${aws_security_group.router-api_elb.id}"
 
   source_security_group_id = "${aws_security_group.management.id}"
-}
-
-resource "aws_security_group_rule" "router-backend-elb_egress_any_any" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.router-backend_elb.id}"
 }
 
 resource "aws_security_group_rule" "router-api-elb_egress_any_any" {

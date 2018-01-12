@@ -19,8 +19,14 @@ Router backend hosts both Mongo and router-api
 | remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
+| router-backend_1_ip | IP address of the private IP to assign to the instance | string | - | yes |
+| router-backend_1_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
 | router-backend_1_subnet | Name of the subnet to place the Router Mongo 1 | string | - | yes |
+| router-backend_2_ip | IP address of the private IP to assign to the instance | string | - | yes |
+| router-backend_2_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
 | router-backend_2_subnet | Name of the subnet to place the Router Mongo 2 | string | - | yes |
+| router-backend_3_ip | IP address of the private IP to assign to the instance | string | - | yes |
+| router-backend_3_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
 | router-backend_3_subnet | Name of the subnet to place the Router Mongo 3 | string | - | yes |
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
