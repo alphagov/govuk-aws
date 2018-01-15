@@ -158,7 +158,7 @@ resource "aws_network_interface" "router-backend-1_eni" {
     Name            = "${var.stackname}-router-backend-1"
     Project         = "${var.stackname}"
     aws_hostname    = "router-backend-1"
-    aws_migration   = "router-backend"
+    aws_migration   = "router_backend"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
@@ -198,7 +198,7 @@ resource "aws_network_interface" "router-backend-2_eni" {
     Name            = "${var.stackname}-router-backend-2"
     Project         = "${var.stackname}"
     aws_hostname    = "router-backend-2"
-    aws_migration   = "router-backend"
+    aws_migration   = "router_backend"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
@@ -238,7 +238,7 @@ resource "aws_network_interface" "router-backend-3_eni" {
     Name            = "${var.stackname}-router-backend-3"
     Project         = "${var.stackname}"
     aws_hostname    = "router-backend-3"
-    aws_migration   = "router-backend"
+    aws_migration   = "router_backend"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
