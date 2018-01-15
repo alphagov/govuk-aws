@@ -258,10 +258,6 @@ output "sg_router-api_elb_id" {
   value = "${aws_security_group.router-api_elb.id}"
 }
 
-output "sg_router-backend_elb_id" {
-  value = "${aws_security_group.router-backend_elb.id}"
-}
-
 output "sg_router-backend_id" {
   value = "${aws_security_group.router-backend.id}"
 }

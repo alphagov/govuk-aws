@@ -40,6 +40,36 @@ variable "router-backend_3_subnet" {
   description = "Name of the subnet to place the Router Mongo 3"
 }
 
+variable "router-backend_1_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "router-backend_2_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "router-backend_3_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "router-backend_1_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "router-backend_2_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "router-backend_3_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
 variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
@@ -119,52 +149,27 @@ resource "aws_route53_record" "router_api_service_record" {
 }
 
 # Instance 1
-resource "aws_elb" "router_backend_1_elb" {
-  name            = "${var.stackname}-router-backend-1"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
-  internal        = "true"
+resource "aws_network_interface" "router-backend-1_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.router-backend_1_reserved_ips_subnet)}"
+  private_ips     = ["${var.router-backend_1_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}"]
 
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-router-backend-1-internal-elb"
-    interval      = 60
+  tags {
+    Name            = "${var.stackname}-router-backend-1"
+    Project         = "${var.stackname}"
+    aws_hostname    = "router-backend-1"
+    aws_migration   = "router-backend"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
   }
-
-  listener {
-    instance_port     = 27017
-    instance_protocol = "tcp"
-    lb_port           = 27017
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:27017"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-router-backend-1", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "router_backend")}"
 }
 
-resource "aws_route53_record" "router_backend_1_service_record" {
+resource "aws_route53_record" "router-backend_1_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
   name    = "router-backend-1.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
-
-  alias {
-    name                   = "${aws_elb.router_backend_1_elb.dns_name}"
-    zone_id                = "${aws_elb.router_backend_1_elb.zone_id}"
-    evaluate_target_health = true
-  }
+  records = ["${var.router-backend_1_ip}"]
+  ttl     = 300
 }
 
 module "router-backend-1" {
@@ -176,60 +181,35 @@ module "router-backend-1" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.router_backend_1_elb.id}", "${aws_elb.router_api_elb.id}"]
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
 }
 
 # Instance 2
-resource "aws_elb" "router_backend_2_elb" {
-  name            = "${var.stackname}-router-backend-2"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
-  internal        = "true"
+resource "aws_network_interface" "router-backend-2_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.router-backend_2_reserved_ips_subnet)}"
+  private_ips     = ["${var.router-backend_2_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}"]
 
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-router-backend-2-internal-elb"
-    interval      = 60
+  tags {
+    Name            = "${var.stackname}-router-backend-2"
+    Project         = "${var.stackname}"
+    aws_hostname    = "router-backend-2"
+    aws_migration   = "router-backend"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
   }
-
-  listener {
-    instance_port     = 27017
-    instance_protocol = "tcp"
-    lb_port           = 27017
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:27017"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-router-backend-2", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "router_backend")}"
 }
 
-resource "aws_route53_record" "router_backend_2_service_record" {
+resource "aws_route53_record" "router-backend_2_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
   name    = "router-backend-2.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
-
-  alias {
-    name                   = "${aws_elb.router_backend_2_elb.dns_name}"
-    zone_id                = "${aws_elb.router_backend_2_elb.zone_id}"
-    evaluate_target_health = true
-  }
+  records = ["${var.router-backend_2_ip}"]
+  ttl     = 300
 }
 
 module "router-backend-2" {
@@ -241,60 +221,35 @@ module "router-backend-2" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.router_backend_2_elb.id}", "${aws_elb.router_api_elb.id}"]
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
 }
 
 # Instance 3
-resource "aws_elb" "router_backend_3_elb" {
-  name            = "${var.stackname}-router-backend-3"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_elb_id}"]
-  internal        = "true"
+resource "aws_network_interface" "router-backend-3_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.router-backend_3_reserved_ips_subnet)}"
+  private_ips     = ["${var.router-backend_3_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}"]
 
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-router-backend-3-internal-elb"
-    interval      = 60
+  tags {
+    Name            = "${var.stackname}-router-backend-3"
+    Project         = "${var.stackname}"
+    aws_hostname    = "router-backend-3"
+    aws_migration   = "router-backend"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
   }
-
-  listener {
-    instance_port     = 27017
-    instance_protocol = "tcp"
-    lb_port           = 27017
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:27017"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-router-backend-3", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "router_backend")}"
 }
 
-resource "aws_route53_record" "router_backend_3_service_record" {
+resource "aws_route53_record" "router-backend_3_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
   name    = "router-backend-3.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
   type    = "A"
-
-  alias {
-    name                   = "${aws_elb.router_backend_3_elb.dns_name}"
-    zone_id                = "${aws_elb.router_backend_3_elb.zone_id}"
-    evaluate_target_health = true
-  }
+  records = ["${var.router-backend_3_ip}"]
+  ttl     = 300
 }
 
 module "router-backend-3" {
@@ -306,8 +261,8 @@ module "router-backend-3" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_router-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.router_backend_3_elb.id}", "${aws_elb.router_api_elb.id}"]
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.router_api_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
@@ -318,51 +273,9 @@ module "alarms-elb-router-api-internal" {
   name_prefix                    = "${var.stackname}-router-api-internal"
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.router_api_elb.name}"
-  httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
   httpcode_elb_4xx_threshold     = "100"
   httpcode_elb_5xx_threshold     = "100"
-  surgequeuelength_threshold     = "0"
-  healthyhostcount_threshold     = "0"
-}
-
-module "alarms-elb-router-backend-1-internal" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-router-backend-1-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.router_backend_1_elb.name}"
-  httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "0"
-  httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "0"
-  surgequeuelength_threshold     = "200"
-  healthyhostcount_threshold     = "1"
-}
-
-module "alarms-elb-router-backend-2-internal" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-router-backend-2-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.router_backend_2_elb.name}"
-  httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "0"
-  httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "0"
-  surgequeuelength_threshold     = "200"
-  healthyhostcount_threshold     = "1"
-}
-
-module "alarms-elb-router-backend-3-internal" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-router-backend-3-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.router_backend_3_elb.name}"
-  httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "0"
-  httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "0"
-  surgequeuelength_threshold     = "200"
-  healthyhostcount_threshold     = "1"
 }
 
 data "terraform_remote_state" "infra_database_backups_bucket" {
@@ -390,16 +303,16 @@ output "router_api_service_dns_name" {
 }
 
 output "router_backend_1_service_dns_name" {
-  value       = "${aws_route53_record.router_backend_1_service_record.fqdn}"
+  value       = "${aws_route53_record.router-backend_1_service_record.fqdn}"
   description = "DNS name to access the Router Mongo 1 internal service"
 }
 
 output "router_backend_2_service_dns_name" {
-  value       = "${aws_route53_record.router_backend_2_service_record.fqdn}"
+  value       = "${aws_route53_record.router-backend_2_service_record.fqdn}"
   description = "DNS name to access the Router Mongo 2 internal service"
 }
 
 output "router_backend_3_service_dns_name" {
-  value       = "${aws_route53_record.router_backend_3_service_record.fqdn}"
+  value       = "${aws_route53_record.router-backend_3_service_record.fqdn}"
   description = "DNS name to access the Router Mongo 3 internal service"
 }

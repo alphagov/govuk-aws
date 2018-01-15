@@ -9,6 +9,7 @@ Manage the security groups for the entire infrastructure
 |------|-------------|:----:|:-----:|:-----:|
 | aws_region | AWS region | string | `eu-west-1` | no |
 | carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
+| carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
@@ -82,7 +83,6 @@ Manage the security groups for the entire infrastructure
 | sg_rabbitmq_elb_id |  |
 | sg_rabbitmq_id |  |
 | sg_router-api_elb_id |  |
-| sg_router-backend_elb_id |  |
 | sg_router-backend_id |  |
 | sg_rummager-elasticsearch_elb_id |  |
 | sg_rummager-elasticsearch_id |  |
