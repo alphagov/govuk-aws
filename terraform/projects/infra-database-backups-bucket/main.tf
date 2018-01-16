@@ -34,6 +34,17 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "allow_read_from_office" {
+  type        = "string"
+  description = "Set to true to allow read access to the bucket from the office."
+  default     = false
+}
+
+variable "office_ips" {
+  type        = "list"
+  description = "A list of the office IPs"
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
@@ -131,6 +142,37 @@ resource "aws_s3_bucket" "database_backups" {
 
     expiration {
       days = 7
+    }
+  }
+}
+
+# Read only policy from the office
+resource "aws_iam_policy" "database-backups-read-only" {
+  count       = "${var.allow_read_from_office}"
+  name        = "govuk-${var.aws_environment}-database-backups-read-only_policy"
+  policy      = "${data.aws_iam_policy_document.database-backups-read-only_policy_document.json}"
+  description = "Allows read-only access from the office."
+}
+
+data "aws_iam_policy_document" "database-backups-read-only_policy_document" {
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:ListObjects",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*",
+    ]
+
+    effect = "Allow"
+
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values   = ["${var.office_ips}"]
     }
   }
 }
