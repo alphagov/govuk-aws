@@ -25,3 +25,5 @@ use the [create-backends tool](../../tools/create-backends.sh) to do this)
 and [`user_data_snippets.tf`](../../tools/generate-user-data-boiler-plate.sh) files.
 
 5. Run `terraform fmt` across your manifests.
+
+6. Install `terraform-docs` with Homebrew and [generate docs for the new Terraform](../../tools/update-docs.sh).
