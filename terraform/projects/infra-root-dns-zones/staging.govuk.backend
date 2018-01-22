@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-staging"
-key     = "blue/infra-root-dns-zones.tfstate"
+key     = "govuk/infra-root-dns-zones.tfstate"
 encrypt = true
 region  = "eu-west-1"
