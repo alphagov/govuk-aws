@@ -87,22 +87,23 @@ export DATA_DIR=<path to govuk-aws-data repository>/data
 export STACKNAME=<stackname>
 NOTE: the ENVIRONMENT variable also needs to be set or passed to this script.
 
-tools/build-terraform-project.sh -c plan -p name>
+tools/build-terraform-project.sh -c plan -p <project name>
 ...terraform output...
-tools/build-terraform-project.sh -c apply -p project name>
+tools/build-terraform-project.sh -c apply -p <project name>
 ...terraform output...
 ```
 
 The projects that need to be initially run in this way are:
 
-1. `infra-monitoring`
-2. `infra-vpc`
-3. `infra-networking`
-4. `infra-root-dns-zones`
-5. `infra-stack-dns-zones`
-6. `infra-security-groups`
-7. `infra-database-backups-bucket`
-8. `infra-artefact-bucket`
+1. `infra-security`
+2. `infra-monitoring`
+3. `infra-vpc`
+4. `infra-networking`
+5. `infra-root-dns-zones`
+6. `infra-stack-dns-zones`
+7. `infra-security-groups`
+8. `infra-database-backups-bucket`
+9. `infra-artefact-bucket`
 
 ### Creating backend files for a new stack
 
@@ -123,7 +124,7 @@ Puppet master is provisioned similarly to other Terraform projects but you'll ne
 When you run the Terraform below, explicitly setting the `enable_bootstrap` variable will create an ELB which will allow you to SSH to the Puppetmaster.
 
 ```
-# Make sure STACKNAME & ENVIRONMENT are set
+# Make sure STACKNAME, ENVIRONMENT and DATA_DIR are set, or use the -s, -e and -d options with the script to pass these values
 tools/build-terraform-project.sh -c plan -p app-puppetmaster -- -var 'enable_bootstrap=1'
 ...terraform output...
 tools/build-terraform-project.sh -c apply -p app-puppetmaster -- -var 'enable_bootstrap=1'
