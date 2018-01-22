@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-staging"
-key     = "blue/infra-public-services.tfstate"
+key     = "govuk/infra-public-services.tfstate"
 encrypt = true
 region  = "eu-west-1"
