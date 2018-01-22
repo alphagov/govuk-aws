@@ -19,6 +19,12 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -60,6 +66,7 @@ module "asset-master" {
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_asset-master_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "0"
   instance_elb_ids              = []
