@@ -1,4 +1,4 @@
-# 24. Move PublicAPI away from frontend-lb
+# 27. Move PublicAPI away from frontend-lb
 
 Date: 2017-09-04
 
@@ -10,7 +10,7 @@ Accepted
 
 Traffic flows for frontend applications in the following way:
 
-![Frontend traffic flow](./0024-move-publicapi-away-from-frontend-lb-img01.jpg?raw=true "Frontend traffic flow")
+![Frontend traffic flow](./0027-move-publicapi-away-from-frontend-lb-img01.jpg?raw=true "Frontend traffic flow")
 
 Most frontend applications can go straight from the cache instances to the application instances, bypassing frontend-lb. They do this by creating a DNS entry for each application service ELB, and setting the appropriate upstream DNS entry for the nginx configuration on the cache machines.
 

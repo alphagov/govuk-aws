@@ -1,4 +1,4 @@
-# 12. Security Groups in Terraform
+# 31. Security Groups in Terraform
 
 Date: 2017-11-28
 
