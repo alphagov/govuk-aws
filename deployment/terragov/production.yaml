@@ -1,0 +1,32 @@
+default:
+  environment: 'production'
+  repo_dir: '~/govuk/govuk-aws'
+  data_dir: '~/govuk/govuk-aws-data/data'
+  skip_git_check: true
+
+infra-monitoring:
+  stack: 'govuk'
+
+infra-vpc:
+  stack: 'govuk'
+
+infra-networking:
+  stack: 'govuk'
+
+infra-root-dns-zones:
+  stack: 'govuk'
+
+infra-stack-dns-zones:
+  stack: 'blue'
+
+infra-security-groups:
+  stack: 'govuk'
+
+infra-database-backups-bucket:
+  stack: 'govuk'
+
+infra-artefact-bucket:
+  stack: 'govuk'
+
+infra-public-services:
+  stack: 'govuk'
