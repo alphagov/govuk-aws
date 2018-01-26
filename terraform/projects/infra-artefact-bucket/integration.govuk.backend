@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-integration"
-key     = "govuk/artefact-bucket.tfstate"
+key     = "govuk/infra-artefact-bucket.tfstate"
 encrypt = true
 region  = "eu-west-1"
