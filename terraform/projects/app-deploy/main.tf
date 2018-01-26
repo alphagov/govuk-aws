@@ -60,7 +60,7 @@ data "terraform_remote_state" "artefact_bucket" {
 
   config {
     bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_artefact_bucket_key_stack, var.stackname)}/artefact-bucket.tfstate"
+    key    = "${coalesce(var.remote_state_infra_artefact_bucket_key_stack, var.stackname)}/infra-artefact-bucket.tfstate"
     region = "eu-west-1"
   }
 }
