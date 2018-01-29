@@ -257,9 +257,46 @@ Jenkins does not allow admins to view other users tokens, so there is a manual s
 
 When Jenkins Job Builder has successfully created jobs, deploy Puppet.
 
-## Deploy the rest of the stack
+## Deploy the rest of the management stack
 
-All other projects can now be created. They should automatically deploy their own applications.
+Create the following projects (in no particular order):
+
+`app-apt`
+`app-db-admin`
+`app-graphite`
+`app-monitoring`
+
+
+`app-apt` is a dependency for deploying any application instances because we need Gemstash for deployments.
+
+## Deploy datastores
+
+To ensure that applications deploy correctly, ensure that the datastores exist:
+
+`app-backend-redis`
+`app-mongo`
+`app-mysql`
+`app-postgresql`
+`app-rabbitmq`
+`app-router-backend`
+`app-rummager-elasticsearch`
+`app-transition-postgresql`
+
+Be aware that both RDS and Elasticache can take some time to deploy.
+
+## Deploy the core applications
+
+The following applications are core to the GOV.UK stack:
+
+`app-publishing-api`
+`app-content-store`
+`app-search`
+
+## Deploy the rest of the projects
+
+Once the core of GOV.UK has been deployed, you should be able to deploy the rest of the stack. Be
+aware that due to some dependencies between apps they may not come up cleanly and may need to be
+redeployed.
 
 ## Glossary
 
