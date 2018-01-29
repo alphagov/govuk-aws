@@ -61,43 +61,15 @@ done by the GDS Verify team.
 
 #### Writing Terraform files
 
-Please follow this style guide when developing in the repository:
-
-1. The `main.tf` file should contain a comment with the module or project name, and
-a small description:
-
-```
-/**
-* ## Module: my-module
-*
-* This module does super awesome things
-*/
-```
-
-2. Where possible, put variables and outputs within `main.tf`.
-
-3. Include a backend file named `<environment>.<stackname>.backend` (you may
-use the [create-backends tool](../../tools/create-backends.sh) to do this)
-
-4. Generate [`remote_state.tf`](../../tools/generate-remote-state-boiler-plate.sh)
-and [`user_data_snippets.tf`](../../tools/generate-user-data-boiler-plate.sh) files.
-
-5. Run `terraform fmt` across your manifests.
-
-##### Terraform Docs
-
-We use [terraform-docs](https://github.com/segmentio/terraform-docs) to create
-documentation for our Terraform code.
-
-Run `terraform-docs` across the code and add a `README.md`:
-
-`terraform-docs md my-module/ > my-module/README.md`
+Please follow the [styleguide](styleguide.md) when developing in the repository.
 
 ### Deploying code
 
 There are two ways to deploy code, and either are fine to use.
 
 Both are wrappers for Terraform which make use of our specific [project](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0010-terraform-directory-structure.md) and [data](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0017-terraform-data-structure.md) structure.
+
+Please see the [documentation about deployment](deploying-terraform.md).
 
 #### build-terraform-project.sh
 
