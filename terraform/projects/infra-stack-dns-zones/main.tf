@@ -59,7 +59,7 @@ variable "root_domain_external_name" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.1"
+  required_version = "= 0.11.2"
 }
 
 provider "aws" {
