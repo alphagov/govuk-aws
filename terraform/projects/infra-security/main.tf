@@ -64,6 +64,11 @@ variable "ssh_public_key" {
   description = "The public part of an SSH keypair"
 }
 
+variable "database_backup_access_enabled" {
+  type        = "string"
+  description = "Whether or not database backup access is allowed"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -222,4 +227,21 @@ module "cloudtrail-alarm-root-account" {
   alarm_name                = "${var.stackname}-cloudtrail-root-event"
   alarm_description         = "Alarms when the root account is used."
   alarm_actions             = ["${aws_sns_topic.cloudtrail.arn}"]
+}
+
+# Database backup access for Dev VM
+
+resource "aws_iam_policy" "aws-database-backup_dev-read_iam_policy" {
+  count       = "${var.database_backup_access_enabled}"
+  name        = "aws-database-backup_dev-read_iam_policy"
+  path        = "/"
+  description = "Allow read access to S3 aws-database-backup bucket"
+  policy      = "${file("${path.module}/../../policies/iam_s3_aws_database_backup_read_policy.tpl")}"
+}
+
+resource "aws_iam_policy_attachment" "aws-database-backup_dev-read_iam_policy_attachment" {
+  count      = "${var.database_backup_access_enabled}"
+  name       = "aws-database-backup_dev-read_iam_policy_attachment"
+  roles      = ["${module.role_poweruser.arn}"]
+  policy_arn = "${aws_iam_policy.aws-database-backup_dev-read_iam_policy.arn}"
 }
