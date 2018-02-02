@@ -1,0 +1,196 @@
+#!/bin/bash
+#
+# govukcli
+#
+# Some bash to make life easier(tm)
+#
+set -e
+
+### Global settings
+CONFIG_DIR=~/.govukcli
+CONTEXT_FILE=$CONFIG_DIR/current-context
+CONTEXTS='test integration staging production'
+
+
+### Help output
+function usage {
+  cat << EOF
+
+  ################
+      govukcli
+  ################
+
+  Usage: govukcli <command> [options]
+
+  Commands:
+
+  set-context <context>    Set the context. This should directly relate to a
+                           GOV.UK environment.
+  get-context              Get the current context.
+  list-contexts            Show the available contexts.
+
+  ssh [options]            Run "$0 ssh help" for details.
+
+  help                     Show this help.
+
+  Set the GOVUKCLI_OUTPUT environment variable to
+  one of below for different verbosity:
+
+  silent
+  info
+  debug
+
+EOF
+}
+
+function ssh_usage {
+  cat << EOF
+
+  Usage: govukcli ssh [options]
+
+  By default it will expect a Puppet node class (eg backend, frontend), and
+  will attempt to SSH to a random instance within that class. If only a single
+  instance exists, then it will SSH to that instance (eg puppetmaster,
+  jenkins).
+
+  Options:
+
+  set-user <username>    Set a different username to SSH with than the default
+                         shell user ($(whoami)).
+
+EOF
+}
+
+### init
+COMMAND=$1
+
+# Set regex for allowed contexts
+ALLOWED_CONTEXTS=$(echo "^${CONTEXTS}$" | sed 's/ /\|/g')
+
+# Set the verbosity to a smaller variable name
+OUT=$GOVUKCLI_OUTPUT
+if [[ $OUT == '' ]]; then
+  OUT='default'
+fi
+
+# Ensure the config directory exists
+test -d $CONFIG_DIR || mkdir $CONFIG_DIR
+
+
+### Helper functions
+function check_allowed_contexts {
+  if [[ ! $CONTEXT =~ $ALLOWED_CONTEXTS ]]; then
+    if [[ $OUT != 'silent' ]]; then
+      echo "Invalid context: ${CONTEXT}"
+      echo "Must be one of: "
+      for i in $CONTEXTS; do
+        echo $i
+      done
+    fi
+    exit 1
+  fi
+}
+
+function check_context {
+  if [[ ! -f $CONTEXT_FILE ]]; then
+    if [[ $OUT != 'silent' ]]; then
+      echo "Context not set! Set context with $0 set-context"
+    fi
+    exit 1
+  fi
+}
+
+### Run functions
+function list_contexts {
+  for i in $CONTEXTS; do
+    echo $i
+  done
+}
+
+function set_context {
+  CONTEXT=$1
+  if [[ $CONTEXT == '' ]]; then
+    if [[ $OUT != 'silent' ]]; then
+      echo "Error: select context to set: "
+      echo "$0 set-context <environment>"
+      echo "Available contexts: "
+      list_contexts
+    fi
+    exit 1
+  fi
+  check_allowed_contexts
+
+  echo "$CONTEXT" > $CONTEXT_FILE
+
+  if [[ $OUT != 'silent' ]]; then
+    echo "Context set to ${CONTEXT}"
+  fi
+}
+
+function get_context {
+  check_context
+  CONTEXT=$(cat $CONTEXT_FILE)
+  check_allowed_contexts
+
+  echo $CONTEXT
+}
+
+function run_ssh {
+  check_context
+  if [[ $1 == 'set-user' ]]; then
+    USERNAME=$2
+    if [[ $USERNAME == '' ]]; then
+      if [[ $OUT != 'silent' ]]; then
+        echo "Error: must specify username"
+        ssh_usage
+      fi
+      exit 1
+    fi
+    SSH_USER_FILE=$CONFIG_DIR/ssh-user
+    echo $USERNAME > $SSH_USER_FILE
+    if [[ $OUT != 'silent' ]]; then
+      echo "SSH username set to $(cat ${SSH_USER_FILE})"
+    fi
+  else
+    GOVUK_ENV=$(get_context)
+
+    if [[ $1 == '' ]] || [[ $1 == 'help' ]]; then
+      if [[ $OUT != 'silent' ]]; then
+        ssh_usage
+      fi
+      exit 1
+    fi
+
+    NODE_CLASS=$1
+
+    if [[ $OUT =~ ^silent|default$ ]]; then
+      SSH_OPTS='-q'
+    elif [[ $OUT == 'info' ]]; then
+      SSH_OPTS='-v'
+    elif [[ $OUT == 'debug' ]]; then
+      SSH_OPTS='-vvv'
+    fi
+
+    SSH_USER_FILE=$CONFIG_DIR/ssh-user
+    if [[ -f $SSH_USER_FILE ]] && [[ $(cat $SSH_USER_FILE) != '' ]]; then
+      SSH_USER=$(cat $SSH_USER_FILE)
+    else
+      SSH_USER=$(whoami)
+    fi
+
+    if [[ $NODE_CLASS == 'jumpbox' ]]; then
+      ssh -At $SSH_OPTS $SSH_USER@jumpbox.$GOVUK_ENV.govuk.digital
+    else
+      ssh -At $SSH_OPTS $SSH_USER@jumpbox.$GOVUK_ENV.govuk.digital "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
+    fi
+  fi
+}
+
+case $COMMAND in
+  'get-context') get_context;;
+  'list-contexts') list_contexts;;
+  'set-context') set_context $2;;
+  'ssh') run_ssh $2 $3;;
+  'help') usage ;;
+  *) usage ;;
+esac
