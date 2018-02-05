@@ -19,26 +19,32 @@ SSH to the hostname:
 
 `ssh some-host-name.eu-west-1.compute.internal`
 
-## govuk-ssh
+## govukcli tool
 
-`govuk-ssh` is a wrapper script which uses a script found on jumpboxes to enable
-access to machines in our environments without long lists of SSH config.
+The `govukcli` is a script which can help you login to the environment.
 
 ### Install
 
-The script is [located here](tools/govuk-ssh).
-
-Copy the script to `/usr/local/bin/govuk-ssh` and make executable.
+```
+wget https://raw.githubusercontent.com/alphagov/govuk-aws/master/tools/govukcli
+chmod +x govukcli
+mv govukcli /usr/local/bin/
+```
 
 ### Usage
 
-To jump to a specific Puppet role in a stack in an environment:
+First, ensure you have a context set. These should match environment names:
 
-`govuk-ssh <environment> <stackname> <node class>`
+`govukcli set-context integration`
 
-If more than one machine exists under a specific role it will select the first
-IP returned by the API.
+To jump to a specific Puppet role to the environment as specified by the context:
 
-If you want to jump to a specific machine, use the IP:
+`govukcli ssh <node class>`
 
-`govuk-ssh integration blue 1.2.3.4`
+To view current context:
+
+`govukcli get-context`
+
+To list available contexts:
+
+`govukcli list-contexts`
