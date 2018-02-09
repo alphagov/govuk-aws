@@ -25,6 +25,7 @@ The VPCs will be assigned the following IP ranges:
 |Integration|10.1.0.0/16|
 |Staging|10.2.0.0/16|
 |Production|10.3.0.0/16|
+|Test|10.200.0.0/16|
  
 Each AZ shall be a `/24` within the above ranges.
  
