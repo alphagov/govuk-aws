@@ -29,6 +29,7 @@ variable "stackname" {
 variable "role_admin_user_arns" {
   type        = "list"
   description = "List of ARNs of external users that can assume the role"
+  default     = []
 }
 
 variable "role_admin_policy_arns" {
@@ -40,6 +41,7 @@ variable "role_admin_policy_arns" {
 variable "role_poweruser_user_arns" {
   type        = "list"
   description = "List of ARNs of external users that can assume the role"
+  default     = []
 }
 
 variable "role_poweruser_policy_arns" {
@@ -51,6 +53,7 @@ variable "role_poweruser_policy_arns" {
 variable "role_user_user_arns" {
   type        = "list"
   description = "List of ARNs of external users that can assume the role"
+  default     = []
 }
 
 variable "role_user_policy_arns" {

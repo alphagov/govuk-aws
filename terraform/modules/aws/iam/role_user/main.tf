@@ -65,7 +65,12 @@ data "aws_iam_policy_document" "assume_policy_document" {
   }
 }
 
+locals {
+  create_role = "${length(var.role_user_arns) > 0 ? 1 : 0}"
+}
+
 resource "aws_iam_role" "user_role" {
+  count              = "${local.create_role}"
   name               = "${var.role_name}"
   path               = "/"
   description        = "Role to Delegate Permissions to an IAM User: ${var.role_name}"
@@ -73,8 +78,8 @@ resource "aws_iam_role" "user_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
-  count      = "${length(var.role_policy_arns)}"
-  role       = "${aws_iam_role.user_role.name}"
+  count      = "${length(var.role_policy_arns) * local.create_role}"
+  role       = "${var.role_name}"
   policy_arn = "${element(var.role_policy_arns, count.index)}"
 }
 
@@ -82,6 +87,6 @@ resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
 #--------------------------------------------------------------
 
 output "role_arn" {
-  value       = "${aws_iam_role.user_role.arn}"
+  value       = "${join("",aws_iam_role.user_role.*.arn)}"
   description = "The ARN specifying the role."
 }
