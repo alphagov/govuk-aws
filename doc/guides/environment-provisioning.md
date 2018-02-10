@@ -104,6 +104,7 @@ The projects that need to be initially run in this way are:
 7. `infra-security-groups`
 8. `infra-database-backups-bucket`
 9. `infra-artefact-bucket`
+10. `infra-internal-services`
 
 ### Creating backend files for a new stack
 
@@ -143,17 +144,6 @@ service_dns_name = puppet.<stack name>.<environment>.govuk-internal.digital
 
 export PUPPETMASTER_ELB=<stack name>-puppetmaster-bootstrap-1234567890.eu-west-1.elb.amazonaws.com
 ssh ubuntu@$PUPPETMASTER_ELB
-```
-
-## Build infra-public-services
-
-Before creating an application machines, build the `infra-public-services` project. This creates a set of CNAME DNS records that point the top level internal domain
-to the current live stack service.
-
-All services rely on the top level DNS records, so they must exist before we deploy any instances.
-
-```
-tools/build-terraform-project.sh -c apply -p infra-public-services
 ```
 
 ## Deploy the Puppet code and secrets
@@ -297,6 +287,11 @@ The following applications are core to the GOV.UK stack:
 Once the core of GOV.UK has been deployed, you should be able to deploy the rest of the stack. Be
 aware that due to some dependencies between apps they may not come up cleanly and may need to be
 redeployed.
+
+
+## Build infra-public-services
+
+The `infra-public-services` project creates the public load balancers which can serve traffic on the service domain.
 
 ## Glossary
 
