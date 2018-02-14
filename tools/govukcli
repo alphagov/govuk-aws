@@ -55,11 +55,14 @@ function ssh_usage {
 
   Options:
 
-  set-user <username>    Set a different username to SSH with than the default
-                         shell user ($(whoami)).
+  set-user <username>  Set a different username to SSH with than the default
+                       shell user ($(whoami)).
+
+  node-types           List the types of instances available to connect to.
 
 EOF
 }
+
 
 ### init
 COMMAND=$1
@@ -137,73 +140,88 @@ function get_context {
 
 function run_ssh {
   check_context
-  if [[ $1 == 'set-user' ]]; then
-    USERNAME=$2
-    if [[ $USERNAME == '' ]]; then
-      if [[ $OUT != 'silent' ]]; then
-        echo "Error: must specify username"
-        ssh_usage
+  GOVUK_ENV=$(get_context)
+
+  case $GOVUK_ENV in
+    'ci')             JUMPBOX="ci-jumpbox.integration.publishing.service.gov.uk";
+                      CARRENZA=true;;
+    # While we are migrating these need to be specifically defined,
+    # but when complete they can be deleted to use the catch all below
+    'production')     JUMPBOX="jumpbox.publishing.service.gov.uk";
+                      CARRENZA=true;;
+    'production-aws') JUMPBOX="jumpbox.production.govuk.digital";;
+    'staging')        JUMPBOX="jumpbox.staging.publishing.service.gov.uk";
+                      CARRENZA=true;;
+    'staging-aws')    JUMPBOX="jumpbox.staging.govuk.digital";;
+    *)                JUMPBOX="jumpbox.${GOVUK_ENV}.govuk.digital";;
+  esac
+
+  case $OUT in
+    silent) SSH_OPTS='-q';;
+    info) SSH_OPTS='-v';;
+    debug) SSH_OPTS='-vvv';;
+    *) SSH_OPTS='-q';;
+  esac
+
+  case $1 in
+    'set-user')
+      USERNAME=$2
+      if [[ $USERNAME == '' ]]; then
+        if [[ $OUT != 'silent' ]]; then
+          echo "Error: must specify username"
+          ssh_usage
+        fi
+        exit 1
       fi
-      exit 1
-    fi
-    SSH_USER_FILE=$CONFIG_DIR/ssh-user
-    echo $USERNAME > $SSH_USER_FILE
-    if [[ $OUT != 'silent' ]]; then
-      echo "SSH username set to $(cat ${SSH_USER_FILE})"
-    fi
-  else
-    GOVUK_ENV=$(get_context)
-
-    if [[ $1 == '' ]] || [[ $1 == 'help' ]]; then
+      SSH_USER_FILE=$CONFIG_DIR/ssh-user
+      echo $USERNAME > $SSH_USER_FILE
       if [[ $OUT != 'silent' ]]; then
+        echo "SSH username set to $(cat ${SSH_USER_FILE})"
+      fi;;
+
+    'node-types')
+      if [[ $CARRENZA == 'true' ]]; then
+        echo "Error: only available in AWS."
         ssh_usage
+        exit 1
       fi
-      exit 1
-    fi
 
-    NODE_CLASS=$1
+      ssh $JUMPBOX "aws ec2 describe-instances --region eu-west-1 |jq -r ' .Reservations[] | .Instances[] | .Tags[] | select(.Key | contains(\"aws_migration\")) | .Value' |sort |uniq |sort"
+    ;;
 
-    if [[ $OUT =~ ^silent|default$ ]]; then
-      SSH_OPTS='-q'
-    elif [[ $OUT == 'info' ]]; then
-      SSH_OPTS='-v'
-    elif [[ $OUT == 'debug' ]]; then
-      SSH_OPTS='-vvv'
-    fi
+    'help') ssh_usage;;
 
-    SSH_USER_FILE=$CONFIG_DIR/ssh-user
-    if [[ -f $SSH_USER_FILE ]] && [[ $(cat $SSH_USER_FILE) != '' ]]; then
-      SSH_USER=$(cat $SSH_USER_FILE)
-    else
-      SSH_USER=$(whoami)
-    fi
+    *)
 
-    case $GOVUK_ENV in
-      'ci')             JUMPBOX="ci-jumpbox.integration.publishing.service.gov.uk";
-                        CARRENZA=true;;
-      # While we are migrating these need to be specifically defined,
-      # but when complete they can be deleted to use the catch all below
-      'production')     JUMPBOX="jumpbox.publishing.service.gov.uk";
-                        CARRENZA=true;;
-      'production-aws') JUMPBOX="jumpbox.production.govuk.digital";;
-      'staging')        JUMPBOX="jumpbox.staging.publishing.service.gov.uk";
-                        CARRENZA=true;;
-      'staging-aws')    JUMPBOX="jumpbox.staging.govuk.digital";;
-      *)                JUMPBOX="jumpbox.${GOVUK_ENV}.govuk.digital";;
-    esac
+      if [[ $1 == '' ]]; then
+        if [[ $OUT != 'silent' ]]; then
+          ssh_usage
+        fi
+        exit 1
+      fi
 
-    if [[ $NODE_CLASS == 'jumpbox' ]]; then
-      ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX
-    else
-      # This allows the traditional way of SSHing to machines in Carrenza
-      # and can be removed when migrated to AWS
-      if [[ $CARRENZA == 'true' ]] && [[ $NODE_CLASS =~ ^.*-[1-9]$ ]]; then
-        ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q ${NODE_CLASS}"
+      NODE_CLASS=$1
+
+      SSH_USER_FILE=$CONFIG_DIR/ssh-user
+      if [[ -f $SSH_USER_FILE ]] && [[ $(cat $SSH_USER_FILE) != '' ]]; then
+        SSH_USER=$(cat $SSH_USER_FILE)
       else
-        ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
+        SSH_USER=$(whoami)
       fi
-    fi
-  fi
+
+      if [[ $NODE_CLASS == 'jumpbox' ]]; then
+        ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX
+      else
+        # This allows the traditional way of SSHing to machines in Carrenza
+        # and can be removed when migrated to AWS
+        if [[ $CARRENZA == 'true' ]] && [[ $NODE_CLASS =~ ^.*-[1-9]$ ]]; then
+          ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q ${NODE_CLASS}"
+        else
+          ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
+        fi
+      fi
+    ;;
+  esac
 }
 
 case $COMMAND in
