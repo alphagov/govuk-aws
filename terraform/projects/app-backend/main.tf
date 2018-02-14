@@ -41,6 +41,12 @@ variable "app_service_records" {
   default     = []
 }
 
+variable "asg_size" {
+  type        = "string"
+  description = "The autoscaling groups desired/max/min capacity"
+  default     = "2"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -191,9 +197,9 @@ module "backend" {
   instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.backend_elb_internal.id}", "${aws_elb.backend_elb_external.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_max_size                  = "2"
-  asg_min_size                  = "2"
-  asg_desired_capacity          = "2"
+  asg_max_size                  = "${var.asg_size}"
+  asg_min_size                  = "${var.asg_size}"
+  asg_desired_capacity          = "${var.asg_size}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "30"
 }
