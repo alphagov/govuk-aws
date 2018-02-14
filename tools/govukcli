@@ -9,7 +9,7 @@ set -e
 ### Global settings
 CONFIG_DIR=~/.govukcli
 CONTEXT_FILE=$CONFIG_DIR/current-context
-CONTEXTS='test integration staging production'
+CONTEXTS='ci integration staging production staging-aws production-aws'
 
 
 ### Help output
@@ -178,10 +178,30 @@ function run_ssh {
       SSH_USER=$(whoami)
     fi
 
+    case $GOVUK_ENV in
+      'ci')             JUMPBOX="ci-jumpbox.integration.publishing.service.gov.uk";
+                        CARRENZA=true;;
+      # While we are migrating these need to be specifically defined,
+      # but when complete they can be deleted to use the catch all below
+      'production')     JUMPBOX="jumpbox.publishing.service.gov.uk";
+                        CARRENZA=true;;
+      'production-aws') JUMPBOX="jumpbox.production.govuk.digital";;
+      'staging')        JUMPBOX="jumpbox.staging.publishing.service.gov.uk";
+                        CARRENZA=true;;
+      'staging-aws')    JUMPBOX="jumpbox.staging.govuk.digital";;
+      *)                JUMPBOX="jumpbox.${GOVUK_ENV}.govuk.digital";;
+    esac
+
     if [[ $NODE_CLASS == 'jumpbox' ]]; then
-      ssh -At $SSH_OPTS $SSH_USER@jumpbox.$GOVUK_ENV.govuk.digital
+      ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX
     else
-      ssh -At $SSH_OPTS $SSH_USER@jumpbox.$GOVUK_ENV.govuk.digital "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
+      # This allows the traditional way of SSHing to machines in Carrenza
+      # and can be removed when migrated to AWS
+      if [[ $CARRENZA == 'true' ]] && [[ $NODE_CLASS =~ ^.*-[1-9]$ ]]; then
+        ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q ${NODE_CLASS}"
+      else
+        ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
+      fi
     fi
   fi
 }
