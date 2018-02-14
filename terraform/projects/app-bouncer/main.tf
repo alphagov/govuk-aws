@@ -35,6 +35,12 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "asg_size" {
+  type        = "string"
+  description = "The autoscaling groups desired/max/min capacity"
+  default     = "2"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -157,9 +163,9 @@ module "bouncer" {
   instance_target_group_arns        = ["${module.bouncer_internal_lb.target_group_arns}"]
   instance_target_group_arns_length = "${length(distinct(values(local.internal_lb_map)))}"
   instance_ami_filter_name          = "${var.instance_ami_filter_name}"
-  asg_max_size                      = "2"
-  asg_min_size                      = "2"
-  asg_desired_capacity              = "2"
+  asg_max_size                      = "${var.asg_size}"
+  asg_min_size                      = "${var.asg_size}"
+  asg_desired_capacity              = "${var.asg_size}"
   asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
