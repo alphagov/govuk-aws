@@ -64,31 +64,37 @@ variable "private_subnet_nat_gateway_association" {
 variable "private_subnet_elasticache_cidrs" {
   type        = "map"
   description = "Map containing private elasticache subnet names and CIDR associated"
+  default     = {}
 }
 
 variable "private_subnet_elasticache_availability_zones" {
   type        = "map"
   description = "Map containing private elasticache subnet names and availability zones associated"
+  default     = {}
 }
 
 variable "private_subnet_rds_cidrs" {
   type        = "map"
   description = "Map containing private rds subnet names and CIDR associated"
+  default     = {}
 }
 
 variable "private_subnet_rds_availability_zones" {
   type        = "map"
   description = "Map containing private rds subnet names and availability zones associated"
+  default     = {}
 }
 
 variable "private_subnet_reserved_ips_cidrs" {
   type        = "map"
   description = "Map containing private ENI subnet names and CIDR associated"
+  default     = {}
 }
 
 variable "private_subnet_reserved_ips_availability_zones" {
   type        = "map"
   description = "Map containing private ENI subnet names and availability zones associated"
+  default     = {}
 }
 
 # Resources
