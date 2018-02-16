@@ -15,7 +15,6 @@ CONTEXTS='ci integration staging production staging-aws production-aws'
 ### Help output
 function usage {
   cat << EOF
-
   ################
       govukcli
   ################
@@ -45,7 +44,6 @@ EOF
 
 function ssh_usage {
   cat << EOF
-
   Usage: govukcli ssh [options]
 
   By default it will expect a Puppet node class (eg backend, frontend), and
@@ -81,13 +79,21 @@ test -d $CONFIG_DIR || mkdir $CONFIG_DIR
 
 
 ### Helper functions
+
+function error {
+  ERROR='\033[0;31m' # Red
+  RESET='\033[0m' # Reset to default colour
+
+  MESSAGE=$1
+  echo -e "${ERROR}Error: ${MESSAGE}${RESET}\n"
+}
 function check_allowed_contexts {
   if [[ ! $CONTEXT =~ $ALLOWED_CONTEXTS ]]; then
     if [[ $OUT != 'silent' ]]; then
-      echo "Invalid context: ${CONTEXT}"
+      error "Invalid context"
       echo "Must be one of: "
       for i in $CONTEXTS; do
-        echo $i
+        echo "  $i"
       done
     fi
     exit 1
@@ -97,7 +103,8 @@ function check_allowed_contexts {
 function check_context {
   if [[ ! -f $CONTEXT_FILE ]]; then
     if [[ $OUT != 'silent' ]]; then
-      echo "Context not set! Set context with $0 set-context"
+      error "Context not set"
+      echo "Set context with $0 set-context"
     fi
     exit 1
   fi
@@ -114,7 +121,7 @@ function set_context {
   CONTEXT=$1
   if [[ $CONTEXT == '' ]]; then
     if [[ $OUT != 'silent' ]]; then
-      echo "Error: select context to set: "
+      error "Select context to set:"
       echo "$0 set-context <environment>"
       echo "Available contexts: "
       list_contexts
@@ -168,7 +175,7 @@ function run_ssh {
       USERNAME=$2
       if [[ $USERNAME == '' ]]; then
         if [[ $OUT != 'silent' ]]; then
-          echo "Error: must specify username"
+          error "Must specify username"
           ssh_usage
         fi
         exit 1
@@ -181,7 +188,7 @@ function run_ssh {
 
     'node-types')
       if [[ $CARRENZA == 'true' ]]; then
-        echo "Error: only available in AWS."
+        error "Only available in AWS."
         ssh_usage
         exit 1
       fi
