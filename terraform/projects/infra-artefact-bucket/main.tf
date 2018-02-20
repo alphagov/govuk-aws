@@ -31,6 +31,16 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "aws_account_id" {
+  type        = "string"
+  description = "The AWS Account ID"
+}
+
+variable "create_sns_topic" {
+  default     = false
+  description = "Indicates whether to create an SNS Topic"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -115,6 +125,61 @@ resource "aws_s3_bucket" "artefact" {
         bucket = "${aws_s3_bucket.artefact_replication_destination.arn}"
       }
     }
+  }
+}
+
+# Create an AWS SNS Topic
+resource "aws_sns_topic" "artefact_topic" {
+  count = "${var.create_sns_topic ? 1 : 0}"
+  name  = "govuk-${var.aws_environment}-artefact"
+}
+
+# AWS SNS Topic Policy
+resource "aws_sns_topic_policy" "artefact_topic_policy" {
+  count  = "${var.create_sns_topic ? 1 : 0}"
+  arn    = "${aws_sns_topic.artefact_topic.arn}"
+  policy = "${data.aws_iam_policy_document.artefact_sns_topic_policy.json}"
+}
+
+# AWS SNS Topic Policy Data
+data "aws_iam_policy_document" "artefact_sns_topic_policy" {
+  count     = "${var.create_sns_topic ? 1 : 0}"
+  policy_id = "__default_policy_ID"
+
+  statement {
+    actions = [
+      "SNS:Subscribe",
+      "SNS:SetTopicAttributes",
+      "SNS:RemovePermission",
+      "SNS:Receive",
+      "SNS:Publish",
+      "SNS:ListSubscriptionsByTopic",
+      "SNS:GetTopicAttributes",
+      "SNS:DeleteTopic",
+      "SNS:AddPermission",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceOwner"
+
+      values = [
+        "${var.aws_account_id}",
+      ]
+    }
+
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      "${aws_sns_topic.artefact_topic.arn}",
+    ]
+
+    sid = "__default_statement_ID"
   }
 }
 
