@@ -37,7 +37,7 @@ if [[ $TERRAFORM_VERSION != '' ]]; then
 fi
 
 echo "Cloning govuk-aws-data"
-git clone https://github.com/alphagov/govuk-aws-data.git
+git clone git@github.com:alphagov/govuk-aws-data.git
 
 if $COMMAND == 'apply'; then
   $EXTRA='-auto-approve'
