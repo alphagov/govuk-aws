@@ -39,13 +39,10 @@ fi
 echo "Cloning govuk-aws-data"
 git clone git@github.com:alphagov/govuk-aws-data.git
 
-if [[ $COMMAND == 'apply' ]]; then
-  $EXTRA='-auto-approve'
-fi
-
-if [[ $COMMAND == 'destroy' ]]; then
-  $EXTRA='-force'
-fi
+case $COMMAND in
+  'apply') EXTRA='-auto-approve';;
+  'destroy') EXTRA='-force';;
+esac
 
 tools/build-terraform-project.sh -d './govuk-aws-data/data' \
                                  -c $COMMAND \
