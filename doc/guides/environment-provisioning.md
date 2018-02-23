@@ -48,6 +48,15 @@ e.g.
 git clone git@github.com:alphagov/govuk-secrets.git
 ```
 
+> **NOTE: Ensure Puppet has all dependencies installed**
+>
+> Follow the instructions [in the govuk-puppet repository](https://github.com/alphagov/govuk-puppet#installing)
+> to ensure that all Puppet modules and depencencies are pulled in.
+>
+> If this step is not completed you may see errors when deploying about
+> missing functions
+>
+
 ## Build the S3 bucket
 
 An [S3](https://aws.amazon.com/s3/) bucket needs to be created to store state for Terraform. If you're using an account that already has this set up you can skip this step, check by running:
