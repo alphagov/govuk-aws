@@ -56,6 +56,9 @@ Manage the security groups for the entire infrastructure
 | sg_draft-content-store_internal_elb_id |  |
 | sg_draft-frontend_elb_id |  |
 | sg_draft-frontend_id |  |
+| sg_email-alert-api_elb_external_id |  |
+| sg_email-alert-api_elb_internal_id |  |
+| sg_email-alert-api_id |  |
 | sg_frontend_elb_id |  |
 | sg_frontend_id |  |
 | sg_graphite_external_elb_id |  |
@@ -98,4 +101,3 @@ Manage the security groups for the entire infrastructure
 | sg_whitehall-backend_internal_elb_id |  |
 | sg_whitehall-frontend_elb_id |  |
 | sg_whitehall-frontend_id |  |
-

@@ -154,6 +154,18 @@ output "sg_rummager-elasticsearch_id" {
   value = "${aws_security_group.rummager-elasticsearch.id}"
 }
 
+output "sg_email-alert-api_elb_internal_id" {
+  value = "${aws_security_group.email-alert-api_elb_internal.id}"
+}
+
+output "sg_email-alert-api_elb_external_id" {
+  value = "${aws_security_group.email-alert-api_elb_external.id}"
+}
+
+output "sg_email-alert-api_id" {
+  value = "${aws_security_group.email-alert-api.id}"
+}
+
 output "sg_frontend_elb_id" {
   value = "${aws_security_group.frontend_elb.id}"
 }

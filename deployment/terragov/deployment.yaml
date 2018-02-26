@@ -61,6 +61,7 @@ frontend:
 backend:
   - 'app-asset-master'
   - 'app-backend'
+  - 'app-email-alert-api'
   - 'app-mapit'
   - 'app-whitehall-backend'
 
@@ -91,6 +92,7 @@ all_node_groups:
   - 'app-search'
   - 'app-content-store'
   - 'app-draft-content-store'
+  - 'app-email-alert-api'
   - 'app-asset-master'
   - 'app-bouncer'
   - 'app-mapit'
