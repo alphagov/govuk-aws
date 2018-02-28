@@ -832,15 +832,6 @@ resource "aws_route53_record" "email_alert_api_public_service_names" {
   }
 }
 
-resource "aws_route53_record" "email_alert_api_public_service_cnames" {
-  count   = "${length(var.email_alert_api_public_service_cnames)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.email_alert_api_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.email_alert_api_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
-  ttl     = "300"
-}
-
 data "aws_autoscaling_groups" "email_alert_api" {
   filter {
     name   = "key"
@@ -865,15 +856,6 @@ resource "aws_route53_record" "email_alert_api_internal_service_names" {
   name    = "${element(var.email_alert_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.email_alert_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-resource "aws_route53_record" "email_alert_api_internal_service_cnames" {
-  count   = "${length(var.email_alert_api_internal_service_cnames)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.email_alert_api_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.email_alert_api_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
