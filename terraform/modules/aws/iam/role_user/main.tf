@@ -62,6 +62,15 @@ data "aws_iam_policy_document" "assume_policy_document" {
         "true",
       ]
     }
+
+    condition {
+      test     = "NumericLessThan"
+      variable = "aws:MultiFactorAuthAge"
+
+      values = [
+        "43200",
+      ]
+    }
   }
 }
 
