@@ -128,6 +128,12 @@ cd "$PROJECT_DIR"
 
 # Actually run the command
 function init() {
+  if [[ ! -f $BACKEND_FILE ]]; then
+    echo "Could not find backend file for $STACKNAME stack."
+    echo "Possible stacks to deploy in $ENVIRONMENT for $PROJECT are: "
+    find . -name "${ENVIRONMENT}.*.backend" |cut -d "." -f3
+    exit 1
+  fi
   rm -rf .terraform && \
   rm -rf terraform.tfstate.backup && \
   terraform init \
