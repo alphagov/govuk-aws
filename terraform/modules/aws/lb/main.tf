@@ -210,7 +210,6 @@ locals {
 
 resource "aws_lb_target_group" "tg_default" {
   count                = "${length(local.target_groups)}"
-  name                 = "${var.name}-${replace(element(local.target_groups, count.index), ":", "-")}"
   port                 = "${element(split(":", element(local.target_groups, count.index)), 1)}"
   protocol             = "${element(split(":", element(local.target_groups, count.index)), 0)}"
   vpc_id               = "${var.vpc_id}"
@@ -226,6 +225,13 @@ resource "aws_lb_target_group" "tg_default" {
     unhealthy_threshold = 2
     timeout             = "${var.target_group_health_check_timeout}"
   }
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${var.name}-${replace(element(local.target_groups, count.index), ":", "-")}"
+    )
+  )}"
 }
 
 locals {
