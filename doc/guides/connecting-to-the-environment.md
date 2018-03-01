@@ -48,3 +48,25 @@ To view current context:
 To list available contexts:
 
 `govukcli list-contexts`
+
+### Completion
+
+The script comes with tab completion to make it easier to work with.
+
+#### Bash and Homebrew
+
+`brew install bash-completion`
+
+Follow the instructions after install to ensure completions work, and link the file
+to the completion directory:
+
+`ln -s ~/govuk/govuk-aws/tools/govukcli.completion /usr/local/etc/bash_completion/govukcli`
+
+#### Zsh
+
+There are no Zsh completions for the script, but it does load bash completion compatability
+for Zsh.
+
+The easiest way to install is to load it in `~/.zshrc`:
+
+`echo "source ~/govuk/govuk-aws/tools/govukcli.completion" >> ~/.zshrc`
