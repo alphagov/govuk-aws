@@ -199,7 +199,7 @@ resource "aws_lb_listener" "listener" {
   certificate_arn   = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
 
   default_action {
-    target_group_arn = "${lookup(local.target_groups_arns, "${var.name}-${replace(element(values(var.listener_action), count.index), ":", "-")}")}"
+    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), count.index)}")}"
     type             = "forward"
   }
 }
@@ -235,7 +235,7 @@ resource "aws_lb_target_group" "tg_default" {
 }
 
 locals {
-  target_groups_arns = "${zipmap(aws_lb_target_group.tg_default.*.name, aws_lb_target_group.tg_default.*.arn)}"
+  target_groups_arns = "${zipmap(formatlist("%v:%v", aws_lb_target_group.tg_default.*.protocol, aws_lb_target_group.tg_default.*.port), aws_lb_target_group.tg_default.*.arn)}"
 }
 
 locals {
