@@ -814,7 +814,7 @@ module "email_alert_api_public_lb" {
   listener_certificate_domain_name = "${var.elb_public_certname}"
   listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
   subnets                          = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_email_alert_api_elb_external_id}"]
+  security_groups                  = ["${data.terraform_remote_state.infra_security_groups.sg_email-alert-api_elb_external_id}"]
   alarm_actions                    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                     = "${map("Project", var.stackname, "aws_migration", "email_alert_api", "aws_environment", var.aws_environment)}"
 }
