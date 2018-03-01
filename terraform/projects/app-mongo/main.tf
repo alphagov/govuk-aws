@@ -125,7 +125,26 @@ module "mongo-1" {
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "150"
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_volume_attachment" "external_volume_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = "${aws_ebs_volume.ebs-mongo-1.id}"
+  instance_id = "${aws_instance.mongo-1_eni.id}"
+}
+
+resource "aws_ebs_volume" "ebs-mongo-1" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_1_subnet)}"
+  type              = "gp2"
+  size              = 150
+
+  tags {
+    Name        = "${var.stackname}-mongo-1-data"
+    Environment = "${var.environment}"
+    Product     = "${var.product}"
+    ManagedBy   = "terraform"
+  }
 }
 
 # Instance 2
@@ -165,7 +184,26 @@ module "mongo-2" {
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "150"
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_volume_attachment" "external_volume_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = "${aws_ebs_volume.ebs-mongo-2.id}"
+  instance_id = "${aws_instance.mongo-2_eni.id}"
+}
+
+resource "aws_ebs_volume" "ebs-mongo-2" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_2_subnet)}"
+  type              = "gp2"
+  size              = 150
+
+  tags {
+    Name        = "${var.stackname}-mongo-2-data"
+    Environment = "${var.environment}"
+    Product     = "${var.product}"
+    ManagedBy   = "terraform"
+  }
 }
 
 # Instance 3
@@ -205,7 +243,26 @@ module "mongo-3" {
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "150"
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_volume_attachment" "external_volume_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = "${aws_ebs_volume.ebs-mongo-3.id}"
+  instance_id = "${aws_instance.mongo-3_eni.id}"
+}
+
+resource "aws_ebs_volume" "ebs-mongo-3" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_3_subnet)}"
+  type              = "gp2"
+  size              = 150
+
+  tags {
+    Name        = "${var.stackname}-mongo-3-data"
+    Environment = "${var.environment}"
+    Product     = "${var.product}"
+    ManagedBy   = "terraform"
+  }
 }
 
 resource "aws_iam_policy" "mongo-iam_policy" {
