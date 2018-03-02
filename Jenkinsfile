@@ -1,9 +1,10 @@
 #!/usr/bin/env groovy
 
+library("govuk")
+
 REPOSITORY = 'govuk-aws'
 
 node ("terraform") {
-  def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
 
   try {
     stage("Checkout") {
