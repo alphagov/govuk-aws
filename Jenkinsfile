@@ -11,6 +11,10 @@ node ("terraform") {
       govuk.checkoutFromGitHubWithSSH(REPOSITORY)
     }
 
+    stage("Test") {
+      sh("echo 'hello, world'")
+    }
+
     stage("Bundle") {
       govuk.bundleApp()
     }
