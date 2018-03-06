@@ -6,13 +6,13 @@ set -e
 while getopts "e:d:p:g:s:t:h" option
 do
   case $option in
-    h ) HELP=1 ;;
     e ) ENVIRONMENT=$OPTARG ;;
     d ) DEPLOYMENT_REPO=$OPTARG ;;
     p ) PUPPET_REPO=$OPTARG ;;
     g ) GPG_KEY=$OPTARG ;;
     s ) STACKNAME=$OPTARG ;;
-    t ) TARGET=$OPTARG
+    t ) TARGET=$OPTARG ;;
+    h|* ) HELP=1 ;;
   esac
 done
 

@@ -19,7 +19,7 @@ rsync -avz \
       --exclude='training-vm/' \
       "${PUPPET_REPO%/}" "$PUPPETMASTER_ELB":
 
-echo<<EOF
+cat << EOF
 WARNING: This is intended for testing purposes only.
 It will break any local changes to the puppetmaster and always sets itself
 in the 'puppet/production/current' directory.

@@ -15,7 +15,7 @@ do
     e ) ENVIRONMENT=$OPTARG ;;
     p ) PROJECT=$OPTARG ;;
     s ) STACKNAME=$OPTARG ;;
-    h ) HELP=1 ;;
+    h|* ) HELP=1 ;;
   esac
 done
 
@@ -50,7 +50,7 @@ if [[ $HELP = '1' ]]; then
 fi
 
 # un-shift all the parsed arguments
-shift $(expr $OPTIND - 1)
+shift "$((OPTIND - 1))"
 
 # Set up our locations
 TERRAFORM_DIR='./terraform'
@@ -161,4 +161,4 @@ do
   fi
 done
 
-eval "$TO_RUN $@"
+eval "$TO_RUN $*"

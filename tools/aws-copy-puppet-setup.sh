@@ -6,9 +6,9 @@ set -ex
 while getopts "e:s:h" option
 do
   case $option in
-    h ) HELP=1 ;;
     s ) STACKNAME=$OPTARG ;;
     e ) ENVIRONMENT=$OPTARG ;;
+    h|* ) HELP=1 ;;
   esac
 done
 
@@ -33,14 +33,14 @@ then
   exit 0
 fi
 
-RELEASENAME=`date +%Y%m%d%H%M%S`
+RELEASENAME=$(date +%Y%m%d%H%M%S)
 
 if [[ "$ENVIRONMENT" != "production" ]]
 then
   cp ~/govuk-puppet/hieradata_aws/${ENVIRONMENT}.yaml ~/govuk-puppet/hieradata_aws/production.yaml
   cp ~/govuk-puppet/hieradata_aws/${ENVIRONMENT}_credentials.yaml ~/govuk-puppet/hieradata_aws/production_credentials.yaml
 
-  if [[ -d "~/govuk-puppet/hieradata_aws/${STACKNAME}" ]]
+  if [[ -d "${HOME}/govuk-puppet/hieradata_aws/${STACKNAME}" ]]
   then
     cp ~/govuk-puppet/hieradata_aws/${STACKNAME}/${ENVIRONMENT}_credentials.yaml ~/govuk-puppet/hieradata_aws/${STACKNAME}/production_credentials.yaml
   fi
@@ -50,6 +50,9 @@ mkdir -p /usr/share/puppet/production/releases
 mv ~/govuk-puppet /usr/share/puppet/production/releases/${RELEASENAME}
 rm -f /usr/share/puppet/production/current
 ln -s /usr/share/puppet/production/releases/${RELEASENAME} /usr/share/puppet/production/current
+# We only want the permissions applied to the deepest directory, so is correct
+# behaviour.
+# shellcheck disable=SC2174
 mkdir -p -m 0700 /etc/puppet/gpg
 gpg --homedir /etc/puppet/gpg --allow-secret-key-import --import gpgkey
 chown -R puppet: /etc/puppet/gpg
