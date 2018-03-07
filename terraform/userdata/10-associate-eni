@@ -1,3 +1,5 @@
+# This is a snippet so should not have a shebang
+# shellcheck disable=SC2148
 #
 # Snippet: associate-eni
 #
@@ -16,7 +18,7 @@ IFACE_INDEX="1"
 IFACE="${IFACE_TYPE}${IFACE_INDEX}"
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: find network interface ID ..."
-if [[ -z $F_MIGRATION ]] || [[ -z $F_STACKNAME ]] || [[ -z F_HOSTNAME ]] ; then
+if [[ -z $F_MIGRATION ]] || [[ -z $F_STACKNAME ]] || [[ -z $F_HOSTNAME ]] ; then
   echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: ERROR facts not found, skipping associate-eni"
 else
   NETWORK_INTERFACE_ID=$(aws ec2 describe-network-interfaces --region=$REGION --filters "Name=tag:aws_migration,Values=$F_MIGRATION" "Name=tag:aws_hostname,Values=$F_HOSTNAME" "Name=tag:aws_stackname,Values=$F_STACKNAME" --output=json | jq -r '.NetworkInterfaces[] | .NetworkInterfaceId ')
@@ -42,7 +44,7 @@ GATEWAY=$(ruby -r ipaddr -e 'i = IPAddr.new(ARGV[0]); puts i.mask(24).succ' ${IP
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: got IP ${IP_ADDR}. Assuming subnet is ${SUBNET}/24, gateway is ${GATEWAY}."
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: configuring routes and interface ${IFACE}"
-ROUTE_CFG="$(expr ${IFACE_INDEX} + 1) ${IFACE}_rt"
+ROUTE_CFG="$(( IFACE_INDEX + 1)) ${IFACE}_rt"
 grep -q "${ROUTE_CFG}" /etc/iproute2/rt_tables
 HAS_ROUTE_CONFIG=$?
 
