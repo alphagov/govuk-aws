@@ -133,4 +133,13 @@ resource "aws_s3_bucket" "database_backups" {
       days = 7
     }
   }
+
+  lifecycle_rule {
+    prefix  = "whisper/"
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
 }

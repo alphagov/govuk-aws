@@ -40,6 +40,12 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "remote_state_infra_database_backups_bucket_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_database_backups_bucket remote state"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -234,6 +240,21 @@ resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_attachment
 resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_cloudwatch_attachment" {
   role       = "${module.graphite-1.instance_iam_role_name}"
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "graphite_database_backups_iam_role_policy_attachment" {
+  role       = "${module.graphite-1.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.write_database_backups_bucket_policy_arn}"
+}
+
+data "terraform_remote_state" "infra_database_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "eu-west-1"
+  }
 }
 
 module "alarms-elb-graphite-internal" {
