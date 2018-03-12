@@ -13,6 +13,12 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
+variable "aws_backup_region" {
+  type        = "string"
+  description = "AWS region"
+  default     = "eu-west-2"
+}
+
 variable "aws_environment" {
   type        = "string"
   description = "AWS Environment"
@@ -45,6 +51,12 @@ provider "aws" {
   version = "1.0.0"
 }
 
+provider "aws" {
+  alias   = "eu-london"
+  region  = "${var.aws_backup_region}"
+  version = "1.0.0"
+}
+
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
@@ -57,6 +69,7 @@ data "terraform_remote_state" "infra_monitoring" {
 
 resource "aws_s3_bucket" "database_backups" {
   bucket = "govuk-${var.aws_environment}-database-backups"
+  region = "${var.aws_region}"
 
   tags {
     Name            = "govuk-${var.aws_environment}-database-backups"
@@ -142,4 +155,68 @@ resource "aws_s3_bucket" "database_backups" {
       days = 7
     }
   }
+
+  versioning {
+    enabled = true
+  }
+
+  replication_configuration {
+    role = "${aws_iam_role.backup_replication_role.arn}"
+
+    rules {
+      prefix = ""
+      status = "Enabled"
+
+      destination {
+        bucket        = "${aws_s3_bucket.database_backups_replica.arn}"
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}
+
+# Bucket in the second region (Backup of the backup)
+resource "aws_s3_bucket" "database_backups_replica" {
+  bucket   = "govuk-${var.aws_environment}-database-backups-replica"
+  region   = "${var.aws_backup_region}"
+  provider = "aws.eu-london"
+
+  versioning {
+    enabled = true
+  }
+}
+
+# S3 backup replica role configuration
+data "template_file" "s3_backup_replica_assume_role_template" {
+  template = "${file("${path.module}/../../policies/s3_backup_replica_role.tpl")}"
+}
+
+# Adding backup replication role
+resource "aws_iam_role" "backup_replication_role" {
+  name               = "${var.stackname}-backup-bucket-replication-role"
+  assume_role_policy = "${data.template_file.s3_backup_replica_assume_role_template.rendered}"
+}
+
+# S3 backup replica policy configuration
+data "template_file" "s3_backup_replica_policy_template" {
+  template = "${file("${path.module}/../../policies/s3_backup_replica_policy.json")}"
+
+  vars {
+    govuk_s3_bucket = "${aws_s3_bucket.database_backups.arn}"
+    govuk_s3_backup = "${aws_s3_bucket.database_backups_replica.arn}"
+  }
+}
+
+# Adding backup replication policy
+resource "aws_iam_policy" "backup_replication_policy" {
+  name        = "govuk-${var.aws_environment}-backup-bucket-replication-policy"
+  policy      = "${data.template_file.s3_backup_replica_policy_template.rendered}"
+  description = "Allows replication of the backup buckets"
+}
+
+# Combine the role and policy
+resource "aws_iam_policy_attachment" "backup_replication_policy_attachment" {
+  name       = "s3-backup-replication-policy-attachment"
+  roles      = ["${aws_iam_role.backup_replication_role.name}"]
+  policy_arn = "${aws_iam_policy.backup_replication_policy.arn}"
 }
