@@ -1,10 +1,10 @@
-## Getting Started
+# Getting Started
 
 Use this guide to help you get started when working on this repository.
 
-### Prerequisites
+## Prerequisites
 
-#### Terraform
+### Terraform
 
 Install [Terraform](https://terraform.io) by either:
 
@@ -13,7 +13,7 @@ Install [Terraform](https://terraform.io) by either:
 
 If you use Homebrew you may consider using [chtf](https://github.com/Yleisradio/homebrew-terraforms).
 
-#### Data
+### Data
 
 We split data out from the Terraform manifests. Please see [this ADR for context](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0017-terraform-data-structure.md).
 
@@ -30,9 +30,9 @@ export AWS_ACCESS_KEY_ID=<id>
 export AWS_SECRET_ACCESS_KEY=<key>
 ```
 
-### Developing in the repo
+## Developing in the repo
 
-#### Pre-commit hooks
+### Pre-commit hooks
 
 This repo uses [pre-commit](http://pre-commit.com/) for managing its pre-commit
 hooks. This is available via brew:
@@ -59,11 +59,11 @@ This might be useful, for example, as part of a PR builder job:
 The code for this, and this documentation itself, were taken from excellent work
 done by the GDS Verify team.
 
-#### Writing Terraform files
+### Writing Terraform files
 
 Please follow the [styleguide](styleguide.md) when developing in the repository.
 
-### Deploying code
+## Deploying code
 
 There are two ways to deploy code, and either are fine to use.
 
@@ -71,7 +71,7 @@ Both are wrappers for Terraform which make use of our specific [project](https:/
 
 Please see the [documentation about deployment](deploying-terraform.md).
 
-#### build-terraform-project.sh
+### build-terraform-project.sh
 
 Default tool written in Bash.
 
@@ -82,7 +82,7 @@ Run `tools/build-terraform-project.sh -h` for details.
 
 **this must be run from the root of this repo.**
 
-#### Terragov
+### Terragov
 
 Alternative tool written in Ruby.
 
