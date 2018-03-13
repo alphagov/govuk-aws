@@ -37,24 +37,32 @@ export AWS_SECRET_ACCESS_KEY=<key>
 This repo uses [pre-commit](http://pre-commit.com/) for managing its pre-commit
 hooks. This is available via brew:
 
-`brew install pre-commit`
+```
+brew install pre-commit
+```
 
 The pre-commit hooks are configured in the .pre-commit-config.yaml file in the
 root of this repo. To make the pre-commit hooks work you first need to install
 the pre-commit shim in your local .git/hooks directory:
 
-`pre-commit install`
+```
+pre-commit install
+```
 
 This will now run the hooks configured in .pre-commit-config.yaml when you run a
 `git commit` and will pass each hook the list of files staged as part of the
 commit. You can test the hooks by doing:
 
-`pre-commit run`
+```
+pre-commit run
+```
 
 You can also run the hooks on all files to test the status of the entire repo.
 This might be useful, for example, as part of a PR builder job:
 
-`pre-commit run --all-files`
+```
+pre-commit run --all-files
+```
 
 The code for this, and this documentation itself, were taken from excellent work
 done by the GDS Verify team.
