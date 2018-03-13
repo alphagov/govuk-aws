@@ -4,11 +4,11 @@ This is the code that deploys GOV.UK in AWS.
 
 ## Getting started
 
-Start by reading [this](doc/guides/getting-started.md).
+Start by reading [the getting started guide](doc/guides/getting-started.md).
 
 ## Building a new environment
 
-Please see [this guide](doc/guides/environment-provisioning.md) for building a fresh environment.
+Please see [the environment provisioning guide](doc/guides/environment-provisioning.md) for building a fresh environment.
 
 ## Architecture Decision Records
 
