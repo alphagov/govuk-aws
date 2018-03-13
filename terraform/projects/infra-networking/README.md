@@ -10,13 +10,13 @@ This module governs the creation of full network stacks.
 | aws_region | AWS region | string | `eu-west-1` | no |
 | private_subnet_availability_zones | Map containing private subnet names and availability zones associated | map | - | yes |
 | private_subnet_cidrs | Map containing private subnet names and CIDR associated | map | - | yes |
-| private_subnet_elasticache_availability_zones | Map containing private elasticache subnet names and availability zones associated | map | - | yes |
-| private_subnet_elasticache_cidrs | Map containing private elasticache subnet names and CIDR associated | map | - | yes |
+| private_subnet_elasticache_availability_zones | Map containing private elasticache subnet names and availability zones associated | map | `<map>` | no |
+| private_subnet_elasticache_cidrs | Map containing private elasticache subnet names and CIDR associated | map | `<map>` | no |
 | private_subnet_nat_gateway_association | Map of private subnet names and public subnet used to route external traffic (the public subnet must be listed in public_subnet_nat_gateway_enable to ensure it has a NAT gateway attached) | map | - | yes |
-| private_subnet_rds_availability_zones | Map containing private rds subnet names and availability zones associated | map | - | yes |
-| private_subnet_rds_cidrs | Map containing private rds subnet names and CIDR associated | map | - | yes |
-| private_subnet_reserved_ips_availability_zones | Map containing private ENI subnet names and availability zones associated | map | - | yes |
-| private_subnet_reserved_ips_cidrs | Map containing private ENI subnet names and CIDR associated | map | - | yes |
+| private_subnet_rds_availability_zones | Map containing private rds subnet names and availability zones associated | map | `<map>` | no |
+| private_subnet_rds_cidrs | Map containing private rds subnet names and CIDR associated | map | `<map>` | no |
+| private_subnet_reserved_ips_availability_zones | Map containing private ENI subnet names and availability zones associated | map | `<map>` | no |
+| private_subnet_reserved_ips_cidrs | Map containing private ENI subnet names and CIDR associated | map | `<map>` | no |
 | public_subnet_availability_zones | Map containing public subnet names and availability zones associated | map | - | yes |
 | public_subnet_cidrs | Map containing public subnet names and CIDR associated | map | - | yes |
 | public_subnet_nat_gateway_enable | List of public subnet names where we want to create a NAT Gateway | list | - | yes |

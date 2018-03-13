@@ -17,3 +17,9 @@ database-backups: The bucket that will hold database backups
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | stackname | Stackname | string | - | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| write_database_backups_bucket_policy_arn | ARN of the write database_backups-bucket policy |
+

@@ -8,6 +8,7 @@ Frontend application servers
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | app_service_records | List of application service names that get traffic via this loadbalancer | list | `<list>` | no |
+| asg_size | The autoscaling groups desired/max/min capacity | string | `2` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |

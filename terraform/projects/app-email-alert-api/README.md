@@ -7,6 +7,7 @@ email-alert-api node
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| asg_size | The autoscaling groups desired/max/min capacity | string | `2` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
@@ -30,3 +31,4 @@ email-alert-api node
 | email-alert-api_elb_address_internal | AWS' internal DNS name for the email-alert-api ELB |
 | service_dns_name_external | DNS name to access the external node service |
 | service_dns_name_internal | DNS name to access the internal node service |
+

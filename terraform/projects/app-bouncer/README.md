@@ -7,6 +7,7 @@ Bouncer node
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| asg_size | The autoscaling groups desired/max/min capacity | string | `2` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
