@@ -8,7 +8,7 @@ Use this guide to help you get started when working on this repository.
 
 Install [Terraform](https://terraform.io) by either:
 
- - Downloading the binary [found here](https://www.terraform.io/downloads.html).
+ - [Downloading the binary](https://www.terraform.io/downloads.html).
  - Using [Homebrew](https://brew.sh/)
 
 If you use Homebrew you may consider using [chtf](https://github.com/Yleisradio/homebrew-terraforms).
@@ -61,7 +61,7 @@ done by the GDS Verify team.
 
 ### Writing Terraform files
 
-Please follow the [styleguide](styleguide.md) when developing in the repository.
+Please [follow the styleguide](styleguide.md) when developing in the repository.
 
 ## Deploying code
 
@@ -114,4 +114,4 @@ Zsh:
 
 This tool can be run from within any directory.
 
-Further information can be found [here](https://github.com/surminus/terragov).
+Further information can be found [in the Terragov repo](https://github.com/surminus/terragov).
