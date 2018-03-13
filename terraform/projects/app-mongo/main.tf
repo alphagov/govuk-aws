@@ -129,21 +129,26 @@ module "mongo-1" {
 }
 
 resource "aws_volume_attachment" "external_volume_attachment" {
-  device_name = "/dev/sdf"
+  device_name = "/dev/nvme1n1"
   volume_id   = "${aws_ebs_volume.ebs-mongo-1.id}"
   instance_id = "${aws_instance.mongo-1_eni.id}"
 }
 
 resource "aws_ebs_volume" "ebs-mongo-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_1_subnet)}"
-  type              = "gp2"
+  type              = "io1"
   size              = 150
 
   tags {
-    Name        = "${var.stackname}-mongo-1-data"
-    Environment = "${var.environment}"
-    Product     = "${var.product}"
-    ManagedBy   = "terraform"
+    Name            = "${var.stackname}-ebs-mongo-1"
+    Environment     = "${var.environment}"
+    Product         = "${var.product}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "mongo"
+    aws_hostname    = "mongo-1"
+    Device          = "nvme1n1"	
   }
 }
 
@@ -188,21 +193,26 @@ module "mongo-2" {
 }
 
 resource "aws_volume_attachment" "external_volume_attachment" {
-  device_name = "/dev/sdf"
+  device_name = "/dev/nvme1n1"
   volume_id   = "${aws_ebs_volume.ebs-mongo-2.id}"
   instance_id = "${aws_instance.mongo-2_eni.id}"
 }
 
 resource "aws_ebs_volume" "ebs-mongo-2" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_2_subnet)}"
-  type              = "gp2"
+  type              = "io1"
   size              = 150
 
   tags {
-    Name        = "${var.stackname}-mongo-2-data"
-    Environment = "${var.environment}"
-    Product     = "${var.product}"
-    ManagedBy   = "terraform"
+    Name            = "${var.stackname}-ebs-mongo-2"
+    Environment     = "${var.environment}"
+    Product         = "${var.product}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "mongo"
+    aws_hostname    = "mongo-2"
+    Device          = "nvme1n1"
   }
 }
 
@@ -247,21 +257,26 @@ module "mongo-3" {
 }
 
 resource "aws_volume_attachment" "external_volume_attachment" {
-  device_name = "/dev/sdf"
+  device_name = "/dev/nvme1n1"
   volume_id   = "${aws_ebs_volume.ebs-mongo-3.id}"
   instance_id = "${aws_instance.mongo-3_eni.id}"
 }
 
 resource "aws_ebs_volume" "ebs-mongo-3" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_3_subnet)}"
-  type              = "gp2"
+  type              = "io1"
   size              = 150
 
   tags {
-    Name        = "${var.stackname}-mongo-3-data"
-    Environment = "${var.environment}"
-    Product     = "${var.product}"
-    ManagedBy   = "terraform"
+    Name            = "${var.stackname}-mongo-3-data"
+    Environment     = "${var.environment}"
+    Product         = "${var.product}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "mongo"
+    aws_hostname    = "mongo-3"
+    Device          = "nvme1n1"
   }
 }
 
