@@ -65,7 +65,7 @@ pre-commit run --all-files
 ```
 
 The code for this, and this documentation itself, were taken from excellent work
-done by the GDS Verify team.
+done by the GOV.UK Verify team in GDS.
 
 ### Writing Terraform files
 
