@@ -1,4 +1,4 @@
-## Styleguide
+# Styleguide
 
 Please follow this style guide when developing in the repository:
 
