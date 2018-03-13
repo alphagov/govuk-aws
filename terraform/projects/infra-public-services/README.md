@@ -42,6 +42,8 @@ This project adds global resources for app components:
 | draft_frontend_internal_service_cnames |  | list | `<list>` | no |
 | draft_frontend_internal_service_names |  | list | `<list>` | no |
 | elb_public_certname | The ACM cert domain name to find the ARN of | string | - | yes |
+| email_alert_api_internal_service_names |  | list | `<list>` | no |
+| email_alert_api_public_service_names |  | list | `<list>` | no |
 | frontend_internal_service_cnames |  | list | `<list>` | no |
 | frontend_internal_service_names |  | list | `<list>` | no |
 | graphite_internal_service_names |  | list | `<list>` | no |

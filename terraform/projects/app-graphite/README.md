@@ -14,6 +14,7 @@ Graphite node
 | graphite_1_subnet | Name of the subnet to place the Graphite instance 1 and EBS volume | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
+| remote_state_infra_database_backups_bucket_key_stack | Override stackname path to infra_database_backups_bucket remote state | string | `` | no |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
 | remote_state_infra_root_dns_zones_key_stack | Override stackname path to infra_root_dns_zones remote state | string | `` | no |
