@@ -222,8 +222,10 @@ function run_ssh {
         # This allows the traditional way of SSHing to machines in Carrenza
         # and can be removed when migrated to AWS
         if [[ $CARRENZA == 'true' ]] && [[ $NODE_CLASS =~ ^.*-[1-9]$ ]]; then
+          # shellcheck disable=SC2029
           ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q ${NODE_CLASS}"
         else
+          # shellcheck disable=SC2029
           ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
         fi
       fi

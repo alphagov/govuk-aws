@@ -2,6 +2,8 @@
 #
 # This script invokes the build-terraform-project.sh tool to deploy the code.
 #
+set -e
+
 if [[ ! $(which sops) ]]; then
   echo "sops not installed, exiting"
   exit 1
@@ -12,7 +14,7 @@ if [[ $TERRAFORM_VERSION != '' ]]; then
   BIN='tmp-bin'
 
   echo "Creating temporary bin directory"
-  rm -rf $BIN && mkdir $BIN && cd $BIN/
+  rm -rf $BIN && mkdir $BIN && cd $BIN
 
   echo "Downloading Terraform ${TERRAFORM_VERSION}"
 

@@ -1,3 +1,5 @@
+# This is a snippet so should not have a shebang
+# shellcheck disable=SC2148
 #
 # Snippet: attach-volumes
 #
@@ -12,7 +14,7 @@ F_STACKNAME=$(facter aws_stackname)
 F_HOSTNAME=$(facter aws_hostname)
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] attach-volume: find volume ..."
-if [[ -z $F_MIGRATION ]] || [[ -z $F_STACKNAME ]] || [[ -z F_HOSTNAME ]] ; then
+if [[ -z $F_MIGRATION ]] || [[ -z $F_STACKNAME ]] || [[ -z $F_HOSTNAME ]] ; then
   echo "[$(date '+%H:%M:%S %d-%m-%Y')] attach-volume: ERROR facts not found, skipping attach-volume"
 else
   VOLUME_ID=$(aws ec2 describe-volumes --region=$REGION --filters "Name=tag:aws_migration,Values=$F_MIGRATION" "Name=tag:aws_hostname,Values=$F_HOSTNAME" "Name=tag:aws_stackname,Values=$F_STACKNAME" --output=json | jq -r '.Volumes[] | .VolumeId ')
@@ -29,16 +31,18 @@ else
 
     echo "[$(date '+%H:%M:%S %d-%m-%Y')] attach-volume: attaching volume to /dev/$DEVICE ..."
     aws ec2 attach-volume --volume-id ${I} --instance-id $INSTANCE_ID --device /dev/$DEVICE --region $REGION
-  
-    for I in {1..10} ; do
+ 
+    x=0
+    while [[ $x -lt 10 ]]; do
       if ! [[ -e /dev/$DEVICE ]] ; then
         sleep 1
       else
         break
       fi
+      x=$((x+1))
     done
 
-    if [[ $(file -s /dev/$DEVICE | grep "/dev/$DEVICE: data") ]] ; then
+    if file -s /dev/$DEVICE | grep -q "/dev/$DEVICE: data"; then
       echo "[$(date '+%H:%M:%S %d-%m-%Y')] attach-volume: /dev/$DEVICE does not contain any partition, Puppet will format the disk"
     else
       echo "[$(date '+%H:%M:%S %d-%m-%Y')] attach-volume: /dev/$DEVICE is already formatted: $(file -s /dev/$DEVICE)"
