@@ -11,7 +11,6 @@ CONFIG_DIR=~/.govukcli
 CONTEXT_FILE=$CONFIG_DIR/current-context
 CONTEXTS='ci integration staging production staging-aws production-aws'
 
-
 ### Help output
 function usage {
   cat << EOF
@@ -29,6 +28,7 @@ function usage {
   list-contexts            Show the available contexts.
 
   ssh [options]            Run "$0 ssh help" for details.
+  aws [options]            Run "$0 aws help" for details.
 
   help                     Show this help.
 
@@ -61,11 +61,25 @@ function ssh_usage {
 EOF
 }
 
+function aws_usage {
+  cat << EOF
+  Usage: govukcli aws [options]
 
-### init
-COMMAND=$1
+  Gets a temporary session for the requested context, including asking for
+  your MFA token if needed. By default, passes arguments to the "aws" CLI tool.
+  Use the "invoke" command to set up the credentials then invoke another tool.
 
-# Set regex for allowed contexts
+  Requires your AWS credentials to be set up as in the GOV.UK Developer Docs:
+  https://docs.publishing.service.gov.uk/manual/user-management-in-aws.html#storing-credentials-on-disk
+
+  Examples:
+    govukcli aws s3 ls
+    govukcli aws invoke gof3r get ...
+
+EOF
+}
+
+# Set regex for allowed things
 ALLOWED_CONTEXTS=$(echo "^${CONTEXTS}$" | sed 's/ /\|/g')
 
 # Set the verbosity to a smaller variable name
@@ -233,11 +247,102 @@ function run_ssh {
   esac
 }
 
-case $COMMAND in
+function run_aws {
+  if [ -z $1 ] || [ $1 == "help" ]; then
+    aws_usage
+    exit
+  fi
+
+  function _check_credentials {
+    ! ([ -z "${AWS_ACCESS_KEY_ID-}" ] || \
+    [ -z "${AWS_SECRET_ACCESS_KEY-}" ] || \
+    [ -z "${AWS_SESSION_TOKEN-}" ] || \
+    [ -z "${AWS_EXPIRATION-}" ] || \
+    [ $(ruby -r time -e 'puts (Time.parse(ENV["AWS_EXPIRATION"]) - Time.now).floor') -lt 300 ])
+  }
+
+  function _get_aws_config {
+    PROFILE=$1
+    KEY=$2
+    awk "/profile ${PROFILE}/ {profile=1} /${KEY}/ && profile==1 {print \$3; exit}" ~/.aws/config
+  }
+
+  function _session_name {
+    echo $(whoami)-$(date +%d-%m-%y_%H-%M)
+  }
+
+  function _write_credentials_file {
+    function _get_credentials_key {
+      echo ${CREDENTIALS} | ruby -e "require 'json'; c = JSON.parse(STDIN.read)['Credentials']; STDOUT << c['$1']"
+    }
+
+    FILE=$1
+    echo "export AWS_ACCESS_KEY_ID=$(_get_credentials_key AccessKeyId)" > ${FILE}
+    echo "export AWS_SECRET_ACCESS_KEY=$(_get_credentials_key SecretAccessKey)" >> ${FILE}
+    echo "export AWS_SESSION_TOKEN=$(_get_credentials_key SessionToken)" >> ${FILE}
+    echo "export AWS_EXPIRATION=$(_get_credentials_key Expiration)" >> ${FILE}
+  }
+
+  unset AWS_SESSION_TOKEN
+
+  check_context
+  GOVUK_ENV=$(get_context)
+
+  GOVUK_SESSION=~/.aws/gds/govuk/${GOVUK_ENV}
+  mkdir -p ~/.aws/gds/govuk
+  test -f ${GOVUK_SESSION} && source ${GOVUK_SESSION}
+
+  if ! _check_credentials; then
+    unset AWS_SESSION_TOKEN
+
+    # check if GDS session is valid
+    GDS_SESSION=~/.aws/gds/session
+    test -f ${GDS_SESSION} && source ${GDS_SESSION}
+    if ! _check_credentials; then
+      unset AWS_SESSION_TOKEN
+
+      # setup AWS access
+      SESSION_NAME=$(whoami)-$(date +%d-%m-%y_%H-%M)
+      MFA_SERIAL=$(_get_aws_config gds mfa_serial)
+
+      prompt='Enter MFA token: '
+      if [ ! -z "${AWS_EXPIRATION-}" ]; then
+        prompt="Your AWS session has expired. ${prompt}"
+      fi
+      read -p "${prompt}" MFA_TOKEN
+
+      CREDENTIALS=$(aws sts get-session-token --profile gds \
+        --serial-number=${MFA_SERIAL} --token-code=${MFA_TOKEN}) || exit $?
+
+      _write_credentials_file ${GDS_SESSION}
+      . ${GDS_SESSION}
+    fi
+
+    # assume role
+    SESSION_NAME=$(whoami)-$(date +%d-%m-%y_%H-%M)
+    ROLE_ARN=$(_get_aws_config govuk-${GOVUK_ENV} role_arn)
+    CREDENTIALS=$(aws sts assume-role \
+                    --role-session-name $SESSION_NAME \
+                    --role-arn $ROLE_ARN) || exit $?
+
+    _write_credentials_file ${GOVUK_SESSION}
+    . ${GOVUK_SESSION}
+  fi
+
+  case $1 in
+    'invoke') shift; $@;;
+    *) aws $@;;
+  esac
+}
+
+COMMAND=$1
+shift
+case ${COMMAND} in
   'get-context') get_context;;
   'list-contexts') list_contexts;;
-  'set-context') set_context $2;;
-  'ssh') run_ssh $2 $3;;
+  'set-context') set_context $1;;
+  'ssh') run_ssh $@;;
+  'aws') run_aws $@;;
   'help') usage ;;
   *) usage ;;
 esac
