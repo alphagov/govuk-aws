@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-production"
+key     = "govuk/app-static-assets-bucket.tfstate"
+encrypt = true
+region  = "eu-west-1"
