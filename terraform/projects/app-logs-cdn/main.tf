@@ -30,6 +30,11 @@ variable "logs_cdn_subnet" {
   description = "Name of the subnet to place the EBS volume"
 }
 
+variable "elb_external_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -40,6 +45,11 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.0.0"
+}
+
+data "aws_acm_certificate" "elb_external_cert" {
+  domain   = "${var.elb_external_certname}"
+  statuses = ["ISSUED"]
 }
 
 resource "aws_elb" "logs-cdn_external_elb" {
@@ -55,24 +65,27 @@ resource "aws_elb" "logs-cdn_external_elb" {
   }
 
   listener {
-    instance_port     = "6514"
-    instance_protocol = "tcp"
-    lb_port           = "6514"
-    lb_protocol       = "tcp"
+    instance_port      = "6514"
+    instance_protocol  = "tcp"
+    lb_port            = "6514"
+    lb_protocol        = "ssl"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   listener {
-    instance_port     = "6515"
-    instance_protocol = "tcp"
-    lb_port           = "6515"
-    lb_protocol       = "tcp"
+    instance_port      = "6515"
+    instance_protocol  = "tcp"
+    lb_port            = "6515"
+    lb_protocol        = "ssl"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   listener {
-    instance_port     = "6516"
-    instance_protocol = "tcp"
-    lb_port           = "6516"
-    lb_protocol       = "tcp"
+    instance_port      = "6516"
+    instance_protocol  = "tcp"
+    lb_port            = "6516"
+    lb_protocol        = "ssl"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   health_check {
