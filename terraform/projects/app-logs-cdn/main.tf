@@ -45,7 +45,7 @@ provider "aws" {
 resource "aws_elb" "logs-cdn_external_elb" {
   name            = "${var.stackname}-logs-cdn"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}", "${data.terraform_remote_state.infra_security_groups.sg_logs-cdn_elb_id}"]
   internal        = "false"
 
   access_logs {
