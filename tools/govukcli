@@ -258,7 +258,7 @@ function run_aws {
     [ -z "${AWS_SECRET_ACCESS_KEY-}" ] || \
     [ -z "${AWS_SESSION_TOKEN-}" ] || \
     [ -z "${AWS_EXPIRATION-}" ] || \
-    [ $(ruby -r time -e 'puts (Time.parse(ENV["AWS_EXPIRATION"]) - Time.now).floor') -lt 300 ])
+    [ "$(ruby -r time -e 'puts (Time.parse(ENV["AWS_EXPIRATION"]) - Time.now).floor')" -lt 300 ])
   }
 
   function _get_aws_config {
@@ -268,7 +268,7 @@ function run_aws {
   }
 
   function _session_name {
-    echo $(whoami)-$(date +%d-%m-%y_%H-%M)
+    echo "$(whoami)-$(date +%d-%m-%y_%H-%M)"
   }
 
   function _write_credentials_file {
@@ -277,10 +277,12 @@ function run_aws {
     }
 
     FILE=$1
-    echo "export AWS_ACCESS_KEY_ID=$(_get_credentials_key AccessKeyId)" > ${FILE}
-    echo "export AWS_SECRET_ACCESS_KEY=$(_get_credentials_key SecretAccessKey)" >> ${FILE}
-    echo "export AWS_SESSION_TOKEN=$(_get_credentials_key SessionToken)" >> ${FILE}
-    echo "export AWS_EXPIRATION=$(_get_credentials_key Expiration)" >> ${FILE}
+    cat <<- EOF > ${FILE}
+    export AWS_ACCESS_KEY_ID=$(_get_credentials_key AccessKeyId)
+    export AWS_SECRET_ACCESS_KEY=$(_get_credentials_key SecretAccessKey)
+    export AWS_SESSION_TOKEN=$(_get_credentials_key SessionToken)
+    export AWS_EXPIRATION=$(_get_credentials_key Expiration)
+EOF
   }
 
   unset AWS_SESSION_TOKEN
@@ -309,13 +311,13 @@ function run_aws {
       if [ ! -z "${AWS_EXPIRATION-}" ]; then
         prompt="Your AWS session has expired. ${prompt}"
       fi
-      read -p "${prompt}" MFA_TOKEN
+      read -rp "${prompt}" MFA_TOKEN
 
       CREDENTIALS=$(aws sts get-session-token --profile gds \
         --serial-number=${MFA_SERIAL} --token-code=${MFA_TOKEN}) || exit $?
 
       _write_credentials_file ${GDS_SESSION}
-      . ${GDS_SESSION}
+      source ${GDS_SESSION}
     fi
 
     # assume role
@@ -326,12 +328,12 @@ function run_aws {
                     --role-arn $ROLE_ARN) || exit $?
 
     _write_credentials_file ${GOVUK_SESSION}
-    . ${GOVUK_SESSION}
+    source ${GOVUK_SESSION}
   fi
 
   case $1 in
-    'invoke') shift; $@;;
-    *) aws $@;;
+    'invoke') shift; "$@";;
+    *) aws "$@";;
   esac
 }
 
@@ -341,8 +343,8 @@ case ${COMMAND} in
   'get-context') get_context;;
   'list-contexts') list_contexts;;
   'set-context') set_context $1;;
-  'ssh') run_ssh $@;;
-  'aws') run_aws $@;;
+  'ssh') run_ssh "$@";;
+  'aws') run_aws "$@";;
   'help') usage ;;
   *) usage ;;
 esac
