@@ -125,31 +125,7 @@ module "mongo-1" {
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "50"
-}
-
-resource "aws_volume_attachment" "external_volume_attachment" {
-  device_name = "/dev/nvme1n1"
-  volume_id   = "${aws_ebs_volume.ebs-mongo-1.id}"
-  instance_id = "${aws_instance.mongo-1.id}"
-}
-
-resource "aws_ebs_volume" "ebs-mongo-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_1_subnet)}"
-  type              = "io1"
-  size              = 150
-
-  tags {
-    Name            = "${var.stackname}-ebs-mongo-1"
-    Environment     = "${var.environment}"
-    Product         = "${var.product}"
-    ManagedBy       = "terraform"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-    aws_migration   = "mongo"
-    aws_hostname    = "mongo-1"
-    Device          = "nvme1n1"
-  }
+  root_block_device_volume_size = "150"
 }
 
 # Instance 2
@@ -189,31 +165,7 @@ module "mongo-2" {
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "50"
-}
-
-resource "aws_volume_attachment" "external_volume_attachment" {
-  device_name = "/dev/nvme1n1"
-  volume_id   = "${aws_ebs_volume.ebs-mongo-2.id}"
-  instance_id = "${aws_instance.mongo-2.id}"
-}
-
-resource "aws_ebs_volume" "ebs-mongo-2" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_2_subnet)}"
-  type              = "io1"
-  size              = 150
-
-  tags {
-    Name            = "${var.stackname}-ebs-mongo-2"
-    Environment     = "${var.environment}"
-    Product         = "${var.product}"
-    ManagedBy       = "terraform"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-    aws_migration   = "mongo"
-    aws_hostname    = "mongo-2"
-    Device          = "nvme1n1"
-  }
+  root_block_device_volume_size = "150"
 }
 
 # Instance 3
@@ -253,31 +205,7 @@ module "mongo-3" {
   instance_elb_ids              = []
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "50"
-}
-
-resource "aws_volume_attachment" "external_volume_attachment" {
-  device_name = "/dev/nvme1n1"
-  volume_id   = "${aws_ebs_volume.ebs-mongo-3.id}"
-  instance_id = "${aws_instance.mongo-3.id}"
-}
-
-resource "aws_ebs_volume" "ebs-mongo-3" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_3_subnet)}"
-  type              = "io1"
-  size              = 150
-
-  tags {
-    Name            = "${var.stackname}-mongo-3-data"
-    Environment     = "${var.environment}"
-    Product         = "${var.product}"
-    ManagedBy       = "terraform"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-    aws_migration   = "mongo"
-    aws_hostname    = "mongo-3"
-    Device          = "nvme1n1"
-  }
+  root_block_device_volume_size = "150"
 }
 
 resource "aws_iam_policy" "mongo-iam_policy" {
