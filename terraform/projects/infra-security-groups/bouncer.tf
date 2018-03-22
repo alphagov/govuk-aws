@@ -122,6 +122,24 @@ resource "aws_security_group_rule" "bouncer-internal-elb_ingress_monitoring_http
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
+resource "aws_security_group_rule" "bouncer-external-elb_ingress_monitoring_https" {
+  type                     = "ingress"
+  to_port                  = 443
+  from_port                = 443
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.bouncer_external_elb.id}"
+  source_security_group_id = "${aws_security_group.monitoring.id}"
+}
+
+resource "aws_security_group_rule" "bouncer-external-elb_ingress_monitoring_http" {
+  type                     = "ingress"
+  to_port                  = 80
+  from_port                = 80
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.bouncer_external_elb.id}"
+  source_security_group_id = "${aws_security_group.monitoring.id}"
+}
+
 resource "aws_security_group_rule" "bouncer-internal-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
