@@ -34,7 +34,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.0.0"
+  version = "1.14.0"
 }
 
 resource "aws_elb" "jumpbox_external_elb" {

@@ -50,7 +50,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.3.0"
+  version = "1.14.0"
 }
 
 data "aws_acm_certificate" "elb_external_cert" {
