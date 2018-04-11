@@ -85,7 +85,7 @@ variable "remote_state_infra_database_backups_bucket_key_stack" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.2"
+  required_version = "= 0.11.6"
 }
 
 provider "aws" {
