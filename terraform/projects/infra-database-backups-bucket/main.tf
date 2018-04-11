@@ -48,13 +48,13 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.0.0"
+  version = "1.14.0"
 }
 
 provider "aws" {
   alias   = "eu-london"
   region  = "${var.aws_backup_region}"
-  version = "1.0.0"
+  version = "1.14.0"
 }
 
 data "terraform_remote_state" "infra_monitoring" {

@@ -101,13 +101,13 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.0.0"
+  version = "1.14.0"
 }
 
 provider "aws" {
   alias   = "secondary"
   region  = "${var.aws_secondary_region}"
-  version = "1.0.0"
+  version = "1.14.0"
 }
 
 data "terraform_remote_state" "infra_monitoring" {
@@ -193,7 +193,7 @@ resource "aws_s3_bucket_policy" "govuk-artefact-bucket-policy" {
             "Sid": "Stmt1519740678001",
             "Effect": "Allow",
             "Principal": {
-                "AWS": [ 
+                "AWS": [
                          "arn:aws:iam::${var.aws_account_id}:root",
                          "arn:aws:iam::${var.aws_account_id}:role/${var.deployer_role}",
                          "arn:aws:iam::${var.aws_s3_access_account}:root"
