@@ -57,7 +57,7 @@ module "mysql_primary_rds_instance" {
   source               = "../../modules/aws/rds_instance"
   name                 = "${var.stackname}-mysql-primary"
   engine_name          = "mysql"
-  engine_version       = "5.6.27"
+  engine_version       = "5.6"
   default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
   subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username             = "${var.username}"
