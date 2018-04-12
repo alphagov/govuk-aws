@@ -9,7 +9,7 @@ set -e
 ### Global settings
 CONFIG_DIR=~/.govukcli
 CONTEXT_FILE=$CONFIG_DIR/current-context
-CONTEXTS='ci integration staging production staging-aws production-aws'
+CONTEXTS='ci test integration staging production staging-aws production-aws'
 
 ### Help output
 function usage {
