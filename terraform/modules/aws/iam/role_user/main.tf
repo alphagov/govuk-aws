@@ -62,15 +62,6 @@ data "aws_iam_policy_document" "assume_policy_document" {
         "true",
       ]
     }
-
-    condition {
-      test     = "NumericLessThan"
-      variable = "aws:MultiFactorAuthAge"
-
-      values = [
-        "43200",
-      ]
-    }
   }
 }
 
@@ -79,11 +70,12 @@ locals {
 }
 
 resource "aws_iam_role" "user_role" {
-  count              = "${local.create_role}"
-  name               = "${var.role_name}"
-  path               = "/"
-  description        = "Role to Delegate Permissions to an IAM User: ${var.role_name}"
-  assume_role_policy = "${data.aws_iam_policy_document.assume_policy_document.json}"
+  count                = "${local.create_role}"
+  name                 = "${var.role_name}"
+  path                 = "/"
+  description          = "Role to Delegate Permissions to an IAM User: ${var.role_name}"
+  assume_role_policy   = "${data.aws_iam_policy_document.assume_policy_document.json}"
+  max_session_duration = 28800
 }
 
 resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
