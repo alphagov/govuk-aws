@@ -160,6 +160,7 @@ Before creating an application machines, build the `infra-public-services` proje
 to the current live stack service.
 
 All services rely on the top level DNS records, so they must exist before we deploy any instances.
+infra-public-services depends on the instances being already created as it needs to populate the targets groups for the ALB, therefore it MUST be ran after all the others projects for the ALB to work at all.
 
 ```
 tools/build-terraform-project.sh -c apply -p infra-public-services
