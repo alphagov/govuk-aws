@@ -6,7 +6,11 @@
             "Effect": "Allow",
             "Action": [
                 "ec2:DescribeNetworkInterfaces",
-                "ec2:AttachNetworkInterface"
+                "ec2:AttachNetworkInterface",
+                "ec2:AttachVolume",
+                "ec2:DetachVolume",
+                "ec2:DescribeVolumeStatus",
+                "ec2:DescribeVolumes"
             ],
             "Resource": [
                 "*"
