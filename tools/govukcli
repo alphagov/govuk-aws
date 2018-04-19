@@ -314,6 +314,7 @@ EOF
                   --role-session-name $SESSION_NAME \
                   --role-arn $ROLE_ARN \
                   --serial-number $MFA_SERIAL \
+                  --duration-seconds 28800 \
                   --token-code $MFA_TOKEN) || exit $?
 
     _write_credentials_file ${GOVUK_SESSION}
