@@ -142,7 +142,7 @@ resource "aws_ebs_volume" "mongo-1" {
     aws_environment = "${var.aws_environment}"
     aws_migration   = "mongo"
     aws_hostname    = "mongo-1"
-    Device          = "nvme1n1"
+    Device          = "xvdf"
   }
 }
 
@@ -200,7 +200,7 @@ resource "aws_ebs_volume" "mongo-2" {
     aws_environment = "${var.aws_environment}"
     aws_migration   = "mongo"
     aws_hostname    = "mongo-2"
-    Device          = "nvme1n1"
+    Device          = "xvdf"
   }
 }
 
@@ -258,7 +258,7 @@ resource "aws_ebs_volume" "mongo-3" {
     aws_environment = "${var.aws_environment}"
     aws_migration   = "mongo"
     aws_hostname    = "mongo-3"
-    Device          = "nvme1n1"
+    Device          = "xvdf"
   }
 }
 
