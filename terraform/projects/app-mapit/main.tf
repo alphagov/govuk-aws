@@ -50,7 +50,7 @@ variable "instance_type" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.6"
+  required_version = "= 0.11.7"
 }
 
 provider "aws" {
