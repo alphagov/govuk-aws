@@ -151,6 +151,24 @@ variable "snapshot_identifier" {
   default     = ""
 }
 
+variable "terraform_create_rds_timeout" {
+  type        = "string"
+  description = "Set the timeout time for AWS RDS creation."
+  default     = "2h"
+}
+
+variable "terraform_update_rds_timeout" {
+  type        = "string"
+  description = "Set the timeout time for AWS RDS modification."
+  default     = "2h"
+}
+
+variable "terraform_delete_rds_timeout" {
+  type        = "string"
+  description = "Set the timeout time for AWS RDS deletion."
+  default     = "2h"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -172,6 +190,12 @@ resource "aws_db_instance" "db_instance_replica" {
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"
+
+  timeouts {
+    create = "${var.terraform_create_rds_timeout}"
+    delete = "${var.terraform_delete_rds_timeout}"
+    update = "${var.terraform_update_rds_timeout}"
+  }
 
   # TODO this should be enabled in a Production environment:
   final_snapshot_identifier = "${var.name}-final-snapshot"
@@ -201,6 +225,12 @@ resource "aws_db_instance" "db_instance" {
   backup_window           = "${var.backup_window}"
   copy_tags_to_snapshot   = "${var.copy_tags_to_snapshot}"
   snapshot_identifier     = "${var.snapshot_identifier}"
+
+  timeouts {
+    create = "${var.terraform_create_rds_timeout}"
+    delete = "${var.terraform_delete_rds_timeout}"
+    update = "${var.terraform_update_rds_timeout}"
+  }
 
   # TODO this should be enabled in a Production environment:
   final_snapshot_identifier = "${var.name}-final-snapshot"
