@@ -10,6 +10,7 @@ Mirrorer node
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
+| mirrorer_instance_type | Instance type for the mirrorer instance | string | `m5.large` | no |
 | mirrorer_subnet | Subnet to contain mirrorer and its EBS volume | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
