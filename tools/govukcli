@@ -300,7 +300,7 @@ EOF
     # setup AWS access
     SESSION_NAME=$(whoami)-$(date +%d-%m-%y_%H-%M)
     MFA_SERIAL=$(_get_aws_config gds mfa_serial)
-    ROLE_ARN=$(_get_aws_config govuk-${CONTEXT} role_arn)
+    ROLE_ARN=$(_get_aws_config govuk-${GOVUK_ENV} role_arn)
 
     prompt='Enter MFA token: '
     if [ ! -z "${AWS_EXPIRATION-}" ]; then
