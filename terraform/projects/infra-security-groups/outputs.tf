@@ -302,6 +302,18 @@ output "sg_offsite_ssh_id" {
   value = "${aws_security_group.offsite_ssh.id}"
 }
 
+output "sg_warehouse-db-admin_elb_id" {
+  value = "${aws_security_group.warehouse-db-admin_elb.id}"
+}
+
+output "sg_warehouse-db-admin_id" {
+  value = "${aws_security_group.warehouse-db-admin.id}"
+}
+
+output "sg_warehouse-postgresql-primary_id" {
+  value = "${aws_security_group.warehouse-postgresql-primary.id}"
+}
+
 output "sg_whitehall-backend_external_elb_id" {
   value = "${aws_security_group.whitehall-backend_external_elb.id}"
 }
