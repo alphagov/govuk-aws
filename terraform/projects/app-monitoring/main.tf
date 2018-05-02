@@ -35,6 +35,11 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "monitoring_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the monitoring instance and the EBS volume"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -139,7 +144,7 @@ module "monitoring" {
   name                          = "${var.stackname}-monitoring"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "aws_hostname", "monitoring-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.monitoring_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "m5.large"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -147,6 +152,34 @@ module "monitoring" {
   instance_elb_ids              = ["${aws_elb.monitoring_external_elb.id}", "${aws_elb.monitoring_internal_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+}
+
+resource "aws_ebs_volume" "monitoring" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.monitoring_subnet)}"
+  type              = "gp2"
+  size              = 20
+
+  tags {
+    Name            = "${var.stackname}-monitoring"
+    Project         = "${var.stackname}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "monitoring"
+    aws_hostname    = "monitoring-1"
+    Device          = "xvdf"
+  }
+}
+
+resource "aws_iam_policy" "monitoring-iam_policy" {
+  name   = "${var.stackname}-monitoring-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "monitoring_iam_role_policy_attachment" {
+  role       = "${module.monitoring.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.monitoring-iam_policy.arn}"
 }
 
 resource "aws_route53_record" "external_service_record" {
