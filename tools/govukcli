@@ -159,6 +159,15 @@ function get_context {
   echo $CONTEXT
 }
 
+function load_user {
+  SSH_USER_FILE=$CONFIG_DIR/ssh-user
+  if [[ -f $SSH_USER_FILE ]] && [[ $(cat $SSH_USER_FILE) != '' ]]; then
+    SSH_USER=$(cat $SSH_USER_FILE)
+  else
+    SSH_USER=$(whoami)
+  fi
+}
+
 function run_ssh {
   check_context
   GOVUK_ENV=$(get_context)
@@ -207,7 +216,9 @@ function run_ssh {
         exit 1
       fi
 
-      ssh $JUMPBOX "aws ec2 describe-instances --region eu-west-1 |jq -r ' .Reservations[] | .Instances[] | .Tags[] | select(.Key | contains(\"aws_migration\")) | .Value' |sort |uniq |sort"
+      load_user
+
+      ssh $SSH_USER@$JUMPBOX "aws ec2 describe-instances --region eu-west-1 |jq -r ' .Reservations[] | .Instances[] | .Tags[] | select(.Key | contains(\"aws_migration\")) | .Value' |sort |uniq |sort"
     ;;
 
     'help') ssh_usage;;
@@ -223,12 +234,7 @@ function run_ssh {
 
       NODE_CLASS=$1
 
-      SSH_USER_FILE=$CONFIG_DIR/ssh-user
-      if [[ -f $SSH_USER_FILE ]] && [[ $(cat $SSH_USER_FILE) != '' ]]; then
-        SSH_USER=$(cat $SSH_USER_FILE)
-      else
-        SSH_USER=$(whoami)
-      fi
+      load_user
 
       if [[ $NODE_CLASS == 'jumpbox' ]]; then
         ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX
