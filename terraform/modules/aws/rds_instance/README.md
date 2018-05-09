@@ -30,6 +30,9 @@ Create an RDS instance
 | snapshot_identifier | Specifies whether or not to create this database from a snapshot. | string | `` | no |
 | storage_type | One of standard (magnetic), gp2 (general purpose SSD), or io1 (provisioned IOPS SSD). The default is gp2 | string | `gp2` | no |
 | subnet_ids | Subnet IDs to assign to the aws_elasticache_subnet_group | list | `<list>` | no |
+| terraform_create_rds_timeout | Set the timeout time for AWS RDS creation. | string | `2h` | no |
+| terraform_delete_rds_timeout | Set the timeout time for AWS RDS deletion. | string | `2h` | no |
+| terraform_update_rds_timeout | Set the timeout time for AWS RDS modification. | string | `2h` | no |
 | username | User to create on the database | string | `` | no |
 
 ## Outputs

@@ -1,4 +1,4 @@
-## Project: projects/app-postgresql
+## Project: projects/app-warehouse
 
 RDS PostgreSQL instance for the GOV.UK data warehouse
 
@@ -27,10 +27,10 @@ RDS PostgreSQL instance for the GOV.UK data warehouse
 
 | Name | Description |
 |------|-------------|
-| postgresql-primary_address | postgresql instance address |
-| postgresql-primary_endpoint | postgresql instance endpoint |
-| postgresql-primary_id | postgresql instance ID |
-| postgresql-primary_resource_id | postgresql instance resource ID |
 | postgresql-standby_address | postgresql replica instance address |
 | postgresql-standby_endpoint | postgresql replica instance endpoint |
+| warehouse-postgresql-primary_address | postgresql instance address |
+| warehouse-postgresql-primary_endpoint | postgresql instance endpoint |
+| warehouse-postgresql-primary_id | postgresql instance ID |
+| warehouse-postgresql-primary_resource_id | postgresql instance resource ID |
 

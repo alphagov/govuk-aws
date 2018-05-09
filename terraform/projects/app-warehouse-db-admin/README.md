@@ -1,6 +1,6 @@
-## Project: app-transition-db-admin
+## Project: app-warehouse-db-admin
 
- DB admin boxes for Transition's RDS instance
+ DB admin boxes for Warehouse's RDS instance
 
 
 ## Inputs
@@ -24,5 +24,5 @@
 
 | Name | Description |
 |------|-------------|
-| transition-db-admin_elb_dns_name | DNS name to access the transition-db-admin service |
+| warehouse-db-admin_elb_dns_name | DNS name to access the warehouse-db-admin service |
 

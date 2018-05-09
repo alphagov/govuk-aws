@@ -2,7 +2,7 @@
 
 This creates an s3 bucket
 
-database-backups: The bucket that will hold WAL-E backups for the data warehouse
+wal-e-warehouse: The bucket that will hold database backups
 
 
 
@@ -21,5 +21,5 @@ database-backups: The bucket that will hold WAL-E backups for the data warehouse
 
 | Name | Description |
 |------|-------------|
-| write_database_backups_bucket_policy_arn | ARN of the write database_backups-bucket policy |
+| write_wal_e_warehouse_policy_arn | ARN of the write wal_e_warehouse-bucket policy |
 
