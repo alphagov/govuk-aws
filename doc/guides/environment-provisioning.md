@@ -202,6 +202,39 @@ Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hel
 Notice: Finished catalog run in 0.01 seconds
 ```
 
+**Note :**
+During the migration process (carrenza => AWS), we didn't encounter smooth puppetmaster deployments. Hence, we will give some symptoms and solutions that were identified.
+
+1. `puppetdb` Authentication failure.
+    - The actual error is slightly deceptive. The `puppet agent -t` command returned an error like the following.
+      ```
+      Error: Could not retrieve catalog from remote server: Error 400 on SERVER: Failed to submit 'replace facts' command for puppetmaster.example.com to PuppetDB at puppetmaster.example.com:8081: Connection refused....
+      ```
+      You might find this among the myriad of other errors. The other errors are a continuation of other stages failing due to this core error.
+    - The second place you can check would be. `/var/log/puppetdb/puppetdb.log`. If you see an error similar to the following, then you can almost be certain that you are experiencing the same issue referenced here.
+      ```
+      ERROR [c.j.b.PoolWatchThread] Error in trying to obtain a connection. Retrying in 7000ms
+      ```
+      ```
+      org.postgresql.util.PSQLException: FATAL: password authentication failed for user "puppetdb"....
+      ```
+    - You can do a final confirmation by actually checking postgresql.
+      - Login to postgresql. `sudo -u postgres psql postgres`
+      - List databases. `postgres=# \l`. [You are looking for `puppetdb`]
+      - List users. `postgres=# \du`. [You are looking for `puppetdb`]
+      - If puppetdb user and database doesn't exist , then continue.
+
+    - **Solution**
+      - Execute `gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme` [**As sudo**]
+      - Execute
+        ```
+        puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp
+        ``` 
+        [**As sudo**]
+      - Execute. `puppet agent -t`
+      - This should fix the above mentioned issue. Also, check the database for `puppetdb`. 
+        
+
 ## Build the jumpbox
 
 Without the jumpbox, it's impossible to SSH into the environment once we've
