@@ -15,4 +15,3 @@
       entry: tools/terraform-validate.sh
       language: script
       files: \.tf$
-

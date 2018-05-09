@@ -12,6 +12,7 @@ Monitoring node
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
+| monitoring_subnet | Name of the subnet to place the monitoring instance and the EBS volume | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
