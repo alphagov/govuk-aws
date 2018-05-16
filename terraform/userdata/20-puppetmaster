@@ -24,5 +24,15 @@ puppet config set certname "$(curl -s http://169.254.169.254/latest/meta-data/in
 # on the machine run a verify
 puppet apply -e 'notify { "Hello from Puppet": }'
 
-echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: puppetmaster"
+# Create a workdir
+mkdir -p /var/govuk
+cd /var/govuk
 
+# Get git and checkout govuk-aws
+apt-get -y install git
+git clone https://github.com/alphagov/govuk-aws.git
+
+# Run the bootstrap script
+/var/govuk/govuk-aws/tools/govuk-puppetmaster-bootstrap.sh
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: puppetmaster"
