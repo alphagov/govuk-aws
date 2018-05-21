@@ -47,6 +47,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollect
 | internal | If true, the LB will be internal. | string | `true` | no |
 | listener_action | A map of Load Balancer Listener and default target group action, both specified as PROTOCOL:PORT. | map | - | yes |
 | listener_certificate_domain_name | HTTPS Listener certificate domain name. | string | `` | no |
+| listener_secondary_certificate_domain_name | HTTPS Listener secondary certificate domain name. | string | `` | no |
 | listener_ssl_policy | The name of the SSL Policy for HTTPS listeners. | string | `ELBSecurityPolicy-2016-08` | no |
 | load_balancer_type | The type of load balancer to create. Possible values are application or network. The default value is application. | string | `application` | no |
 | name | The name of the LB. This name must be unique within your AWS account, can have a maximum of 32 characters. | string | - | yes |
