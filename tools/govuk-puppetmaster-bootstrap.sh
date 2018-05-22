@@ -67,7 +67,7 @@ set -x
 
 # Get SSH key with ro access to all of alphagov (for govuk-secrets)
 set +x
-get_ssm_parameter 'govuk_base64_github.com_hostkey' | base64 -d > ${SSH_KEYSTORE}/${SSH_KEYNAME}
+get_ssm_parameter 'govuk_base64_github.com_ssh_readonly' | base64 -d > ${SSH_KEYSTORE}/${SSH_KEYNAME}
 chmod 600 ${SSH_KEYSTORE}/${SSH_KEYNAME}
 set -x
 
