@@ -113,6 +113,11 @@ The projects that need to be initially run in this way are:
 7. `infra-security-groups`
 8. `infra-database-backups-bucket`
 9. `infra-artefact-bucket`
+10. `infra-mirror-bucket`
+11. `infra-wal-e-warehouse-bucket`
+12. `infra-public-services`
+
+These are all on the "govuk" stack, with exception of the infra-stack-dns-zones, which is part of its respective stack ("blue" is the only current option). 
 
 ### Creating backend files for a new stack
 
@@ -125,115 +130,18 @@ encrypt = true
 region  = "<region>"
 ```
 
-
 ## Build the Puppet Master
 
-Puppet master is provisioned similarly to other Terraform projects but you'll need to make sure that you set the `ssh_public_key` value in `common/<environment>/<stack name>.tfvars` to the public portion of a key that you have the private portion of.
+Puppet master configuration/installation is triggered by a terraform userdata snippet which clones govuk-aws and executes tools/govuk-puppetmaster-bootstrap.sh.
 
-When you run the Terraform below, explicitly setting the `enable_bootstrap` variable will create an ELB which will allow you to SSH to the Puppetmaster.
+The script requires for secrets to be available to the blue-puppetmaster role in the AWS SSM parameter store in base64 encoding:
 
-```
-# Make sure STACKNAME, ENVIRONMENT and DATA_DIR are set, or use the -s, -e and -d options with the script to pass these values
-tools/build-terraform-project.sh -c plan -p app-puppetmaster -- -var 'enable_bootstrap=1'
-...terraform output...
-tools/build-terraform-project.sh -c apply -p app-puppetmaster -- -var 'enable_bootstrap=1'
-...terraform output...
-```
+- `github.com_public_host_ssh_key`, The public host key of github.com used to automatically clone repositories
+- `govuk_secrets_clone_ssh`, The private SSH key to allow access to github.com:alphagov/govuk-secrets
+- `govuk_staging_secrets_1_of_2_gpg`, First part of the GPG key. See below.
+- `govuk_staging_secrets_2_of_2_gpg`, Second part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters. 
 
-To test this you should be able to SSH to the puppet master using the Terraform output of the last command:
-```
-...Other Terraform output...
-
-Outputs:
-
-puppetmaster_bootstrap_elb_dns_name = <stack name>-puppetmaster-bootstrap-1234567890.eu-west-1.elb.amazonaws.com
-puppetmaster_internal_elb_dns_name = internal-<stack name>-puppetmaster-0987654321.eu-west-1.elb.amazonaws.com
-service_dns_name = puppet.<stack name>.<environment>.govuk-internal.digital
-
-export PUPPETMASTER_ELB=<stack name>-puppetmaster-bootstrap-1234567890.eu-west-1.elb.amazonaws.com
-ssh ubuntu@$PUPPETMASTER_ELB
-```
-
-## Build infra-public-services
-
-Before creating an application machines, build the `infra-public-services` project. This creates a set of CNAME DNS records that point the top level internal domain
-to the current live stack service.
-
-All services rely on the top level DNS records, so they must exist before we deploy any instances.
-infra-public-services depends on the instances being already created as it needs to populate the targets groups for the ALB, therefore it MUST be ran after all the others projects for the ALB to work at all.
-
-```
-tools/build-terraform-project.sh -c apply -p infra-public-services
-```
-
-## Deploy the Puppet code and secrets
-
-The GPG key for Integration is kept in the 2ndline password store under
-`hiera-eyaml-gpg/integration/private-key`. Decrypt it and save it to a file.
-
-You will also need to ensure the private part of the SSH key exists in
-`~/.ssh/`. This is in the Password Store under:
-
-`infra/govuk-aws-account/aws-migration-integration-keypair`
-
-Save it in `~/.ssh/aws-migration-integration-ssh_id.rsa` and ensure permissions
-are set to `0600`. Add it to your SSH agent with `ssh-add
-~/.ssh/aws-migration-integration-ssh_id.rsa`, so the script below can use it
-with `ssh-copy-id`.
-
-Now run these commands to initialise the puppet master:
-```
-cd tools
-bash -x ./aws-push-puppet.sh -e ${ENVIRONMENT} \
-                             -g <path to the gpg key> \
-                             -p <path to puppet repo> \
-                             -d <path to govuk-secrets repo> \
-                             -t $PUPPETMASTER_ELB
-ssh ubuntu@$PUPPETMASTER_ELB
-> sudo ./aws-copy-puppet-setup.sh -e integration -s <stack name>
-```
-
-Test that the Puppetmaster works with `puppet apply -e "notify {'hello world':}"`:
-
-```
-Notice: Compiled catalog for ip-10-1-2-123.eu-west-1.compute.internal in environment production in 0.02 seconds
-Notice: hello world
-Notice: /Stage[main]/Main/Notify[hello world]/message: defined 'message' as 'hello world'
-Notice: Finished catalog run in 0.01 seconds
-```
-
-**Note :**
-During the migration process (carrenza => AWS), we didn't encounter smooth puppetmaster deployments. Hence, we will give some symptoms and solutions that were identified.
-
-1. `puppetdb` Authentication failure.
-    - The actual error is slightly deceptive. The `puppet agent -t` command returned an error like the following.
-      ```
-      Error: Could not retrieve catalog from remote server: Error 400 on SERVER: Failed to submit 'replace facts' command for puppetmaster.example.com to PuppetDB at puppetmaster.example.com:8081: Connection refused....
-      ```
-      You might find this among the myriad of other errors. The other errors are a continuation of other stages failing due to this core error.
-    - The second place you can check would be. `/var/log/puppetdb/puppetdb.log`. If you see an error similar to the following, then you can almost be certain that you are experiencing the same issue referenced here.
-      ```
-      ERROR [c.j.b.PoolWatchThread] Error in trying to obtain a connection. Retrying in 7000ms
-      ```
-      ```
-      org.postgresql.util.PSQLException: FATAL: password authentication failed for user "puppetdb"....
-      ```
-    - You can do a final confirmation by actually checking postgresql.
-      - Login to postgresql. `sudo -u postgres psql postgres`
-      - List databases. `postgres=# \l`. [You are looking for `puppetdb`]
-      - List users. `postgres=# \du`. [You are looking for `puppetdb`]
-      - If puppetdb user and database doesn't exist , then continue.
-
-    - **Solution**
-      - Execute `gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme` [**As sudo**]
-      - Execute
-        ```
-        puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp
-        ``` 
-        [**As sudo**]
-      - Execute. `puppet agent -t`
-      - This should fix the above mentioned issue. Also, check the database for `puppetdb`. 
-        
+If Puppet master is rebuild (i.e. clients to already have certificates in place) it is then required to cycle the Puppet certificates by deleting the directory /etc/puppet/ssl and run `sudo puppet agent -t` on all nodes before issuing `puppet cert sign --all` on the Puppet master.  
 
 ## Build the jumpbox
 
@@ -244,19 +152,6 @@ deleted the Puppetmaster's ELB.
 tools/build-terraform-project.sh -p app-jumpbox -c plan
 ...terraform output...
 tools/build-terraform-project.sh -p app-jumpbox -c apply
-```
-
-## Remove the Puppetmaster bootstrap ELB
-
-Run the Terraform again for the Puppetmaster, and removing the variable should
-destroy the load balancer and security groups, leaving access to the
-environment via SSH only available via the jumpbox.
-
-```
-tools/build-terraform-project.sh -c plan -p app-puppetmaster
-...terraform output...
-tools/build-terraform-project.sh -c apply -p app-puppetmaster
-...terraform output...
 ```
 
 ## Build the deploy Jenkins
