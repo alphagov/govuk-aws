@@ -124,3 +124,16 @@ resource "aws_security_group_rule" "backend-redis_ingress_db-admin_redis" {
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.db-admin.id}"
 }
+
+resource "aws_security_group_rule" "backend-redis_ingress_frontend_redis" {
+  type      = "ingress"
+  from_port = 6379
+  to_port   = 6379
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.backend-redis.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.frontend.id}"
+}
