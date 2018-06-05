@@ -19,6 +19,7 @@ Create an RDS instance
 | event_categories | A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html | list | `<list>` | no |
 | event_sns_topic_arn | The SNS topic to send events to. | string | `` | no |
 | instance_class | The instance type of the RDS instance. | string | `db.t1.micro` | no |
+| instance_name | The RDS Instance Name. | string | `` | no |
 | maintenance_window | The window to perform maintenance in. | string | `Mon:04:00-Mon:06:00` | no |
 | multi_az | Specifies if the RDS instance is multi-AZ | string | `false` | no |
 | name | The common name for all the resources created by this module | string | - | yes |

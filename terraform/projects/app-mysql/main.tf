@@ -19,6 +19,12 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "instance_name" {
+  type        = "string"
+  description = "The RDS Instance Name."
+  default     = ""
+}
+
 variable "cloudwatch_log_retention" {
   type        = "string"
   description = "Number of days to retain Cloudwatch logs for"
@@ -56,6 +62,7 @@ provider "aws" {
 module "mysql_primary_rds_instance" {
   source               = "../../modules/aws/rds_instance"
   name                 = "${var.stackname}-mysql-primary"
+  instance_name        = "${var.stackname}-mysql-primary"
   engine_name          = "mysql"
   engine_version       = "5.6"
   default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
@@ -121,6 +128,7 @@ module "mysql_replica_rds_instance" {
   name                       = "${var.stackname}-mysql-replica"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-replica")}"
   instance_class             = "db.m4.xlarge"
+  instance_name              = "${var.stackname}-mysql-replica"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-replica_id}"]
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.mysql_primary_rds_instance.rds_instance_id}"
