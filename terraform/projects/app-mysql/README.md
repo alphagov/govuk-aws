@@ -33,3 +33,10 @@ RDS Mysql Primary instance
 | mysql_replica_address | Mysql instance address |
 | mysql_replica_endpoint | Mysql instance endpoint |
 
+## Monitoring
+We can monitor AWS RDS Instances via Icinga. This can be done by adding the instance name inside the 'hieradata_aws/common.yaml' file in the GOV.UK Pupet repository, under the 'monitoring::checks::rds::servers:'.
+
+If you do need additional matics to be checked, you will have to add some additional files to the GOV.UK Puppet repository.
+1) Create a plugin [ inside modules/monitoring/files/usr/lib/nagios/plugins/].
+2) We have to specify the command format. [ inside modules/monitoring/files/etc/nagios3/conf.d/]
+3) We have to create a puppet class that will map the plugin to the command. Also, here you will be able to create a "config" file that will provide the alert values to the command. [inside modules/monitoring/manifests/checks/]
