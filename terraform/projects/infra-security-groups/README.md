@@ -38,6 +38,9 @@ Manage the security groups for the entire infrastructure
 | sg_cache_id |  |
 | sg_calculators-frontend_elb_id |  |
 | sg_calculators-frontend_id |  |
+| sg_ckan_elb_external_id |  |
+| sg_ckan_elb_internal_id |  |
+| sg_ckan_id |  |
 | sg_content-store_external_elb_id |  |
 | sg_content-store_id |  |
 | sg_content-store_internal_elb_id |  |

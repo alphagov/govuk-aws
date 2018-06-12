@@ -74,6 +74,18 @@ output "sg_calculators-frontend_id" {
   value = "${aws_security_group.calculators-frontend.id}"
 }
 
+output "sg_ckan_elb_internal_id" {
+  value = "${aws_security_group.ckan_elb_internal.id}"
+}
+
+output "sg_ckan_elb_external_id" {
+  value = "${aws_security_group.ckan_elb_external.id}"
+}
+
+output "sg_ckan_id" {
+  value = "${aws_security_group.ckan.id}"
+}
+
 output "sg_content-store_external_elb_id" {
   value = "${aws_security_group.content-store_external_elb.id}"
 }
