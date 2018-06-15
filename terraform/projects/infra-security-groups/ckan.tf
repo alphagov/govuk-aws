@@ -2,7 +2,7 @@
 # == Manifest: Project: Security Groups: ckan
 #
 # CKAN needs to be accessible on ports:
-#   - 443 from its ELB
+#   - 80 from its ELB
 #
 # === Variables:
 # stackname - string
