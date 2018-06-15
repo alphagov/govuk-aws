@@ -67,6 +67,16 @@ variable "cache_public_service_cnames" {
   default = []
 }
 
+variable "ckan_public_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "ckan_public_service_cnames" {
+  type    = "list"
+  default = []
+}
+
 variable "deploy_public_service_names" {
   type    = "list"
   default = []
@@ -163,6 +173,16 @@ variable "calculators_frontend_internal_service_names" {
 }
 
 variable "calculators_frontend_internal_service_cnames" {
+  type    = "list"
+  default = []
+}
+
+variable "ckan_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "ckan_internal_service_cnames" {
   type    = "list"
   default = []
 }
@@ -612,6 +632,84 @@ resource "aws_route53_record" "calculators_frontend_internal_service_cnames" {
   name    = "${element(var.calculators_frontend_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.calculators_frontend_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# CKAN
+#
+
+module "ckan_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-ckan-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-ckan-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
+  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_ckan_elb_external_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                               = "${map("Project", var.stackname, "aws_migration", "ckan", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_route53_record" "ckan_public_service_names" {
+  count   = "${length(var.ckan_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.ckan_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.ckan_public_lb.lb_dns_name}"
+    zone_id                = "${module.ckan_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "ckan_public_service_cnames" {
+  count   = "${length(var.ckan_public_service_cnames)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.ckan_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.ckan_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
+  ttl     = "300"
+}
+
+data "aws_autoscaling_groups" "ckan" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["blue-ckan"]
+  }
+}
+
+resource "aws_autoscaling_attachment" "ckan_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.ckan.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.ckan.names, 0)}"
+  alb_target_group_arn   = "${element(module.ckan_public_lb.target_group_arns, 0)}"
+}
+
+resource "aws_route53_record" "ckan_internal_service_names" {
+  count   = "${length(var.ckan_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.ckan_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.ckan_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+resource "aws_route53_record" "ckan_internal_service_cnames" {
+  count   = "${length(var.ckan_internal_service_cnames)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.ckan_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.ckan_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
