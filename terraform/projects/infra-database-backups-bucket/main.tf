@@ -40,6 +40,12 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "backup_source_bucket" {
+  type        = "string"
+  description = "This variable is used to pass the backup bucket that is used to get the data (from production)."
+  default     = ""
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}

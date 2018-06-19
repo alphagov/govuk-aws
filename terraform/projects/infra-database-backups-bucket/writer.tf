@@ -25,16 +25,20 @@ data "aws_iam_policy_document" "database_backups_writer" {
 
     # In theory  should work but it doesn't so use * instead
     resources = [
-      "arn:aws:s3:::*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
     ]
   }
 
   statement {
-    sid     = "WriteGovukDatabaseBackups"
-    actions = ["s3:*"]
+    sid = "WriteGovukDatabaseBackups"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+    ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*",
     ]
   }
