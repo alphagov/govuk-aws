@@ -34,6 +34,11 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "s3_bucket_read_ips" {
+  type        = "list"
+  description = "Additional IPs to allow read access from"
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
