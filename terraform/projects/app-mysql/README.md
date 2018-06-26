@@ -20,6 +20,7 @@ RDS Mysql Primary instance
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | snapshot_identifier | Specifies whether or not to create the database from this snapshot | string | `` | no |
 | stackname | Stackname | string | - | yes |
+| storage_size | Defines the AWS RDS storage capacity, in gigabytes. | string | `30` | no |
 | username | Mysql username | string | - | yes |
 
 ## Outputs
