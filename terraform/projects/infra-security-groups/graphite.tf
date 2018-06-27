@@ -75,6 +75,19 @@ resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_pickl
   source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
 }
 
+resource "aws_security_group_rule" "graphite_ingress_graphite_internal_elb_https" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.graphite.id}"
+}
+
 resource "aws_security_group" "graphite_external_elb" {
   name        = "${var.stackname}_graphite_external_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
