@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-production"
+key     = "govuk/infra-govuk-cdn-logs-monitor-bucket.tfstate"
+encrypt = true
+region  = "eu-west-1"
