@@ -47,6 +47,19 @@ resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_n
   source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
 }
 
+resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_ssh" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.monitoring.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
+}
+
 resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_http" {
   type      = "ingress"
   from_port = 80
@@ -117,6 +130,16 @@ resource "aws_security_group_rule" "monitoring-internal-elb_ingress_management_h
 
   security_group_id        = "${aws_security_group.monitoring_internal_elb.id}"
   source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "monitoring-internal-elb_ingress_jumpbox_ssh" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.monitoring_internal_elb.id}"
+  source_security_group_id = "${aws_security_group.jumpbox.id}"
 }
 
 resource "aws_security_group_rule" "monitoring-internal-elb_egress_any_any" {
