@@ -71,9 +71,9 @@ data "aws_acm_certificate" "elb_internal_cert" {
 resource "aws_elb" "prometheus_external_elb" {
   name            = "${var.stackname}-prometheus-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups =
-["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
-  internal        = "false"
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
+
+  internal = "false"
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
@@ -136,9 +136,9 @@ resource "aws_route53_record" "grafana_external_service_record" {
 resource "aws_elb" "prometheus_internal_elb" {
   name            = "${var.stackname}-prometheus-internal"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups =
-["${data.terraform_remote_state.infra_security_groups.sg_prometheus_internal_elb_id}"]
-  internal        = "true"
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_internal_elb_id}"]
+
+  internal = "true"
 
   access_logs {
     bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
@@ -200,13 +200,15 @@ resource "aws_route53_record" "prometheus_internal_service_record" {
 }
 
 module "prometheus-1" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-prometheus-1"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
+  source       = "../../modules/aws/node_group"
+  name         = "${var.stackname}-prometheus-1"
+  vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
 var.aws_environment, "aws_migration", "promtheus", "aws_hostname", "prometheus-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
+
+  instance_subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
 keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
+
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.micro"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
