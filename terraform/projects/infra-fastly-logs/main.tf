@@ -487,6 +487,174 @@ resource "aws_glue_catalog_table" "govuk_assets" {
   }
 }
 
+resource "aws_glue_crawler" "bouncer" {
+  name          = "Bouncer fastly logs"
+  description   = "Crawls the bouncer logs from fastly for allowing Athena querying"
+  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
+  role          = "${aws_iam_role.glue.name}"
+  schedule      = "cron(30 */4 * * ? *)"
+
+  s3_target {
+    path = "s3://${aws_s3_bucket.fastly_logs.bucket}/bouncer"
+  }
+
+  schema_change_policy {
+    delete_behavior = "DELETE_FROM_DATABASE"
+    update_behavior = "LOG"
+  }
+
+  configuration  = <<EOF
+{
+  "Version": 1.0,
+  "CrawlerOutput": {
+    "Partitions": {
+      "AddOrUpdateBehavior": "InheritFromTable"
+    }
+  }
+}
+EOF
+}
+
+resource "aws_glue_catalog_table" "bouncer" {
+  name          = "bouncer"
+  description   = "Maps the tab-seperated value log file to columns"
+  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
+  table_type    = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    compressed    = true
+    location      = "s3://${aws_s3_bucket.fastly_logs.bucket}/bouncer/"
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      name = "ser_de_name"
+      parameters {
+        field.delim = "\t"
+      }
+      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+    }
+
+    // These columns corellate with the log format set up in Fastly which is:
+    // %{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t\t%{%z}t\t%m\t%{Host}i\t%{req.url}V\t%>s\t%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V\t%{time.to_first_byte}V\t%{Location}o\t%{User-Agent}i\t%{Fastly-Backend-Name}o\t%{server.datacenter}V\t%{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V\t%{tls.client.protocol}V\t%{tls.client.cipher}V
+    columns = [
+      // %{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t
+      {
+        name    = "request_received",
+        type    = "timestamp",
+        comment = "Time we received the request"
+      },
+      // This field is separate from the timestamp above as the Presto version
+      // on AWS Athena doesn't support timestamps - expectation is that this is
+      // always +0000 though
+      // %{%z}t
+      {
+        name    = "request_received_offset",
+        type    = "string",
+        comment = "Time offset of the request, expected to be +0000 always"
+      },
+      // %m
+      {
+        name    = "method",
+        type    = "string"
+        comment = "HTTP method for this request"
+      },
+      // %{Host}i
+      {
+        name    = "request_host"
+        type    = "string",
+        comment = "Host that was requested"
+      },
+      // %{req.url}V
+      {
+        name    = "url",
+        type    = "string",
+        comment = "URL requested with query string"
+      },
+      // %>s
+      {
+        name    = "status",
+        type    = "int",
+        comment = "HTTP status code returned"
+      },
+      // $%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V
+      {
+        name    = "request_time",
+        type    = "float",
+        comment = "Time until user received full response in seconds"
+      },
+      // %{time.to_first_byte}V
+      {
+        name    = "time_to_generate_response",
+        type    = "float",
+        comment = "Time spent generating a response for varnish, in seconds"
+      },
+      // %{Location}o
+      {
+        name    = "redirect_location",
+        type    = "string",
+        comment = "HTTP Location header returned, if any"
+      },
+      // %{User-Agent}i
+      {
+        name    = "user_agent",
+        type    = "string",
+        comment = "User agent that made the request"
+      },
+      // %{Fastly-Backend-Name}o
+      {
+        name    = "fastly_backend",
+        type    = "string",
+        comment = "Name of the backend that served this request"
+      },
+      // %{server.datacenter}V
+      {
+        name    = "fastly_data_centre",
+        type    = "string",
+        comment = "Name of the data centre that served this request"
+      },
+      // %{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V
+      {
+        name    = "cache_hit",
+        type    = "string",
+        comment = "HIT or MISS as to whether this was served from Fastly cache"
+      },
+      // %{tls.client.protocol}V
+      {
+        name = "tls_client_protocol",
+        type = "string"
+      },
+      // %{tls.client.cipher}V
+      {
+        name = "tls_client_cipher",
+        type = "string"
+      }
+    ]
+  }
+
+  // these correspond to directory ordering of:
+  // /year=YYYY/month=MM/date=DD/file.log.gz
+  partition_keys = [
+    {
+      name = "year"
+      type = "int"
+    },
+    {
+      name = "month"
+      type = "int"
+    },
+    {
+      name = "date"
+      type = "int"
+    }
+  ]
+
+  parameters {
+    classification  = "csv"
+    compressionType = "gzip"
+    delimiter       = "\t"
+  }
+}
 # Outputs
 # --------------------------------------------------------------
 
