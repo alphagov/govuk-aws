@@ -1,4 +1,4 @@
-/**
+/*
 * ## Project: infr-prometheus
 *
 * Prometheus node
@@ -30,11 +30,6 @@ variable "prometheus_1_subnet" {
   description = "Name of the subnet to place the Prometheus instance and EBS volume"
 }
 
-variable "elb_external_certname" {
-  type        = "string"
-  description = "The ACM cert domain name to find the ARN of"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -57,7 +52,7 @@ data "aws_acm_certificate" "elb_internal_cert" {
   statuses = ["ISSUED"]
 }
 
-resource "aws_elb" "prometheus_external_elb" {
+aesource "aws_elb" "prometheus_external_elb" {
   name            = "${var.stackname}-prometheus-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
@@ -106,18 +101,6 @@ resource "aws_route53_record" "prometheus_external_service_record" {
   alias {
     name                   = "${aws_elb.prometheus_external_elb.dns_name}"
     zone_id                = "${aws_elb.prometheus.prometheus_external_elb.zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-resource "aws_route53_record" "grafana_external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "grafana.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.prometheus_external_elb.dns_name}"
-    zone_id                = "${aws_elb.prometheus_external_elb.zone_id}"
     evaluate_target_health = true
   }
 }
