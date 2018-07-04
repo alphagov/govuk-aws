@@ -107,6 +107,13 @@ resource "aws_elb" "monitoring_internal_elb" {
   internal        = "true"
 
   listener {
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
+  }
+
+  listener {
     instance_port     = 5667
     instance_protocol = "tcp"
     lb_port           = 5667
