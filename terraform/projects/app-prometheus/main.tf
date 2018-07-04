@@ -1,5 +1,5 @@
 /*
-* ## Project: infr-prometheus
+* ## Project: app-prometheus
 *
 * Prometheus node
 */
@@ -30,7 +30,7 @@ variable "prometheus_1_subnet" {
   description = "Name of the subnet to place the Prometheus instance and EBS volume"
 }
 
-variable "elb_external_cert" {
+variable "elb_external_certname" {
   type        = "string"
   description = "Name of the name of domain" 
 }
@@ -101,7 +101,7 @@ resource "aws_route53_record" "prometheus_external_service_record" {
 
   alias {
     name                   = "${aws_elb.prometheus_external_elb.dns_name}"
-    zone_id                = "${aws_elb.prometheus.prometheus_external_elb.zone_id}"
+    zone_id                = "${aws_elb.prometheus_external_elb.zone_id}"
     evaluate_target_health = true
   }
 }
