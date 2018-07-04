@@ -28,7 +28,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.14.0"
+  version = "1.25.0"
 }
 
 resource "aws_s3_bucket" "fastly_logs" {
@@ -69,6 +69,60 @@ data "template_file" "logs_writer_policy_template" {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.fastly_logs.id}"
   }
+}
+
+resource "aws_glue_catalog_database" "fastly_logs" {
+  name        = "fastly_logs"
+  description = "Used to browse the CDN log files that Fastly sends"
+}
+
+resource "aws_iam_role_policy_attachment" "aws-glue-service-role-service-attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+  role       = "${aws_iam_role.glue.name}"
+}
+
+resource "aws_iam_role" "glue" {
+  name               = "AWSGlueServiceRole-fastly-logs"
+  // I did want to set a path of /service-role/ here but that seems to break
+  // creating the crawler
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "glue.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "fastly_logs_policy" {
+  name = "govuk-${var.aws_environment}-fastly-logs-glue-policy"
+  role = "${aws_iam_role.glue.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${aws_s3_bucket.fastly_logs.id}",
+        "arn:aws:s3:::${aws_s3_bucket.fastly_logs.id}/*"
+      ]
+    }
+  ]
+}
+EOF
 }
 
 # Outputs
