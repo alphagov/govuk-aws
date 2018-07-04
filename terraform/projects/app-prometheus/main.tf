@@ -30,6 +30,12 @@ variable "prometheus_1_subnet" {
   description = "Name of the subnet to place the Prometheus instance and EBS volume"
 }
 
+variable "elb_external_cert" {
+  type        = "string"
+  description = "Name of the name of domain" 
+}
+
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -47,12 +53,7 @@ data "aws_acm_certificate" "elb_external_cert" {
   statuses = ["ISSUED"]
 }
 
-data "aws_acm_certificate" "elb_internal_cert" {
-  domain   = "${var.elb_internal_certname}"
-  statuses = ["ISSUED"]
-}
-
-aesource "aws_elb" "prometheus_external_elb" {
+resource "aws_elb" "prometheus_external_elb" {
   name            = "${var.stackname}-prometheus-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
@@ -118,8 +119,8 @@ keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.micro"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.prometheus_internal_elb.id}", "${aws_elb.prometheus_external_elb.id}"]
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.prometheus_external_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
