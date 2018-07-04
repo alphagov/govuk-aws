@@ -125,6 +125,124 @@ resource "aws_iam_role_policy" "glue_policy" {
 EOF
 }
 
+resource "aws_glue_crawler" "email_archive" {
+  name          = "Email Alert API Archive"
+  description   = "Crawls the JSON logs provided by Email Alert API"
+  database_name = "${aws_glue_catalog_database.email_archive.name}"
+  role          = "${aws_iam_role.glue.name}"
+  schedule      = "cron(30 */4 * * ? *)"
+
+  s3_target {
+    path = "s3://${aws_s3_bucket.email_alert_api_archive.bucket}/email-archive"
+  }
+
+  schema_change_policy {
+    delete_behavior = "DEPRECATE_IN_DATABASE"
+    update_behavior = "LOG"
+  }
+
+  configuration = <<EOF
+{
+  "Version": 1.0,
+  "CrawlerOutput": {
+    "Partitions": {
+      "AddOrUpdateBehavior": "InheritFromTable"
+    }
+  }
+}
+EOF
+}
+
+resource "aws_glue_catalog_table" "email_archive" {
+  name          = "email_archive"
+  description   = "Maps the JSON output to a database schema"
+  database_name = "${aws_glue_catalog_database.email_archive.name}"
+  table_type    = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    compressed    = true
+    location      = "s3://${aws_s3_bucket.email_alert_api_archive.bucket}/email-archive/"
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      name = "ser_de_name"
+
+      parameters {
+        paths = "archived_at_utc,content_change,created_at_utc,finished_sending_at_utc,id,sent,subject,subscriber_id"
+      }
+
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+    }
+
+    columns = [
+      {
+        name    = "id"
+        type    = "string"
+        comment = "UUID that corresponds with the entry in the email table"
+      },
+      {
+        name    = "finished_sending_at_utc"
+        type    = "timestamp"
+        comment = "Time the email was sent or when we aborted trying to send the email"
+      },
+      {
+        name    = "sent"
+        type    = "boolean"
+        comment = "Whether the email was sent or not"
+      },
+      {
+        name    = "subscriber_id"
+        type    = "string"
+        comment = "UUID of the subscriber assoicated with this Email if any"
+      },
+      {
+        name    = "subject"
+        type    = "string"
+        comment = "Subject of the Email"
+      },
+      {
+        name    = "content_change"
+        type    = "struct<content_change_ids:array<string>,digest_run_id:int,subscription_ids:array<string>>"
+        comment = "Data specifically associated with a content change. Present if this email was sent for one"
+      },
+      {
+        name    = "created_at_utc"
+        type    = "timestamp"
+        comment = "Time the email was generated in Email Alert API"
+      },
+      {
+        name    = "archived_at_utc"
+        type    = "timestamp"
+        comment = "Time that this Email was archvied"
+      },
+    ]
+  }
+
+  // these correspond to directory ordering of:
+  // /year=YYYY/month=MM/date=DD/file.json.gz
+  partition_keys = [
+    {
+      name = "year"
+      type = "int"
+    },
+    {
+      name = "month"
+      type = "int"
+    },
+    {
+      name = "date"
+      type = "int"
+    },
+  ]
+
+  parameters {
+    classification  = "json"
+    compressionType = "gzip"
+    typeOfData      = "file"
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
