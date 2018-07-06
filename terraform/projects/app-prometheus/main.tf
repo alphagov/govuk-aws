@@ -111,7 +111,7 @@ module "prometheus-1" {
   name         = "${var.stackname}-prometheus-1"
   vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
-var.aws_environment, "aws_migration", "promtheus", "aws_hostname", "prometheus-1")}"
+var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1")}"
 
   instance_subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
 keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
