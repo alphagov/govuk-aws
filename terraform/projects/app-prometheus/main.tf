@@ -19,11 +19,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "instance_ami_filter_name" {
-  type        = "string"
-  description = "Name to use to find AMI images"
-  default     = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180522"
-}
+# variable "instance_ami_filter_name" {
+#   type        = "string"
+#   description = "Name to use to find AMI images"
+#   default     = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180522"
+# }
 
 variable "prometheus_1_subnet" {
   type        = "string"
@@ -121,7 +121,8 @@ keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.prometheus_external_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+# DP   instance_elb_ids              = ["${aws_elb.prometheus_external_elb.id}"]
+  instance_ami_filter_name      = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180522"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
