@@ -193,8 +193,8 @@ resource "aws_glue_catalog_table" "email_archive" {
       },
       {
         name    = "subscriber_id"
-        type    = "string"
-        comment = "UUID of the subscriber assoicated with this Email if any"
+        type    = "bigint"
+        comment = "ID which corresponds with the entry in the subscribers table in Email Alert API"
       },
       {
         name    = "subject"
