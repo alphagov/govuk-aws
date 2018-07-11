@@ -62,6 +62,12 @@ variable "instance_class" {
   default     = "db.t1.micro"
 }
 
+variable "instance_name" {
+  type        = "string"
+  description = "The RDS Instance Name."
+  default     = ""
+}
+
 variable "security_group_ids" {
   type        = "list"
   description = "Security group IDs to apply to this cluster"
@@ -186,6 +192,7 @@ resource "aws_db_instance" "db_instance_replica" {
   count = "${var.create_replicate_source_db}"
 
   instance_class         = "${var.instance_class}"
+  identifier             = "${var.instance_name}"
   storage_type           = "${var.storage_type}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
@@ -215,6 +222,7 @@ resource "aws_db_instance" "db_instance" {
   password                = "${var.password}"
   allocated_storage       = "${var.allocated_storage}"
   instance_class          = "${var.instance_class}"
+  identifier              = "${var.instance_name}"
   storage_type            = "${var.storage_type}"
   db_subnet_group_name    = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids  = ["${var.security_group_ids}"]

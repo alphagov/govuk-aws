@@ -19,6 +19,12 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "instance_name" {
+  type        = "string"
+  description = "The RDS Instance Name."
+  default     = ""
+}
+
 variable "cloudwatch_log_retention" {
   type        = "string"
   description = "Number of days to retain Cloudwatch logs for"
@@ -70,6 +76,7 @@ module "transition-postgresql-primary_rds_instance" {
   password            = "${var.password}"
   allocated_storage   = "120"
   instance_class      = "db.m4.large"
+  instance_name       = "${var.stackname}-transition-postgresql-primary"
   multi_az            = "${var.multi_az}"
   security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
   event_sns_topic_arn = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
@@ -90,6 +97,7 @@ module "transition-postgresql-standby_rds_instance" {
   name                       = "${var.stackname}-transition-postgresql-standby"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_standby")}"
   instance_class             = "db.m4.large"
+  instance_name              = "${var.stackname}-transition-postgresql-standby"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
