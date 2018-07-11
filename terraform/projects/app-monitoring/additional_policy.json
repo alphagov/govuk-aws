@@ -10,7 +10,21 @@
                 "ec2:AttachVolume",
                 "ec2:DetachVolume",
                 "ec2:DescribeVolumeStatus",
-                "ec2:DescribeVolumes"
+                "ec2:DescribeVolumes",
+                "ec2:DescribeAvailabilityZones",
+                "rds:Describe*",
+                "rds:ListTagsForResource",
+                "elasticache:Describe*",
+                "cloudwatch:DescribeAlarmHistory",
+                "cloudwatch:GetDashboard",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:DescribeAlarmsForMetric",
+                "cloudwatch:ListDashboards",
+                "cloudwatch:DescribeAlarms",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents"
             ],
             "Resource": [
                 "*"
