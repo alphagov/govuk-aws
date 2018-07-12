@@ -195,7 +195,6 @@ resource "aws_s3_bucket_policy" "govuk-artefact-bucket-policy" {
             "Principal": {
                 "AWS": [
                          "arn:aws:iam::${var.aws_account_id}:root",
-                         "arn:aws:iam::${var.aws_account_id}:role/${var.deployer_role}",
                          "arn:aws:iam::${var.aws_s3_access_account}:root"
 ]
             },
