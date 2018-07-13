@@ -178,29 +178,46 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters {
-        field.delim = "\t"
+        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
       }
 
-      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
     }
 
-    // These columns corellate with the log format set up in Fastly which is:
-    // %h\t%u\t%{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t\t%{%z}t\t%m\t%{req.url}V\t%>s\tv$%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V\t%{time.to_first_byte}V\t%B\t%{Content-Type}o\t%{User-Agent}i\t%{Fastly-Backend-Name}o\t%{server.datacenter}V\t%{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V\t%{tls.client.protocol}V\t%{tls.client.cipher}V
+    // These columns corellate with the log format set up in Fastly as below
+    //
+    // Note: regsuball(field, "(\\\\|%22)", "\\\\\\1") is used instead of the
+    // fastly provided cstr_escape(field) as we kept having problems with
+    // malformed JSON with UTF8 characters coming out as \x. The masses of
+    // slashes are for fastly escaping which actually comes out as
+    // regsuball(field, "(\\|%22)", "\\\1") in the VCL - %22 is varnish code
+    // for a double quote (")
+    //
+    // {
+    // "client_ip":"%{regsuball(client.ip, "(\\\\|%22)", "\\\\\\1")}V",
+    // "request_received":"%{begin:%Y-%m-%d %H:%M:%S.}t%{time.start.msec_frac}V",
+    // "request_received_offset":"%{begin:%z}t",
+    // "method":"%{regsuball(req.method, "(\\\\|%22)", "\\\\\\1")}V",
+    // "url":"%{regsuball(req.url, "(\\\\|%22)", "\\\\\\1")}V",
+    // "status":%>s,
+    // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
+    // "time_to_generate_response":%{time.to_first_byte}V,
+    // "bytes":%B,
+    // "content_type":"%{regsuball(resp.http.Content-Type, "(\\\\|%22)", "\\\\\\1")}V",
+    // "user_agent":"%{regsuball(req.http.User-Agent, "(\\\\|%22)", "\\\\\\1")}V",
+    // "fastly_backend":"%{regsuball(resp.http.Fastly-Backend-Name, "(\\\\|%22)", "\\\\\\1")}V",
+    // "data_centre":"%{regsuball(server.datacenter, "(\\\\|%22)", "\\\\\\1")}V",
+    // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
+    // "tls_client_protocol":"%{regsuball(tls.client.protocol, "(\\\\|%22)", "\\\\\\1")}V",
+    // "tls_client_cipher":"%{regsuball(tls.client.cipher, "(\\\\|%22)", "\\\\\\1")}V"
+    // }
     columns = [
       {
-        // %h
-        name    = "remote_host"
+        name    = "client_ip"
         type    = "string"
-        comment = "Host that made this request, most likely an IP address"
+        comment = "IP address of the client that made the request"
       },
       {
-        // %u
-        name    = "remote_user"
-        type    = "string"
-        comment = "Basic auth user for this request"
-      },
-      {
-        // %{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t
         name    = "request_received"
         type    = "timestamp"
         comment = "Time we received the request"
@@ -209,85 +226,71 @@ resource "aws_glue_catalog_table" "govuk_www" {
         // This field is separate from the timestamp above as the Presto version
         // on AWS Athena doesn't support timestamps - expectation is that this is
         // always +0000 though
-        // %{%z}t
         name = "request_received_offset"
 
         type    = "string"
         comment = "Time offset of the request, expected to be +0000 always"
       },
       {
-        // %m
         name    = "method"
         type    = "string"
         comment = "HTTP method for this request"
       },
       {
-        // %{req.url}V
         name    = "url"
         type    = "string"
         comment = "URL requested with query string"
       },
       {
-        // %>s
         name    = "status"
         type    = "int"
         comment = "HTTP status code returned"
       },
       {
-        // $%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V
         name    = "request_time"
-        type    = "float"
+        type    = "double"
         comment = "Time until user received full response in seconds"
       },
       {
-        // %{time.to_first_byte}V
         name    = "time_to_generate_response"
-        type    = "float"
+        type    = "double"
         comment = "Time spent generating a response for varnish, in seconds"
       },
       {
-        // %B
         name    = "bytes"
         type    = "bigint"
         comment = "Number of bytes returned"
       },
       {
-        // %{Content-Type}o
         name    = "content_type"
         type    = "string"
         comment = "HTTP Content-Type header returned"
       },
       {
-        // %{User-Agent}i
         name    = "user_agent"
         type    = "string"
         comment = "User agent that made the request"
       },
       {
-        // %{Fastly-Backend-Name}o
         name    = "fastly_backend"
         type    = "string"
         comment = "Name of the backend that served this request"
       },
       {
-        // %{server.datacenter}V
-        name    = "fastly_data_centre"
+        name    = "data_centre"
         type    = "string"
         comment = "Name of the data centre that served this request"
       },
       {
-        // %{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V
         name    = "cache_hit"
-        type    = "string"
-        comment = "HIT or MISS as to whether this was served from Fastly cache"
+        type    = "boolean"
+        comment = "Whether this was served from cache or not"
       },
       {
-        // %{tls.client.protocol}V
         name = "tls_client_protocol"
         type = "string"
       },
       {
-        // %{tls.client.cipher}V
         name = "tls_client_cipher"
         type = "string"
       },
@@ -312,9 +315,9 @@ resource "aws_glue_catalog_table" "govuk_www" {
   ]
 
   parameters {
-    classification  = "csv"
+    classification  = "json"
     compressionType = "gzip"
-    delimiter       = "\t"
+    typeOfDate      = "file"
   }
 }
 
@@ -362,29 +365,46 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters {
-        field.delim = "\t"
+        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
       }
 
-      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
     }
 
-    // These columns corellate with the log format set up in Fastly which is:
-    // %h\t%u\t%{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t\t%{%z}t\t%m\t%{req.url}V\t%>s\tv$%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V\t%{time.to_first_byte}V\t%B\t%{Content-Type}o\t%{User-Agent}i\t%{Fastly-Backend-Name}o\t%{server.datacenter}V\t%{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V\t%{tls.client.protocol}V\t%{tls.client.cipher}V
+    // These columns corellate with the log format set up in Fastly as below
+    //
+    // Note: regsuball(field, "(\\\\|%22)", "\\\\\\1") is used instead of the
+    // fastly provided cstr_escape(field) as we kept having problems with
+    // malformed JSON with UTF8 characters coming out as \x. The masses of
+    // slashes are for fastly escaping which actually comes out as
+    // regsuball(field, "(\\|%22)", "\\\1") in the VCL - %22 is varnish code
+    // for a double quote (")
+    //
+    // {
+    // "client_ip":"%{regsuball(client.ip, "(\\\\|%22)", "\\\\\\1")}V",
+    // "request_received":"%{begin:%Y-%m-%d %H:%M:%S.}t%{time.start.msec_frac}V",
+    // "request_received_offset":"%{begin:%z}t",
+    // "method":"%{regsuball(req.method, "(\\\\|%22)", "\\\\\\1")}V",
+    // "url":"%{regsuball(req.url, "(\\\\|%22)", "\\\\\\1")}V",
+    // "status":%>s,
+    // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
+    // "time_to_generate_response":%{time.to_first_byte}V,
+    // "bytes":%B,
+    // "content_type":"%{regsuball(resp.http.Content-Type, "(\\\\|%22)", "\\\\\\1")}V",
+    // "user_agent":"%{regsuball(req.http.User-Agent, "(\\\\|%22)", "\\\\\\1")}V",
+    // "fastly_backend":"%{regsuball(resp.http.Fastly-Backend-Name, "(\\\\|%22)", "\\\\\\1")}V",
+    // "data_centre":"%{regsuball(server.datacenter, "(\\\\|%22)", "\\\\\\1")}V",
+    // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
+    // "tls_client_protocol":"%{regsuball(tls.client.protocol, "(\\\\|%22)", "\\\\\\1")}V",
+    // "tls_client_cipher":"%{regsuball(tls.client.cipher, "(\\\\|%22)", "\\\\\\1")}V"
+    // }
     columns = [
       {
-        // %h
-        name    = "remote_host"
+        name    = "client_ip"
         type    = "string"
-        comment = "Host that made this request, most likely an IP address"
+        comment = "IP address of the client that made the request"
       },
       {
-        // %u
-        name    = "remote_user"
-        type    = "string"
-        comment = "Basic auth user for this request"
-      },
-      {
-        // %{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t
         name    = "request_received"
         type    = "timestamp"
         comment = "Time we received the request"
@@ -393,85 +413,71 @@ resource "aws_glue_catalog_table" "govuk_assets" {
         // This field is separate from the timestamp above as the Presto version
         // on AWS Athena doesn't support timestamps - expectation is that this is
         // always +0000 though
-        // %{%z}t
         name = "request_received_offset"
 
         type    = "string"
         comment = "Time offset of the request, expected to be +0000 always"
       },
       {
-        // %m
         name    = "method"
         type    = "string"
         comment = "HTTP method for this request"
       },
       {
-        // %{req.url}V
         name    = "url"
         type    = "string"
         comment = "URL requested with query string"
       },
       {
-        // %>s
         name    = "status"
         type    = "int"
         comment = "HTTP status code returned"
       },
       {
-        // $%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V
         name    = "request_time"
-        type    = "float"
+        type    = "double"
         comment = "Time until user received full response in seconds"
       },
       {
-        // %{time.to_first_byte}V
         name    = "time_to_generate_response"
-        type    = "float"
+        type    = "double"
         comment = "Time spent generating a response for varnish, in seconds"
       },
       {
-        // %B
         name    = "bytes"
         type    = "bigint"
         comment = "Number of bytes returned"
       },
       {
-        // %{Content-Type}o
         name    = "content_type"
         type    = "string"
         comment = "HTTP Content-Type header returned"
       },
       {
-        // %{User-Agent}i
         name    = "user_agent"
         type    = "string"
         comment = "User agent that made the request"
       },
       {
-        // %{Fastly-Backend-Name}o
         name    = "fastly_backend"
         type    = "string"
         comment = "Name of the backend that served this request"
       },
       {
-        // %{server.datacenter}V
-        name    = "fastly_data_centre"
+        name    = "data_centre"
         type    = "string"
         comment = "Name of the data centre that served this request"
       },
       {
-        // %{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V
         name    = "cache_hit"
-        type    = "string"
-        comment = "HIT or MISS as to whether this was served from Fastly cache"
+        type    = "boolean"
+        comment = "Whether this was served from cache or not"
       },
       {
-        // %{tls.client.protocol}V
         name = "tls_client_protocol"
         type = "string"
       },
       {
-        // %{tls.client.cipher}V
         name = "tls_client_cipher"
         type = "string"
       },
@@ -496,9 +502,9 @@ resource "aws_glue_catalog_table" "govuk_assets" {
   ]
 
   parameters {
-    classification  = "csv"
+    classification  = "json"
     compressionType = "gzip"
-    delimiter       = "\t"
+    typeOfDate      = "file"
   }
 }
 
@@ -546,17 +552,43 @@ resource "aws_glue_catalog_table" "bouncer" {
       name = "ser_de_name"
 
       parameters {
-        field.delim = "\t"
+        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit"
       }
 
-      serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
     }
 
-    // These columns corellate with the log format set up in Fastly which is:
-    // %{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t\t%{%z}t\t%m\t%{Host}i\t%{req.url}V\t%>s\t%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V\t%{time.to_first_byte}V\t%{Location}o\t%{User-Agent}i\t%{Fastly-Backend-Name}o\t%{server.datacenter}V\t%{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V\t%{tls.client.protocol}V\t%{tls.client.cipher}V
+    // These columns corellate with the log format set up in Fastly as below
+    //
+    // Note: regsuball(field, "(\\\\|%22)", "\\\\\\1") is used instead of the
+    // fastly provided cstr_escape(field) as we kept having problems with
+    // malformed JSON with UTF8 characters coming out as \x. The masses of
+    // slashes are for fastly escaping which actually comes out as
+    // regsuball(field, "(\\|%22)", "\\\1") in the VCL - %22 is varnish code
+    // for a double quote (")
+    //
+    // {
+    // "client_ip":"%{regsuball(client.ip, "(\\\\|%22)", "\\\\\\1")}V",
+    // "request_received":"%{begin:%Y-%m-%d %H:%M:%S.}t%{time.start.msec_frac}V",
+    // "request_received_offset":"%{begin:%z}t",
+    // "method":"%{regsuball(req.method, "(\\\\|%22)", "\\\\\\1")}V",
+    // "host":"%{regsuball(req.http.host, "(\\\\|%22)", "\\\\\\1")}V"
+    // "url":"%{regsuball(req.url, "(\\\\|%22)", "\\\\\\1")}V",
+    // "status":%>s,
+    // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
+    // "time_to_generate_response":%{time.to_first_byte}V,
+    // "location":"%{regsuball(resp.http.Location, "(\\\\|%22)", "\\\\\\1")}V",
+    // "user_agent":"%{regsuball(req.http.User-Agent, "(\\\\|%22)", "\\\\\\1")}V",
+    // "data_centre":"%{regsuball(server.datacenter, "(\\\\|%22)", "\\\\\\1")}V",
+    // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V
+    // }
     columns = [
       {
-        // %{%Y-%m-%d %H:%M:%S.}t%{msec_frac}t
+        name    = "client_ip"
+        type    = "string"
+        comment = "IP address of the client that made the request"
+      },
+      {
         name    = "request_received"
         type    = "timestamp"
         comment = "Time we received the request"
@@ -565,87 +597,60 @@ resource "aws_glue_catalog_table" "bouncer" {
         // This field is separate from the timestamp above as the Presto version
         // on AWS Athena doesn't support timestamps - expectation is that this is
         // always +0000 though
-        // %{%z}t
         name = "request_received_offset"
 
         type    = "string"
         comment = "Time offset of the request, expected to be +0000 always"
       },
       {
-        // %m
         name    = "method"
         type    = "string"
         comment = "HTTP method for this request"
       },
       {
-        // %{Host}i
-        name    = "request_host"
+        name    = "host"
         type    = "string"
         comment = "Host that was requested"
       },
       {
-        // %{req.url}V
         name    = "url"
         type    = "string"
         comment = "URL requested with query string"
       },
       {
-        // %>s
         name    = "status"
         type    = "int"
         comment = "HTTP status code returned"
       },
       {
-        // $%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V
         name    = "request_time"
-        type    = "float"
+        type    = "double"
         comment = "Time until user received full response in seconds"
       },
       {
-        // %{time.to_first_byte}V
         name    = "time_to_generate_response"
-        type    = "float"
+        type    = "double"
         comment = "Time spent generating a response for varnish, in seconds"
       },
       {
-        // %{Location}o
-        name    = "redirect_location"
+        name    = "location"
         type    = "string"
-        comment = "HTTP Location header returned, if any"
+        comment = "HTTP Location header returned"
       },
       {
-        // %{User-Agent}i
         name    = "user_agent"
         type    = "string"
         comment = "User agent that made the request"
       },
       {
-        // %{Fastly-Backend-Name}o
-        name    = "fastly_backend"
-        type    = "string"
-        comment = "Name of the backend that served this request"
-      },
-      {
-        // %{server.datacenter}V
-        name    = "fastly_data_centre"
+        name    = "data_centre"
         type    = "string"
         comment = "Name of the data centre that served this request"
       },
       {
-        // %{if(resp.http.X-Cache ~"HIT", "HIT", "MISS")}V
         name    = "cache_hit"
-        type    = "string"
-        comment = "HIT or MISS as to whether this was served from Fastly cache"
-      },
-      {
-        // %{tls.client.protocol}V
-        name = "tls_client_protocol"
-        type = "string"
-      },
-      {
-        // %{tls.client.cipher}V
-        name = "tls_client_cipher"
-        type = "string"
+        type    = "boolean"
+        comment = "Whether this was served from cache or not"
       },
     ]
   }
@@ -668,9 +673,9 @@ resource "aws_glue_catalog_table" "bouncer" {
   ]
 
   parameters {
-    classification  = "csv"
+    classification  = "json"
     compressionType = "gzip"
-    delimiter       = "\t"
+    typeOfDate      = "file"
   }
 }
 
