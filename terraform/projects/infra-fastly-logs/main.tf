@@ -146,7 +146,7 @@ resource "aws_glue_crawler" "govuk_www" {
   }
 
   schema_change_policy {
-    delete_behavior = "DEPRECATE_IN_DATABASE"
+    delete_behavior = "DELETE_FROM_DATABASE"
     update_behavior = "LOG"
   }
 
@@ -330,7 +330,7 @@ resource "aws_glue_crawler" "govuk_assets" {
   }
 
   schema_change_policy {
-    delete_behavior = "DEPRECATE_IN_DATABASE"
+    delete_behavior = "DELETE_FROM_DATABASE"
     update_behavior = "LOG"
   }
 
@@ -514,7 +514,7 @@ resource "aws_glue_crawler" "bouncer" {
   }
 
   schema_change_policy {
-    delete_behavior = "DEPRECATE_IN_DATABASE"
+    delete_behavior = "DELETE_FROM_DATABASE"
     update_behavior = "LOG"
   }
 
