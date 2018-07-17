@@ -66,3 +66,16 @@ resource "aws_security_group_rule" "transition-postgresql-standby_ingress_bounce
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.bouncer.id}"
 }
+
+resource "aws_security_group_rule" "transition-postgresql_ingress_pentest_ssh" {
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.transition-postgresql-primary.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.pentest.id}"
+}
