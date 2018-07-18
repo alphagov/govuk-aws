@@ -24,25 +24,7 @@ resource "aws_iam_user" "govuk_code_commit_user" {
   name = "govuk-${var.aws_environment}-govuk-code-commit-user"
 }
 
-resource "aws_iam_policy" "govuk_code_commit_user" {
-  name        = "govuk-${var.aws_environment}-code-commit-policy"
-  policy      = "${data.aws_iam_policy_document.committer.json}"
-  description = "Allows access to AWS Code Commit"
-}
-
 resource "aws_iam_user_policy_attachment" "committer_managed_policy" {
   user       = "${aws_iam_user.govuk_code_commit_user.name}"
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
-}
-
-data "aws_iam_policy_document" "committer" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "iam:IAMSelfManageServiceSpecificCredentials",
-      "iam:IAMReadOnlyAccess",
-    ]
-  }
 }
