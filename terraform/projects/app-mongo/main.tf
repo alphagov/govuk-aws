@@ -130,9 +130,8 @@ module "mongo-1" {
 
 resource "aws_ebs_volume" "mongo-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_1_subnet)}"
-  type              = "io1"
+  type              = "gp2"
   size              = 300
-  iops              = 100
 
   tags {
     Name            = "${var.stackname}-mongo-1"
@@ -188,9 +187,8 @@ module "mongo-2" {
 
 resource "aws_ebs_volume" "mongo-2" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_2_subnet)}"
-  type              = "io1"
+  type              = "gp2"
   size              = 300
-  iops              = 100
 
   tags {
     Name            = "${var.stackname}-mongo-2"
@@ -246,9 +244,8 @@ module "mongo-3" {
 
 resource "aws_ebs_volume" "mongo-3" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_3_subnet)}"
-  type              = "io1"
+  type              = "gp2"
   size              = 300
-  iops              = 100
 
   tags {
     Name            = "${var.stackname}-mongo-3"
