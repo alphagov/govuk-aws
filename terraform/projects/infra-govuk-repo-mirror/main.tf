@@ -20,6 +20,16 @@ variable "stackname" {
   description = "Stackname"
 }
 
+terraform {
+  backend          "s3"             {}
+  required_version = "= 0.11.7"
+}
+
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "1.27.0"
+}
+
 resource "aws_iam_user" "govuk_code_commit_user" {
   name = "govuk-${var.aws_environment}-govuk-code-commit-user"
 }
