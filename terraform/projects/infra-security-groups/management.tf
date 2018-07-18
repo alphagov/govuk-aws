@@ -82,3 +82,16 @@ resource "aws_security_group_rule" "mangement_egress_any_any" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.management.id}"
 }
+
+resource "aws_security_group_rule" "management_ingress_pentest_ssh" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.management.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.pentest.id}"
+}

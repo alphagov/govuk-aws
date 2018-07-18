@@ -345,3 +345,7 @@ output "sg_whitehall-frontend_elb_id" {
 output "sg_whitehall-frontend_id" {
   value = "${aws_security_group.whitehall-frontend.id}"
 }
+
+output "sg_pentest_id" {
+  value = "${aws_security_group.pentest.id}"
+}

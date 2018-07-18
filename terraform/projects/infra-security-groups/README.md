@@ -81,6 +81,7 @@ Manage the security groups for the entire infrastructure
 | sg_mysql-primary_id |  |
 | sg_mysql-replica_id |  |
 | sg_offsite_ssh_id |  |
+| sg_pentest_id |  |
 | sg_postgresql-primary_id |  |
 | sg_publishing-api_elb_external_id |  |
 | sg_publishing-api_elb_internal_id |  |
