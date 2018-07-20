@@ -141,6 +141,13 @@ The script requires for secrets to be available to the blue-puppetmaster role in
 - `govuk_staging_secrets_1_of_2_gpg`, First part of the GPG key. See below.
 - `govuk_staging_secrets_2_of_2_gpg`, Second part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters. 
 
+```
+tools/build-terraform-project.sh -c plan -p app-puppetmaster
+...terraform output...
+tools/build-terraform-project.sh -c apply -p app-puppetmaster
+...terraform output...
+```
+
 If Puppet master is rebuild (i.e. clients to already have certificates in place) it is then required to cycle the Puppet certificates by deleting the directory /etc/puppet/ssl and run `sudo puppet agent -t` on all nodes before issuing `puppet cert sign --all` on the Puppet master.  
 
 ## Build the jumpbox
