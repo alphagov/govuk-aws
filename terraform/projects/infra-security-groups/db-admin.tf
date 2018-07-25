@@ -34,6 +34,19 @@ resource "aws_security_group_rule" "db-admin_ingress_db-admin-elb_ssh" {
   source_security_group_id = "${aws_security_group.db-admin_elb.id}"
 }
 
+resource "aws_security_group_rule" "db-admin_ingress_db-admin-elb_pgbouncer" {
+  type      = "ingress"
+  from_port = 6432
+  to_port   = 6432
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.db-admin.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.db-admin_elb.id}"
+}
+
 resource "aws_security_group" "db-admin_elb" {
   name        = "${var.stackname}_db-admin_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
