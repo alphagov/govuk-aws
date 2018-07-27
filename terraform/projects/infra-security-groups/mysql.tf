@@ -93,29 +93,3 @@ resource "aws_security_group_rule" "mysql-replica_ingress_frontend_mysql" {
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.frontend.id}"
 }
-
-resource "aws_security_group_rule" "mysql-primary_ingress_pentest_mysql" {
-  type      = "ingress"
-  from_port = 3306
-  to_port   = 3306
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.mysql-primary.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.pentest.id}"
-}
-
-resource "aws_security_group_rule" "mysql-replica_ingress_pentest_mysql" {
-  type      = "ingress"
-  from_port = 3306
-  to_port   = 3306
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.mysql-replica.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.pentest.id}"
-}
