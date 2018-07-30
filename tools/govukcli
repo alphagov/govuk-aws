@@ -30,6 +30,9 @@ function usage {
   ssh [options]            Run "$0 ssh help" for details.
   aws [options]            Run "$0 aws help" for details.
 
+  terraform-jenkins        Opens the Terraform deployment Jenkins job in your
+                           browser, prefilled with your Jenkins credentials.
+
   help                     Show this help.
 
   Set the GOVUKCLI_OUTPUT environment variable to
@@ -333,6 +336,19 @@ EOF
   esac
 }
 
+function run_terraform_jenkins {
+  base="https://ci-deploy.integration.publishing.service.gov.uk/job/Deploy_Terraform_GOVUK_AWS/parambuild/?"
+  params=$(run_aws invoke env | grep -E '^AWS_(SESSION_TOKEN|ACCESS_KEY_ID|SECRET_ACCESS_KEY)' | awk 'BEGIN {ORS="&"} {print}' | sed 's/\+/%2B/g')
+  environment=$(get_context | sed 's/-aws$//')
+  url="${base}${params}ENVIRONMENT=${environment}"
+  if [[ $(uname) == 'Darwin' ]]; then
+    open $url
+  else
+    # Pull requests welcome, Linux users!
+    echo $url
+  fi
+}
+
 COMMAND=$1
 shift
 case ${COMMAND} in
@@ -341,6 +357,7 @@ case ${COMMAND} in
   'set-context') set_context $1;;
   'ssh') run_ssh "$@";;
   'aws') run_aws "$@";;
+  'terraform-jenkins') run_terraform_jenkins ;;
   'help') usage ;;
   *) usage ;;
 esac

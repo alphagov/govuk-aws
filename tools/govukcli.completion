@@ -27,6 +27,7 @@ _govukcli ()
     set-context\
     ssh\
     aws\
+    terraform-jenkins\
     help"
 
   SSH_COMMANDS="\
