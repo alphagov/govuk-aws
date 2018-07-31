@@ -338,14 +338,14 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "write_mongo_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "production" ? 3 : 0}"
+resource "aws_iam_role_policy_attachment" "mongo_database_backups_iam_role_policy_attachment" {
+  count      = 3
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongo_api_write_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.write_database_backups_bucket_policy_arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "read_mongo_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment != "production" ? 3 : 0}"
+  count      = 3
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongo_api_read_database_backups_bucket_policy_arn}"
 }

@@ -145,16 +145,9 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "write_db-admin_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "production" ? 1 : 0}"
+resource "aws_iam_role_policy_attachment" "db-admin_database_backups_iam_role_policy_attachment" {
   role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.dbadmin_write_database_backups_bucket_policy_arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "read_db-admin_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment != "production" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.dbadmin_read_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.write_database_backups_bucket_policy_arn}"
 }
 
 # Outputs

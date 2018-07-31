@@ -22,14 +22,6 @@ database-backups: The bucket that will hold database backups
 
 | Name | Description |
 |------|-------------|
-| dbadmin_read_database_backups_bucket_policy_arn | ARN of the read DBAdmin database_backups-bucket policy |
-| dbadmin_write_database_backups_bucket_policy_arn | ARN of the DBAdmin write database_backups-bucket policy |
-| elasticsearch_read_database_backups_bucket_policy_arn | ARN of the read elasticsearch database_backups-bucket policy |
-| elasticsearch_write_database_backups_bucket_policy_arn | ARN of the elasticsearch write database_backups-bucket policy |
-| graphite_read_database_backups_bucket_policy_arn | ARN of the read Graphite database_backups-bucket policy |
-| graphite_write_database_backups_bucket_policy_arn | ARN of the Graphite write database_backups-bucket policy |
 | mongo_api_read_database_backups_bucket_policy_arn | ARN of the read mongo-api database_backups-bucket policy |
-| mongo_api_write_database_backups_bucket_policy_arn | ARN of the mongo-api write database_backups-bucket policy |
-| mongodb_read_database_backups_bucket_policy_arn | ARN of the read mongodb database_backups-bucket policy |
-| mongodb_write_database_backups_bucket_policy_arn | ARN of the mongodb write database_backups-bucket policy |
+| write_database_backups_bucket_policy_arn | ARN of the write database_backups-bucket policy |
 
