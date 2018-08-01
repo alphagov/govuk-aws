@@ -30,6 +30,8 @@ database-backups: The bucket that will hold database backups
 | graphite_write_database_backups_bucket_policy_arn | ARN of the Graphite write database_backups-bucket policy |
 | mongo_api_read_database_backups_bucket_policy_arn | ARN of the read mongo-api database_backups-bucket policy |
 | mongo_api_write_database_backups_bucket_policy_arn | ARN of the mongo-api write database_backups-bucket policy |
+| mongo_router_read_database_backups_bucket_policy_arn | ARN of the read router_backend database_backups-bucket policy |
+| mongo_router_write_database_backups_bucket_policy_arn | ARN of the router_backend write database_backups-bucket policy |
 | mongodb_read_database_backups_bucket_policy_arn | ARN of the read mongodb database_backups-bucket policy |
 | mongodb_write_database_backups_bucket_policy_arn | ARN of the mongodb write database_backups-bucket policy |
 
