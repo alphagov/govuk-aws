@@ -243,13 +243,13 @@ resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_cloudwatch
 }
 
 resource "aws_iam_role_policy_attachment" "write_graphite_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "production" ? 1 : 0}"
+  count      = 1
   role       = "${module.graphite-1.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.graphite_write_database_backups_bucket_policy_arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "read_graphite_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment != "production" ? 1 : 0}"
+  count      = 1
   role       = "${module.graphite-1.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.graphite_read_database_backups_bucket_policy_arn}"
 }

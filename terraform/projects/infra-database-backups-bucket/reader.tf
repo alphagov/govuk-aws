@@ -25,18 +25,32 @@ data "aws_iam_policy_document" "mongo_api_database_backups_reader" {
 
     # Need access to the top level of the tree.
     resources = [
-      "arn:aws:s3:::${var.backup_source_bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo-api*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "mongo_router_database_backups_reader" {
+  name        = "govuk-${var.aws_environment}-mongo-router_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.mongo_router_database_backups_reader.json}"
+  description = "Allows reading the mongo-router database_backups bucket"
+}
+
+data "aws_iam_policy_document" "mongo_router_database_backups_reader" {
+  statement {
+    sid = "MongoRouterReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
     ]
 
-    # We can now apply restictions on what can be accessed.
-    condition {
-      test     = "StringLike"
-      variable = "s3:prefix"
-
-      values = [
-        "mongo-api",
-      ]
-    }
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*router_backend*",
+    ]
   }
 }
 
@@ -57,18 +71,9 @@ data "aws_iam_policy_document" "mongodb_database_backups_reader" {
 
     # Need access to the top level of the tree.
     resources = [
-      "arn:aws:s3:::${var.backup_source_bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongodb*",
     ]
-
-    # We can now apply restictions on what can be accessed.
-    condition {
-      test     = "StringLike"
-      variable = "s3:prefix"
-
-      values = [
-        "mongodb",
-      ]
-    }
   }
 }
 
@@ -89,18 +94,9 @@ data "aws_iam_policy_document" "elasticsearch_database_backups_reader" {
 
     # Need access to the top level of the tree.
     resources = [
-      "arn:aws:s3:::${var.backup_source_bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*elasticsearch*",
     ]
-
-    # We can now apply restictions on what can be accessed.
-    condition {
-      test     = "StringLike"
-      variable = "s3:prefix"
-
-      values = [
-        "elasticsearch",
-      ]
-    }
   }
 }
 
@@ -121,19 +117,10 @@ data "aws_iam_policy_document" "dbadmin_database_backups_reader" {
 
     # Need access to the top level of the tree.
     resources = [
-      "arn:aws:s3:::${var.backup_source_bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mysql*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*postgres*",
     ]
-
-    # We can now apply restictions on what can be accessed.
-    condition {
-      test     = "StringLike"
-      variable = "s3:prefix"
-
-      values = [
-        "mysql",
-        "postgres",
-      ]
-    }
   }
 }
 
@@ -154,24 +141,20 @@ data "aws_iam_policy_document" "graphite_database_backups_reader" {
 
     # Need access to the top level of the tree.
     resources = [
-      "arn:aws:s3:::${var.backup_source_bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*whisper*",
     ]
-
-    # We can now apply restictions on what can be accessed.
-    condition {
-      test     = "StringLike"
-      variable = "s3:prefix"
-
-      values = [
-        "whisper",
-      ]
-    }
   }
 }
 
 output "mongo_api_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.mongo_api_database_backups_reader.arn}"
   description = "ARN of the read mongo-api database_backups-bucket policy"
+}
+
+output "mongo_router_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.mongo_router_database_backups_reader.arn}"
+  description = "ARN of the read router_backend database_backups-bucket policy"
 }
 
 output "mongodb_read_database_backups_bucket_policy_arn" {
