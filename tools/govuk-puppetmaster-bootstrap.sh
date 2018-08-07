@@ -41,7 +41,6 @@ apt-get -y install postgresql-9.3
 apt-get -y install bundler
 apt-get -y install git
 apt-get -y install python3-pip
-pip3 install awscli
 
 # Create required directories
 mkdir -p ${GPG_KEYSTORE}
