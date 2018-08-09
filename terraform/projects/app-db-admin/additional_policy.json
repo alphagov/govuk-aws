@@ -1,0 +1,52 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds:CreateDBInstance",
+                "rds:DeleteDBInstance",
+                "rds:RestoreDBInstanceFromDBSnapshot"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "rds:db-tag": "scrubber"
+                }
+           }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds:DescribeDBClusterSnapshotAttributes",
+                "rds:DescribeDBClusterParameters",
+                "rds:DescribeDBEngineVersions",
+                "rds:DescribeDBSnapshots",
+                "rds:CopyDBSnapshot",
+                "rds:CopyDBClusterSnapshot",
+                "rds:DescribePendingMaintenanceActions",
+                "rds:DescribeDBLogFiles",
+                "rds:DescribeDBParameterGroups",
+                "rds:DescribeDBSnapshotAttributes",
+                "rds:DescribeReservedDBInstancesOfferings",
+                "rds:ListTagsForResource",
+                "rds:CreateDBSnapshot",
+                "rds:CreateDBClusterSnapshot",
+                "rds:DescribeDBParameters",
+                "rds:ModifyDBClusterSnapshotAttribute",
+                "rds:ModifyDBSnapshotAttribute",
+                "rds:DescribeDBClusters",
+                "rds:DescribeDBClusterParameterGroups",
+                "rds:DescribeDBClusterSnapshots",
+                "rds:DescribeDBInstances",
+                "rds:DescribeEngineDefaultClusterParameters",
+                "rds:DescribeOrderableDBInstanceOptions",
+                "rds:DescribeEngineDefaultParameters",
+                "rds:DescribeCertificates",
+                "rds:DescribeEventCategories",
+                "rds:DescribeAccountAttributes"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
