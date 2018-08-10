@@ -89,7 +89,7 @@ module "role_admin" {
 
 module "role_poweruser" {
   source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-poweruser"
+  role_name        = "govuk-powerusers"
   role_user_arns   = ["${var.role_poweruser_user_arns}"]
   role_policy_arns = ["${var.role_poweruser_policy_arns}"]
 }
