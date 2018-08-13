@@ -157,6 +157,17 @@ resource "aws_iam_role_policy_attachment" "read_db-admin_database_backups_iam_ro
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.dbadmin_read_database_backups_bucket_policy_arn}"
 }
 
+resource "aws_iam_policy" "db-admin_iam_policy" {
+  name   = "${var.stackname}-db-admin-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "db-admin_iam_role_policy_attachment" {
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.db-admin_iam_policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
