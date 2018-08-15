@@ -40,6 +40,12 @@ variable "snapshot_identifier" {
   default     = ""
 }
 
+variable "instance_name" {
+  type        = "string"
+  description = "The RDS Instance Name."
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -62,7 +68,26 @@ module "mysql_primary_rds_instance" {
   subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username             = "${var.username}"
   password             = "${var.password}"
-  allocated_storage    = "30"
+  allocated_storage    = "80"
+  instance_class       = "db.m4.xlarge"
+  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
+  parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
+  event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  snapshot_identifier  = "${var.snapshot_identifier}"
+}
+
+# MySQL Primary Duplicate
+module "mysql_primary_rds_instance_duplicate" {
+  source               = "../../modules/aws/rds_instance"
+  name                 = "${var.stackname}-mysql-primary-duplicate"
+  instance_name        = "${var.stackname}-mysql-primary-duplicate"
+  engine_name          = "mysql"
+  engine_version       = "5.6"
+  default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary-duplicate")}"
+  subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username             = "${var.username}"
+  password             = "${var.password}"
+  allocated_storage    = "80"
   instance_class       = "db.m4.xlarge"
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
@@ -99,6 +124,14 @@ resource "aws_route53_record" "service_record" {
   records = ["${module.mysql_primary_rds_instance.rds_instance_address}"]
 }
 
+resource "aws_route53_record" "duplicate_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "mysql-primary-duplicate.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${module.mysql_primary_rds_instance_duplicate.rds_instance_address}"]
+}
+
 module "alarms-rds-mysql-primary" {
   source         = "../../modules/aws/alarms/rds"
   name_prefix    = "${var.stackname}-mysql-primary"
@@ -125,6 +158,20 @@ module "mysql_replica_rds_instance" {
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.mysql_primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  instance_name              = "${var.stackname}-mysql-replica"
+}
+
+# MySQL Replica instance duplicate
+module "mysql_replica_rds_instance_duplicate" {
+  source                     = "../../modules/aws/rds_instance"
+  name                       = "${var.stackname}-mysql-replica-duplicate"
+  default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-replica-duplicate")}"
+  instance_class             = "db.m4.xlarge"
+  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-replica_id}"]
+  create_replicate_source_db = "1"
+  replicate_source_db        = "${module.mysql_primary_rds_instance_duplicate.rds_instance_id}"
+  event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  instance_name              = "${var.stackname}-mysql-replica-duplicate"
 }
 
 resource "aws_route53_record" "replica_service_record" {
@@ -133,6 +180,14 @@ resource "aws_route53_record" "replica_service_record" {
   type    = "CNAME"
   ttl     = 300
   records = ["${module.mysql_replica_rds_instance.rds_replica_address}"]
+}
+
+resource "aws_route53_record" "replica_duplicate_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "mysql-replica-duplicate.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${module.mysql_replica_rds_instance_duplicate.rds_replica_address}"]
 }
 
 module "alarms-rds-mysql-replica" {

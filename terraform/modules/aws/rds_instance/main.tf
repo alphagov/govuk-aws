@@ -151,6 +151,12 @@ variable "snapshot_identifier" {
   default     = ""
 }
 
+variable "instance_name" {
+  type        = "string"
+  description = "The RDS Instance Name."
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -168,6 +174,7 @@ resource "aws_db_instance" "db_instance_replica" {
   count = "${var.create_replicate_source_db}"
 
   instance_class         = "${var.instance_class}"
+  identifier             = "${var.instance_name}"
   storage_type           = "${var.storage_type}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
