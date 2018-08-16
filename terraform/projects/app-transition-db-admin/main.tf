@@ -132,13 +132,13 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
 resource "aws_iam_role_policy_attachment" "write_transition-db-admin_database_backups_iam_role_policy_attachment" {
   count      = 1
   role       = "${module.transition-db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.dbadmin_write_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.transition_dbadmin_write_database_backups_bucket_policy_arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "read_transition-db-admin_database_backups_iam_role_policy_attachment" {
   count      = 1
   role       = "${module.transition-db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.dbadmin_read_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.transition_dbadmin_read_database_backups_bucket_policy_arn}"
 }
 
 # Outputs
