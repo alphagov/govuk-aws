@@ -124,6 +124,29 @@ data "aws_iam_policy_document" "dbadmin_database_backups_reader" {
   }
 }
 
+resource "aws_iam_policy" "transition_dbadmin_database_backups_reader" {
+  name        = "govuk-${var.aws_environment}-transition_dbadmin_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.transition_dbadmin_database_backups_reader.json}"
+  description = "Allows reading the transition_dbadmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "transition_dbadmin_database_backups_reader" {
+  statement {
+    sid = "TransitionDBAdminReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*transition-postgres*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "graphite_database_backups_reader" {
   name        = "govuk-${var.aws_environment}-graphite_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.graphite_database_backups_reader.json}"
@@ -170,6 +193,11 @@ output "elasticsearch_read_database_backups_bucket_policy_arn" {
 output "dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.dbadmin_database_backups_reader.arn}"
   description = "ARN of the read DBAdmin database_backups-bucket policy"
+}
+
+output "transition_dbadmin_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.transition_dbadmin_database_backups_reader.arn}"
+  description = "ARN of the read TransitionDBAdmin database_backups-bucket policy"
 }
 
 output "graphite_read_database_backups_bucket_policy_arn" {
