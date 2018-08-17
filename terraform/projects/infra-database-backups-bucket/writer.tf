@@ -346,6 +346,63 @@ data "aws_iam_policy_document" "transition_dbadmin_database_backups_writer" {
   }
 }
 
+resource "aws_iam_policy" "warehouse_dbadmin_database_backups_writer" {
+  name        = "govuk-${var.aws_environment}-warehouse_dbadmin_database_backups-writer-policy"
+  policy      = "${data.aws_iam_policy_document.warehouse_dbadmin_database_backups_writer.json}"
+  description = "Allows writing of the WarehouseDBAdmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "warehouse_dbadmin_database_backups_writer" {
+  statement {
+    sid = "ReadListOfBuckets"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "WarehouseDBAdminReadBucketLists"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    # The top level access is required.
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+    ]
+
+    # We can now apply restictions on what can be accessed.
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "mysql",
+        "postgres",
+      ]
+    }
+  }
+
+  statement {
+    sid = "WarehouseDBAdminWriteGovukDatabaseBackups"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*warehouse-postgres*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "graphite_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-graphite_database_backups-writer-policy"
   policy      = "${data.aws_iam_policy_document.graphite_database_backups_writer.json}"
@@ -430,6 +487,11 @@ output "dbadmin_write_database_backups_bucket_policy_arn" {
 output "transition_dbadmin_write_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.transition_dbadmin_database_backups_writer.arn}"
   description = "ARN of the TransitionDBAdmin write database_backups-bucket policy"
+}
+
+output "warehouse_dbadmin_write_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.warehouse_dbadmin_database_backups_writer.arn}"
+  description = "ARN of the WarehouseDBAdmin write database_backups-bucket policy"
 }
 
 output "graphite_write_database_backups_bucket_policy_arn" {
