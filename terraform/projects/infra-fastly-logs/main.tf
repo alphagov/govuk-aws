@@ -184,32 +184,25 @@ resource "aws_glue_catalog_table" "govuk_www" {
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
     }
 
-    // These columns corellate with the log format set up in Fastly as below
-    //
-    // Note: regsuball(field, "(\\\\|%22)", "\\\\\\1") is used instead of the
-    // fastly provided cstr_escape(field) as we kept having problems with
-    // malformed JSON with UTF8 characters coming out as \x. The masses of
-    // slashes are for fastly escaping which actually comes out as
-    // regsuball(field, "(\\|%22)", "\\\1") in the VCL - %22 is varnish code
-    // for a double quote (")
+    // These columns correlate with the log format set up in Fastly as below
     //
     // {
-    // "client_ip":"%{regsuball(client.ip, "(\\\\|%22)", "\\\\\\1")}V",
+    // "client_ip":"%{json.escape(client.ip)}V",
     // "request_received":"%{begin:%Y-%m-%d %H:%M:%S.}t%{time.start.msec_frac}V",
     // "request_received_offset":"%{begin:%z}t",
-    // "method":"%{regsuball(req.method, "(\\\\|%22)", "\\\\\\1")}V",
-    // "url":"%{regsuball(req.url, "(\\\\|%22)", "\\\\\\1")}V",
+    // "method":"%{json.escape(req.method)}V",
+    // "url":"%{json.escape(req.url)}V",
     // "status":%>s,
     // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
     // "time_to_generate_response":%{time.to_first_byte}V,
     // "bytes":%B,
-    // "content_type":"%{regsuball(resp.http.Content-Type, "(\\\\|%22)", "\\\\\\1")}V",
-    // "user_agent":"%{regsuball(req.http.User-Agent, "(\\\\|%22)", "\\\\\\1")}V",
-    // "fastly_backend":"%{regsuball(resp.http.Fastly-Backend-Name, "(\\\\|%22)", "\\\\\\1")}V",
-    // "data_centre":"%{regsuball(server.datacenter, "(\\\\|%22)", "\\\\\\1")}V",
+    // "content_type":"%{json.escape(resp.http.Content-Type)}V",
+    // "user_agent":"%{json.escape(req.http.User-Agent)}V",
+    // "fastly_backend":"%{json.escape(resp.http.Fastly-Backend-Name)}V",
+    // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
-    // "tls_client_protocol":"%{regsuball(tls.client.protocol, "(\\\\|%22)", "\\\\\\1")}V",
-    // "tls_client_cipher":"%{regsuball(tls.client.cipher, "(\\\\|%22)", "\\\\\\1")}V"
+    // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
+    // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
     // }
     columns = [
       {
@@ -371,32 +364,25 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
     }
 
-    // These columns corellate with the log format set up in Fastly as below
-    //
-    // Note: regsuball(field, "(\\\\|%22)", "\\\\\\1") is used instead of the
-    // fastly provided cstr_escape(field) as we kept having problems with
-    // malformed JSON with UTF8 characters coming out as \x. The masses of
-    // slashes are for fastly escaping which actually comes out as
-    // regsuball(field, "(\\|%22)", "\\\1") in the VCL - %22 is varnish code
-    // for a double quote (")
+    // These columns correlate with the log format set up in Fastly as below
     //
     // {
-    // "client_ip":"%{regsuball(client.ip, "(\\\\|%22)", "\\\\\\1")}V",
+    // "client_ip":"%{json.escape(client.ip)}V",
     // "request_received":"%{begin:%Y-%m-%d %H:%M:%S.}t%{time.start.msec_frac}V",
     // "request_received_offset":"%{begin:%z}t",
-    // "method":"%{regsuball(req.method, "(\\\\|%22)", "\\\\\\1")}V",
-    // "url":"%{regsuball(req.url, "(\\\\|%22)", "\\\\\\1")}V",
+    // "method":"%{json.escape(req.method)}V",
+    // "url":"%{json.escape(req.url)}V",
     // "status":%>s,
     // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
     // "time_to_generate_response":%{time.to_first_byte}V,
     // "bytes":%B,
-    // "content_type":"%{regsuball(resp.http.Content-Type, "(\\\\|%22)", "\\\\\\1")}V",
-    // "user_agent":"%{regsuball(req.http.User-Agent, "(\\\\|%22)", "\\\\\\1")}V",
-    // "fastly_backend":"%{regsuball(resp.http.Fastly-Backend-Name, "(\\\\|%22)", "\\\\\\1")}V",
-    // "data_centre":"%{regsuball(server.datacenter, "(\\\\|%22)", "\\\\\\1")}V",
+    // "content_type":"%{json.escape(resp.http.Content-Type)}V",
+    // "user_agent":"%{json.escape(req.http.User-Agent)}V",
+    // "fastly_backend":"%{json.escape(resp.http.Fastly-Backend-Name)}V",
+    // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
-    // "tls_client_protocol":"%{regsuball(tls.client.protocol, "(\\\\|%22)", "\\\\\\1")}V",
-    // "tls_client_cipher":"%{regsuball(tls.client.cipher, "(\\\\|%22)", "\\\\\\1")}V"
+    // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
+    // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
     // }
     columns = [
       {
@@ -558,28 +544,21 @@ resource "aws_glue_catalog_table" "bouncer" {
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
     }
 
-    // These columns corellate with the log format set up in Fastly as below
-    //
-    // Note: regsuball(field, "(\\\\|%22)", "\\\\\\1") is used instead of the
-    // fastly provided cstr_escape(field) as we kept having problems with
-    // malformed JSON with UTF8 characters coming out as \x. The masses of
-    // slashes are for fastly escaping which actually comes out as
-    // regsuball(field, "(\\|%22)", "\\\1") in the VCL - %22 is varnish code
-    // for a double quote (")
+    // These columns correlate with the log format set up in Fastly as below
     //
     // {
-    // "client_ip":"%{regsuball(client.ip, "(\\\\|%22)", "\\\\\\1")}V",
+    // "client_ip":"%{json.escape(client.ip)}V",
     // "request_received":"%{begin:%Y-%m-%d %H:%M:%S.}t%{time.start.msec_frac}V",
     // "request_received_offset":"%{begin:%z}t",
-    // "method":"%{regsuball(req.method, "(\\\\|%22)", "\\\\\\1")}V",
-    // "host":"%{regsuball(req.http.host, "(\\\\|%22)", "\\\\\\1")}V"
-    // "url":"%{regsuball(req.url, "(\\\\|%22)", "\\\\\\1")}V",
+    // "method":"%{json.escape(req.method)}V",
+    // "host":"%{json.escape(req.http.host)}V",
+    // "url":"%{json.escape(req.url)}V",
     // "status":%>s,
     // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
     // "time_to_generate_response":%{time.to_first_byte}V,
-    // "location":"%{regsuball(resp.http.Location, "(\\\\|%22)", "\\\\\\1")}V",
-    // "user_agent":"%{regsuball(req.http.User-Agent, "(\\\\|%22)", "\\\\\\1")}V",
-    // "data_centre":"%{regsuball(server.datacenter, "(\\\\|%22)", "\\\\\\1")}V",
+    // "location":"%{json.escape(resp.http.Location)}V",
+    // "user_agent":"%{json.escape(req.http.User-Agent)}V",
+    // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V
     // }
     columns = [
