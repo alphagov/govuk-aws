@@ -1,6 +1,6 @@
 ## Project: infra-content-publisher
 
-Stores image assets uploaded via Content Publisher.
+Stores ActiveStorage blobs uploaded via Content Publisher.
 
 
 ## Inputs
