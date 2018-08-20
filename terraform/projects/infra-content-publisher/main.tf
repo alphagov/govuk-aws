@@ -1,7 +1,7 @@
 /**
 * ## Project: infra-content-publisher
 *
-* Stores image assets uploaded via Content Publisher.
+* Stores ActiveStorage blobs uploaded via Content Publisher.
 */
 
 variable "aws_region" {
@@ -32,17 +32,17 @@ provider "aws" {
   version = "1.25.0"
 }
 
-resource "aws_s3_bucket" "content_publisher_assets_images" {
-  bucket = "govuk-${var.aws_environment}-content-publisher-assets-images"
+resource "aws_s3_bucket" "content_publisher_activestorage" {
+  bucket = "govuk-${var.aws_environment}-content-publisher-activestorage"
 
   tags {
-    Name            = "govuk-${var.aws_environment}-content-publisher-assets-images"
+    Name            = "govuk-${var.aws_environment}-content-publisher-activestorage"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
     target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    target_prefix = "s3/govuk-${var.aws_environment}-content-publisher-assets-images/"
+    target_prefix = "s3/govuk-${var.aws_environment}-content-publisher-activestorage/"
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_iam_user" "content_publisher_app" {
 resource "aws_iam_policy" "s3_writer" {
   name        = "govuk-${var.aws_environment}-content-publisher-app-s3-writer-policy"
   policy      = "${data.template_file.s3_writer_policy_template.rendered}"
-  description = "Allows writing to to the govuk-${var.aws_environment}-content-publisher-assets-images bucket"
+  description = "Allows writing to to the govuk-${var.aws_environment}-content-publisher-activestorage"
 }
 
 resource "aws_iam_policy_attachment" "s3_writer" {
@@ -67,7 +67,7 @@ data "template_file" "s3_writer_policy_template" {
 
   vars {
     aws_environment = "${var.aws_environment}"
-    bucket          = "${aws_s3_bucket.content_publisher_assets_images.id}"
+    bucket          = "${aws_s3_bucket.content_publisher_activestorage.id}"
   }
 }
 
