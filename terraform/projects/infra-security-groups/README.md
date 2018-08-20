@@ -82,6 +82,9 @@ Manage the security groups for the entire infrastructure
 | sg_mysql-replica_id |  |
 | sg_offsite_ssh_id |  |
 | sg_postgresql-primary_id |  |
+| sg_publishing-api-db-admin_elb_id |  |
+| sg_publishing-api-db-admin_id |  |
+| sg_publishing-api-postgresql-primary_id |  |
 | sg_publishing-api_elb_external_id |  |
 | sg_publishing-api_elb_internal_id |  |
 | sg_publishing-api_id |  |
