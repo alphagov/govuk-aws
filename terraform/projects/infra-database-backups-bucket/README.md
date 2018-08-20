@@ -34,6 +34,8 @@ database-backups: The bucket that will hold database backups
 | mongo_router_write_database_backups_bucket_policy_arn | ARN of the router_backend write database_backups-bucket policy |
 | mongodb_read_database_backups_bucket_policy_arn | ARN of the read mongodb database_backups-bucket policy |
 | mongodb_write_database_backups_bucket_policy_arn | ARN of the mongodb write database_backups-bucket policy |
+| publishing-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the read publishing-apiDBAdmin database_backups-bucket policy |
+| publishing-api_dbadmin_write_database_backups_bucket_policy_arn | ARN of the publishing-apiDBAdmin write database_backups-bucket policy |
 | transition_dbadmin_read_database_backups_bucket_policy_arn | ARN of the read TransitionDBAdmin database_backups-bucket policy |
 | transition_dbadmin_write_database_backups_bucket_policy_arn | ARN of the TransitionDBAdmin write database_backups-bucket policy |
 | warehouse_dbadmin_read_database_backups_bucket_policy_arn | ARN of the read WarehouseDBAdmin database_backups-bucket policy |
