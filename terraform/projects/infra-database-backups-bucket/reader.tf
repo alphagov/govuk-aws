@@ -50,6 +50,7 @@ data "aws_iam_policy_document" "mongo_router_database_backups_reader" {
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*router_backend*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo-router*",
     ]
   }
 }
