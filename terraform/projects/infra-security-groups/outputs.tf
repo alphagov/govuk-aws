@@ -178,6 +178,14 @@ output "sg_email-alert-api_id" {
   value = "${aws_security_group.email-alert-api.id}"
 }
 
+output "sg_email-alert-api-postgresql-primary_id" {
+  value = "${aws_security_group.email-alert-api-postgresql-primary.id}"
+}
+
+output "sg_email-alert-api-postgresql-standby_id" {
+  value = "${aws_security_group.email-alert-api-postgresql-standby.id}"
+}
+
 output "sg_frontend_elb_id" {
   value = "${aws_security_group.frontend_elb.id}"
 }
@@ -320,6 +328,14 @@ output "sg_warehouse-db-admin_elb_id" {
 
 output "sg_warehouse-db-admin_id" {
   value = "${aws_security_group.warehouse-db-admin.id}"
+}
+
+output "sg_email-alert-api-db-admin_elb_id" {
+  value = "${aws_security_group.email-alert-api-db-admin_elb.id}"
+}
+
+output "sg_email-alert-api-db-admin_id" {
+  value = "${aws_security_group.email-alert-api-db-admin.id}"
 }
 
 output "sg_warehouse-postgresql-primary_id" {
