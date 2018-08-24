@@ -772,6 +772,24 @@ data "template_file" "transition_executor_policy_template" {
   }
 }
 
+resource "aws_cloudwatch_event_rule" "transition_executor_daily" {
+  name                = "transition_executor_daily"
+  schedule_expression = "cron(30 0 * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "transition_executor_daily" {
+  rule = "${aws_cloudwatch_event_rule.transition_executor_daily.name}"
+  arn  = "${aws_lambda_function.transition_executor.arn}"
+}
+
+resource "aws_lambda_permission" "cloudwatch_transition_executor_daily_permission" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.transition_executor.function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.transition_executor_daily.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
