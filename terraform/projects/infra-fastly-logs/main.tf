@@ -696,6 +696,26 @@ resource "aws_glue_catalog_table" "bouncer" {
   }
 }
 
+resource "aws_athena_named_query" "transition_logs" {
+  name     = "transition-logs-query"
+  database = "${aws_glue_catalog_database.fastly_logs.name}"
+
+  query = <<EOF
+SELECT
+  (current_date - interval '1' day) date,
+  count(*) count,
+  status,
+  host,
+  url
+FROM bouncer
+WHERE year = year(current_date - interval '1' day)
+  AND month = month(current_date - interval '1' day)
+  AND date = day(current_date - interval '1' day)
+GROUP BY cast(request_received as date), status, host, url
+ORDER BY 2 DESC
+EOF
+}
+
 # Outputs
 # --------------------------------------------------------------
 
