@@ -53,6 +53,20 @@ resource "aws_s3_bucket" "fastly_logs" {
   }
 }
 
+resource "aws_s3_bucket" "transition_fastly_logs" {
+  bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
+  }
+}
+
 # We require a user for Fastly to write to S3 buckets
 resource "aws_iam_user" "logs_writer" {
   name = "govuk-${var.aws_environment}-fastly-logs-writer"
