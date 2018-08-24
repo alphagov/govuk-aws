@@ -716,6 +716,62 @@ ORDER BY 2 DESC
 EOF
 }
 
+resource "aws_lambda_function" "process_logs" {
+  filename      = "../../lambda/TransitionLogs/TransitionLogs.zip"
+  function_name = "govuk-${var.aws_environment}-transition"
+  role          = "${aws_iam_role.transition_executor.arn}"
+  handler       = "main.lambda_handler"
+  runtime       = "python3.6"
+
+  environment {
+    variables = {
+      NAMED_QUERY_ID = "${aws_athena_named_query.transition_logs.id}"
+      DATABASE_NAME  = "${aws_athena_named_query.transition_logs.database}"
+      BUCKET_NAME    = "${aws_s3_bucket.transition_fastly_logs.bucket}"
+    }
+  }
+}
+
+resource "aws_iam_role" "transition_executor" {
+  name = "AWSLambdaRole-transition-executor"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "transition_executor" {
+  name   = "fastly-logs-${var.aws_environment}-transition-executor-policy"
+  policy = "${data.template_file.transition_executor_policy_template.rendered}"
+}
+
+resource "aws_iam_role_policy_attachment" "transition_executor" {
+  name       = "transition-downloader-query-attachment"
+  role       = "${aws_iam_role.transition_executor.name}"
+  policy_arn = "${aws_iam_policy.transition_executor.arn}"
+}
+
+data "template_file" "transition_executor_policy_template" {
+  template = "${file("${path.module}/../../policies/transition_executor_policy.tpl")}"
+
+  vars {
+    out_bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
+    in_bucket_arn  = "${aws_s3_bucket.fastly_logs.arn}"
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
