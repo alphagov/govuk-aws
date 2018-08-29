@@ -172,7 +172,7 @@ data "aws_iam_policy_document" "mongodb_database_backups_writer" {
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongodb*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo*",
     ]
   }
 }
