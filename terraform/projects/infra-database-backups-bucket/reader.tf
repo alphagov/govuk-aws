@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "mongodb_database_backups_reader" {
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongodb*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo*",
     ]
   }
 }
