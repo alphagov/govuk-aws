@@ -423,7 +423,7 @@ data "aws_iam_policy_document" "publishing-api_dbadmin_database_backups_writer" 
   }
 
   statement {
-    sid = "publishingApiDBAdminReadBucketLists"
+    sid = "PublishingAPIDBAdminReadBucketLists"
 
     actions = [
       "s3:ListBucket",
@@ -448,7 +448,7 @@ data "aws_iam_policy_document" "publishing-api_dbadmin_database_backups_writer" 
   }
 
   statement {
-    sid = "publishingApiDBAdminWriteGovukDatabaseBackups"
+    sid = "PublishingAPIDBAdminWriteGovukDatabaseBackups"
 
     actions = [
       "s3:PutObject",
@@ -458,6 +458,63 @@ data "aws_iam_policy_document" "publishing-api_dbadmin_database_backups_writer" 
 
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*publishing-api-postgres*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "email-alert-api_dbadmin_database_backups_writer" {
+  name        = "govuk-${var.aws_environment}-email-alert-api_dbadmin_database_backups-writer-policy"
+  policy      = "${data.aws_iam_policy_document.email-alert-api_dbadmin_database_backups_writer.json}"
+  description = "Allows writing of the email-alert-api DBAdmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "email-alert-api_dbadmin_database_backups_writer" {
+  statement {
+    sid = "ReadListOfBuckets"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "EmailAlertAPIDBAdminReadBucketLists"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    # The top level access is required.
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+    ]
+
+    # We can now apply restictions on what can be accessed.
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "mysql",
+        "postgres",
+      ]
+    }
+  }
+
+  statement {
+    sid = "EmailAlertAPIDBAdminWriteGovukDatabaseBackups"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*email-alert-api-postgres*",
     ]
   }
 }
@@ -556,6 +613,11 @@ output "warehouse_dbadmin_write_database_backups_bucket_policy_arn" {
 output "publishing-api_dbadmin_write_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.publishing-api_dbadmin_database_backups_writer.arn}"
   description = "ARN of the publishing-apiDBAdmin write database_backups-bucket policy"
+}
+
+output "email-alert-api_dbadmin_write_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.email-alert-api_dbadmin_database_backups_writer.arn}"
+  description = "ARN of the EmailAlertAPIDBAdmin write database_backups-bucket policy"
 }
 
 output "graphite_write_database_backups_bucket_policy_arn" {
