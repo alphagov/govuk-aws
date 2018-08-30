@@ -326,6 +326,18 @@ output "sg_warehouse-postgresql-primary_id" {
   value = "${aws_security_group.warehouse-postgresql-primary.id}"
 }
 
+output "sg_publishing-api-db-admin_elb_id" {
+  value = "${aws_security_group.publishing-api-db-admin_elb.id}"
+}
+
+output "sg_publishing-api-db-admin_id" {
+  value = "${aws_security_group.publishing-api-db-admin.id}"
+}
+
+output "sg_publishing-api-postgresql-primary_id" {
+  value = "${aws_security_group.publishing-api-postgresql-primary.id}"
+}
+
 output "sg_whitehall-backend_external_elb_id" {
   value = "${aws_security_group.whitehall-backend_external_elb.id}"
 }
