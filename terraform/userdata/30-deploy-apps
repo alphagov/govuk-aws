@@ -3,7 +3,16 @@
 #
 # Snippet: deploy-apps
 #
+
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: deploy-apps"
+# First check if the deploy user has been created
+# and if not wait for puppet to do its magic (it could take a while)
+WAIT_TIME=300
+while [ $WAIT_TIME -gt 0 ]; do
+  if id deploy; then break; fi
+  sleep 1
+  ((WAIT_TIME-=1))
+done
 test -f /usr/local/bin/govuk_sync_apps && /usr/local/bin/govuk_sync_apps
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] END SNIPPET: deploy-apps"
 
