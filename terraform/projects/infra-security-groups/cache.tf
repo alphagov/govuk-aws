@@ -61,6 +61,20 @@ resource "aws_security_group_rule" "cache_ingress_router-backend_router" {
   source_security_group_id = "${aws_security_group.router-backend.id}"
 }
 
+# Allow the backend instances to clear parts of the varnish cache
+resource "aws_security_group_rule" "cache_ingress_backend_varnish" {
+  type      = "ingress"
+  from_port = 7999
+  to_port   = 7999
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.cache.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.backend.id}"
+}
+
 resource "aws_security_group" "cache_elb" {
   name        = "${var.stackname}_cache_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
