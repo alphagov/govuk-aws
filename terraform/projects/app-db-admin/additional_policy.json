@@ -4,20 +4,20 @@
         {
             "Effect": "Allow",
             "Action": [
-                "rds:CreateDBInstance",
-                "rds:DeleteDBInstance",
-                "rds:RestoreDBInstanceFromDBSnapshot"
+                "rds:ModifyDBInstance",
+                "rds:DeleteDBInstance"
             ],
             "Resource": "*",
             "Condition": {
                 "StringEquals": {
-                    "rds:db-tag": "scrubber"
+                    "rds:db-tag/scrubber": ["scrubber"]
                 }
            }
         },
         {
             "Effect": "Allow",
             "Action": [
+                "rds:RestoreDBInstanceFromDBSnapshot",
                 "rds:DescribeDBClusterSnapshotAttributes",
                 "rds:DescribeDBClusterParameters",
                 "rds:DescribeDBEngineVersions",
@@ -34,6 +34,7 @@
                 "rds:CreateDBClusterSnapshot",
                 "rds:DescribeDBParameters",
                 "rds:ModifyDBClusterSnapshotAttribute",
+                "rds:ModifyDBSnapshot",
                 "rds:ModifyDBSnapshotAttribute",
                 "rds:DescribeDBClusters",
                 "rds:DescribeDBClusterParameterGroups",
