@@ -9,6 +9,7 @@ logs-cdn node
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | logs_cdn_subnet | Name of the subnet to place the EBS volume | string | - | yes |

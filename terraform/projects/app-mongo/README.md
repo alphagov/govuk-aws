@@ -9,6 +9,7 @@ Mongo hosts
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | mongo_1_ip | IP address of the private IP to assign to the instance | string | - | yes |
 | mongo_1_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |

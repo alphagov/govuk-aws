@@ -10,6 +10,7 @@ Rummager Elasticsearch cluster
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cluster_name | Name of the Elasticsearch cluster to use for discovery | string | - | yes |
+| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_database_backups_bucket_key_stack | Override stackname path to infra_database_backups_bucket remote state | string | `` | no |

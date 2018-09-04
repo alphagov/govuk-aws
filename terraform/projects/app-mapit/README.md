@@ -9,6 +9,7 @@ Mapit node
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | instance_type | The type of EC2 instance to use for both ASGs. | string | `t2.medium` | no |

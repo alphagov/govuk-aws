@@ -19,6 +19,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not the EBS volume is encrypted"
+}
+
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -163,6 +168,7 @@ module "monitoring" {
 
 resource "aws_ebs_volume" "monitoring" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.monitoring_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 20
 

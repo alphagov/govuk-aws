@@ -14,6 +14,11 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not the EBS volume is encrypted"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -141,6 +146,7 @@ module "apt" {
 
 resource "aws_ebs_volume" "apt" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.apt_1_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   size              = 40
   type              = "gp2"
 

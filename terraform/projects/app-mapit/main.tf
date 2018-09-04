@@ -19,6 +19,11 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not the EBS volume is encrypted"
+}
+
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -131,6 +136,7 @@ module "mapit-1" {
 
 resource "aws_ebs_volume" "mapit-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_1_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
 
@@ -163,6 +169,7 @@ module "mapit-2" {
 
 resource "aws_ebs_volume" "mapit-2" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_2_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
 

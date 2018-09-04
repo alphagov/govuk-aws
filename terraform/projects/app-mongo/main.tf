@@ -19,6 +19,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not the EBS volume is encrypted"
+}
+
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -130,6 +135,7 @@ module "mongo-1" {
 
 resource "aws_ebs_volume" "mongo-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_1_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 300
 
@@ -187,6 +193,7 @@ module "mongo-2" {
 
 resource "aws_ebs_volume" "mongo-2" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_2_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 300
 
@@ -244,6 +251,7 @@ module "mongo-3" {
 
 resource "aws_ebs_volume" "mongo-3" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_3_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 300
 

@@ -14,6 +14,11 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not the EBS volume is encrypted"
+}
+
 variable "aws_environment" {
   type        = "string"
   description = "AWS Environment"
@@ -201,6 +206,7 @@ module "ckan" {
 
 resource "aws_ebs_volume" "ckan" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ckan_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 20
 
