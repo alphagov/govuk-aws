@@ -11,7 +11,7 @@ RDS Transition PostgreSQL Primary instance
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
 | instance_name | The RDS Instance Name. | string | `` | no |
-| multi_az | Enable multi-az. | string | `false` | no |
+| multi_az | Enable multi-az. | string | `true` | no |
 | password | DB password | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |

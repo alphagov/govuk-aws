@@ -37,7 +37,7 @@ variable "password" {
 variable "multi_az" {
   type        = "string"
   description = "Enable multi-az."
-  default     = false
+  default     = true
 }
 
 variable "skip_final_snapshot" {
