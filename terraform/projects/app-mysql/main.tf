@@ -40,6 +40,11 @@ variable "password" {
   description = "DB password"
 }
 
+variable "skip_final_snapshot" {
+  type        = "string"
+  description = "Set to true to NOT create a final snapshot when the cluster is deleted."
+}
+
 variable "snapshot_identifier" {
   type        = "string"
   description = "Specifies whether or not to create the database from this snapshot"
@@ -80,6 +85,7 @@ module "mysql_primary_rds_instance" {
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
   event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot  = "${var.skip_final_snapshot}"
   snapshot_identifier  = "${var.snapshot_identifier}"
 }
 
@@ -139,6 +145,7 @@ module "mysql_replica_rds_instance" {
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.mysql_primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot        = "${var.skip_final_snapshot}"
 }
 
 resource "aws_route53_record" "replica_service_record" {

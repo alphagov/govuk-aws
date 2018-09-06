@@ -40,6 +40,11 @@ variable "multi_az" {
   default     = false
 }
 
+variable "skip_final_snapshot" {
+  type        = "string"
+  description = "Set to true to NOT create a final snapshot when the cluster is deleted."
+}
+
 variable "snapshot_identifier" {
   type        = "string"
   description = "Specifies whether or not to create the database from this snapshot"
@@ -74,6 +79,7 @@ module "publishing-api-postgresql-primary_rds_instance" {
   multi_az            = "${var.multi_az}"
   security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_publishing-api-postgresql-primary_id}"]
   event_sns_topic_arn = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot = "${var.skip_final_snapshot}"
   snapshot_identifier = "${var.snapshot_identifier}"
 }
 
@@ -96,6 +102,7 @@ module "publishing-api-postgresql-standby_rds_instance" {
   create_replicate_source_db = "1"
   replicate_source_db        = "${module.publishing-api-postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot        = "${var.skip_final_snapshot}"
 }
 
 resource "aws_route53_record" "replica_service_record" {
