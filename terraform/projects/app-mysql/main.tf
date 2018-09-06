@@ -52,6 +52,17 @@ variable "storage_size" {
   default     = "30"
 }
 
+variable "skip_final_snapshot_policy" {
+  type        = "map"
+  description = "A map of environments to boolean values determining whether final snapshots are enabled in each environment"
+
+  default = {
+    "integration" = "true"
+    "staging"     = "false"
+    "production"  = "false"
+  }
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -81,6 +92,7 @@ module "mysql_primary_rds_instance" {
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
   event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   snapshot_identifier  = "${var.snapshot_identifier}"
+  skip_final_snapshot  = "${lookup(var.skip_final_snapshot_policy, var.aws_environment)}"
 }
 
 resource "aws_db_parameter_group" "mysql-primary" {

@@ -27,7 +27,7 @@ Create an RDS instance
 | password | Password for accessing the database. | string | `` | no |
 | replicate_source_db | Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate | string | `false` | no |
 | security_group_ids | Security group IDs to apply to this cluster | list | - | yes |
-| skip_final_snapshot | Set to false to create a final snapshot when the cluster is deleted. | string | `true` | no |
+| skip_final_snapshot | Set to true to NOT create a final snapshot when the cluster is deleted. | string | `false` | no |
 | snapshot_identifier | Specifies whether or not to create this database from a snapshot. | string | `` | no |
 | storage_type | One of standard (magnetic), gp2 (general purpose SSD), or io1 (provisioned IOPS SSD). The default is gp2 | string | `gp2` | no |
 | subnet_ids | Subnet IDs to assign to the aws_elasticache_subnet_group | list | `<list>` | no |

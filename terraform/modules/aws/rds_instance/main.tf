@@ -99,8 +99,8 @@ variable "parameter_group_name" {
 
 variable "skip_final_snapshot" {
   type        = "string"
-  description = "Set to false to create a final snapshot when the cluster is deleted."
-  default     = "true"
+  description = "Set to true to NOT create a final snapshot when the cluster is deleted."
+  default     = "false"
 }
 
 variable "maintenance_window" {
@@ -204,7 +204,6 @@ resource "aws_db_instance" "db_instance_replica" {
     update = "${var.terraform_update_rds_timeout}"
   }
 
-  # TODO this should be enabled in a Production environment:
   final_snapshot_identifier = "${var.name}-final-snapshot"
   skip_final_snapshot       = "${var.skip_final_snapshot}"
 
@@ -240,7 +239,6 @@ resource "aws_db_instance" "db_instance" {
     update = "${var.terraform_update_rds_timeout}"
   }
 
-  # TODO this should be enabled in a Production environment:
   final_snapshot_identifier = "${var.name}-final-snapshot"
   skip_final_snapshot       = "${var.skip_final_snapshot}"
 
