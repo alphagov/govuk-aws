@@ -702,7 +702,7 @@ resource "aws_athena_named_query" "transition_logs" {
   query    = "${file("${path.module}/../../queries/transition_logs_query.sql")}"
 }
 
-resource "aws_lambda_function" "process_logs" {
+resource "aws_lambda_function" "transition_executor" {
   filename      = "../../lambda/TransitionLogs/TransitionLogs.zip"
   function_name = "govuk-${var.aws_environment}-transition"
   role          = "${aws_iam_role.transition_executor.arn}"
