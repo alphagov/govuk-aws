@@ -744,7 +744,6 @@ resource "aws_iam_policy" "transition_executor" {
 }
 
 resource "aws_iam_role_policy_attachment" "transition_executor" {
-  name       = "transition-downloader-query-attachment"
   role       = "${aws_iam_role.transition_executor.name}"
   policy_arn = "${aws_iam_policy.transition_executor.arn}"
 }
