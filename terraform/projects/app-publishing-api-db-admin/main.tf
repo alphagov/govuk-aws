@@ -135,10 +135,16 @@ resource "aws_iam_role_policy_attachment" "write_publishing-api-db-admin_databas
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.publishing-api_dbadmin_write_database_backups_bucket_policy_arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "read_publishing-api-db-admin_database_backups_iam_role_policy_attachment" {
-  count      = 1
+resource "aws_iam_role_policy_attachment" "integration_read_publishing-api-db-admin_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 1 : 0}"
   role       = "${module.publishing-api-db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.publishing-api_dbadmin_read_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_publishing-api_dbadmin_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_publishing-api-db-admin_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 1 : 0}"
+  role       = "${module.publishing-api-db-admin.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_publishing-api_dbadmin_read_database_backups_bucket_policy_arn}"
 }
 
 # Outputs

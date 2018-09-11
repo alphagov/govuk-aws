@@ -278,10 +278,16 @@ resource "aws_iam_role_policy_attachment" "write_rummager-elasticsearch-1_databa
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.elasticsearch_write_database_backups_bucket_policy_arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "read_rummager-elasticsearch-1_database_backups_iam_role_policy_attachment" {
-  count      = 3
+resource "aws_iam_role_policy_attachment" "integration_read_rummager-elasticsearch-1_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
   role       = "${element(list(module.rummager-elasticsearch-1.instance_iam_role_name, module.rummager-elasticsearch-2.instance_iam_role_name, module.rummager-elasticsearch-3.instance_iam_role_name), count.index)}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.elasticsearch_read_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_elasticsearch_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_rummager-elasticsearch-1_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.rummager-elasticsearch-1.instance_iam_role_name, module.rummager-elasticsearch-2.instance_iam_role_name, module.rummager-elasticsearch-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_elasticsearch_read_database_backups_bucket_policy_arn}"
 }
 
 # Outputs
