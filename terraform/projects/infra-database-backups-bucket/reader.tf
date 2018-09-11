@@ -27,6 +27,8 @@ data "aws_iam_policy_document" "integration_mongo_api_database_backups_reader" {
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*mongo-api*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*mongo-api*",
     ]
   }
 }
@@ -51,6 +53,9 @@ data "aws_iam_policy_document" "integration_mongo_router_database_backups_reader
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*router_backend*",
       "arn:aws:s3:::govuk-integration-database-backups/*mongo-router*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*router_backend*",
+      "arn:aws:s3:::govuk-staging-database-backups/*mongo-router*",
     ]
   }
 }
@@ -74,6 +79,8 @@ data "aws_iam_policy_document" "integration_mongodb_database_backups_reader" {
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*mongo*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*mongo*",
     ]
   }
 }
@@ -97,6 +104,8 @@ data "aws_iam_policy_document" "integration_elasticsearch_database_backups_reade
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*elasticsearch*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*elasticsearch*",
     ]
   }
 }
@@ -121,6 +130,9 @@ data "aws_iam_policy_document" "integration_dbadmin_database_backups_reader" {
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*mysql*",
       "arn:aws:s3:::govuk-integration-database-backups/*postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*mysql*",
+      "arn:aws:s3:::govuk-staging-database-backups/*postgres*",
     ]
   }
 }
@@ -144,6 +156,8 @@ data "aws_iam_policy_document" "integration_transition_dbadmin_database_backups_
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*transition-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*transition-postgres*",
     ]
   }
 }
@@ -167,6 +181,8 @@ data "aws_iam_policy_document" "integration_warehouse_dbadmin_database_backups_r
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*warehouse-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*warehouse-postgres*",
     ]
   }
 }
@@ -236,6 +252,8 @@ data "aws_iam_policy_document" "integration_graphite_database_backups_reader" {
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
       "arn:aws:s3:::govuk-integration-database-backups/*whisper*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*whisper*",
     ]
   }
 }
