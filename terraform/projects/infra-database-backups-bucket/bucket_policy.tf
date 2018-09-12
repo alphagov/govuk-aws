@@ -12,13 +12,8 @@ resource "aws_s3_bucket_policy" "database_backups_cross_account_access" {
 
 data "aws_iam_policy_document" "database_backups_cross_account_access" {
   statement {
-    sid     = "CrossAccountPermissions"
-    effect  = "Allow"
-    actions = ["s3:Get*", "s3:List*"]
-
-    resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
-    ]
+    sid    = "CrossAccountPermissions"
+    effect = "Allow"
 
     principals = {
       type = "AWS"
@@ -29,5 +24,12 @@ data "aws_iam_policy_document" "database_backups_cross_account_access" {
         "arn:aws:iam::172025368201:root",
       ]
     }
+
+    actions = ["s3:Get*", "s3:List*"]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*",
+    ]
   }
 }
