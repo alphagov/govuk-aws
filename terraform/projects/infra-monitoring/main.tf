@@ -1,12 +1,14 @@
 /**
 * ## Module: projects/infra-monitoring
 *
-* Create resources to manage infrastructure monitoring:
+* Create resources to manage infrastructure and app monitoring:
 *   - Create an S3 bucket which allows AWS infrastructure to send logs to, for
 *     instance, ELB logs
 *   - Create resources to export CloudWatch log groups to S3 via Lambda-Kinesis_Firehose
 *   - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
 *     the topic
+*   - Create an IAM role which allows the AWS X-Ray daemon to upload trace data to
+*     AWS X-Ray (only required while trace data is sent from Carrenza)
 */
 
 variable "aws_region" {
@@ -225,6 +227,23 @@ resource "aws_sqs_queue_policy" "notifications_sqs_queue_policy" {
   policy    = "${data.template_file.notifications_sqs_queue_policy_template.rendered}"
 }
 
+#
+# Create an IAM role which allows the AWS X-Ray daemon to upload trace data to
+# AWS X-Ray (only required while trace data is sent from Carrenza)
+#
+
+resource "aws_iam_role" "xray_daemon_role" {
+  name               = "${var.stackname}-xray-daemon-traces"
+  path               = "/"
+  assume_role_policy = "${file("${path.module}/../../policies/xray_traces_assume_policy.json")}"
+}
+
+resource "aws_iam_policy" "xray_daemon_policy" {
+  name   = "${var.stackname}-xray-daemon-traces-policy"
+  path   = "/"
+  policy = "${file("${path.module}/../../policies/xray_traces_policy.json")}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -266,4 +285,9 @@ output "sns_topic_autoscaling_group_events_arn" {
 output "sns_topic_rds_events_arn" {
   value       = "${aws_sns_topic.notifications.arn}"
   description = "ARN of the SNS topic for RDS events"
+}
+
+output "xray_daemon_role_arn" {
+  value       = "${aws_iam_role.xray_daemon_role.arn}"
+  description = "ARN of the IAM role with permissions to upload traces to X-Ray"
 }

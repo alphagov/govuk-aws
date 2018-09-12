@@ -1,0 +1,13 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "XRayRolePolicy",
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "xray.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
