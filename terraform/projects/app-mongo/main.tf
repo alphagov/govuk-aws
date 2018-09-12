@@ -338,28 +338,40 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "write_mongo_database_backups_iam_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "write_mongo_api_database_backups_iam_role_policy_attachment" {
   count      = 3
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongo_api_write_database_backups_bucket_policy_arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "read_mongo_database_backups_iam_role_policy_attachment" {
-  count      = 3
-  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongo_api_read_database_backups_bucket_policy_arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "write_mongo_database_backups_iam_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "write_mongodb_database_backups_iam_role_policy_attachment" {
   count      = 3
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongodb_write_database_backups_bucket_policy_arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "read_mongo_database_backups_iam_role_policy_attachment" {
-  count      = 3
+resource "aws_iam_role_policy_attachment" "integration_read_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongodb_read_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "integration_read_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_mongodb_read_database_backups_bucket_policy_arn}"
 }
 
 # Outputs
