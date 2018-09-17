@@ -253,6 +253,7 @@ resource "aws_iam_user" "xray_daemon_user" {
 }
 
 resource "aws_iam_policy_attachment" "xray_daemon_user_policy_attachment" {
+  name       = "xray_daemon_user_policy_attachment"
   users      = ["${aws_iam_user.xray_daemon_user.name}"]
   policy_arn = "${aws_iam_policy.xray_daemon_policy.arn}"
 }
