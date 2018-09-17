@@ -69,6 +69,14 @@ provider "aws" {
   version = "1.14.0"
 }
 
+module "mysql_primary_shared_scrubbed_snapshot_finder" {
+  source = "../../modules/aws/shared_scrubbed_snapshot_finder"
+  enable = "${var.aws_environment == "integration" ? 1 : 0}"
+
+  source_db_engine              = "mysql"
+  source_db_instance_identifier = "${var.stackname}-mysql-primary"
+}
+
 # MySQL Primary instance
 module "mysql_primary_rds_instance" {
   source               = "../../modules/aws/rds_instance"
@@ -86,7 +94,7 @@ module "mysql_primary_rds_instance" {
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
   event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot  = "${var.skip_final_snapshot}"
-  snapshot_identifier  = "${var.snapshot_identifier}"
+  snapshot_identifier  = "${module.mysql_primary_shared_scrubbed_snapshot_finder.snapshot_arn}"
 }
 
 resource "aws_db_parameter_group" "mysql-primary" {
