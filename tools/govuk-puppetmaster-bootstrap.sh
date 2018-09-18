@@ -35,11 +35,11 @@ apt-get -y install git
 apt-get -y install python3-pip
 
 # Create required directories
-mkdir -p ${GPG_KEYSTORE}
-mkdir -p ${SSH_KEYSTORE}
-mkdir -p ${GOVUK_LOGDIR}
+mkdir -p "${GPG_KEYSTORE}"
+mkdir -p "${SSH_KEYSTORE}"
+mkdir -p "${GOVUK_LOGDIR}"
 
-cd ${GOVUK_WORKDIR}
+cd "${GOVUK_WORKDIR}" || exit
 
 # Function to access the AWS SSM parameter store and extract SecureString values from returned JSON
 function get_ssm_parameter ()
@@ -47,7 +47,7 @@ function get_ssm_parameter ()
 set +x
     SSM_PARAMETER_NAME=$2
     SSM_PARAMETER=$(aws --region=${AWS_REGION} ssm get-parameter --name "${SSM_PARAMETER_NAME}" --with-decryption | jq .Parameter.Value | sed -e "s/^\"//;s/\"$//")
-    echo ${SSM_PARAMETER}
+    echo "${SSM_PARAMETER}"
 set -x
 }
 
@@ -93,9 +93,9 @@ fi
 
 # Move puppet release to the expected location
 mkdir -p /usr/share/puppet/production/releases
-mv ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO} /usr/share/puppet/production/releases/${RELEASENAME}
-rm -f /usr/share/puppet/production/current
-ln -s /usr/share/puppet/production/releases/${RELEASENAME} /usr/share/puppet/production/current
+mv "${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}" "/usr/share/puppet/production/releases/${RELEASENAME}"
+rm -f "/usr/share/puppet/production/current"
+ln -s "/usr/share/puppet/production/releases/${RELEASENAME}" "/usr/share/puppet/production/current"
 # We only want the permissions applied to the deepest directory, so is correct
 # behaviour.
 # shellcheck disable=SC2174
@@ -106,14 +106,14 @@ chown -R puppet: /etc/puppet/gpg
 # Install Ruby dependencies for first puppet apply
 gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
 
-cd /usr/share/puppet/production/current/
+cd "/usr/share/puppet/production/current/" || exit
 
 # Installing Puppet dependencies
 bundle install
 bundle exec rake librarian:install
 
-cd ${GOVUK_WORKDIR}
+cd "${GOVUK_WORKDIR}" || exit
 
 # Self-configure puppet
 puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp >> ${GOVUK_LOGDIR}/govuk_puppet_apply.log 2>&1
-chown -R deploy:deploy /usr/share/puppet/production/releases/${RELEASENAME}
+chown -R deploy:deploy "/usr/share/puppet/production/releases/${RELEASENAME}"
