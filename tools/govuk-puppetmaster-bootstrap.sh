@@ -6,14 +6,6 @@
 set -x
 set -u
 
-GIT_BINARY='/usr/bin/git'
-AWS_BINARY='/usr/local/bin/aws'
-BUNDLE_BINARY='/usr/bin/bundle'
-RAKE_BINARY='/usr/local/bin/rake'
-GEM_BINARY='/usr/bin/gem'
-PUPPET_BINARY='/usr/local/bin/puppet'
-GPG_BINARY='/usr/bin/gpg'
-
 GOVUK_ENVIRONMENT='staging'
 GOVUK_STACKNAME='blue'
 
@@ -53,8 +45,8 @@ cd ${GOVUK_WORKDIR}
 function get_ssm_parameter ()
 {
 set +x
-    SSM_PARAMETER_NAME=$1
-    SSM_PARAMETER=$(${AWS_BINARY} --region=${AWS_REGION} ssm get-parameter --name "${SSM_PARAMETER_NAME}" --with-decryption | jq .Parameter.Value | sed -e "s/^\"//;s/\"$//")
+    SSM_PARAMETER_NAME=$2
+    SSM_PARAMETER=$(aws --region=${AWS_REGION} ssm get-parameter --name "${SSM_PARAMETER_NAME}" --with-decryption | jq .Parameter.Value | sed -e "s/^\"//;s/\"$//")
     echo ${SSM_PARAMETER}
 set -x
 }
@@ -77,10 +69,10 @@ chmod 600 ${GPG_KEYSTORE}/${GPG_KEYNAME}
 set -x
 
 # Clone Puppet repo
-${GIT_BINARY} clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
+git clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
 
 # Clone secrets repo
-${GIT_BINARY} clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
+git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
 
 # Add secrets to puppet repository
 cp -r ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO}/puppet_aws/hieradata/* ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/
@@ -108,20 +100,20 @@ ln -s /usr/share/puppet/production/releases/${RELEASENAME} /usr/share/puppet/pro
 # behaviour.
 # shellcheck disable=SC2174
 mkdir -p -m 0700 /etc/puppet/gpg
-${GPG_BINARY} --homedir /etc/puppet/gpg --allow-secret-key-import --import ${GPG_KEYSTORE}/${GPG_KEYNAME}
+gpg --homedir /etc/puppet/gpg --allow-secret-key-import --import ${GPG_KEYSTORE}/${GPG_KEYNAME}
 chown -R puppet: /etc/puppet/gpg
 
 # Install Ruby dependencies for first puppet apply
-${GEM_BINARY} install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
+gem install --no-ri --no-rdoc hiera-eyaml-gpg gpgme
 
 cd /usr/share/puppet/production/current/
 
 # Installing Puppet dependencies
-${BUNDLE_BINARY} install
-${BUNDLE_BINARY} exec ${RAKE_BINARY} librarian:install
+bundle install
+bundle exec rake librarian:install
 
 cd ${GOVUK_WORKDIR}
 
 # Self-configure puppet
-${PUPPET_BINARY} apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp >> ${GOVUK_LOGDIR}/govuk_puppet_apply.log 2>&1
+puppet apply --verbose --trusted_node_data --hiera_config=/usr/share/puppet/production/current/hiera_aws.yml --modulepath=/usr/share/puppet/production/current/modules:/usr/share/puppet/production/current/vendor/modules/ --manifestdir=/usr/share/puppet/production/current/manifests /usr/share/puppet/production/current/manifests/site.pp >> ${GOVUK_LOGDIR}/govuk_puppet_apply.log 2>&1
 chown -R deploy:deploy /usr/share/puppet/production/releases/${RELEASENAME}
