@@ -36,6 +36,7 @@
                 "rds:ModifyDBClusterSnapshotAttribute",
                 "rds:ModifyDBSnapshot",
                 "rds:ModifyDBSnapshotAttribute",
+                "rds:DeleteDBSnapshot",
                 "rds:DescribeDBClusters",
                 "rds:DescribeDBClusterParameterGroups",
                 "rds:DescribeDBClusterSnapshots",
