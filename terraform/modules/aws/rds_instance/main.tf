@@ -76,7 +76,7 @@ variable "security_group_ids" {
 variable "multi_az" {
   type        = "string"
   description = "Specifies if the RDS instance is multi-AZ"
-  default     = false
+  default     = true
 }
 
 variable "create_replicate_source_db" {
