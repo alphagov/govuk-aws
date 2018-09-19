@@ -10,6 +10,7 @@ Apt node
 | apt_1_subnet | Name of the subnet to place the apt instance 1 and EBS volume | string | - | yes |
 | aws_environment | AWS environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
