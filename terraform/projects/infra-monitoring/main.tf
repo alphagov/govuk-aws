@@ -7,8 +7,9 @@
 *   - Create resources to export CloudWatch log groups to S3 via Lambda-Kinesis_Firehose
 *   - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
 *     the topic
-*   - Create an IAM role which allows the AWS X-Ray daemon to upload trace data to
-*     AWS X-Ray (only required while trace data is sent from Carrenza)
+*   - Create an IAM user which allows Terraboard to read Terraform state files from S3
+*   - Create an IAM user and role which allows the X-Ray daemon to upload trace
+*     data to X-Ray (only required while trace data is sent from Carrenza)
 */
 
 variable "aws_region" {
@@ -225,6 +226,35 @@ data "template_file" "notifications_sqs_queue_policy_template" {
 resource "aws_sqs_queue_policy" "notifications_sqs_queue_policy" {
   queue_url = "${aws_sqs_queue.notifications.id}"
   policy    = "${data.template_file.notifications_sqs_queue_policy_template.rendered}"
+}
+
+#
+# Create an IAM user which allows Terraboard to read Terraform state files from S3
+#
+
+data "template_file" "terraboard_policy_template" {
+  template = "${file("${path.module}/../../policies/terraboard_policy.tpl")}"
+
+  vars {
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_iam_policy" "terraboard_policy" {
+  name        = "${var.aws_environment}-terraboard-policy"
+  path        = "/"
+  description = "Allow read access to S3 govuk-terraform-state bucket"
+  policy      = "${data.template_file.terraboard_policy_template.rendered}"
+}
+
+resource "aws_iam_user" "terraboard_user" {
+  name = "govuk-terraboard"
+}
+
+resource "aws_iam_policy_attachment" "terraboard_user_policy_attachment" {
+  name       = "terraboard_user_policy_attachment"
+  users      = ["${aws_iam_user.terraboard_user.name}"]
+  policy_arn = "${aws_iam_policy.terraboard_policy.arn}"
 }
 
 #

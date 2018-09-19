@@ -6,8 +6,9 @@ Create resources to manage infrastructure and app monitoring:
   - Create resources to export CloudWatch log groups to S3 via Lambda-Kinesis_Firehose
   - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
     the topic
-  - Create an IAM role which allows the AWS X-Ray daemon to upload trace data to
-    AWS X-Ray (only required while trace data is sent from Carrenza)
+  - Create an IAM user which allows Terraboard to read Terraform state files from S3
+  - Create an IAM user and role which allows the X-Ray daemon to upload trace
+    data to X-Ray (only required while trace data is sent from Carrenza)
 
 
 ## Inputs
