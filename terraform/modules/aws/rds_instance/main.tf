@@ -204,9 +204,6 @@ resource "aws_db_instance" "db_instance_replica" {
     update = "${var.terraform_update_rds_timeout}"
   }
 
-  final_snapshot_identifier = "${var.name}-final-snapshot"
-  skip_final_snapshot       = "${var.skip_final_snapshot}"
-
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
 
