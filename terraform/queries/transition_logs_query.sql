@@ -8,5 +8,5 @@ FROM bouncer
 WHERE year = year(current_date - interval '1' day)
   AND month = month(current_date - interval '1' day)
   AND date = day(current_date - interval '1' day)
-GROUP BY cast(request_received as date), status, host, url
+GROUP BY status, host, url
 ORDER BY 2 DESC
