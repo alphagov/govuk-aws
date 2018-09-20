@@ -45,7 +45,7 @@ cd "${GOVUK_WORKDIR}" || exit
 function get_ssm_parameter ()
 {
 set +x
-    SSM_PARAMETER_NAME=$2
+    SSM_PARAMETER_NAME=$1
     SSM_PARAMETER=$(aws --region=${AWS_REGION} ssm get-parameter --name "${SSM_PARAMETER_NAME}" --with-decryption | jq .Parameter.Value | sed -e "s/^\"//;s/\"$//")
     echo "${SSM_PARAMETER}"
 set -x
