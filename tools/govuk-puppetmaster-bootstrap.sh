@@ -64,7 +64,7 @@ set -x
 
 # Get GPG key to decrypt
 set +x
-echo -n "$(get_ssm_parameter 'govuk_base64_staging_gpg_1_of_3')$(get_ssm_parameter 'govuk_base64_staging_gpg_2_of_3')$(get_ssm_parameter 'govuk_base64_staging_gpg_3_of_3')" | base64 -d > ${GPG_KEYSTORE}/${GPG_KEYNAME}
+echo -n "$(get_ssm_parameter 'govuk_base64_gpg_1_of_3')$(get_ssm_parameter 'govuk_base64_gpg_2_of_3')$(get_ssm_parameter 'govuk_base64_gpg_3_of_3')" | base64 -d > ${GPG_KEYSTORE}/${GPG_KEYNAME}
 chmod 600 ${GPG_KEYSTORE}/${GPG_KEYNAME}
 set -x
 
