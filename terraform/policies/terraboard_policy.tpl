@@ -7,7 +7,7 @@
                 "s3:ListBucket"
              ],
             "Resource": [
-                "arn:aws:s3:::govuk-terraform-state-${aws_environment}"
+                "arn:aws:s3:::govuk-terraform-steppingstone-${aws_environment}"
             ]
         },
         {
@@ -16,7 +16,7 @@
                 "s3:GetObject"
              ],
             "Resource": [
-                "arn:aws:s3:::govuk-terraform-state-${aws_environment}/*"
+                "arn:aws:s3:::govuk-terraform-steppingstone-${aws_environment}/*"
             ]
         }
     ]
