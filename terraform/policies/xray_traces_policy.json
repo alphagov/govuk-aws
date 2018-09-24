@@ -5,10 +5,7 @@
       "Effect": "Allow",
       "Action": [
           "xray:PutTraceSegments",
-          "xray:PutTelemetryRecords",
-          "xray:GetSamplingRules",
-          "xray:GetSamplingTargets",
-          "xray:GetSamplingStatisticSummaries"
+          "xray:PutTelemetryRecords"
       ],
       "Resource": [
           "*"

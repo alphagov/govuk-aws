@@ -5,7 +5,7 @@
       "Sid": "XRayRolePolicy",
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "xray.amazonaws.com"
+        "AWS": "${xray_daemon_user_arn}"
       },
       "Effect": "Allow"
     }
