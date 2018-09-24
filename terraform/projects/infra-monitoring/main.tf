@@ -270,7 +270,7 @@ data "template_file" "xray_daemon_policy_template" {
   template = "${file("${path.module}/../../policies/xray_traces_assume_policy.tpl")}"
 
   vars {
-    xray_daemon_user_arn = "${aws_iam_role.xray_daemon_user.arn}"
+    xray_daemon_user_arn = "${aws_iam_user.xray_daemon_user.arn}"
   }
 }
 
