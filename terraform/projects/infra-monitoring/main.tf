@@ -262,6 +262,18 @@ resource "aws_iam_policy_attachment" "terraboard_user_policy_attachment" {
 # data to AWS X-Ray (only required while trace data is sent from Carrenza)
 #
 
+resource "aws_iam_user" "xray_daemon_user" {
+  name = "govuk-xray-daemon"
+}
+
+data "template_file" "xray_daemon_policy_template" {
+  template = "${file("${path.module}/../../policies/xray_traces_assume_policy.tpl")}"
+
+  vars {
+    xray_daemon_user_arn = "${aws_iam_role.xray_daemon_user.arn}"
+  }
+}
+
 resource "aws_iam_policy" "xray_daemon_policy" {
   name   = "${var.stackname}-xray-daemon-traces-policy"
   path   = "/"
@@ -270,21 +282,11 @@ resource "aws_iam_policy" "xray_daemon_policy" {
 
 resource "aws_iam_role" "xray_daemon_role" {
   name               = "${var.stackname}-xray-daemon-traces"
-  assume_role_policy = "${file("${path.module}/../../policies/xray_traces_assume_policy.json")}"
+  assume_role_policy = "${data.template_file.xray_daemon_policy_template.rendered}"
 }
 
 resource "aws_iam_role_policy_attachment" "xray_daemon_role_policy_attachment" {
   role       = "${aws_iam_role.xray_daemon_role.name}"
-  policy_arn = "${aws_iam_policy.xray_daemon_policy.arn}"
-}
-
-resource "aws_iam_user" "xray_daemon_user" {
-  name = "govuk-xray-daemon"
-}
-
-resource "aws_iam_policy_attachment" "xray_daemon_user_policy_attachment" {
-  name       = "xray_daemon_user_policy_attachment"
-  users      = ["${aws_iam_user.xray_daemon_user.name}"]
   policy_arn = "${aws_iam_policy.xray_daemon_policy.arn}"
 }
 
