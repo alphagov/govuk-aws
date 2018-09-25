@@ -243,7 +243,7 @@ data "template_file" "terraboard_policy_template" {
 resource "aws_iam_policy" "terraboard_policy" {
   name        = "${var.aws_environment}-terraboard-policy"
   path        = "/"
-  description = "Allow read access to S3 govuk-terraform-state bucket"
+  description = "Allow read access to S3 govuk-terraform-steppingstone bucket for the environment"
   policy      = "${data.template_file.terraboard_policy_template.rendered}"
 }
 
