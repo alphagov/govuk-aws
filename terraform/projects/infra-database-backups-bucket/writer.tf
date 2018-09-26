@@ -285,6 +285,7 @@ data "aws_iam_policy_document" "dbadmin_database_backups_writer" {
     ]
 
     resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*whitehall*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mysql*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*postgres*",
     ]
@@ -343,7 +344,7 @@ data "aws_iam_policy_document" "transition_dbadmin_database_backups_writer" {
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*transition-postgres*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*transition*",
     ]
   }
 }
@@ -400,7 +401,7 @@ data "aws_iam_policy_document" "warehouse_dbadmin_database_backups_writer" {
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*warehouse-postgres*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*warehouse*",
     ]
   }
 }
@@ -457,7 +458,7 @@ data "aws_iam_policy_document" "publishing-api_dbadmin_database_backups_writer" 
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*publishing-api-postgres*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*publishing-api*",
     ]
   }
 }
@@ -514,7 +515,7 @@ data "aws_iam_policy_document" "email-alert-api_dbadmin_database_backups_writer"
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*email-alert-api-postgres*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*email-alert-api*",
     ]
   }
 }

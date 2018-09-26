@@ -155,9 +155,9 @@ data "aws_iam_policy_document" "integration_transition_dbadmin_database_backups_
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
-      "arn:aws:s3:::govuk-integration-database-backups/*transition-postgres*",
+      "arn:aws:s3:::govuk-integration-database-backups/*transition*",
       "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*transition-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*transition*",
     ]
   }
 }
@@ -180,9 +180,9 @@ data "aws_iam_policy_document" "integration_warehouse_dbadmin_database_backups_r
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
-      "arn:aws:s3:::govuk-integration-database-backups/*warehouse-postgres*",
+      "arn:aws:s3:::govuk-integration-database-backups/*warehouse*",
       "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*warehouse-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*warehouse*",
     ]
   }
 }
@@ -205,7 +205,7 @@ data "aws_iam_policy_document" "integration_publishing-api_dbadmin_database_back
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
-      "arn:aws:s3:::govuk-integration-database-backups/*publishing-api-postgres*",
+      "arn:aws:s3:::govuk-integration-database-backups/*publishing-api*",
     ]
   }
 }
@@ -228,7 +228,7 @@ data "aws_iam_policy_document" "integration_email-alert-api_dbadmin_database_bac
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
-      "arn:aws:s3:::govuk-integration-database-backups/*email-alert-api-postgres*",
+      "arn:aws:s3:::govuk-integration-database-backups/*email-alert-api*",
     ]
   }
 }
@@ -393,7 +393,7 @@ data "aws_iam_policy_document" "staging_transition_dbadmin_database_backups_read
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*transition-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*transition*",
     ]
   }
 }
@@ -416,7 +416,7 @@ data "aws_iam_policy_document" "staging_warehouse_dbadmin_database_backups_reade
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*warehouse-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*warehouse*",
     ]
   }
 }
@@ -439,7 +439,7 @@ data "aws_iam_policy_document" "staging_publishing-api_dbadmin_database_backups_
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*publishing-api-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*publishing-api*",
     ]
   }
 }
@@ -462,7 +462,7 @@ data "aws_iam_policy_document" "staging_email-alert-api_dbadmin_database_backups
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*email-alert-api-postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*email-alert-api*",
     ]
   }
 }
@@ -625,7 +625,7 @@ data "aws_iam_policy_document" "production_transition_dbadmin_database_backups_r
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-production-database-backups",
-      "arn:aws:s3:::govuk-production-database-backups/*transition-postgres*",
+      "arn:aws:s3:::govuk-production-database-backups/*transition*",
     ]
   }
 }
@@ -648,7 +648,7 @@ data "aws_iam_policy_document" "production_warehouse_dbadmin_database_backups_re
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-production-database-backups",
-      "arn:aws:s3:::govuk-production-database-backups/*warehouse-postgres*",
+      "arn:aws:s3:::govuk-production-database-backups/*warehouse*",
     ]
   }
 }
@@ -671,7 +671,7 @@ data "aws_iam_policy_document" "production_publishing-api_dbadmin_database_backu
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-production-database-backups",
-      "arn:aws:s3:::govuk-production-database-backups/*publishing-api-postgres*",
+      "arn:aws:s3:::govuk-production-database-backups/*publishing-api*",
     ]
   }
 }
@@ -694,7 +694,7 @@ data "aws_iam_policy_document" "production_email-alert-api_dbadmin_database_back
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-production-database-backups",
-      "arn:aws:s3:::govuk-production-database-backups/*email-alert-api-postgres*",
+      "arn:aws:s3:::govuk-production-database-backups/*email-alert-api*",
     ]
   }
 }
