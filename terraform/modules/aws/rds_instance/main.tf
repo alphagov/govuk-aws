@@ -175,6 +175,12 @@ variable "terraform_delete_rds_timeout" {
   default     = "2h"
 }
 
+variable "storage_encrypted" {
+  type        = "boolean"
+  description = "Specifies whether the DB instance is encrypted"
+  default     = true
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -194,6 +200,7 @@ resource "aws_db_instance" "db_instance_replica" {
   instance_class         = "${var.instance_class}"
   identifier             = "${var.instance_name}"
   storage_type           = "${var.storage_type}"
+  storage_encrypted      = "${var.storage_encrypted}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"
@@ -220,6 +227,7 @@ resource "aws_db_instance" "db_instance" {
   instance_class          = "${var.instance_class}"
   identifier              = "${var.instance_name}"
   storage_type            = "${var.storage_type}"
+  storage_encrypted       = "${var.storage_encrypted}"
   db_subnet_group_name    = "${aws_db_subnet_group.subnet_group.name}"
   vpc_security_group_ids  = ["${var.security_group_ids}"]
   multi_az                = "${var.multi_az}"
