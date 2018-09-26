@@ -181,6 +181,12 @@ variable "storage_encrypted" {
   default     = true
 }
 
+variable "kms_key_id" {
+  type        = "string"
+  description = "The ARN for the KMS encryption key"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -200,7 +206,7 @@ resource "aws_db_instance" "db_instance_replica" {
   instance_class         = "${var.instance_class}"
   identifier             = "${var.instance_name}"
   storage_type           = "${var.storage_type}"
-  storage_encrypted      = "${var.storage_encrypted}"
+  kms_key_id             = "${var.kms_key_id}"
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"
