@@ -4,7 +4,7 @@ Date: 2017-06-30
  
 ## Status
  
-Pending
+Partly superseded
  
 ## Context
  
@@ -17,7 +17,9 @@ This record does not currently cover the disaster recovery environments and trea
  * 1 VPC per environment (currently integration, staging and production)
  * 3 public subnets, spread across availability zones
  * 3 private subnets, spread across availability zones
- 
+
+**These IP ranges have been superseded by [ADR #0033](0033-ip-ranges.md).**
+
 The VPCs will be assigned the following IP ranges:
  
 |Environment|IP Range|
