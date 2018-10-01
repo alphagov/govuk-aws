@@ -210,6 +210,10 @@ output "sg_jumpbox_id" {
   value = "${aws_security_group.jumpbox.id}"
 }
 
+output "sg_ubuntutest_id" {
+  value = "${aws_security_group.ubuntutest.id}"
+}
+
 output "sg_logs-cdn_elb_id" {
   value = "${aws_security_group.logs-cdn_elb.id}"
 }
