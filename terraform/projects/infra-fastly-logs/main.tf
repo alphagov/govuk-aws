@@ -113,7 +113,7 @@ data "template_file" "transition_downloader_policy_template" {
   template = "${file("${path.module}/../../policies/transition_downloader_policy.tpl")}"
 
   vars {
-    bucket_arn = "${aws_s3_bucket.fastly_logs.arn}"
+    bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
   }
 }
 
