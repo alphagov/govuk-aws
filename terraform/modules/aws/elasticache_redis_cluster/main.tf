@@ -52,10 +52,10 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replication_group_id          = "${var.name}"
   replication_group_description = "${var.name} redis cluster"
   node_type                     = "${var.elasticache_node_type}"
-  port                          = 6379
+  port                          = 6379 
   parameter_group_name          = "default.redis3.2.cluster.on"
   automatic_failover_enabled    = true
-
+  engine_version                = "3.2.10"
   subnet_group_name  = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
   security_group_ids = ["${var.security_group_ids}"]
 
@@ -75,6 +75,7 @@ resource "aws_elasticache_replication_group" "redis_master_with_replica" {
   number_cache_clusters         = 2
   port                          = 6379
   parameter_group_name          = "default.redis3.2"
+  engine_version                = "3.2.10"
   automatic_failover_enabled    = true
 
   subnet_group_name  = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
