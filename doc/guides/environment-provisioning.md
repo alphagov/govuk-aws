@@ -208,6 +208,10 @@ Create the following projects (in no particular order):
 
 `app-apt`
 `app-db-admin`
+`app-email-alert-api-db-admin`
+`app-publishing-api-db-admin`
+`app-transition-db-admin`
+`app-warehouse-db-admin`
 `app-graphite`
 `app-monitoring`
 
