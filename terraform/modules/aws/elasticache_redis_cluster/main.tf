@@ -52,7 +52,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replication_group_id          = "${var.name}"
   replication_group_description = "${var.name} redis cluster"
   node_type                     = "${var.elasticache_node_type}"
-  port                          = 6379 
+  port                          = 6379
   parameter_group_name          = "default.redis3.2.cluster.on"
   automatic_failover_enabled    = true
   engine_version                = "3.2.10"
