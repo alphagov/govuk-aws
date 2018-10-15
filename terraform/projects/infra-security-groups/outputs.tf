@@ -214,14 +214,6 @@ output "sg_ubuntutest_id" {
   value = "${aws_security_group.ubuntutest.id}"
 }
 
-output "sg_logs-cdn_elb_id" {
-  value = "${aws_security_group.logs-cdn_elb.id}"
-}
-
-output "sg_logs-cdn_id" {
-  value = "${aws_security_group.logs-cdn.id}"
-}
-
 output "sg_mapit_id" {
   value = "${aws_security_group.mapit.id}"
 }

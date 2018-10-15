@@ -72,8 +72,6 @@ Manage the security groups for the entire infrastructure
 | sg_graphite_id |  |
 | sg_graphite_internal_elb_id |  |
 | sg_jumpbox_id |  |
-| sg_logs-cdn_elb_id |  |
-| sg_logs-cdn_id |  |
 | sg_management_id |  |
 | sg_mapit_elb_id |  |
 | sg_mapit_id |  |

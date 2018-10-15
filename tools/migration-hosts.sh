@@ -20,7 +20,6 @@ imminence
 jumpbox
 kibana
 local-links-manager
-logs-cdn
 manuals-publisher
 maslow
 policy-publisher

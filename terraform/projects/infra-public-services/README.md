@@ -54,7 +54,6 @@ This project adds global resources for app components:
 | graphite_internal_service_names |  | list | `<list>` | no |
 | graphite_public_service_names |  | list | `<list>` | no |
 | jumpbox_public_service_names |  | list | `<list>` | no |
-| logs_cdn_public_service_names |  | list | `<list>` | no |
 | mapit_internal_service_names |  | list | `<list>` | no |
 | mongo_internal_service_names |  | list | `<list>` | no |
 | monitoring_internal_service_names |  | list | `<list>` | no |
