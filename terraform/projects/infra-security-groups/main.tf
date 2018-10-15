@@ -11,7 +11,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.14.0"
+  version = "1.40.0"
 }
 
 # used by the fastly ip ranges provider.
