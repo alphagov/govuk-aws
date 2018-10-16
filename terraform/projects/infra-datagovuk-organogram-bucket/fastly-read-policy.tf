@@ -21,7 +21,6 @@ data "aws_iam_policy_document" "s3_fastly_read_policy_doc" {
 
       values = [
         "${data.fastly_ip_ranges.fastly.cidr_blocks}",
-        "${var.s3_bucket_read_ips}",
       ]
     }
 
