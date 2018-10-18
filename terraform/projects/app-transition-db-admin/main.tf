@@ -142,7 +142,7 @@ resource "aws_iam_role_policy_attachment" "read_integration_transition-db-admin_
 }
 
 resource "aws_iam_role_policy_attachment" "read_staging_transition-db-admin_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "staging" ? 1 : 0}"
+  count      = "${(var.aws_environment == "staging") || (var.aws_environment == "production") ? 1 : 0}"
   role       = "${module.transition-db-admin.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_transition_dbadmin_read_database_backups_bucket_policy_arn}"
 }
