@@ -499,12 +499,17 @@ module "bouncer_public_lb" {
   access_logs_bucket_prefix                  = "elb/${var.stackname}-bouncer-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
-  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
-  target_group_health_check_path             = "/healthcheck"
-  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = "${map("Project", var.stackname, "aws_migration", "bouncer", "aws_environment", var.aws_environment)}"
+
+  listener_action = {
+    "HTTP:80"   = "HTTP:80"
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  target_group_health_check_path = "/healthcheck"
+  subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_elb_id}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                   = "${map("Project", var.stackname, "aws_migration", "bouncer", "aws_environment", var.aws_environment)}"
 }
 
 resource "aws_route53_record" "bouncer_public_service_names" {

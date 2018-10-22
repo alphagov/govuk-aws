@@ -202,24 +202,45 @@ resource "aws_lb" "lb" {
   )}"
 }
 
-resource "aws_lb_listener" "listener" {
-  count             = "${length(keys(var.listener_action))}"
+data "null_data_source" "values" {
+  count = "${length(keys(var.listener_action))}"
+
+  inputs = {
+    ssl_arn_index = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? format("%d",count.index) : ""}"
+    arn_index     = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTP" ? format("%d",count.index) : ""}"
+  }
+}
+
+resource "aws_lb_listener" "listener_non_ssl" {
+  count             = "${length(compact(data.null_data_source.values.*.inputs.arn_index))}"
   load_balancer_arn = "${aws_lb.lb.arn}"
-  port              = "${element(split(":", element(keys(var.listener_action), count.index)), 1)}"
-  protocol          = "${element(split(":", element(keys(var.listener_action), count.index)), 0)}"
-  ssl_policy        = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
-  certificate_arn   = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
+  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))), 1)}"
+  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))), 0)}"
 
   default_action {
-    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), count.index)}")}"
+    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))}")}"
+    type             = "forward"
+  }
+}
+
+resource "aws_lb_listener" "listener" {
+  count             = "${length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
+  load_balancer_arn = "${aws_lb.lb.arn}"
+  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 1)}"
+  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0)}"
+  ssl_policy        = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
+  certificate_arn   = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
+
+  default_action {
+    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}")}"
     type             = "forward"
   }
 }
 
 resource "aws_lb_listener_certificate" "secondary" {
-  listener_arn    = "${aws_lb_listener.listener.arn}"
+  count           = "${length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
+  listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
   certificate_arn = "${data.aws_acm_certificate.secondary_cert.0.arn}"
-  count           = "${var.listener_secondary_certificate_domain_name == "" ? 0 : 1}"
 }
 
 locals {
