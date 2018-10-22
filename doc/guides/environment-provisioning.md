@@ -24,7 +24,7 @@ The general steps for provisioning a new environment are:
 ## Requirements
 
 * [Git](https://git-scm.com/) installed via [Xcode cli tools](http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/)/[brew](https://brew.sh/)
-* [Terraform = 0.11.2](https://www.terraform.io/downloads.html) installed via that link
+* [Terraform = 0.11.7](https://www.terraform.io/downloads.html) installed via that link
 * [ssh-copy-id](https://www.ssh.com/ssh/copy-id) installed via `brew install ssh-copy-id`
 * [aws-cli](https://aws.amazon.com/cli) installed via `brew install awscli` or `pip install awscli`
 
@@ -102,6 +102,13 @@ tools/build-terraform-project.sh -c apply -p <project name>
 ...terraform output...
 ```
 
+If you choose not to use environment variables for configuration, the full commandline arguments need to include path to the govuk-aws-data/data directory, environment and stack, e.g.
+```
+tools/build-terraform-project.sh -d </path/to/govuk-aws-data/data> -e <environment> -s <stack> -c apply -p <project name>
+```
+
+As a rule of thumb, projects names infra-\* are using the 'govuk' stack, while projects named app-\* use the 'blue' stack (Exception to this rule is the infra-stack-dns-zones projet, which uses 'blue').
+
 The projects that need to be initially run in this way are:
 
 1. `infra-security`
@@ -117,9 +124,24 @@ The projects that need to be initially run in this way are:
 11. `infra-wal-e-warehouse-bucket`
 12. `infra-public-services`
 
-These are all on the "govuk" stack, with exception of the infra-stack-dns-zones, which is part of its respective stack ("blue" is the only current option). 
+### Update the NS records (if rebuilding infra-root-dns-zones in staging or integration)
+
+Since we do not access multiple accounts for a single terraform run, the apex NS records for 
+the environment specific subdomains have to be updated if the `infra-networking` project is rebuilt and the subdomain NS resources are rewritten.
+
+For integration these are:
+- integration.publishing.service.gov.uk
+- integration.govuk-internal.digital
+- integration.govuk.digital 
+
+For staging these are:
+- staging.publishing.service.gov.uk
+- staging.govuk-internal.digital
+- staging.govuk.digital
 
 ### Creating backend files for a new stack
+
+**This is not currently required as we are only using a single "blue" stack and it's configuration is complete for the current set of projects.**
 
 Each project stores its state in an S3 bucket in AWS. These are configured using a backend file which looks like and lives in the project directory.
 ```
@@ -136,10 +158,11 @@ Puppet master configuration/installation is triggered by a terraform userdata sn
 
 The script requires for secrets to be available to the blue-puppetmaster role in the AWS SSM parameter store in base64 encoding:
 
-- `github.com_public_host_ssh_key`, The public host key of github.com used to automatically clone repositories
-- `govuk_secrets_clone_ssh`, The private SSH key to allow access to github.com:alphagov/govuk-secrets
-- `govuk_staging_secrets_1_of_2_gpg`, First part of the GPG key. See below.
-- `govuk_staging_secrets_2_of_2_gpg`, Second part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters. 
+- `govuk_base64_github.com_hostkey`, The public host key of github.com used to automatically clone repositories
+- `govuk_base64_github.com_ssh_readonly`, The private SSH key to allow access to github.com:alphagov/govuk-secrets
+- `govuk_base64_gpg_1_of_3`, First part of the GPG key. See below.
+- `govuk_base64_gpg_2_of_3`, Second part of the GPG key. See below.
+- `govuk_base64_gpg_3_of_3`, Third part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters. 
 
 ```
 tools/build-terraform-project.sh -c plan -p app-puppetmaster
