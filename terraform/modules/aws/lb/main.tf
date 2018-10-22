@@ -239,7 +239,7 @@ resource "aws_lb_listener" "listener" {
 
 resource "aws_lb_listener_certificate" "secondary" {
   count           = "${length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
-  listener_arn    = "${element(aws_lb_listener.listener.*.arn, element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}"
+  listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
   certificate_arn = "${data.aws_acm_certificate.secondary_cert.0.arn}"
 }
 
