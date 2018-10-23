@@ -8,10 +8,8 @@ Pending
 
 ## Context
 
-This architecture decision record is part of the GOV.UK migration.
-
 Currently, Bouncer public load balancer accepts HTTPS request on port 443 and
-redirect the traffic to port 80 on the Bouncer servers.
+redirects the traffic to port 80 on the Bouncer servers.
 
 There are a primary as well as a secondary SSL/TLS certificate attached to this HTTPS
 listener of the load balancer.
@@ -26,11 +24,11 @@ The configuration of the Bouncer public load balancer was modified to:
 ## Consequences
 
 In order to implement the decision above, the following code changes were done:
-1. the terraform [plan](terraform/projects/infra-public-services/main.tf)
+1. the terraform [plan](../../../../terraform/projects/infra-public-services/main.tf)
 was changed so that the input to the `aws/lb` terraform module specifies a second
 listener `"HTTP:80"   = "HTTP:80"` in the listener map for the Bouncer public
 load balancer.
 
-2. the `aws/lb` terraform module [here](terraform/modules/aws/lb/main.tf) had
+2. the `aws/lb` terraform module [here](../../../../terraform/modules/aws/lb/main.tf) had
 to be fixed so that SSL/TLS certificates and SSL policies are not added to a HTTP
 listener.
