@@ -61,3 +61,35 @@ resource "aws_security_group_rule" "mapit-elb_egress_any_any" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.mapit_elb.id}"
 }
+
+
+# Security resources for ALB set up for Carrenza access to AWS Mapit
+
+resource "aws_security_group" "mapit_carrenza_alb" {
+  name        = "${var.stackname}_mapit_carrenza_alb"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the mapit Carrenza ALB "
+
+  tags {
+    Name = "${var.stackname}_mapit_carrenza_alb_access"
+  }
+}
+
+resource "aws_security_group_rule" "mapit_carrenza_alb_ingress_443_carrenza" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  cidr_blocks       = ["${var.carrenza_env_ips}"]
+  security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+}
+
+resource "aws_security_group_rule" "mapit_carrenza_alb_egress_any_any" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+}

@@ -218,6 +218,10 @@ output "sg_mapit_id" {
   value = "${aws_security_group.mapit.id}"
 }
 
+output "sg_mapit_carrenza_alb_id" {
+  value = "${aws_security_group.mapit_carrenza_alb.id}"
+}
+
 output "sg_mapit_elb_id" {
   value = "${aws_security_group.mapit_elb.id}"
 }
