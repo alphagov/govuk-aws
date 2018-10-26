@@ -62,7 +62,6 @@ resource "aws_security_group_rule" "mapit-elb_egress_any_any" {
   security_group_id = "${aws_security_group.mapit_elb.id}"
 }
 
-
 # Security resources for ALB set up for Carrenza access to AWS Mapit
 
 resource "aws_security_group" "mapit_carrenza_alb" {
