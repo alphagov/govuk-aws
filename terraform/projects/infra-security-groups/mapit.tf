@@ -74,7 +74,7 @@ resource "aws_security_group" "mapit_carrenza_alb" {
   }
 }
 
-resource "aws_security_group_rule" "mapit_carrenza_alb_ingress_443_carrenza" {
+resource "aws_security_group_rule" "mapit-carrenza-alb_ingress_443_carrenza" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "mapit_carrenza_alb_ingress_443_carrenza" {
   security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
 }
 
-resource "aws_security_group_rule" "mapit_carrenza_alb_egress_any_any" {
+resource "aws_security_group_rule" "mapit-carrenza-alb_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
