@@ -1290,6 +1290,19 @@ resource "aws_route53_record" "mapit_internal_service_names" {
   ttl     = "300"
 }
 
+resource "aws_route53_record" "mapit_public_service_names" {
+  count   = "${length(var.mapit_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.mapit_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.mapit_public_lb.lb_dns_name}"
+    zone_id                = "${module.mapit_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 #
 # Mongo
 #
