@@ -8,6 +8,7 @@ Manage the security groups for the entire infrastructure
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aws_region | AWS region | string | `eu-west-1` | no |
+| carrenza_env_ips | An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_staging_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
@@ -73,6 +74,7 @@ Manage the security groups for the entire infrastructure
 | sg_graphite_internal_elb_id |  |
 | sg_jumpbox_id |  |
 | sg_management_id |  |
+| sg_mapit_carrenza_alb_id |  |
 | sg_mapit_elb_id |  |
 | sg_mapit_id |  |
 | sg_mirrorer_id |  |
