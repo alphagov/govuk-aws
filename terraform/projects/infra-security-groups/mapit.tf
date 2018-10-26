@@ -62,6 +62,19 @@ resource "aws_security_group_rule" "mapit-elb_egress_any_any" {
   security_group_id = "${aws_security_group.mapit_elb.id}"
 }
 
+resource "aws_security_group_rule" "mapit_ingress_mapit-carrenza-alb_http" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.mapit.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+}
+
 # Security resources for ALB set up for Carrenza access to AWS Mapit
 
 resource "aws_security_group" "mapit_carrenza_alb" {
