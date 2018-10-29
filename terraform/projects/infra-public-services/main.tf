@@ -272,6 +272,12 @@ variable "monitoring_internal_service_names" {
   default = []
 }
 
+variable "monitoring_internal_service_names_cname_dest" {
+  description = "This variable specifies the CNAME record destination to be associated with the service names defined in monitoring_internal_service_names"
+  type        = "string"
+  default     = "alert"
+}
+
 variable "mysql_internal_service_names" {
   type    = "list"
   default = []
@@ -1372,7 +1378,7 @@ resource "aws_route53_record" "monitoring_internal_service_names" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "${element(var.monitoring_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.monitoring_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${var.monitoring_internal_service_names_cname_dest}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

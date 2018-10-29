@@ -58,6 +58,7 @@ This project adds global resources for app components:
 | mapit_public_service_names |  | list | `<list>` | no |
 | mongo_internal_service_names |  | list | `<list>` | no |
 | monitoring_internal_service_names |  | list | `<list>` | no |
+| monitoring_internal_service_names_cname_dest | This variable specifies the CNAME record destination to be associated with the service names defined in monitoring_internal_service_names | string | `alert` | no |
 | monitoring_public_service_names |  | list | `<list>` | no |
 | mysql_internal_service_names |  | list | `<list>` | no |
 | postgresql_internal_service_names |  | list | `<list>` | no |
