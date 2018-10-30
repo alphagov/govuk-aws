@@ -1376,10 +1376,14 @@ resource "aws_autoscaling_attachment" "monitoring_asg_attachment_alb" {
 resource "aws_route53_record" "monitoring_internal_service_names" {
   count   = "${length(var.monitoring_internal_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.monitoring_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${var.monitoring_internal_service_names_cname_dest}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
+  name    = "${element(var.monitoring_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.monitoring_public_lb.lb_dns_name}"
+    zone_id                = "${module.monitoring_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
 }
 
 #
