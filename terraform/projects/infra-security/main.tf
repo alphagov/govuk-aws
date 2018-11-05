@@ -135,6 +135,21 @@ resource "aws_key_pair" "govuk-infra-key" {
   public_key = "${var.ssh_public_key}"
 }
 
+# Deny EIP Releasing for all users
+data "aws_iam_policy_document" "deny-eip-release" {
+  statement {
+    actions   = ["ec2:ReleaseAddress"]
+    effect    = "Deny"
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "deny-eip-release" {
+  name        = "DenyEipRelease"
+  description = "Deny users the ability to release allocated Elastic IPs"
+  policy      = "${data.aws_iam_policy_document.deny-eip-release.json}"
+}
+
 # CloudTrail configuration
 resource "aws_cloudwatch_log_group" "cloudtrail" {
   name              = "CloudTrail/logs"
