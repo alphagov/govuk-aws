@@ -246,7 +246,7 @@ function run_ssh {
           ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q ${NODE_CLASS}"
         else
           # shellcheck disable=SC2029
-          ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q \\\`govuk_node_list --single-node -c ${NODE_CLASS}\\\`"
+          ssh -At $SSH_OPTS $SSH_USER@$JUMPBOX "ssh -q \`govuk_node_list --single-node -c ${NODE_CLASS}\`"
         fi
       fi
     ;;
