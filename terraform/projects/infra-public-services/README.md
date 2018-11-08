@@ -34,6 +34,7 @@ This project adds global resources for app components:
 | ckan_public_service_cnames |  | list | `<list>` | no |
 | ckan_public_service_names |  | list | `<list>` | no |
 | content_store_internal_service_names |  | list | `<list>` | no |
+| content_store_public_service_names |  | list | `<list>` | no |
 | db_admin_internal_service_names |  | list | `<list>` | no |
 | deploy_internal_service_names |  | list | `<list>` | no |
 | deploy_public_service_names |  | list | `<list>` | no |
