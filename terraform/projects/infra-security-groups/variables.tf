@@ -53,3 +53,8 @@ variable "traffic_replay_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will replay traffic against an environment"
 }
+
+variable "ckan_pentest_allowed_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will be used for penetration testing in CKAN"
+}
