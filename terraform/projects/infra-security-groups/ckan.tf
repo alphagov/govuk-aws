@@ -108,13 +108,13 @@ resource "aws_security_group_rule" "ckan-elb-external_egress_any_any" {
   security_group_id = "${aws_security_group.ckan_elb_external.id}"
 }
 
-resource "aws_security_group" "ckan_access" {
-  name        = "${var.stackname}_ckan_access"
+resource "aws_security_group" "ckan_ssh_access" {
+  name        = "${var.stackname}_ckan_ssh_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Control access to CKAN SSH"
 
   tags {
-    Name = "${var.stackname}_ckan_access"
+    Name = "${var.stackname}_ckan_ssh_access"
   }
 }
 
@@ -124,5 +124,5 @@ resource "aws_security_group_rule" "ckan_ingress_pentest_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ckan_pentest_allowed_ips}"
-  security_group_id = "${aws_security_group.ckan_access.id}"
+  security_group_id = "${aws_security_group.ckan_ssh_access.id}"
 }
