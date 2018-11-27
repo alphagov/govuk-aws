@@ -59,6 +59,16 @@ variable "carrenza_internal_net_cidr" {
   description = "Internal network range of the environment in Carrenza"
 }
 
+variable "aws_tunnel1_psk" {
+  type        = "string"
+  description = "Explicit PSK in format required by Carrenza"
+}
+
+variable "aws_tunnel2_psk" {
+  type        = "string"
+  description = "Explicit PSK in format required by Carrenza"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -152,10 +162,12 @@ resource "aws_vpn_gateway" "aws_vpn_gateway" {
 }
 
 resource "aws_vpn_connection" "aws_carrenza_vpn" {
-  vpn_gateway_id      = "${aws_vpn_gateway.aws_vpn_gateway.id}"
-  customer_gateway_id = "${aws_customer_gateway.carrenza_vpn_gateway.id}"
-  type                = "ipsec.1"
-  static_routes_only  = true
+  vpn_gateway_id        = "${aws_vpn_gateway.aws_vpn_gateway.id}"
+  customer_gateway_id   = "${aws_customer_gateway.carrenza_vpn_gateway.id}"
+  tunnel1_preshared_key = "${var.aws_tunnel1_psk}"
+  tunnel2_preshared_key = "${var.aws_tunnel2_psk}"
+  type                  = "ipsec.1"
+  static_routes_only    = true
 
   tags {
     Name = "${var.stackname} AWS to Carrenza"
