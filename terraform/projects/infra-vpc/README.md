@@ -9,10 +9,6 @@ and resources to export these logs to S3
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aws_region | AWS region | string | `eu-west-1` | no |
-| aws_tunnel1_psk | Explicit PSK in format required by Carrenza | string | - | yes |
-| aws_tunnel2_psk | Explicit PSK in format required by Carrenza | string | - | yes |
-| carrenza_internal_net_cidr | Internal network range of the environment in Carrenza | string | - | yes |
-| carrenza_vpn_endpoint_ip | Public IP address of the VPN gateway in Carrenza | string | - | yes |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
@@ -25,7 +21,6 @@ and resources to export these logs to S3
 
 | Name | Description |
 |------|-------------|
-| aws_vpn_connection_id | The ID of the AWS to Carrenza VPN |
 | internet_gateway_id | The ID of the Internet Gateway |
 | route_table_public_id | The ID of the public routing table |
 | vpc_cidr | The CIDR block of the VPC |
