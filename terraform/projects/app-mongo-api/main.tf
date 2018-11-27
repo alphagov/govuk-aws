@@ -1,0 +1,401 @@
+/**
+* ## Project: app-mongo-api
+*
+* Mongo API hosts
+*/
+variable "aws_region" {
+  type        = "string"
+  description = "AWS region"
+  default     = "eu-west-1"
+}
+
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
+}
+
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
+}
+
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not the EBS volume is encrypted"
+}
+
+variable "instance_ami_filter_name" {
+  type        = "string"
+  description = "Name to use to find AMI images"
+  default     = ""
+}
+
+variable "mongo_1_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the Mongo instance 1 and EBS volume"
+}
+
+variable "mongo_2_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the Mongo 2 and EBS volume"
+}
+
+variable "mongo_3_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the Mongo 3 and EBS volume"
+}
+
+variable "mongo_1_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "mongo_2_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "mongo_3_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "mongo_1_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "mongo_2_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "mongo_3_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "remote_state_infra_database_backups_bucket_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_database_backups_bucket remote state"
+  default     = ""
+}
+
+# Resources
+# --------------------------------------------------------------
+terraform {
+  backend          "s3"             {}
+  required_version = "= 0.11.7"
+}
+
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "1.40.0"
+}
+
+# Instance 1
+resource "aws_network_interface" "mongo-api-1_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_1_reserved_ips_subnet)}"
+  private_ips     = ["${var.mongo_1_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
+
+  tags {
+    Name            = "${var.stackname}-mongo-api-1"
+    Project         = "${var.stackname}"
+    aws_hostname    = "mongo-api-1"
+    aws_migration   = "mongo_api"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_route53_record" "mongo_api_1_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "mongo-api-1.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+  records = ["${var.mongo_1_ip}"]
+  ttl     = 300
+}
+
+module "mongo-api-1" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mongo-api-1"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo_api", "aws_hostname", "mongo-api-1")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_1_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "m5.large"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "0"
+  instance_elb_ids              = []
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_ebs_volume" "mongo-api-1" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_1_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  type              = "gp2"
+  size              = 300
+
+  tags {
+    Name            = "${var.stackname}-mongo-api-1"
+    Project         = "${var.stackname}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "mongo_api"
+    aws_hostname    = "mongo-api-1"
+    Device          = "xvdf"
+  }
+}
+
+# Instance 2
+resource "aws_network_interface" "mongo-api-2_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_2_reserved_ips_subnet)}"
+  private_ips     = ["${var.mongo_2_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
+
+  tags {
+    Name            = "${var.stackname}-mongo-api-2"
+    Project         = "${var.stackname}"
+    aws_hostname    = "mongo-api-2"
+    aws_migration   = "mongo_api"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_route53_record" "mongo_api_2_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "mongo-api-2.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+  records = ["${var.mongo_2_ip}"]
+  ttl     = 300
+}
+
+module "mongo-api-2" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mongo-api-2"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo_api", "aws_hostname", "mongo-api-2")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_2_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "m5.large"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "0"
+  instance_elb_ids              = []
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_ebs_volume" "mongo-api-2" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_2_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  type              = "gp2"
+  size              = 300
+
+  tags {
+    Name            = "${var.stackname}-mongo-api-2"
+    Project         = "${var.stackname}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "mongo_api"
+    aws_hostname    = "mongo-api-2"
+    Device          = "xvdf"
+  }
+}
+
+# Instance 3
+resource "aws_network_interface" "mongo-api-3_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.mongo_3_reserved_ips_subnet)}"
+  private_ips     = ["${var.mongo_3_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
+
+  tags {
+    Name            = "${var.stackname}-mongo-api-3"
+    Project         = "${var.stackname}"
+    aws_hostname    = "mongo-api-3"
+    aws_migration   = "mongo_api"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_route53_record" "mongo_api_3_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
+  name    = "mongo-api-3.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  type    = "A"
+  records = ["${var.mongo_3_ip}"]
+  ttl     = 300
+}
+
+module "mongo-api-3" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mongo-api-3"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo_api", "aws_hostname", "mongo-api-3")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_3_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "m5.large"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "0"
+  instance_elb_ids              = []
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "50"
+}
+
+resource "aws_ebs_volume" "mongo-api-3" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mongo_3_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  type              = "gp2"
+  size              = 300
+
+  tags {
+    Name            = "${var.stackname}-mongo-api-3"
+    Project         = "${var.stackname}"
+    ManagedBy       = "terraform"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "mongo_api"
+    aws_hostname    = "mongo-api-3"
+    Device          = "xvdf"
+  }
+}
+
+resource "aws_iam_policy" "mongo-api-iam_policy" {
+  name   = "${var.stackname}-mongo-api-additional"
+  path   = "/"
+  policy = "${file("${path.module}/additional_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "mongo-api-1_iam_role_policy_attachment" {
+  role       = "${module.mongo-api-1.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mongo-api-iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mongo-api-2_iam_role_policy_attachment" {
+  role       = "${module.mongo-api-2.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mongo-api-iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mongo-api-3_iam_role_policy_attachment" {
+  role       = "${module.mongo-api-3.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mongo-api-iam_policy.arn}"
+}
+
+module "alarms-autoscaling-mongo-api-1" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mongo-api-1"
+  autoscaling_group_name            = "${module.mongo-api-1.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mongo-api-1" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mongo-api-1"
+  autoscaling_group_name   = "${module.mongo-api-1.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  cpuutilization_threshold = "85"
+}
+
+module "alarms-autoscaling-mongo-api-2" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mongo-api-2"
+  autoscaling_group_name            = "${module.mongo-api-2.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mongo-api-2" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mongo-api-2"
+  autoscaling_group_name   = "${module.mongo-api-2.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  cpuutilization_threshold = "85"
+}
+
+module "alarms-autoscaling-mongo-api-3" {
+  source                            = "../../modules/aws/alarms/autoscaling"
+  name_prefix                       = "${var.stackname}-mongo-api-3"
+  autoscaling_group_name            = "${module.mongo-api-3.autoscaling_group_name}"
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  groupinserviceinstances_threshold = "1"
+}
+
+module "alarms-ec2-mongo-api-3" {
+  source                   = "../../modules/aws/alarms/ec2"
+  name_prefix              = "${var.stackname}-mongo-api-3"
+  autoscaling_group_name   = "${module.mongo-api-3.autoscaling_group_name}"
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  cpuutilization_threshold = "85"
+}
+
+data "terraform_remote_state" "infra_database_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "write_mongo_api_database_backups_iam_role_policy_attachment" {
+  count      = 3
+  role       = "${element(list(module.mongo-api-1.instance_iam_role_name, module.mongo-api-2.instance_iam_role_name, module.mongo-api-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongo_api_write_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "write_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = 3
+  role       = "${element(list(module.mongo-api-1.instance_iam_role_name, module.mongo-api-2.instance_iam_role_name, module.mongo-api-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.mongodb_write_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "integration_read_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
+  role       = "${element(list(module.mongo-api-1.instance_iam_role_name, module.mongo-api-2.instance_iam_role_name, module.mongo-api-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "integration_read_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
+  role       = "${element(list(module.mongo-api-1.instance_iam_role_name, module.mongo-api-2.instance_iam_role_name, module.mongo-api-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.mongo-api-1.instance_iam_role_name, module.mongo-api-2.instance_iam_role_name, module.mongo-api-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.mongo-api-1.instance_iam_role_name, module.mongo-api-2.instance_iam_role_name, module.mongo-api-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
+# Outputs
+# --------------------------------------------------------------
+
+output "mongo_api_1_service_dns_name" {
+  value       = "${aws_route53_record.mongo_api_1_service_record.fqdn}"
+  description = "DNS name to access the Mongo API 1 internal service"
+}
+
+output "mongo_api_2_service_dns_name" {
+  value       = "${aws_route53_record.mongo_api_2_service_record.fqdn}"
+  description = "DNS name to access the Mongo API 2 internal service"
+}
+
+output "mongo_api_3_service_dns_name" {
+  value       = "${aws_route53_record.mongo_api_3_service_record.fqdn}"
+  description = "DNS name to access the Mongo API 3 internal service"
+}
