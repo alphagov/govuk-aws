@@ -44,6 +44,7 @@ This project adds global resources for app components:
 | draft_cache_public_service_cnames |  | list | `<list>` | no |
 | draft_cache_public_service_names |  | list | `<list>` | no |
 | draft_content_store_internal_service_names |  | list | `<list>` | no |
+| draft_content_store_public_service_names |  | list | `<list>` | no |
 | draft_frontend_internal_service_cnames |  | list | `<list>` | no |
 | draft_frontend_internal_service_names |  | list | `<list>` | no |
 | elb_public_certname | The ACM cert domain name to find the ARN of | string | - | yes |

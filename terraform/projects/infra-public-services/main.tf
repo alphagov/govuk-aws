@@ -378,6 +378,11 @@ variable "whitehall_frontend_internal_service_names" {
   default = []
 }
 
+variable "draft_content_store_public_service_names" {
+  type    = "list"
+  default = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -1736,5 +1741,14 @@ resource "aws_route53_record" "whitehall_frontend_internal_service_names" {
   name    = "${element(var.whitehall_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.whitehall_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+resource "aws_route53_record" "draft_content_store_public_service_names" {
+  count   = "${length(var.draft_content_store_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.draft_content_store_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.draft_content_store_public_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
 }

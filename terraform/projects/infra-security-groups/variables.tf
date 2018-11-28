@@ -49,6 +49,12 @@ variable "carrenza_env_ips" {
   description = "An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox."
 }
 
+variable "carrenza_draft_frontend_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks for the current environment that will allow access to draft-content-store from Carrenza."
+  default     = []
+}
+
 variable "traffic_replay_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will replay traffic against an environment"

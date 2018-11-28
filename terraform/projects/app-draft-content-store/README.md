@@ -27,7 +27,7 @@ draft-content-store node
 
 | Name | Description |
 |------|-------------|
-| draft-content-store_elb_address | AWS' internal DNS name for the draft-content-store ELB |
+| draft-content-store_elb_address | AWS' DNS name for the draft-content-store ELB |
 | external_service_dns_name | DNS name to access the node service |
 | internal_service_dns_name | DNS name to access the node service |
 

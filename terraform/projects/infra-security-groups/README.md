@@ -8,6 +8,7 @@ Manage the security groups for the entire infrastructure
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aws_region | AWS region | string | `eu-west-1` | no |
+| carrenza_draft_frontend_ips | An array of CIDR blocks for the current environment that will allow access to draft-content-store from Carrenza. | list | `<list>` | no |
 | carrenza_env_ips | An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
