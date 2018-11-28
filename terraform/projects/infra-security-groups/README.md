@@ -12,6 +12,7 @@ Manage the security groups for the entire infrastructure
 | carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_staging_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
+| carrenza_subnet_cidr | The Carrenza subnet CIDR | list | - | yes |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
@@ -27,6 +28,7 @@ Manage the security groups for the entire infrastructure
 | sg_apt_internal_elb_id |  |
 | sg_asset-master-efs_id |  |
 | sg_asset-master_id |  |
+| sg_aws-vpn_id |  |
 | sg_backend-redis_id |  |
 | sg_backend_elb_external_id |  |
 | sg_backend_elb_internal_id |  |
