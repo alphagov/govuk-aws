@@ -87,7 +87,6 @@ resource "aws_security_group" "content-store_external_elb" {
   }
 }
 
-# TODO: Audit
 resource "aws_security_group_rule" "content-store-external-elb_ingress_public_https" {
   type      = "ingress"
   from_port = 443
@@ -95,7 +94,7 @@ resource "aws_security_group_rule" "content-store-external-elb_ingress_public_ht
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.content-store_external_elb.id}"
-  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
+  cidr_blocks       = ["${var.office_ips}", "${var.carrenza_env_ips}"]
 }
 
 resource "aws_security_group_rule" "content-store-external-elb_egress_any_any" {
