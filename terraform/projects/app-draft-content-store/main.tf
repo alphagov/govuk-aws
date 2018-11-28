@@ -19,6 +19,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "draft_content_store_public_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -103,6 +108,19 @@ resource "aws_elb" "draft-content-store_external_elb" {
 resource "aws_route53_record" "external_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
   name    = "draft-content-store.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.draft-content-store_external_elb.dns_name}"
+    zone_id                = "${aws_elb.draft-content-store_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "draft-content-store_public_service_names" {
+  count   = "${length(var.draft_content_store_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.draft_content_store_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
   type    = "A"
 
   alias {
@@ -207,6 +225,11 @@ module "alarms-elb-draft-content-store-external" {
 
 # Outputs
 # --------------------------------------------------------------
+
+output "draft-content-store_public_service_dns_names" {
+  value       = "${aws_route53_record.draft-content-store_public_service_names.*.name}"
+  description = "AWS' Public service DNs records for the draft-content-store ELB"
+}
 
 output "draft-content-store_elb_address" {
   value       = "${aws_elb.draft-content-store_external_elb.dns_name}"
