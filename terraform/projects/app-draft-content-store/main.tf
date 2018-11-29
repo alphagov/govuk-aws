@@ -210,7 +210,7 @@ module "alarms-elb-draft-content-store-external" {
 
 output "draft-content-store_elb_address" {
   value       = "${aws_elb.draft-content-store_external_elb.dns_name}"
-  description = "AWS' internal DNS name for the draft-content-store ELB"
+  description = "AWS' DNS name for the draft-content-store ELB"
 }
 
 output "external_service_dns_name" {
