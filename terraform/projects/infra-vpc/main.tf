@@ -49,16 +49,6 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
-variable "carrenza_vpn_endpoint_ip" {
-  type        = "string"
-  description = "Public IP address of the VPN gateway in Carrenza"
-}
-
-variable "carrenza_internal_net_cidr" {
-  type        = "string"
-  description = "Internal network range of the environment in Carrenza"
-}
-
 # Resources
 # --------------------------------------------------------------
 
@@ -133,40 +123,6 @@ module "vpc_flow_log_exporter" {
   lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
-resource "aws_customer_gateway" "carrenza_vpn_gateway" {
-  bgp_asn    = 65000
-  ip_address = "${var.carrenza_vpn_endpoint_ip}"
-  type       = "ipsec.1"
-
-  tags {
-    Name = "Carrenza - ${var.stackname}"
-  }
-}
-
-resource "aws_vpn_gateway" "aws_vpn_gateway" {
-  vpc_id = "${module.vpc.vpc_id}"
-
-  tags {
-    Name = "${var.stackname} VPN Gateway"
-  }
-}
-
-resource "aws_vpn_connection" "aws_carrenza_vpn" {
-  vpn_gateway_id      = "${aws_vpn_gateway.aws_vpn_gateway.id}"
-  customer_gateway_id = "${aws_customer_gateway.carrenza_vpn_gateway.id}"
-  type                = "ipsec.1"
-  static_routes_only  = true
-
-  tags {
-    Name = "${var.stackname} AWS to Carrenza"
-  }
-}
-
-resource "aws_vpn_connection_route" "Carrenza" {
-  destination_cidr_block = "${var.carrenza_internal_net_cidr}"
-  vpn_connection_id      = "${aws_vpn_connection.aws_carrenza_vpn.id}"
-}
-
 # Outputs
 # --------------------------------------------------------------
 
@@ -188,9 +144,4 @@ output "internet_gateway_id" {
 output "route_table_public_id" {
   value       = "${module.vpc.route_table_public_id}"
   description = "The ID of the public routing table"
-}
-
-output "aws_vpn_connection_id" {
-  value       = "${aws_vpn_connection.aws_carrenza_vpn.id}"
-  description = "The ID of the AWS to Carrenza VPN"
 }
