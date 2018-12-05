@@ -16,6 +16,7 @@ This project adds global resources for app components:
 | asset_master_internal_service_names |  | list | `<list>` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| backend_alb_blocked_host_headers |  | list | `<list>` | no |
 | backend_internal_service_cnames |  | list | `<list>` | no |
 | backend_internal_service_names |  | list | `<list>` | no |
 | backend_public_service_cnames |  | list | `<list>` | no |
@@ -82,6 +83,7 @@ This project adds global resources for app components:
 | search_internal_service_cnames |  | list | `<list>` | no |
 | search_internal_service_names |  | list | `<list>` | no |
 | stackname | Stackname | string | - | yes |
+| support_api_public_service_names |  | list | `<list>` | no |
 | transition_db_admin_internal_service_names |  | list | `<list>` | no |
 | transition_postgresql_internal_service_names |  | list | `<list>` | no |
 | ubuntutest_public_service_names |  | list | `<list>` | no |

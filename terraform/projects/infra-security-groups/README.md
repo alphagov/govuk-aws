@@ -105,6 +105,7 @@ Manage the security groups for the entire infrastructure
 | sg_rummager-elasticsearch_id |  |
 | sg_search_elb_id |  |
 | sg_search_id |  |
+| sg_support-api_external_elb_id |  |
 | sg_transition-db-admin_elb_id |  |
 | sg_transition-db-admin_id |  |
 | sg_transition-postgresql-primary_id |  |
