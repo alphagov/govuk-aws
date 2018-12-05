@@ -59,3 +59,8 @@ variable "traffic_replay_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will replay traffic against an environment"
 }
+
+variable "carrenza_subnet_cidr" {
+  type        = "list"
+  description = "The Carrenza subnet CIDR"
+}
