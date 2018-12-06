@@ -68,5 +68,6 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollect
 | lb_dns_name | The DNS name of the load balancer. |
 | lb_id | The ARN of the load balancer (matches arn). |
 | lb_zone_id | The canonical hosted zone ID of the load balancer (to be used in a Route 53 Alias record). |
+| load_balancer_ssl_listeners | List of https listeners on the Load Balancer. |
 | target_group_arns | List of the default target group ARNs. |
 

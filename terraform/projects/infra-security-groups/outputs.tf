@@ -377,3 +377,7 @@ output "sg_whitehall-frontend_id" {
 output "sg_aws-vpn_id" {
   value = "${aws_security_group.vpn.id}"
 }
+
+output "sg_support-api_external_elb_id" {
+  value = "${aws_security_group.support-api_external_elb.id}"
+}
