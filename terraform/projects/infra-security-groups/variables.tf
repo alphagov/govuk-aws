@@ -60,7 +60,8 @@ variable "traffic_replay_ips" {
   description = "An array of CIDR blocks that will replay traffic against an environment"
 }
 
-variable "carrenza_subnet_cidr" {
+variable "carrenza_vpn_subnet_cidr" {
   type        = "list"
-  description = "The Carrenza subnet CIDR"
+  description = "The Carrenza VPN subnet CIDR"
+  default     = []
 }
