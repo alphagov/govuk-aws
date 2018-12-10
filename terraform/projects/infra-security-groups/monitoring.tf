@@ -151,25 +151,3 @@ resource "aws_security_group_rule" "monitoring-internal-elb_egress_any_any" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
 }
-
-resource "aws_security_group_rule" "monitoring_ingress_monitoring-elb_syslog-tls" {
-  type      = "ingress"
-  from_port = 6514
-  to_port   = 6516
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitoring.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_external_elb.id}"
-}
-
-resource "aws_security_group_rule" "monitoring-elb_ingress_fastly_syslog-tls" {
-  type              = "ingress"
-  to_port           = 6516
-  from_port         = 6514
-  protocol          = "tcp"
-  security_group_id = "${aws_security_group.monitoring_external_elb.id}"
-  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
-}
