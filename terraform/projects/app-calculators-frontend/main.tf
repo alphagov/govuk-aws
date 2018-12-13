@@ -30,28 +30,28 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
-variable "asg_max_size" {
+variable "asg_size" {
   type        = "string"
-  description = "The maximum size of the autoscaling group"
-  default     = "2"
-}
-
-variable "asg_min_size" {
-  type        = "string"
-  description = "The minimum size of the autoscaling group"
-  default     = "2"
-}
-
-variable "asg_desired_capacity" {
-  type        = "string"
-  description = "The desired capacity of the autoscaling group"
-  default     = "2"
+  description = "The autoscaling groups desired/max/min capacity"
+  default     = "3"
 }
 
 variable "app_service_records" {
   type        = "list"
   description = "List of application service names that get traffic via this loadbalancer"
   default     = []
+}
+
+variable "root_block_device_volume_size" {
+  type        = "string"
+  description = "The size of the instance root volume in gigabytes"
+  default     = "60"
+}
+
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type"
+  default     = "c5.xlarge"
 }
 
 # Resources
@@ -137,15 +137,16 @@ module "calculators-frontend" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "calculators_frontend", "aws_hostname", "calculators-frontend-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_calculators-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.calculators-frontend_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_max_size                  = "${var.asg_max_size}"
-  asg_min_size                  = "${var.asg_min_size}"
-  asg_desired_capacity          = "${var.asg_desired_capacity}"
+  asg_max_size                  = "${var.asg_size}"
+  asg_min_size                  = "${var.asg_size}"
+  asg_desired_capacity          = "${var.asg_size}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 module "alarms-elb-calculators-frontend-internal" {
