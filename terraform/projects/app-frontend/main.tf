@@ -39,7 +39,19 @@ variable "app_service_records" {
 variable "asg_size" {
   type        = "string"
   description = "The autoscaling groups desired/max/min capacity"
-  default     = "2"
+  default     = "3"
+}
+
+variable "root_block_device_volume_size" {
+  type        = "string"
+  description = "The size of the instance root volume in gigabytes"
+  default     = "60"
+}
+
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type"
+  default     = "c5.xlarge"
 }
 
 # Resources
@@ -125,7 +137,7 @@ module "frontend" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "frontend", "aws_hostname", "frontend-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t3.large"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.frontend_elb.id}"]
@@ -134,7 +146,7 @@ module "frontend" {
   asg_min_size                  = "${var.asg_size}"
   asg_desired_capacity          = "${var.asg_size}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "30"
+  root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 module "alarms-elb-frontend-internal" {
