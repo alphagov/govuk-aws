@@ -107,6 +107,16 @@ variable "email_alert_api_public_service_names" {
   default = []
 }
 
+variable "feedback_public_to_internallb_name" {
+  type    = "list"
+  default = []
+}
+
+variable "feedback_public_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "graphite_public_service_names" {
   type    = "list"
   default = []
@@ -1121,6 +1131,19 @@ resource "aws_route53_record" "frontend_internal_service_cnames" {
   type    = "CNAME"
   records = ["${element(var.frontend_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
+}
+
+resource "aws_route53_record" "feedback_public_service_names" {
+  count   = "${length(var.feedback_public_to_internallb_name)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.feedback_public_to_internallb_name, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${data.terraform_remote_state.app_frontend.frontend_elb_dns_name}"
+    zone_id                = "${data.terraform_remote_state.app_frontend.frontend_elb_zone_id}"
+    evaluate_target_health = true
+  }
 }
 
 #

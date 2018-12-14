@@ -170,6 +170,11 @@ output "frontend_elb_dns_name" {
   description = "DNS name to access the frontend service"
 }
 
+output "frontend_elb_zone_id" {
+  value       = "${aws_elb.frontend_elb.zone_id}"
+  description = "Zone ID for frontend elb"
+}
+
 output "service_dns_name" {
   value       = "${aws_route53_record.service_record.name}"
   description = "DNS name to access the node service"

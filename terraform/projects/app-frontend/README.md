@@ -30,5 +30,6 @@ Frontend application servers
 | Name | Description |
 |------|-------------|
 | frontend_elb_dns_name | DNS name to access the frontend service |
+| frontend_elb_zone_id | Zone ID for frontend elb |
 | service_dns_name | DNS name to access the node service |
 

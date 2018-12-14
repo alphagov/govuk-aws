@@ -109,3 +109,13 @@ data "terraform_remote_state" "infra_monitoring" {
     region = "eu-west-1"
   }
 }
+
+data "terraform_remote_state" "app_frontend" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "blue/app-frontend.tfstate"
+    region = "eu-west-1"
+  }
+}
