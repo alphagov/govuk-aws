@@ -32,7 +32,7 @@ provider "aws" {
   version = "1.40.0"
 }
 
-resource "aws_s3_bucket" "content_publisher_activestorage" {
+resource "aws_s3_bucket" "activestorage" {
   bucket = "govuk-${var.aws_environment}-content-publisher-activestorage"
 
   tags {
@@ -46,35 +46,26 @@ resource "aws_s3_bucket" "content_publisher_activestorage" {
   }
 }
 
-resource "aws_iam_user" "content_publisher_app" {
+resource "aws_iam_user" "app_user" {
   name = "govuk-${var.aws_environment}-content-publisher-app"
 }
 
 resource "aws_iam_policy" "s3_writer" {
-  name        = "govuk-${var.aws_environment}-content-publisher-app-s3-writer-policy"
-  policy      = "${data.template_file.s3_writer_policy_template.rendered}"
-  description = "Allows writing to to the govuk-${var.aws_environment}-content-publisher-activestorage"
+  name   = "govuk-${var.aws_environment}-content-publisher-app-s3-writer-policy"
+  policy = "${data.template_file.s3_writer_policy.rendered}"
 }
 
 resource "aws_iam_policy_attachment" "s3_writer" {
-  name       = "archive-writer-policy-attachment"
-  users      = ["${aws_iam_user.content_publisher_app.name}"]
+  name       = "govuk-${var.aws_environment}-content-publisher-s3-writer-policy-attachment"
+  users      = ["${aws_iam_user.app_user.name}"]
   policy_arn = "${aws_iam_policy.s3_writer.arn}"
 }
 
-data "template_file" "s3_writer_policy_template" {
-  template = "${file("${path.module}/../../policies/content_publisher_s3_writer_policy.tpl")}"
+data "template_file" "s3_writer_policy" {
+  template = "${file("s3_writer_policy.tpl")}"
 
   vars {
     aws_environment = "${var.aws_environment}"
-    bucket          = "${aws_s3_bucket.content_publisher_activestorage.id}"
+    bucket          = "${aws_s3_bucket.activestorage.id}"
   }
-}
-
-# Outputs
-# --------------------------------------------------------------
-
-output "s3_writer_bucket_policy_arn" {
-  value       = "${aws_iam_policy.s3_writer.arn}"
-  description = "ARN of the S3 writer bucket policy"
 }

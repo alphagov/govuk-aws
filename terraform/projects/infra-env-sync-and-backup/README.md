@@ -1,6 +1,6 @@
-## Project: infra-content-publisher
+## Project: infra-env-sync-and-backup
 
-Stores ActiveStorage blobs uploaded via Content Publisher.
+Resources for syncing between environments
 
 
 ## Inputs
