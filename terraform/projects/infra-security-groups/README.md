@@ -70,6 +70,7 @@ Manage the security groups for the entire infrastructure
 | sg_email-alert-api_elb_external_id |  |
 | sg_email-alert-api_elb_internal_id |  |
 | sg_email-alert-api_id |  |
+| sg_feedback_elb_id |  |
 | sg_frontend_elb_id |  |
 | sg_frontend_id |  |
 | sg_graphite_external_elb_id |  |
