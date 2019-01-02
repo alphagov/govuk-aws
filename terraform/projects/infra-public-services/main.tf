@@ -1125,7 +1125,7 @@ module "feedback_public_lb" {
   }
 
   target_group_health_check_path = "/healthcheck"
-  subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  subnets                        = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_feedback_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                   = "${map("Project", var.stackname, "aws_migration", "feedback", "aws_environment", var.aws_environment)}"
