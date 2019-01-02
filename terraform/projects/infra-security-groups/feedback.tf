@@ -41,8 +41,11 @@ resource "aws_security_group_rule" "feedback-elb_ingress_carrenza_env_ips_https"
   to_port   = 443
   protocol  = "tcp"
 
+  # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.feedback_elb.id}"
-  cidr_blocks       = "${var.carrenza_env_ips}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.vpn.id}"
 }
 
 resource "aws_security_group_rule" "feedback-elb_egress_any_any" {

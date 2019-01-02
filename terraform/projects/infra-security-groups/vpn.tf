@@ -33,6 +33,18 @@ resource "aws_security_group_rule" "vpn_egress_carrenza_aws" {
   cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
 }
 
+resource "aws_security_group_rule" "vpn_egress_carrenza_aws_frontend" {
+  count     = "${length(var.carrenza_vpn_subnet_cidr) > 0 ? 1 : 0}"
+  type      = "egress"
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
+
+  security_group_id = "${aws_security_group.vpn.id}"
+
+  cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
+}
+
 resource "aws_security_group_rule" "vpn_ingress_http_http" {
   count     = "${length(var.carrenza_vpn_subnet_cidr) > 0 ? 1 : 0}"
   type      = "ingress"
