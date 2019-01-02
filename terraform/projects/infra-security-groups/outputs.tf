@@ -186,6 +186,10 @@ output "sg_email-alert-api-postgresql-standby_id" {
   value = "${aws_security_group.email-alert-api-postgresql-standby.id}"
 }
 
+output "sg_feedback_elb_id" {
+  value = "${aws_security_group.feedback_elb.id}"
+}
+
 output "sg_frontend_elb_id" {
   value = "${aws_security_group.frontend_elb.id}"
 }
