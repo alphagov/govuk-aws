@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "feedback-elb_ingress_carrenza_env_ips_https"
   to_port           = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.feedback_elb.id}"
-  cidr_blocks       = ["${var.carrenza_internal_net_cidr}"]
+  cidr_blocks       = ["${var.carrenza_vpn_subnet_cidr}"]
 }
 
 resource "aws_security_group_rule" "feedback-elb_egress_any_any" {
