@@ -55,6 +55,11 @@ variable "carrenza_draft_frontend_ips" {
   default     = []
 }
 
+variable "carrenza_internal_net_cidr" {
+  type        = "string"
+  description = "The internal carrenza cidr ranges for the environment."
+}
+
 variable "traffic_replay_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will replay traffic against an environment"
