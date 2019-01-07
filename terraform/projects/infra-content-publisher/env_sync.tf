@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "cross_account_access" {
 
     actions = [
       "s3:PutObject",
+      "s3:PutObjectAcl",
       "s3:GetObject",
       "s3:DeleteObject",
     ]
