@@ -1,5 +1,5 @@
 #
-# == Manifest: Project: Security Groups: logs-cdn
+# == Manifest: Project: Security Groups: prometheus
 #
 # Prometheus needs to be accessible on ports:
 #   - 9090
@@ -18,11 +18,11 @@ resource "aws_security_group" "prometheus" {
   description = "Access to prometheus"
 
   tags {
-    Name = "${var.stackname}_prometheus_elb"
+    Name = "${var.stackname}_prometheus"
   }
 }
 
-resource "aws_security_group_rule" "prometheus-ingress-prometheus_external_elb-https" {
+resource "aws_security_group_rule" "prometheuselb_ingress_prometheus_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -45,7 +45,7 @@ resource "aws_security_group" "prometheus_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "prometheus_external_elb-ingress-office-https" {
+resource "aws_security_group_rule" "officeips_ingress_prometheuselb_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -55,6 +55,5 @@ resource "aws_security_group_rule" "prometheus_external_elb-ingress-office-https
   security_group_id = "${aws_security_group.prometheus_external_elb.id}"
 
   # Which security group can use this rule
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks = ["${var.office_ips}"]
 }
-

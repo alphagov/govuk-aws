@@ -122,7 +122,6 @@ variable "prometheus_public_service_names" {
   default = []
 }
 
-
 variable "jumpbox_public_service_names" {
   type    = "list"
   default = []
