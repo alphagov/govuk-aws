@@ -6,7 +6,7 @@
 #
 # === Variables:
 # stackname - string
-# carrenza_env_ips - list
+# carrenza_vpn_subnet_cidr - list
 #
 # === Outputs:
 # sg_feedback_elb_id
@@ -36,6 +36,7 @@ resource "aws_security_group" "feedback_elb" {
 
 # Allow support (in carrenza) to communicate with feedback (in aws) during migration
 resource "aws_security_group_rule" "feedback-elb_ingress_carrenza_env_ips_https" {
+  count             = "${length(var.carrenza_vpn_subnet_cidr) > 0 ? 1 : 0}"
   type              = "ingress"
   from_port         = 443
   to_port           = 443
