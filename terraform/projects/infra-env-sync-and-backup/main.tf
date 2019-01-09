@@ -32,6 +32,6 @@ provider "aws" {
   version = "1.40.0"
 }
 
-resource "aws_iam_user" "env_sync_backup" {
-  name = "govuk-assets-${var.aws_environment}-env-sync-user"
+resource "aws_iam_user" "env_sync_and_backup" {
+  name = "govuk-${var.aws_environment}-env-sync-and-backup"
 }
