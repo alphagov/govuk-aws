@@ -155,8 +155,6 @@ function get_context {
   check_context
   CONTEXT=$(cat $CONTEXT_FILE)
   check_allowed_contexts
-
-  echo $CONTEXT
 }
 
 function load_user {
@@ -169,8 +167,8 @@ function load_user {
 }
 
 function run_ssh {
-  check_context
-  GOVUK_ENV=$(get_context)
+  get_context
+  GOVUK_ENV="$CONTEXT"
 
   case $GOVUK_ENV in
     'ci')             JUMPBOX="ci-jumpbox.integration.publishing.service.gov.uk";
