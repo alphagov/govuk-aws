@@ -166,10 +166,7 @@ function load_user {
   fi
 }
 
-function run_ssh {
-  get_context
-  GOVUK_ENV="$CONTEXT"
-
+function configure_ssh {
   case $GOVUK_ENV in
     'ci')             JUMPBOX="ci-jumpbox.integration.publishing.service.gov.uk";
                       CARRENZA=true;;
@@ -183,6 +180,13 @@ function run_ssh {
     'staging-aws')    JUMPBOX="jumpbox.staging.govuk.digital";;
     *)                JUMPBOX="jumpbox.${GOVUK_ENV}.govuk.digital";;
   esac
+}
+
+function run_ssh {
+  get_context
+  GOVUK_ENV="$CONTEXT"
+
+  configure_ssh
 
   case $OUT in
     silent) SSH_OPTS='-q';;
