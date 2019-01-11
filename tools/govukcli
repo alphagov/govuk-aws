@@ -232,9 +232,16 @@ function run_ssh {
           ssh_usage
         fi
         exit 1
-      fi
+      elif [ "$1" = "--context" ]; then
+          CONTEXT="$2"
+          check_allowed_contexts
+          GOVUK_ENV="$2"
+          configure_ssh
 
-      NODE_CLASS=$1
+          NODE_CLASS=$3
+      else
+          NODE_CLASS=$1
+      fi
 
       load_user
 
