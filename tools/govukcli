@@ -104,7 +104,7 @@ function error {
 function check_allowed_contexts {
   if [[ ! $CONTEXT =~ $ALLOWED_CONTEXTS ]]; then
     if [[ $OUT != 'silent' ]]; then
-      error "Invalid context"
+      error "Invalid context '$CONTEXT'"
       echo "Must be one of: "
       for i in $CONTEXTS; do
         echo "  $i"
