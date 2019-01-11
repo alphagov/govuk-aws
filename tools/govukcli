@@ -80,7 +80,7 @@ EOF
 }
 
 # Set regex for allowed things
-ALLOWED_CONTEXTS=$(echo "^${CONTEXTS}$" | sed 's/ /\|/g')
+ALLOWED_CONTEXTS=$(echo "^(${CONTEXTS})$" | sed 's/ /\|/g')
 
 # Set the verbosity to a smaller variable name
 OUT=$GOVUKCLI_OUTPUT
