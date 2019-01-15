@@ -74,6 +74,19 @@ resource "aws_security_group_rule" "management_ingress_monitoring_ping" {
   source_security_group_id = "${aws_security_group.monitoring.id}"
 }
 
+resource "aws_security_group_rule" "management_ingress_prometheus_node_exporter" {
+  type      = "ingress"
+  from_port = 9080
+  to_port   = 9080
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.management.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.prometheus.id}"
+}
+
 resource "aws_security_group_rule" "mangement_egress_any_any" {
   type              = "egress"
   from_port         = 0
