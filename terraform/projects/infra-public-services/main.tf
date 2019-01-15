@@ -117,6 +117,11 @@ variable "graphite_public_service_names" {
   default = []
 }
 
+variable "prometheus_public_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "jumpbox_public_service_names" {
   type    = "list"
   default = []
@@ -273,6 +278,11 @@ variable "frontend_internal_service_cnames" {
 }
 
 variable "graphite_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "prometheus_internal_service_names" {
   type    = "list"
   default = []
 }
@@ -1204,6 +1214,26 @@ module "graphite_public_lb" {
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "graphite", "aws_environment", var.aws_environment)}"
 }
 
+#
+# Prometheus
+#
+
+module "prometheus_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-prometheus-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-prometheus-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
+  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                               = "${map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment)}"
+}
+
 resource "aws_route53_record" "graphite_public_service_names" {
   count   = "${length(var.graphite_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
@@ -1213,6 +1243,19 @@ resource "aws_route53_record" "graphite_public_service_names" {
   alias {
     name                   = "${module.graphite_public_lb.lb_dns_name}"
     zone_id                = "${module.graphite_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "prometheus_public_service_names" {
+  count   = "${length(var.prometheus_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.prometheus_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.prometheus_public_lb.lb_dns_name}"
+    zone_id                = "${module.prometheus_public_lb.lb_zone_id}"
     evaluate_target_health = true
   }
 }
@@ -1229,10 +1272,28 @@ data "aws_autoscaling_groups" "graphite" {
   }
 }
 
+data "aws_autoscaling_groups" "prometheus" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["blue-prometheus-1"]
+  }
+}
+
 resource "aws_autoscaling_attachment" "graphite_asg_attachment_alb" {
   count                  = "${length(data.aws_autoscaling_groups.graphite.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.graphite.names, 0)}"
   alb_target_group_arn   = "${element(module.graphite_public_lb.target_group_arns, 0)}"
+}
+
+resource "aws_autoscaling_attachment" "prometheus_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.prometheus.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.prometheus.names, 0)}"
+  alb_target_group_arn   = "${element(module.prometheus_public_lb.target_group_arns, 0)}"
 }
 
 resource "aws_route53_record" "graphite_internal_service_names" {
@@ -1241,6 +1302,15 @@ resource "aws_route53_record" "graphite_internal_service_names" {
   name    = "${element(var.graphite_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.graphite_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+resource "aws_route53_record" "prometheus_internal_service_names" {
+  count   = "${length(var.prometheus_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.prometheus_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.prometheus_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
