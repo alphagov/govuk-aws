@@ -15,17 +15,17 @@
 resource "aws_security_group" "prometheus" {
   name        = "${var.stackname}_prometheus"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access to prometheus"
+  description = "Access to prometheus instance from the prometheus LB"
 
   tags {
     Name = "${var.stackname}_prometheus"
   }
 }
 
-resource "aws_security_group_rule" "prometheuselb_ingress_prometheus_https" {
+resource "aws_security_group_rule" "prometheuselb_ingress_prometheus_http" {
   type      = "ingress"
-  from_port = 443
-  to_port   = 443
+  from_port = 80
+  to_port   = 80
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -38,14 +38,14 @@ resource "aws_security_group_rule" "prometheuselb_ingress_prometheus_https" {
 resource "aws_security_group" "prometheus_external_elb" {
   name        = "${var.stackname}_prometheus_external_elb"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access to prometheus"
+  description = "Access to prometheus LB"
 
   tags {
     Name = "${var.stackname}_prometheus_external_elb"
   }
 }
 
-resource "aws_security_group_rule" "officeips_ingress_prometheuselb_https" {
+resource "aws_security_group_rule" "prometheus-elb_ingress_officeips_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
