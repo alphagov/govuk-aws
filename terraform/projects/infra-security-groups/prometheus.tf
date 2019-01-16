@@ -68,5 +68,5 @@ resource "aws_security_group_rule" "prometheus-elb_egress_prometheus_http" {
   security_group_id = "${aws_security_group.prometheus_external_elb.id}"
 
   # Which security group can use this rule
-  security_group_id = "${aws_security_group.prometheus.id}"
+  source_security_group_id = "${aws_security_group.prometheus.id}"
 }
