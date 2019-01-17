@@ -13,7 +13,7 @@ project = ARGV[3]
 
 # Valid values for each field
 valid_commands = %w(plan apply destroy).freeze
-valid_environments = %w(integration staging production test).freeze
+valid_environments = %w(integration staging production test tools).freeze
 valid_stacks = %w(blue green govuk).freeze
 
 usage = 'Usage: GITHUB_USERNAME=... GITHUB_TOKEN=... ruby deploy.rb <command> <environment> <stack> <project>'
