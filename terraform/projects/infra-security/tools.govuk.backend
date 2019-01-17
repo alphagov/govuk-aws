@@ -1,4 +1,4 @@
-bucket  = "govuk-terraform-steppingstone-tools"
+bucket  = "govuk-terraform-steppingstone-tools-tfstate"
 key     = "govuk/infra-security.tfstate"
 encrypt = true
 region  = "eu-west-1"
