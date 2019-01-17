@@ -41,21 +41,9 @@ variable "app_service_records" {
   default     = []
 }
 
-variable "asg_max_size" {
+variable "asg_size" {
   type        = "string"
-  description = "The maximum size of the autoscaling group"
-  default     = "2"
-}
-
-variable "asg_min_size" {
-  type        = "string"
-  description = "The minimum size of the autoscaling group"
-  default     = "2"
-}
-
-variable "asg_desired_capacity" {
-  type        = "string"
-  description = "The desired capacity of the autoscaling group"
+  description = "The autoscaling groups desired/max/min capacity"
   default     = "2"
 }
 
@@ -212,9 +200,9 @@ module "cache" {
   instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.cache_elb.id}", "${aws_elb.cache_external_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_max_size                  = "${var.asg_max_size}"
-  asg_min_size                  = "${var.asg_min_size}"
-  asg_desired_capacity          = "${var.asg_desired_capacity}"
+  asg_max_size                  = "${var.asg_size}"
+  asg_min_size                  = "${var.asg_size}"
+  asg_desired_capacity          = "${var.asg_size}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 

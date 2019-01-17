@@ -8,9 +8,7 @@ Cache application servers
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | app_service_records | List of application service names that get traffic via this loadbalancer | list | `<list>` | no |
-| asg_desired_capacity | The desired capacity of the autoscaling group | string | `2` | no |
-| asg_max_size | The maximum size of the autoscaling group | string | `2` | no |
-| asg_min_size | The minimum size of the autoscaling group | string | `2` | no |
+| asg_size | The autoscaling groups desired/max/min capacity | string | `2` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
