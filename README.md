@@ -10,6 +10,10 @@ Start by reading [the getting started guide](doc/guides/getting-started.md).
 
 Please see [the environment provisioning guide](doc/guides/environment-provisioning.md) for building a fresh environment.
 
+## govuk-tools account
+
+The `govuk-tools` account does not behave like a normal environment. It contains one-off resources and does not need to be built like a normal environment.
+
 ## Architecture Decision Records
 
 We're recording architecture decisions we make so we have a history and context on our implementation.
