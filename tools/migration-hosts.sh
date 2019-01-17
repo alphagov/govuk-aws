@@ -22,7 +22,6 @@ kibana
 local-links-manager
 manuals-publisher
 maslow
-policy-publisher
 publisher
 release
 search-admin
