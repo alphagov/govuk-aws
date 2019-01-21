@@ -125,7 +125,7 @@ resource "aws_security_group_rule" "cache-external-elb_ingress_public_https" {
   from_port         = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.cache_external_elb.id}"
-  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}", "${var.traffic_replay_ips}"]
+  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}", "${var.traffic_replay_ips}"]
 }
 
 resource "aws_security_group_rule" "cache-external-elb_egress_any_any" {
