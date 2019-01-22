@@ -103,7 +103,7 @@ resource "aws_security_group_rule" "draft-cache-external-elb_ingress_public_http
   from_port         = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.draft-cache_external_elb.id}"
-  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
+  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"]
 }
 
 # This is required to commit routes using router-api at the end of the data sync
