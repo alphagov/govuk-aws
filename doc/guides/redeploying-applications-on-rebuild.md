@@ -35,7 +35,6 @@ local-links-manager
 kibana
 manuals-publisher
 maslow
-policy-publisher
 publisher
 release
 search-admin
