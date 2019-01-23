@@ -177,6 +177,7 @@ module "content-store" {
   asg_min_size                  = "${var.asg_size}"
   asg_desired_capacity          = "${var.asg_size}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "40"
 }
 
 module "alarms-elb-content-store-internal" {
