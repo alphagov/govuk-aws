@@ -9,6 +9,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "fastly_api_key" {
+  type        = "string"
+  description = "API key to authenticate with Fastly"
+}
+
 variable "logging_aws_access_key_id" {
   type        = "string"
   description = "IAM key ID with access to put logs into the S3 bucket"
@@ -24,6 +29,10 @@ variable "logging_aws_secret_access_key" {
 terraform {
   backend          "s3"             {}
   required_version = "= 0.11.7"
+}
+
+provider "fastly" {
+  api_key = "${var.fastly_api_key}"
 }
 
 resource "fastly_service_v1" "datagovuk" {
