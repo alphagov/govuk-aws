@@ -262,6 +262,11 @@ variable "draft_frontend_internal_service_cnames" {
   default = []
 }
 
+variable "draft_whitehall_frontend_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "email_alert_api_internal_service_names" {
   type    = "list"
   default = []
@@ -1942,6 +1947,16 @@ resource "aws_route53_record" "whitehall_backend_internal_service_cnames" {
 #
 # whitehall_frontend
 #
+
+# draft_whitehall internal names are actually alias for whitehall internal names
+resource "aws_route53_record" "draft_whitehall_frontend_internal_service_names" {
+  count   = "${length(var.draft_whitehall_frontend_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.draft_whitehall_frontend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.whitehall_frontend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
 
 resource "aws_route53_record" "whitehall_frontend_internal_service_names" {
   count   = "${length(var.whitehall_frontend_internal_service_names)}"
