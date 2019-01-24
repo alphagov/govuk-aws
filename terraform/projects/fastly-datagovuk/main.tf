@@ -47,8 +47,8 @@ resource "fastly_service_v1" "datagovuk" {
   }
 
   backend {
-    name               = "addr 46.43.41.10"
-    address            = "46.43.41.10"
+    name               = "cname find-data-beta.cloudapps.digital"
+    address            = "find-data-beta.cloudapps.digital"
     port               = "443"
     use_ssl            = true
     auto_loadbalance   = false
