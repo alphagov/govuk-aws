@@ -11,6 +11,7 @@ job and the role is used by the new Concourse job)
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| concourse_role_arn | The role ARN of the role that Concourse uses to assume the govuk_concourse_codecommit_role role | string | - | yes |
 | jenkins_ssh_public_key | The SSH public key of the Jenkins instance for the relevant environment | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
