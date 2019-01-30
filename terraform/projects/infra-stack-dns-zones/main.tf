@@ -73,7 +73,7 @@ data "terraform_remote_state" "infra_vpc" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
