@@ -303,7 +303,8 @@ EOF
   unset AWS_SESSION_TOKEN
 
   check_context
-  GOVUK_ENV=$(get_context)
+  get_context
+  GOVUK_ENV="$CONTEXT"
 
   GOVUK_SESSION=~/.aws/gds/govuk/${GOVUK_ENV}
   mkdir -p ~/.aws/gds/govuk
