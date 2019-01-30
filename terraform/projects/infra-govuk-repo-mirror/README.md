@@ -1,7 +1,8 @@
 ## Module: govuk-repo-mirror
 
-Configures a user to allow the govuk-repo-mirror CI task
-to push to AWS CodeCommit
+Configures a user and role to allow the govuk-repo-mirror CI task
+to push to AWS CodeCommit (the user is used by the existing Jenkins
+job and the role is used by the new Concourse job)
 
 
 ## Inputs
