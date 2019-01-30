@@ -26,6 +26,11 @@ variable "jenkins_ssh_public_key" {
   description = "The SSH public key of the Jenkins instance for the relevant environment"
 }
 
+variable "concourse_role_arn" {
+  type        = "string"
+  description = "The role ARN of the role that Concourse uses to assume the govuk_concourse_codecommit_role role"
+}
+
 terraform {
   backend          "s3"             {}
   required_version = "= 0.11.7"
@@ -36,6 +41,7 @@ provider "aws" {
   version = "1.40.0"
 }
 
+# These will be removed once we've migrated to govuk-tools
 resource "aws_iam_user" "govuk_codecommit_user" {
   name = "govuk-${var.aws_environment}-govuk-code-commit-user"
 }
@@ -51,6 +57,21 @@ resource "aws_iam_user_ssh_key" "govuk_codecommit_user_jenkins_ssh_key" {
   public_key = "${var.jenkins_ssh_public_key}"
 }
 
+resource "aws_iam_user" "govuk_concourse_codecommit_user" {
+  name = "govuk-concourse-codecommit-user"
+}
+
+resource "aws_iam_user_policy_attachment" "govuk_concourse_codecommit_user_policy_attachment" {
+  user       = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
+}
+
+resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_user_ssh_key" {
+  username   = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
+  encoding   = "SSH"
+  public_key = "${var.jenkins_ssh_public_key}"
+}
+
 resource "aws_iam_role" "govuk_concourse_codecommit_role" {
   name = "govuk-concourse-codecommit-role"
   path = "/"
@@ -62,7 +83,7 @@ resource "aws_iam_role" "govuk_concourse_codecommit_role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "AWS": "arn:aws:iam::047969882937:role/cd-govuk-tools-concourse-worker"
+        "AWS": "${var.concourse_role_arn}"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -73,6 +94,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "govuk_concourse_codecommit_role_policy_attachment" {
-  role       = "${aws_iam_user.govuk_concourse_codecommit_role.name}"
+  role       = "${aws_iam_role.govuk_concourse_codecommit_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
