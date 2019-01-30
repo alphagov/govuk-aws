@@ -116,7 +116,7 @@ data "terraform_remote_state" "infra_monitoring" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
