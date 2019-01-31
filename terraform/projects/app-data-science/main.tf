@@ -27,6 +27,11 @@ variable "data_science_1_subnet" {
   description = "Name of the subnet to place the data science instance 1"
 }
 
+variable "office_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will be allowed offsite access."
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -59,7 +64,7 @@ resource "aws_security_group_rule" "data-science_ingress_offsite-ssh_ssh" {
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = ["${concat(var.office_ips)}"]
+  cidr_blocks       = ["${var.office_ips}"]
   security_group_id = "${aws_security_group.data-science.id}"
 }
 
