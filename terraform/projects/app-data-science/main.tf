@@ -84,7 +84,7 @@ module "data-science" {
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data_science", "aws_hostname", "data-science-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.data_science_1_subnet))}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
-  instance_type                 = "C5.4xlarge"
+  instance_type                 = "c5.4xlarge"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
