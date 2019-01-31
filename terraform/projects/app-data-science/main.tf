@@ -19,12 +19,7 @@ variable "aws_region" {
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
-  default     = "Deep Learning AMI (Ubuntu) Version 21.0"
-}
-
-variable "data_science_1_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the data science instance 1"
+  default     = ""
 }
 
 variable "office_ips" {
@@ -77,16 +72,74 @@ resource "aws_security_group_rule" "data-science_egress_any_any" {
   security_group_id = "${aws_security_group.data-science.id}"
 }
 
+resource "aws_elb" "data-science_external_elb" {
+  name            = "${var.stackname}-data-science"
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${aws_security_group.data-science.id}"]
+  internal        = "false"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-data-science-external-elb"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = "22"
+    instance_protocol = "tcp"
+    lb_port           = "22"
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "TCP:22"
+    interval            = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-data-science", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "data-science")}"
+}
+
 module "data-science" {
   source                        = "../../modules/aws/node_group"
   name                          = "data-science-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data_science", "aws_hostname", "data-science-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.data_science_1_subnet))}"
+  default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-1")}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
   instance_type                 = "c5.4xlarge"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.data-science_external_elb.id}"]
+  instance_elb_ids_length       = "1"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
+}
+
+module "alarms-elb-data-science-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-data-science-external"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  elb_name                       = "${aws_elb.data-science_external_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
+}
+
+# Outputs
+# --------------------------------------------------------------
+
+output "data-science_elb_address" {
+  value       = "${aws_elb.data-science_external_elb.dns_name}"
+  description = "AWS' internal DNS name for the data-science ELB"
 }
