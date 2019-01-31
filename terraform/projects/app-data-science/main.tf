@@ -120,7 +120,7 @@ module "data-science" {
   instance_elb_ids_length       = "1"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "20"
+  root_block_device_volume_size = "200"
 }
 
 module "alarms-elb-data-science-internal" {
