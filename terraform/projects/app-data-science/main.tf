@@ -44,13 +44,41 @@ provider "aws" {
   version = "1.40.0"
 }
 
+resource "aws_security_group" "data-science" {
+  name        = "${var.stackname}_data-science_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Control access to the data science machines"
+
+  tags {
+    Name = "${var.stackname}_data-science_access"
+  }
+}
+
+resource "aws_security_group_rule" "data-science_ingress_offsite-ssh_ssh" {
+  type              = "ingress"
+  to_port           = 22
+  from_port         = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["${concat(var.office_ips)}"]
+  security_group_id = "${aws_security_group.data-science.id}"
+}
+
+resource "aws_security_group_rule" "data-science_egress_any_any" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.data-science.id}"
+}
+
 module "data-science" {
   source                        = "../../modules/aws/node_group"
   name                          = "data-science-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data_science", "aws_hostname", "data-science-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.data_science_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
   instance_type                 = "C5.4xlarge"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
