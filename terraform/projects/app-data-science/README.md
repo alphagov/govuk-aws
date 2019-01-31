@@ -11,8 +11,7 @@ Run resource intensive scripts for data science purposes.
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-2` | no |
-| data_science_1_subnet | Name of the subnet to place the data science instance 1 | string | - | yes |
-| instance_ami_filter_name | Name to use to find AMI images | string | `Deep Learning AMI (Ubuntu) Version 21.0` | no |
+| instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
@@ -23,4 +22,10 @@ Run resource intensive scripts for data science purposes.
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| data-science_elb_address | AWS' internal DNS name for the data-science ELB |
 
