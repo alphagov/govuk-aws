@@ -10,7 +10,7 @@ Create an ElasticSearch domain
 | name | The common name for all the resources created by this module | string | - | yes |
 | elasticsearch_version | Which version of ElasticSearch to use (eg 5.6) | string | `5.6` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
-| instance_type | The instance type of the individual ElasticSearch nodes | string | `m3.large.elasticsearch` | no |
+| instance_type | The instance type of the individual ElasticSearch nodes | string | `m4.2xlarge.elasticsearch` | no |
 | instance_count | The number of ElasticSearch nodes | string | `3` | no |
 | subnet_ids | Subnet IDs to assign to the aws_elasticsearch_domain | list | `<list>` | no |
 | security_group_ids | Security group IDs to apply to this cluster | list | - | yes |

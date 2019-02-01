@@ -28,7 +28,7 @@ variable "elasticsearch_version" {
 variable "elasticsearch_instance_type" {
   type        = "string"
   description = "The instance type of the individual ElasticSearch nodes"
-  default     = "m3.large.elasticsearch"
+  default     = "m4.2xlarge.elasticsearch"
 }
 
 variable "elasticsearch_instance_count" {

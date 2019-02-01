@@ -23,7 +23,7 @@ variable "default_tags" {
 variable "instance_type" {
   type        = "string"
   description = "The instance type of the individual ElasticSearch nodes"
-  default     = "m3.large.elasticsearch"
+  default     = "m4.2xlarge.elasticsearch"
 }
 
 variable "instance_count" {
