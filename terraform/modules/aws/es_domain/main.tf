@@ -22,7 +22,7 @@ variable "default_tags" {
 
 variable "instance_type" {
   type        = "string"
-  description = "The instance type of the individual ElasticSearch nodes"
+  description = "The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported"
   default     = "m4.2xlarge.elasticsearch"
 }
 
@@ -30,6 +30,17 @@ variable "instance_count" {
   type        = "string"
   description = "The number of ElasticSearch nodes"
   default     = "3"
+}
+
+variable "ebs_encrypt" {
+  type        = "string"
+  description = "Whether to encrypt the EBS volume at rest"
+}
+
+variable "ebs_size" {
+  type        = "string"
+  description = "The amount of EBS storage to attach"
+  default     = 32
 }
 
 variable "subnet_ids" {
@@ -64,6 +75,15 @@ resource "aws_elasticsearch_domain" "es" {
   cluster_config {
     instance_type  = "${var.instance_type}"
     instance_count = "${var.instance_count}"
+  }
+
+  ebs_options {
+    ebs_enabled = true
+    volume_size = "${var.ebs_size}"
+  }
+
+  encrypt_at_rest {
+    enabled = "${var.ebs_encrypt}"
   }
 
   vpc_options {

@@ -27,7 +27,7 @@ variable "elasticsearch_version" {
 
 variable "elasticsearch_instance_type" {
   type        = "string"
-  description = "The instance type of the individual ElasticSearch nodes"
+  description = "The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported"
   default     = "m4.2xlarge.elasticsearch"
 }
 
@@ -35,6 +35,17 @@ variable "elasticsearch_instance_count" {
   type        = "string"
   description = "The number of ElasticSearch nodes"
   default     = "3"
+}
+
+variable "elasticsearch_ebs_encrypt" {
+  type        = "string"
+  description = "Whether to encrypt the EBS volume at rest"
+}
+
+variable "elasticsearch_ebs_size" {
+  type        = "string"
+  description = "The amount of EBS storage to attach"
+  default     = 32
 }
 
 variable "elasticsearch_snapshot_start_hour" {
@@ -66,6 +77,9 @@ module "elasticsearch" {
 
   instance_type  = "${var.elasticsearch_instance_type}"
   instance_count = "${var.elasticsearch_instance_count}"
+
+  ebs_size    = "${var.elasticsearch_ebs_size}"
+  ebs_encrypt = "${var.elasticsearch_ebs_encrypt}"
 
   elasticsearch_version = "${var.elasticsearch_version}"
   snapshot_start_hour   = "${var.elasticsearch_snapshot_start_hour}"
