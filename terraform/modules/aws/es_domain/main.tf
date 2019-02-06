@@ -57,14 +57,13 @@ variable "security_group_ids" {
 variable "snapshot_start_hour" {
   type        = "string"
   description = "The hour in which the daily snapshot is taken"
-  default     = "01:00"
+  default     = 1
 }
 
 # Resources
 # --------------------------------------------------------------
 
 resource "aws_iam_service_linked_role" "es" {
-  name             = "${var.name}-role"
   aws_service_name = "elasticsearch.amazonaws.com"
 }
 

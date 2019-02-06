@@ -51,7 +51,7 @@ variable "elasticsearch_ebs_size" {
 variable "elasticsearch_snapshot_start_hour" {
   type        = "string"
   description = "The hour in which the daily snapshot is taken"
-  default     = "01:00"
+  default     = 1
 }
 
 variable "elasticsearch_subnet_names" {
