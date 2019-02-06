@@ -15,7 +15,7 @@ Create an ElasticSearch domain
 | instance_type | The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported | string | `m4.2xlarge.elasticsearch` | no |
 | name | The common name for all the resources created by this module | string | - | yes |
 | security_group_ids | Security group IDs to apply to this cluster | list | - | yes |
-| snapshot_start_hour | The hour in which the daily snapshot is taken | string | `01:00` | no |
+| snapshot_start_hour | The hour in which the daily snapshot is taken | string | `1` | no |
 | subnet_ids | Subnet IDs to assign to the aws_elasticsearch_domain | list | `<list>` | no |
 
 ## Outputs

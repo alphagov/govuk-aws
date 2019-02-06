@@ -57,7 +57,7 @@ variable "security_group_ids" {
 variable "snapshot_start_hour" {
   type        = "string"
   description = "The hour in which the daily snapshot is taken"
-  default     = "01:00"
+  default     = 1
 }
 
 # Resources

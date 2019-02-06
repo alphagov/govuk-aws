@@ -13,7 +13,7 @@ Elasticsearch cluster
 | elasticsearch_ebs_size | The amount of EBS storage to attach | string | `32` | no |
 | elasticsearch_instance_count | The number of ElasticSearch nodes | string | `3` | no |
 | elasticsearch_instance_type | The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported | string | `m4.2xlarge.elasticsearch` | no |
-| elasticsearch_snapshot_start_hour | The hour in which the daily snapshot is taken | string | `01:00` | no |
+| elasticsearch_snapshot_start_hour | The hour in which the daily snapshot is taken | string | `1` | no |
 | elasticsearch_subnet_names | Names of the subnets to place the ElasticSearch domain in | list | - | yes |
 | elasticsearch_version | Which version of ElasticSearch to use (eg 5.6) | string | `5.6` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
