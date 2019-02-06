@@ -63,7 +63,8 @@ Manage the security groups for the entire infrastructure
 | sg_draft-content-store_internal_elb_id |  |
 | sg_draft-frontend_elb_id |  |
 | sg_draft-frontend_id |  |
-| sg_elasticsearch_id |  |
+| sg_elasticsearch5_elb_id |  |
+| sg_elasticsearch5_id |  |
 | sg_email-alert-api-db-admin_elb_id |  |
 | sg_email-alert-api-db-admin_id |  |
 | sg_email-alert-api-postgresql-primary_id |  |
