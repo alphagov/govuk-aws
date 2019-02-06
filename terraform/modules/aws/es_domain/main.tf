@@ -64,7 +64,6 @@ variable "snapshot_start_hour" {
 # --------------------------------------------------------------
 
 resource "aws_iam_service_linked_role" "es" {
-  name             = "${var.name}-role"
   aws_service_name = "elasticsearch.amazonaws.com"
 }
 
