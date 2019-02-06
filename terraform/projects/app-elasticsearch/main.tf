@@ -84,7 +84,7 @@ module "elasticsearch" {
   elasticsearch_version = "${var.elasticsearch_version}"
   snapshot_start_hour   = "${var.elasticsearch_snapshot_start_hour}"
 
-  subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.elasticsearch_subnet_names))}"
+  subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), var.elasticsearch_subnet_names)}"
 
   security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_elasticsearch_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
 
