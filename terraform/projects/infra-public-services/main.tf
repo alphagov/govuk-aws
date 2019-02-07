@@ -267,6 +267,11 @@ variable "draft_whitehall_frontend_internal_service_names" {
   default = []
 }
 
+variable "elasticsearch5_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "email_alert_api_internal_service_names" {
   type    = "list"
   default = []
@@ -359,6 +364,11 @@ variable "search_internal_service_names" {
 }
 
 variable "search_internal_service_cnames" {
+  type    = "list"
+  default = []
+}
+
+variable "search_api_internal_service_names" {
   type    = "list"
   default = []
 }
@@ -1062,6 +1072,19 @@ resource "aws_route53_record" "draft_frontend_internal_service_cnames" {
 }
 
 #
+# elasticsearch5
+#
+
+resource "aws_route53_record" "elasticsearch5_internal_service_names" {
+  count   = "${length(var.elasticsearch5_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.elasticsearch5_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.elasticsearch5_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
 # email_alert_api
 #
 
@@ -1743,6 +1766,19 @@ resource "aws_route53_record" "search_internal_service_cnames" {
   name    = "${element(var.search_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.search_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# search-api
+#
+
+resource "aws_route53_record" "search_api_internal_service_names" {
+  count   = "${length(var.search_api_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.search_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.search_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

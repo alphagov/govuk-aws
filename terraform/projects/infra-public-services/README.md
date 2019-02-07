@@ -49,6 +49,7 @@ This project adds global resources for app components:
 | draft_frontend_internal_service_cnames |  | list | `<list>` | no |
 | draft_frontend_internal_service_names |  | list | `<list>` | no |
 | draft_whitehall_frontend_internal_service_names |  | list | `<list>` | no |
+| elasticsearch5_internal_service_names |  | list | `<list>` | no |
 | elb_public_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | elb_public_secondary_certname | The ACM secondary cert domain name to find the ARN of | string | - | yes |
 | email_alert_api_internal_service_names |  | list | `<list>` | no |
@@ -84,6 +85,7 @@ This project adds global resources for app components:
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | router_backend_internal_service_names |  | list | `<list>` | no |
 | rummager_elasticsearch_internal_service_names |  | list | `<list>` | no |
+| search_api_internal_service_names |  | list | `<list>` | no |
 | search_internal_service_cnames |  | list | `<list>` | no |
 | search_internal_service_names |  | list | `<list>` | no |
 | stackname | Stackname | string | - | yes |
