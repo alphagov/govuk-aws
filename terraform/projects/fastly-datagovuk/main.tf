@@ -24,6 +24,11 @@ variable "logging_aws_secret_access_key" {
   description = "IAM secret key with access to put logs into the S3 bucket"
 }
 
+variable "domain" {
+  type        = "string"
+  description = "The domain of the data.gov.uk service to manage"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -39,11 +44,11 @@ resource "fastly_service_v1" "datagovuk" {
   name = "${title(var.aws_environment)} data.gov.uk"
 
   domain {
-    name = "data.gov.uk"
+    name = "${var.domain}"
   }
 
   domain {
-    name = "www.data.gov.uk"
+    name = "www.${var.domain}"
   }
 
   backend {
@@ -63,13 +68,13 @@ resource "fastly_service_v1" "datagovuk" {
 
   s3logging {
     format             = "%h\\t%{%Y-%m-%d %H:%M:%S}t.%{msec_frac}t\\t%m\\t%U%q\\t%>s\\t%B\\t%{tls.client.protocol}V\\t%{fastly_info.state}V\\t%{Referer}i\\t%{User-Agent}i"
-    bucket_name        = "govuk-analytics-logs-production"
+    bucket_name        = "govuk-${var.aws_environment}-fastly-logs"
     domain             = "s3-eu-west-1.amazonaws.com"
     format_version     = "2"
     gzip_level         = "9"
     message_type       = "blank"
     name               = "s3-dgu-logging"
-    path               = "datagovuk/incoming/"
+    path               = "datagovuk/"
     period             = "600"
     redundancy         = "standard"
     response_condition = ""
