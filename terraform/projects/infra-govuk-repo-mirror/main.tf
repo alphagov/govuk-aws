@@ -1,9 +1,9 @@
 /**
 * ## Module: govuk-repo-mirror
 *
-* Configures a user and role to allow the govuk-repo-mirror CI task
-* to push to AWS CodeCommit (the user is used by the existing Jenkins
-* job and the role is used by the new Concourse job)
+* Configures a user and role to allow the govuk-repo-mirror Concourse pipeline
+* to push to AWS CodeCommit (the user is used by the Jenkins
+* Deploy_App job and the role is used by the Concourse mirroring job)
 */
 variable "aws_region" {
   type        = "string"
@@ -41,7 +41,6 @@ provider "aws" {
   version = "1.40.0"
 }
 
-# These will be removed once we've migrated to govuk-tools
 resource "aws_iam_user" "govuk_codecommit_user" {
   name = "govuk-${var.aws_environment}-govuk-code-commit-user"
 }
