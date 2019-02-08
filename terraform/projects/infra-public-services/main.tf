@@ -1763,6 +1763,7 @@ resource "aws_route53_record" "rummager_elasticsearch_carrenza_internal_service_
   type    = "A"
 
   records = ["${element(values(var.rummager_elasticsearch_carrenza_internal_service_records), count.index)}"]
+  ttl     = "300"
 }
 
 #
