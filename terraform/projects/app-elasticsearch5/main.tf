@@ -48,7 +48,7 @@ variable "elasticsearch5_snapshot_start_hour" {
   default     = 1
 }
 
-variable "elasticsearch5_subnet_names" {
+variable "elasticsearch_subnet_names" {
   type        = "list"
   description = "Names of the subnets to place the ElasticSearch domain in"
 }
@@ -90,7 +90,7 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
   }
 
   vpc_options {
-    subnet_ids         = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch5_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch5_names_ids_map), var.elasticsearch5_subnet_names)}"
+    subnet_ids         = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), var.elasticsearch_subnet_names)}"
     security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_elasticsearch5_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   }
 

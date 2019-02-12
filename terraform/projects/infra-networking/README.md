@@ -12,8 +12,8 @@ This module governs the creation of full network stacks.
 | private_subnet_cidrs | Map containing private subnet names and CIDR associated | map | - | yes |
 | private_subnet_elasticache_availability_zones | Map containing private elasticache subnet names and availability zones associated | map | `<map>` | no |
 | private_subnet_elasticache_cidrs | Map containing private elasticache subnet names and CIDR associated | map | `<map>` | no |
-| private_subnet_elasticsearch5_availability_zones | Map containing private elasticsearch5 subnet names and availability zones associated | map | `<map>` | no |
-| private_subnet_elasticsearch5_cidrs | Map containing private elasticsearch5 subnet names and CIDR associated | map | `<map>` | no |
+| private_subnet_elasticsearch_availability_zones | Map containing private elasticsearch subnet names and availability zones associated | map | `<map>` | no |
+| private_subnet_elasticsearch_cidrs | Map containing private elasticsearch subnet names and CIDR associated | map | `<map>` | no |
 | private_subnet_nat_gateway_association | Map of private subnet names and public subnet used to route external traffic (the public subnet must be listed in public_subnet_nat_gateway_enable to ensure it has a NAT gateway attached) | map | - | yes |
 | private_subnet_rds_availability_zones | Map containing private rds subnet names and availability zones associated | map | `<map>` | no |
 | private_subnet_rds_cidrs | Map containing private rds subnet names and CIDR associated | map | `<map>` | no |
@@ -35,10 +35,10 @@ This module governs the creation of full network stacks.
 | private_subnet_elasticache_names_azs_map |  |
 | private_subnet_elasticache_names_ids_map | Map containing the pair name-id for each private subnet created |
 | private_subnet_elasticache_names_route_tables_map | Map containing the name of each private subnet and route_table ID associated |
-| private_subnet_elasticsearch5_ids | List of private subnet IDs |
-| private_subnet_elasticsearch5_names_azs_map |  |
-| private_subnet_elasticsearch5_names_ids_map | Map containing the pair name-id for each private subnet created |
-| private_subnet_elasticsearch5_names_route_tables_map | Map containing the name of each private subnet and route_table ID associated |
+| private_subnet_elasticsearch_ids | List of private subnet IDs |
+| private_subnet_elasticsearch_names_azs_map |  |
+| private_subnet_elasticsearch_names_ids_map | Map containing the pair name-id for each private subnet created |
+| private_subnet_elasticsearch_names_route_tables_map | Map containing the name of each private subnet and route_table ID associated |
 | private_subnet_ids | List of private subnet IDs |
 | private_subnet_names_azs_map |  |
 | private_subnet_names_ids_map | Map containing the pair name-id for each private subnet created |

@@ -97,15 +97,15 @@ variable "private_subnet_reserved_ips_availability_zones" {
   default     = {}
 }
 
-variable "private_subnet_elasticsearch5_cidrs" {
+variable "private_subnet_elasticsearch_cidrs" {
   type        = "map"
-  description = "Map containing private elasticsearch5 subnet names and CIDR associated"
+  description = "Map containing private elasticsearch subnet names and CIDR associated"
   default     = {}
 }
 
-variable "private_subnet_elasticsearch5_availability_zones" {
+variable "private_subnet_elasticsearch_availability_zones" {
   type        = "map"
-  description = "Map containing private elasticsearch5 subnet names and availability zones associated"
+  description = "Map containing private elasticsearch subnet names and availability zones associated"
   default     = {}
 }
 
@@ -218,12 +218,12 @@ module "infra_private_subnet_reserved_ips" {
   subnet_nat_gateways_length = "0"
 }
 
-module "infra_private_subnet_elasticsearch5" {
+module "infra_private_subnet_elasticsearch" {
   source                     = "../../modules/aws/network/private_subnet"
   vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  default_tags               = "${map("Project", var.stackname, "aws_migration", "elasticsearch5")}"
-  subnet_cidrs               = "${var.private_subnet_elasticsearch5_cidrs}"
-  subnet_availability_zones  = "${var.private_subnet_elasticsearch5_availability_zones}"
+  default_tags               = "${map("Project", var.stackname, "aws_migration", "elasticsearch")}"
+  subnet_cidrs               = "${var.private_subnet_elasticsearch_cidrs}"
+  subnet_availability_zones  = "${var.private_subnet_elasticsearch_availability_zones}"
   subnet_nat_gateways_length = "0"
 }
 
@@ -332,21 +332,21 @@ output "private_subnet_reserved_ips_names_route_tables_map" {
   description = "Map containing the name of each private subnet and route_table ID associated"
 }
 
-output "private_subnet_elasticsearch5_ids" {
-  value       = "${module.infra_private_subnet_elasticsearch5.subnet_ids}"
+output "private_subnet_elasticsearch_ids" {
+  value       = "${module.infra_private_subnet_elasticsearch.subnet_ids}"
   description = "List of private subnet IDs"
 }
 
-output "private_subnet_elasticsearch5_names_ids_map" {
-  value       = "${module.infra_private_subnet_elasticsearch5.subnet_names_ids_map}"
+output "private_subnet_elasticsearch_names_ids_map" {
+  value       = "${module.infra_private_subnet_elasticsearch.subnet_names_ids_map}"
   description = "Map containing the pair name-id for each private subnet created"
 }
 
-output "private_subnet_elasticsearch5_names_azs_map" {
-  value = "${var.private_subnet_elasticsearch5_availability_zones}"
+output "private_subnet_elasticsearch_names_azs_map" {
+  value = "${var.private_subnet_elasticsearch_availability_zones}"
 }
 
-output "private_subnet_elasticsearch5_names_route_tables_map" {
-  value       = "${module.infra_private_subnet_elasticsearch5.subnet_names_route_tables_map}"
+output "private_subnet_elasticsearch_names_route_tables_map" {
+  value       = "${module.infra_private_subnet_elasticsearch.subnet_names_route_tables_map}"
   description = "Map containing the name of each private subnet and route_table ID associated"
 }

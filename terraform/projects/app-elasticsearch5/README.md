@@ -14,7 +14,7 @@ Managed Elasticsearch 5 cluster
 | elasticsearch5_instance_count | The number of ElasticSearch nodes | string | `3` | no |
 | elasticsearch5_instance_type | The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported | string | `m4.2xlarge.elasticsearch` | no |
 | elasticsearch5_snapshot_start_hour | The hour in which the daily snapshot is taken | string | `1` | no |
-| elasticsearch5_subnet_names | Names of the subnets to place the ElasticSearch domain in | list | - | yes |
+| elasticsearch_subnet_names | Names of the subnets to place the ElasticSearch domain in | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
