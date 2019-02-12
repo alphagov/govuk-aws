@@ -104,7 +104,7 @@ module "db-admin" {
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "64"
+  root_block_device_volume_size = "512"
 }
 
 resource "aws_route53_record" "db_admin_service_record" {
