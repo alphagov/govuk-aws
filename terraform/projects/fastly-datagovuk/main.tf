@@ -80,7 +80,7 @@ resource "fastly_service_v1" "datagovuk" {
   condition {
     name      = "education_standards"
     type      = "request"
-    statement = "req.url ~ '^/education-standards'"
+    statement = "req.url ~ \"^/education-standards\""
   }
 
   header {
@@ -88,7 +88,7 @@ resource "fastly_service_v1" "datagovuk" {
     action            = "set"
     type              = "request"
     destination       = "req.url"
-    source            = "regsub(req.url, '^/education-standards', '');"
+    source            = "regsub(req.url, \"^/education-standards\", \"\");"
     request_condition = "education_standards"
   }
 
