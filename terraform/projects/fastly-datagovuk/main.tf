@@ -4,6 +4,11 @@
 * Manages the Fastly service for data.gov.uk
 */
 
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
+}
+
 variable "aws_environment" {
   type        = "string"
   description = "AWS Environment"
