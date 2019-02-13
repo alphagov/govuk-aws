@@ -212,15 +212,12 @@ function run_ssh {
       fi;;
 
     'node-types')
-      if [[ $CARRENZA == 'true' ]]; then
-        error "Only available in AWS."
-        ssh_usage
-        exit 1
-      fi
-
       load_user
-
-      ssh $SSH_USER@$JUMPBOX "aws ec2 describe-instances --region eu-west-1 |jq -r ' .Reservations[] | .Instances[] | .Tags[] | select(.Key | contains(\"aws_migration\")) | .Value' |sort |uniq |sort"
+      if [[ $CARRENZA == 'true' ]]; then
+        ssh $SSH_USER@$JUMPBOX "govuk_node_list --classes"
+      else
+        ssh $SSH_USER@$JUMPBOX "aws ec2 describe-instances --region eu-west-1 |jq -r ' .Reservations[] | .Instances[] | .Tags[] | select(.Key | contains(\"aws_migration\")) | .Value' |sort |uniq |sort"
+      fi
     ;;
 
     'help') ssh_usage;;
