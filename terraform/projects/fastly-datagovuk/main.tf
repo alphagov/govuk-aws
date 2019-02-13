@@ -87,8 +87,8 @@ resource "fastly_service_v1" "datagovuk" {
     name              = "education_standards"
     action            = "set"
     type              = "request"
-    destination       = "req.url"
-    source            = "regsub(req.url, \"^/education-standards\", \"\");"
+    destination       = "url"
+    source            = "regsub(req.url, \"^/education-standards\", \"\")"
     request_condition = "education_standards"
   }
 
