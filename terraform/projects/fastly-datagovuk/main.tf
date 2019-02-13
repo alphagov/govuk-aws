@@ -66,6 +66,32 @@ resource "fastly_service_v1" "datagovuk" {
     ssl_check_cert     = false
   }
 
+  backend {
+    name               = "cname dfe-app1.codeenigma.net"
+    address            = "dfe-app1.codeenigma.net"
+    port               = "443"
+    use_ssl            = true
+    auto_loadbalance   = false
+    first_byte_timeout = 120000
+    ssl_check_cert     = false
+    request_condition  = "education_standards"
+  }
+
+  condition {
+    name      = "education_standards"
+    type      = "request"
+    statement = "req.url ~ '^/education-standards'"
+  }
+
+  header {
+    name              = "education_standards"
+    action            = "set"
+    type              = "request"
+    destination       = "req.url"
+    source            = "regsub(req.url, '^/education-standards', '');"
+    request_condition = "education_standards"
+  }
+
   request_setting {
     name      = "Force TLS"
     force_ssl = true
