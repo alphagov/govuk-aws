@@ -87,4 +87,32 @@ resource "fastly_service_v1" "datagovuk" {
     s3_secret_key      = "${var.logging_aws_secret_access_key}"
     timestamp_format   = ""
   }
+
+  # The next four blocks handle the www.data.gov.uk -> data.gov.uk redirect
+  condition {
+    name      = "www.${var.domain} to ${var.domain} redirect request condition"
+    statement = "req.http.host == \"www.${var.domain}\""
+    type      = "REQUEST"
+  }
+
+  response_object {
+    name              = "www.${var.domain} to ${var.domain} redirect synthetic response"
+    status            = 301
+    request_condition = "www.${var.domain} to ${var.domain} redirect request condition"
+  }
+
+  condition {
+    name      = "www.${var.domain} to ${var.domain} redirect response condition"
+    statement = "req.http.host == \"www.${var.domain}\" && resp.status == 301"
+    type      = "RESPONSE"
+  }
+
+  header {
+    name               = "www.${var.domain} to ${var.domain} redirect location header"
+    action             = "set"
+    type               = "response"
+    destination        = "http.Location"
+    source             = "\"https://${var.domain}\" + req.url"
+    response_condition = "www.${var.domain} to ${var.domain} redirect response condition"
+  }
 }
