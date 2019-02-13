@@ -166,10 +166,6 @@ output "sg_rummager-elasticsearch_id" {
   value = "${aws_security_group.rummager-elasticsearch.id}"
 }
 
-output "sg_elasticsearch5_elb_id" {
-  value = "${aws_security_group.elasticsearch5_elb.id}"
-}
-
 output "sg_elasticsearch5_id" {
   value = "${aws_security_group.elasticsearch5.id}"
 }
