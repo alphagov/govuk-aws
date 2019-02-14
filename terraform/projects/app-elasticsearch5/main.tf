@@ -81,7 +81,7 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
 
   ebs_options {
     ebs_enabled = true
-    ebs_type    = "gp2"
+    volume_type = "gp2"
     volume_size = "${var.elasticsearch5_ebs_size}"
   }
 
