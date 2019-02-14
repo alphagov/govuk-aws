@@ -112,7 +112,7 @@ module "data-science-1" {
   name                          = "data-science-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.public_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
   instance_type                 = "c5.4xlarge"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -128,7 +128,7 @@ module "data-science-2" {
   name                          = "data-science-2"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-2")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.public_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
   instance_type                 = "p3.2xlarge"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
