@@ -81,7 +81,7 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
 
   ebs_options {
     ebs_enabled = true
-    ebs_type    = "gp2"
+    volume_type = "gp2"
     volume_size = "${var.elasticsearch5_ebs_size}"
   }
 
@@ -90,7 +90,7 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
   }
 
   vpc_options {
-    subnet_ids         = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), var.elasticsearch_subnet_names)}"
+    subnet_ids         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), var.elasticsearch_subnet_names)}"]
     security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_elasticsearch5_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   }
 
