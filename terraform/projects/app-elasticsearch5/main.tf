@@ -98,6 +98,26 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
     automated_snapshot_start_hour = "${var.elasticsearch5_snapshot_start_hour}"
   }
 
+  access_policies = <<CONFIG
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "*"
+        ]
+      },
+      "Action": [
+        "es:*"
+      ],
+      "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.domain}/*"
+    }
+  ]
+}
+CONFIG
+
   tags {
     Name            = "${var.stackname}-elasticsearch5"
     Project         = "${var.stackname}"
