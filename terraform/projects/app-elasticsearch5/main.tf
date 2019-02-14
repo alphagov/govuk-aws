@@ -65,6 +65,10 @@ provider "aws" {
   version = "1.40.0"
 }
 
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_service_linked_role" "role" {
   aws_service_name = "es.amazonaws.com"
 }
@@ -112,7 +116,7 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
       "Action": [
         "es:*"
       ],
-      "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.domain}/*"
+      "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.stackname}-elasticsearch5-domain/*"
     }
   ]
 }
