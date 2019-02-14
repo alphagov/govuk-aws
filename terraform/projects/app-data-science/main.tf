@@ -107,14 +107,30 @@ resource "aws_elb" "data-science_external_elb" {
   tags = "${map("Name", "${var.stackname}-data-science", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "data-science")}"
 }
 
-module "data-science" {
+module "data-science-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "data-science-1"
   vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
-  instance_type                 = "p2.xlarge"
+  instance_type                 = "c5.4xlarge"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids              = ["${aws_elb.data-science_external_elb.id}"]
+  instance_elb_ids_length       = "1"
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "200"
+}
+
+module "data-science-2" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "data-science-2"
+  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-2")}"
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
+  instance_type                 = "p3.2xlarge"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.data-science_external_elb.id}"]
   instance_elb_ids_length       = "1"
