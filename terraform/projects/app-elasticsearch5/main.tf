@@ -94,10 +94,6 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
     security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_elasticsearch5_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   }
 
-  advanced_options {
-    "action.destructive_requires_name" = "true"
-  }
-
   snapshot_options {
     automated_snapshot_start_hour = "${var.elasticsearch5_snapshot_start_hour}"
   }
