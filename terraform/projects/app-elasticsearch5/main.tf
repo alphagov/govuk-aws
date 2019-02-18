@@ -28,7 +28,7 @@ variable "elasticsearch5_instance_type" {
 variable "elasticsearch5_instance_count" {
   type        = "string"
   description = "The number of ElasticSearch nodes"
-  default     = "4"
+  default     = "3"
 }
 
 variable "elasticsearch5_ebs_encrypt" {

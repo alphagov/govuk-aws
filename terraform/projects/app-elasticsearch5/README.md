@@ -11,7 +11,7 @@ Managed Elasticsearch 5 cluster
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elasticsearch5_ebs_encrypt | Whether to encrypt the EBS volume at rest | string | - | yes |
 | elasticsearch5_ebs_size | The amount of EBS storage to attach | string | `32` | no |
-| elasticsearch5_instance_count | The number of ElasticSearch nodes | string | `4` | no |
+| elasticsearch5_instance_count | The number of ElasticSearch nodes | string | `3` | no |
 | elasticsearch5_instance_type | The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported | string | `m4.2xlarge.elasticsearch` | no |
 | elasticsearch5_snapshot_start_hour | The hour in which the daily snapshot is taken | string | `1` | no |
 | elasticsearch_subnet_names | Names of the subnets to place the ElasticSearch domain in | list | - | yes |
