@@ -118,7 +118,7 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
   }
 
   log_publishing_options {
-    cloudwarch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_application_log_group.arn}"
+    cloudwatch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_application_log_group.arn}"
     log_type                 = "ES_APPLICATION_LOGS"
   }
 
