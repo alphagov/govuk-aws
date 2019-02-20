@@ -73,6 +73,21 @@ resource "aws_iam_service_linked_role" "role" {
   aws_service_name = "es.amazonaws.com"
 }
 
+resource "aws_cloudwatch_log_group" "elasticsearch5_application_log_group" {
+  name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/application-logs"
+  retention_in_days = "90"
+}
+
+resource "aws_cloudwatch_log_group" "elasticsearch5_search_log_group" {
+  name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/search-logs"
+  retention_in_days = "90"
+}
+
+resource "aws_cloudwatch_log_group" "elasticsearch5_index_log_group" {
+  name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/index-logs"
+  retention_in_days = "90"
+}
+
 resource "aws_elasticsearch_domain" "elasticsearch5" {
   domain_name           = "${var.stackname}-elasticsearch5-domain"
   elasticsearch_version = "5.6"
@@ -100,6 +115,21 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
 
   snapshot_options {
     automated_snapshot_start_hour = "${var.elasticsearch5_snapshot_start_hour}"
+  }
+
+  log_publishing_options {
+    cloudwarch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_application_log_group.arn}"
+    log_type                 = "ES_APPLICATION_LOGS"
+  }
+
+  log_publishing_options {
+    cloudwarch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_search_log_group.arn}"
+    log_type                 = "SEARCH_SLOW_LOGS"
+  }
+
+  log_publishing_options {
+    cloudwarch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_index_log_group.arn}"
+    log_type                 = "INDEX_SLOW_LOGS"
   }
 
   access_policies = <<CONFIG
