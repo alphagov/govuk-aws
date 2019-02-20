@@ -69,6 +69,23 @@ data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
+data "aws_iam_policy_document" "elasticsearch5_log_publishing_policy" {
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:PutLogEventsBatch",
+    ]
+
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/aes/domains/${var.stackname}-elasticsearch5-domain/*"]
+
+    principals {
+      identifiers = ["es.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
 resource "aws_iam_service_linked_role" "role" {
   aws_service_name = "es.amazonaws.com"
 }
@@ -86,6 +103,11 @@ resource "aws_cloudwatch_log_group" "elasticsearch5_search_log_group" {
 resource "aws_cloudwatch_log_group" "elasticsearch5_index_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/index-logs"
   retention_in_days = "90"
+}
+
+resource "aws_cloudwatch_log_resource_policy" "elasticsearch5_log_resource_policy" {
+  policy_name     = "elasticsearch5_log_resource_policy"
+  policy_document = "${data.aws_iam_policy_document.elasticsearch5_log_publishing_policy.json}"
 }
 
 resource "aws_elasticsearch_domain" "elasticsearch5" {
