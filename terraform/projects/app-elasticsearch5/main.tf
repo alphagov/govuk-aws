@@ -123,12 +123,12 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
   }
 
   log_publishing_options {
-    cloudwarch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_search_log_group.arn}"
+    cloudwatch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_search_log_group.arn}"
     log_type                 = "SEARCH_SLOW_LOGS"
   }
 
   log_publishing_options {
-    cloudwarch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_index_log_group.arn}"
+    cloudwatch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch5_index_log_group.arn}"
     log_type                 = "INDEX_SLOW_LOGS"
   }
 
