@@ -60,7 +60,7 @@ data "aws_region" "current" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_kinesis_firehose_delivery_stream" "logs_s3" {
-  name        = "${var.log_group_name}"
+  name        = "${replace(var.log_group_name, "/", "-")}"
   destination = "extended_s3"
 
   extended_s3_configuration {
@@ -86,13 +86,13 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_logs_to_firehose_log_group" {
-  name              = "/aws/lambda/CloudWatchLogsToFirehose-${var.log_group_name}"
+  name              = "${format("/aws/lambda/CloudWatchLogsToFirehose-%s", replace(var.log_group_name, "/", "-"))}"
   retention_in_days = "${var.lambda_log_retention_in_days}"
 }
 
 resource "aws_lambda_function" "lambda_logs_to_firehose" {
   filename      = "${var.lambda_filename}"
-  function_name = "CloudWatchLogsToFirehose-${var.log_group_name}"
+  function_name = "${format("CloudWatchLogsToFirehose-%s", replace(var.log_group_name, "/", "-"))}"
   role          = "${var.lambda_role_arn}"
   handler       = "main.lambda_handler"
   runtime       = "python2.7"
@@ -106,7 +106,7 @@ resource "aws_lambda_function" "lambda_logs_to_firehose" {
 
 resource "aws_cloudwatch_log_subscription_filter" "log" {
   depends_on      = ["aws_lambda_permission.allow_cloudwatch"]
-  name            = "${var.log_group_name}-exporter"
+  name            = "${format("%s-exporter", replace(var.log_group_name, "/", "-"))}"
   log_group_name  = "${var.log_group_name}"
   filter_pattern  = "[]"
   destination_arn = "${aws_lambda_function.lambda_logs_to_firehose.arn}"
