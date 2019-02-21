@@ -92,7 +92,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs_to_firehose_log_group" {
 
 resource "aws_lambda_function" "lambda_logs_to_firehose" {
   filename      = "${var.lambda_filename}"
-  function_name = "${format("CloudWatchLogsToFirehose-%s", replace(var.log_group_name, "/", "-"))}"
+  function_name = "${format("CloudWatchLogsToFirehose-%s", basename(var.log_group_name))}"
   role          = "${var.lambda_role_arn}"
   handler       = "main.lambda_handler"
   runtime       = "python2.7"
