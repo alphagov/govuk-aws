@@ -53,6 +53,12 @@ variable "elasticsearch_subnet_names" {
   description = "Names of the subnets to place the ElasticSearch domain in"
 }
 
+variable "cloudwatch_log_retention" {
+  type        = "string"
+  description = "Number of days to retain Cloudwatch logs for"
+  default     = 90
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -92,22 +98,55 @@ resource "aws_iam_service_linked_role" "role" {
 
 resource "aws_cloudwatch_log_group" "elasticsearch5_application_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/application-logs"
-  retention_in_days = "90"
+  retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
 resource "aws_cloudwatch_log_group" "elasticsearch5_search_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/search-logs"
-  retention_in_days = "90"
+  retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
 resource "aws_cloudwatch_log_group" "elasticsearch5_index_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch5-domain/index-logs"
-  retention_in_days = "90"
+  retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
 resource "aws_cloudwatch_log_resource_policy" "elasticsearch5_log_resource_policy" {
   policy_name     = "elasticsearch5_log_resource_policy"
   policy_document = "${data.aws_iam_policy_document.elasticsearch5_log_publishing_policy.json}"
+}
+
+module "elasticsearch5_application_log_exporter" {
+  source                       = "../../modules/aws/cloudwatch_log_exporter"
+  log_group_name               = "${aws_cloudwatch_log_group.elasticsearch5_application_log_group.name}"
+  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
+  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
+  firehose_bucket_prefix       = "${aws_cloudwatch_log_group.elasticsearch5_application_log_group.name}"
+  lambda_filename              = "../../lambda/ElasticsearchLogsToFirehose/ElasticsearchLogsToFirehose.zip"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
+  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
+}
+
+module "elasticsearch5_search_log_exporter" {
+  source                       = "../../modules/aws/cloudwatch_log_exporter"
+  log_group_name               = "${aws_cloudwatch_log_group.elasticsearch5_search_log_group.name}"
+  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
+  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
+  firehose_bucket_prefix       = "${aws_cloudwatch_log_group.elasticsearch5_search_log_group.name}"
+  lambda_filename              = "../../lambda/ElasticsearchLogsToFirehose/ElasticsearchLogsToFirehose.zip"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
+  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
+}
+
+module "elasticsearch5_index_log_exporter" {
+  source                       = "../../modules/aws/cloudwatch_log_exporter"
+  log_group_name               = "${aws_cloudwatch_log_group.elasticsearch5_index_log_group.name}"
+  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
+  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
+  firehose_bucket_prefix       = "${aws_cloudwatch_log_group.elasticsearch5_index_log_group.name}"
+  lambda_filename              = "../../lambda/ElasticsearchLogsToFirehose/ElasticsearchLogsToFirehose.zip"
+  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
+  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
 resource "aws_elasticsearch_domain" "elasticsearch5" {

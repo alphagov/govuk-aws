@@ -9,6 +9,7 @@ Managed Elasticsearch 5 cluster
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | `90` | no |
 | elasticsearch5_ebs_encrypt | Whether to encrypt the EBS volume at rest | string | - | yes |
 | elasticsearch5_ebs_size | The amount of EBS storage to attach | string | `32` | no |
 | elasticsearch5_instance_count | The number of ElasticSearch nodes | string | `3` | no |
