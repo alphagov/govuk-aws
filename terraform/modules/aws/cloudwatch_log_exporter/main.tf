@@ -77,7 +77,7 @@ resource "aws_kinesis_firehose_delivery_stream" "logs_s3" {
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
-  statement_id   = "AllowExecutionFromCloudWatchLog-${var.log_group_name}"
+  statement_id   = "${format("AllowExecutionFromCloudWatchLog-%s", replace(var.log_group_name, "/", "-"))}"
   action         = "lambda:InvokeFunction"
   function_name  = "${aws_lambda_function.lambda_logs_to_firehose.arn}"
   principal      = "logs.${data.aws_region.current.name}.amazonaws.com"
