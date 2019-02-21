@@ -53,6 +53,28 @@ resource "aws_s3_bucket" "fastly_logs" {
   }
 }
 
+resource "aws_s3_bucket" "fastly_dnt_logs" {
+  bucket = "govuk-${var.aws_environment}-fastly-dnt-logs"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-fastly-dnt-logs"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-fastly-dnt-logs/"
+  }
+
+  lifecycle_rule {
+    enabled = true
+
+    expiration {
+      days = 90
+    }
+  }
+}
+
 resource "aws_s3_bucket" "transition_fastly_logs" {
   bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
 
@@ -90,6 +112,32 @@ data "template_file" "logs_writer_policy_template" {
   vars {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.fastly_logs.id}"
+  }
+}
+
+# We require a user for Fastly DNT to write to S3 buckets
+resource "aws_iam_user" "dnt_logs_writer" {
+  name = "govuk-${var.aws_environment}-fastly-dnt-logs-writer"
+}
+
+resource "aws_iam_policy" "dnt_logs_writer" {
+  name        = "fastly-dnt-logs-${var.aws_environment}-logs-writer-policy"
+  policy      = "${data.template_file.dnt_logs_writer_policy_template.rendered}"
+  description = "Allows writing to to the fastly-dnt-logs bucket"
+}
+
+resource "aws_iam_policy_attachment" "dnt_logs_writer" {
+  name       = "dnt-logs-writer-policy-attachment"
+  users      = ["${aws_iam_user.dnt_logs_writer.name}"]
+  policy_arn = "${aws_iam_policy.dnt_logs_writer.arn}"
+}
+
+data "template_file" "dnt_logs_writer_policy_template" {
+  template = "${file("${path.module}/../../policies/fastly_logs_writer_policy.tpl")}"
+
+  vars {
+    aws_environment = "${var.aws_environment}"
+    bucket          = "${aws_s3_bucket.fastly_dnt_logs.id}"
   }
 }
 
