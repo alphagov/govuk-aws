@@ -3,6 +3,7 @@
 #
 # CKAN needs to be accessible on ports:
 #   - 80 from its ELB
+#   - 22 from db-admin
 #
 # === Variables:
 # stackname - string
@@ -106,4 +107,15 @@ resource "aws_security_group_rule" "ckan-elb-external_egress_any_any" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.ckan_elb_external.id}"
+}
+
+# Allow SSH access from db-admin for data sync
+resource "aws_security_group_rule" "ckan-elb_ingress_db_admin_ssh" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ckan_elb_internal.id}"
+  source_security_group_id = "${aws_security_group.db-admin.id}"
 }
