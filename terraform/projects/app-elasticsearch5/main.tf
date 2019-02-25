@@ -22,7 +22,7 @@ variable "stackname" {
 variable "elasticsearch5_instance_type" {
   type        = "string"
   description = "The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported"
-  default     = "m4.2xlarge.elasticsearch"
+  default     = "r4.large.elasticsearch"
 }
 
 variable "elasticsearch5_instance_count" {
@@ -31,9 +31,33 @@ variable "elasticsearch5_instance_count" {
   default     = "3"
 }
 
+variable "elasticsearch5_dedicated_master_enabled" {
+  type        = "boolean"
+  description = "Indicates whether dedicated master nodes are enabled for the cluster"
+  default     = true
+}
+
+variable "elasticsearch5_master_instance_type" {
+  type        = "string"
+  description = "Instance type of the dedicated master nodes in the cluster"
+  default     = "c4.large.elasticsearch"
+}
+
+variable "elasticsearch5_master_instance_count" {
+  type        = "string"
+  description = "Number of dedicated master nodes in the cluster"
+  default     = "3"
+}
+
 variable "elasticsearch5_ebs_encrypt" {
   type        = "string"
   description = "Whether to encrypt the EBS volume at rest"
+}
+
+variable "elasticsearch5_ebs_type" {
+  type        = "string"
+  description = "The type of EBS storage to attach"
+  default     = "gp2"
 }
 
 variable "elasticsearch5_ebs_size" {
@@ -154,14 +178,17 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
   elasticsearch_version = "5.6"
 
   cluster_config {
-    instance_type          = "${var.elasticsearch5_instance_type}"
-    instance_count         = "${var.elasticsearch5_instance_count}"
-    zone_awareness_enabled = true
+    instance_type            = "${var.elasticsearch5_instance_type}"
+    instance_count           = "${var.elasticsearch5_instance_count}"
+    dedicated_master_enabled = "${var.elasticsearch5_dedicated_master_enabled}"
+    dedicated_master_type    = "${var.elasticsearch5_master_instance_type}"
+    dedicated_master_count   = "${var.elasticsearch5_master_instance_count}"
+    zone_awareness_enabled   = true
   }
 
   ebs_options {
     ebs_enabled = true
-    volume_type = "gp2"
+    volume_type = "${var.elasticsearch5_ebs_type}"
     volume_size = "${var.elasticsearch5_ebs_size}"
   }
 
