@@ -31,6 +31,7 @@ This module governs the creation of full network stacks.
 
 | Name | Description |
 |------|-------------|
+| nat_gateway_elastic_ips_list | List containing the public IPs associated with the NAT gateways |
 | private_subnet_elasticache_ids | List of private subnet IDs |
 | private_subnet_elasticache_names_azs_map |  |
 | private_subnet_elasticache_names_ids_map | Map containing the pair name-id for each private subnet created |

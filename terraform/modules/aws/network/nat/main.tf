@@ -48,3 +48,8 @@ output "nat_gateway_subnets_ids_map" {
   value       = "${zipmap(aws_nat_gateway.nat.*.subnet_id, aws_nat_gateway.nat.*.id)}"
   description = "Map containing the NAT gateway IDs and the public subnet ID where each one is located"
 }
+
+output "nat_gateway_elastic_ips_list" {
+  value       = ["${aws_eip.nat.*.public_ip}"]
+  description = "List containing the public IPs associated with the NAT gateways"
+}
