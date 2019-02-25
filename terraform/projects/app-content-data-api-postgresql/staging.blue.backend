@@ -1,0 +1,4 @@
+bucket   = "govuk-terraform-steppingstone-staging"
+key      = "blue/app-content-data-api-postgresql.tfstate"
+encrypt  = true
+region   = "eu-west-1"

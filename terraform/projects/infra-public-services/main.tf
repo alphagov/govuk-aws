@@ -82,6 +82,16 @@ variable "ckan_public_service_cnames" {
   default = []
 }
 
+variable "content_data_api_db_admin_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "content_data_api_postgresql_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "content_store_public_service_names" {
   type    = "list"
   default = []
@@ -816,6 +826,32 @@ resource "aws_route53_record" "ckan_internal_service_cnames" {
   name    = "${element(var.ckan_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.ckan_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# Content Data API: DB Admin
+#
+
+resource "aws_route53_record" "content_data_api_db_admin_internal_service_names" {
+  count   = "${length(var.content_data_api_db_admin_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.content_data_api_db_admin_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.content_data_api_db_admin_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# Content Data API: Postgresql
+#
+
+resource "aws_route53_record" "content_data_api_postgresql_internal_service_names" {
+  count   = "${length(var.content_data_api_postgresql_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.content_data_api_postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.content_data_api_postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

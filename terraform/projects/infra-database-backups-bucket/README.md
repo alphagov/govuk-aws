@@ -22,6 +22,7 @@ database-backups: The bucket that will hold database backups
 
 | Name | Description |
 |------|-------------|
+| content_data_api_dbadmin_write_database_backups_bucket_policy_arn | ARN of the Content Data API DBAdmin database_backups bucket writer policy |
 | dbadmin_write_database_backups_bucket_policy_arn | ARN of the DBAdmin write database_backups-bucket policy |
 | elasticsearch_write_database_backups_bucket_policy_arn | ARN of the elasticsearch write database_backups-bucket policy |
 | email-alert-api_dbadmin_write_database_backups_bucket_policy_arn | ARN of the EmailAlertAPIDBAdmin write database_backups-bucket policy |
@@ -39,6 +40,7 @@ database-backups: The bucket that will hold database backups
 | mongo_api_write_database_backups_bucket_policy_arn | ARN of the mongo-api write database_backups-bucket policy |
 | mongo_router_write_database_backups_bucket_policy_arn | ARN of the router_backend write database_backups-bucket policy |
 | mongodb_write_database_backups_bucket_policy_arn | ARN of the mongodb write database_backups-bucket policy |
+| production_content_data_api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production database_backups bucket reader policy for the Content Data API |
 | production_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read DBAdmin database_backups-bucket policy |
 | production_elasticsearch_read_database_backups_bucket_policy_arn | ARN of the production read elasticsearch database_backups-bucket policy |
 | production_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read EmailAlertAPUDBAdmin database_backups-bucket policy |
