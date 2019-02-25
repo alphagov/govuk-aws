@@ -15,6 +15,7 @@ subnets provided.
 
 | Name | Description |
 |------|-------------|
+| nat_gateway_elastic_ips_list | List containing the public IPs associated with the NAT gateways |
 | nat_gateway_ids | List containing the IDs of the NAT gateways |
 | nat_gateway_subnets_ids_map | Map containing the NAT gateway IDs and the public subnet ID where each one is located |
 
