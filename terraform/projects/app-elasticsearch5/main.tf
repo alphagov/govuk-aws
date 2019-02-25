@@ -32,9 +32,9 @@ variable "elasticsearch5_instance_count" {
 }
 
 variable "elasticsearch5_dedicated_master_enabled" {
-  type        = "boolean"
+  type        = "string"
   description = "Indicates whether dedicated master nodes are enabled for the cluster"
-  default     = true
+  default     = "true"
 }
 
 variable "elasticsearch5_master_instance_type" {
