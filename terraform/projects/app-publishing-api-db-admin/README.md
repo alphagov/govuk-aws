@@ -1,6 +1,6 @@
 ## Project: app-publishing-api-db-admin
 
- DB admin boxes for publishing-api's RDS instance
+DB admin boxes for publishing-api's RDS instance
 
 
 ## Inputs

@@ -11,8 +11,9 @@ echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: data-science-base"
 
 export DEBIAN_FRONTEND=noninteractive
 
-# SSH keys are hardcoded here since puppet doesn't run on these machines, and they are special-purpose
-# machines with short lifetimes.
+# SSH keys are hardcoded here since puppet doesn't run on these
+# machines, and they are special-purpose machines with short
+# lifetimes.
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] data-science-base: add SSH keys for users that will use this machine..."
 
 {

@@ -1,7 +1,7 @@
 /**
 * ## Project: app-transition-db-admin
 *
-* DB admin boxes for Transition's RDS instance
+* DB admin boxes for Transition's RDS instance
 */
 variable "aws_region" {
   type        = "string"
