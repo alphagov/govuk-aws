@@ -110,12 +110,12 @@ resource "aws_security_group_rule" "ckan-elb-external_egress_any_any" {
 }
 
 # Allow SSH access from db-admin for data sync
-resource "aws_security_group_rule" "ckan-elb_ingress_db_admin_ssh" {
+resource "aws_security_group_rule" "ckan_ingress_db-admin_ssh" {
   type      = "ingress"
   from_port = 22
   to_port   = 22
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.ckan_elb_internal.id}"
+  security_group_id        = "${aws_security_group.ckan.id}"
   source_security_group_id = "${aws_security_group.db-admin.id}"
 }
