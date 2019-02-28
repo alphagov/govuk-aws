@@ -86,7 +86,6 @@ This project adds global resources for app components:
 | router_backend_internal_service_names |  | list | `<list>` | no |
 | rummager_elasticsearch_carrenza_internal_service_records |  | map | `<map>` | no |
 | rummager_elasticsearch_internal_service_names |  | list | `<list>` | no |
-| search_api_internal_service_names |  | list | `<list>` | no |
 | search_internal_service_cnames |  | list | `<list>` | no |
 | search_internal_service_names |  | list | `<list>` | no |
 | stackname | Stackname | string | - | yes |
