@@ -314,6 +314,10 @@ output "sg_router-backend_id" {
   value = "${aws_security_group.router-backend.id}"
 }
 
+output "sg_search-api_external_elb_id" {
+  value = "${aws_security_group.search-api_external_elb.id}"
+}
+
 output "sg_search_elb_id" {
   value = "${aws_security_group.search_elb.id}"
 }

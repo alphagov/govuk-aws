@@ -109,6 +109,7 @@ Manage the security groups for the entire infrastructure
 | sg_router-backend_id |  |
 | sg_rummager-elasticsearch_elb_id |  |
 | sg_rummager-elasticsearch_id |  |
+| sg_search-api_external_elb_id |  |
 | sg_search_elb_id |  |
 | sg_search_id |  |
 | sg_support-api_external_elb_id |  |
