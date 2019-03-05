@@ -110,6 +110,31 @@ data "aws_iam_policy_document" "integration_elasticsearch_database_backups_reade
   }
 }
 
+resource "aws_iam_policy" "integration_elasticsearch5_database_backups_reader" {
+  name        = "govuk-integration-elasticsearch5_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.integration_elasticsearch5_database_backups_reader.json}"
+  description = "Allows reading the elasticsearch5 database_backups bucket"
+}
+
+data "aws_iam_policy_document" "integration_elasticsearch5_database_backups_reader" {
+  statement {
+    sid = "Elasticsearch5ReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-integration-database-backups",
+      "arn:aws:s3:::govuk-integration-database-backups/*elasticsearch5*",
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*elasticsearch5*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "integration_dbadmin_database_backups_reader" {
   name        = "govuk-integration-dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.integration_dbadmin_database_backups_reader.json}"
@@ -351,6 +376,29 @@ data "aws_iam_policy_document" "staging_elasticsearch_database_backups_reader" {
   }
 }
 
+resource "aws_iam_policy" "staging_elasticsearch5_database_backups_reader" {
+  name        = "govuk-staging-elasticsearch5_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.staging_elasticsearch5_database_backups_reader.json}"
+  description = "Allows reading the elasticsearch5 database_backups bucket"
+}
+
+data "aws_iam_policy_document" "staging_elasticsearch5_database_backups_reader" {
+  statement {
+    sid = "Elasticsearch5ReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*elasticsearch5*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "staging_dbadmin_database_backups_reader" {
   name        = "govuk-staging-dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.staging_dbadmin_database_backups_reader.json}"
@@ -583,6 +631,29 @@ data "aws_iam_policy_document" "production_elasticsearch_database_backups_reader
   }
 }
 
+resource "aws_iam_policy" "production_elasticsearch5_database_backups_reader" {
+  name        = "govuk-production-elasticsearch5_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.production_elasticsearch5_database_backups_reader.json}"
+  description = "Allows reading the elasticsearch5 database_backups bucket"
+}
+
+data "aws_iam_policy_document" "production_elasticsearch5_database_backups_reader" {
+  statement {
+    sid = "Elasticsearch5ReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-production-database-backups",
+      "arn:aws:s3:::govuk-production-database-backups/*elasticsearch5*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "production_dbadmin_database_backups_reader" {
   name        = "govuk-production-dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.production_dbadmin_database_backups_reader.json}"
@@ -742,6 +813,11 @@ output "integration_elasticsearch_read_database_backups_bucket_policy_arn" {
   description = "ARN of the integration read elasticsearch database_backups-bucket policy"
 }
 
+output "integration_elasticsearch5_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.integration_elasticsearch5_database_backups_reader.arn}"
+  description = "ARN of the integration read elasticsearch5 database_backups-bucket policy"
+}
+
 output "integration_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.integration_dbadmin_database_backups_reader.arn}"
   description = "ARN of the integration read DBAdmin database_backups-bucket policy"
@@ -792,6 +868,11 @@ output "staging_elasticsearch_read_database_backups_bucket_policy_arn" {
   description = "ARN of the staging read elasticsearch database_backups-bucket policy"
 }
 
+output "staging_elasticsearch5_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.staging_elasticsearch5_database_backups_reader.arn}"
+  description = "ARN of the staging read elasticsearch5 database_backups-bucket policy"
+}
+
 output "staging_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.staging_dbadmin_database_backups_reader.arn}"
   description = "ARN of the staging read DBAdmin database_backups-bucket policy"
@@ -840,6 +921,11 @@ output "production_mongodb_read_database_backups_bucket_policy_arn" {
 output "production_elasticsearch_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.production_elasticsearch_database_backups_reader.arn}"
   description = "ARN of the production read elasticsearch database_backups-bucket policy"
+}
+
+output "production_elasticsearch5_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.production_elasticsearch5_database_backups_reader.arn}"
+  description = "ARN of the production read elasticsearch5 database_backups-bucket policy"
 }
 
 output "production_dbadmin_read_database_backups_bucket_policy_arn" {

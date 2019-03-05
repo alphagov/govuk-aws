@@ -154,6 +154,15 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   lifecycle_rule {
+    prefix  = "elasticsearch5/"
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
+
+  lifecycle_rule {
     prefix  = "whisper/"
     enabled = true
 

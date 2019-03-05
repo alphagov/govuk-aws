@@ -233,6 +233,62 @@ data "aws_iam_policy_document" "elasticsearch_database_backups_writer" {
   }
 }
 
+resource "aws_iam_policy" "elasticsearch5_database_backups_writer" {
+  name        = "govuk-${var.aws_environment}-elasticsearch5_database_backups-writer-policy"
+  policy      = "${data.aws_iam_policy_document.elasticsearch5_database_backups_writer.json}"
+  description = "Allows writing of the elasticsearch5 database_backups bucket"
+}
+
+data "aws_iam_policy_document" "elasticsearch5_database_backups_writer" {
+  statement {
+    sid = "ReadListOfBuckets"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "Elasticsearch5ReadBucketLists"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    # The top level access is required.
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+    ]
+
+    # We can now apply restictions on what can be accessed.
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "search",
+      ]
+    }
+  }
+
+  statement {
+    sid = "Elasticsearch5WriteGovukDatabaseBackups"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*elasticsearch5*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-dbadmin_database_backups-writer-policy"
   policy      = "${data.aws_iam_policy_document.dbadmin_database_backups_writer.json}"
@@ -596,6 +652,11 @@ output "mongodb_write_database_backups_bucket_policy_arn" {
 output "elasticsearch_write_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.elasticsearch_database_backups_writer.arn}"
   description = "ARN of the elasticsearch write database_backups-bucket policy"
+}
+
+output "elasticsearch5_write_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.elasticsearch5_database_backups_writer.arn}"
+  description = "ARN of the elasticsearch5 write database_backups-bucket policy"
 }
 
 output "dbadmin_write_database_backups_bucket_policy_arn" {
