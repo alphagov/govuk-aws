@@ -33,6 +33,7 @@ Managed Elasticsearch 5 cluster
 
 | Name | Description |
 |------|-------------|
+| domain_configuration_policy_arn | ARN of the policy used to configure the elasticsearch domain |
 | service_dns_name | DNS name to access the Elasticsearch internal service |
 | service_endpoint | Endpoint to submit index, search, and upload requests |
 | service_role_id | Unique identifier for the service-linked role |

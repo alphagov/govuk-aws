@@ -260,6 +260,112 @@ resource "aws_route53_record" "service_record" {
   records = ["${aws_elasticsearch_domain.elasticsearch5.endpoint}"]
 }
 
+# managed elasticsearch snapshots can't be given a prefix, so they
+# need to live in their own bucket.
+resource "aws_s3_bucket" "manual_snapshots" {
+  bucket = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshots"
+  region = "${var.aws_region}"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshots"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-elasticsearch5-manual-snapshots/"
+  }
+
+  lifecycle_rule {
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
+}
+
+resource "aws_iam_role" "manual_snapshot_role" {
+  name = "${var.stackname}-elasticsearch5-manual-snapshot-role"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "es.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
+  name = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-bucket-policy"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "${aws_s3_bucket.manual_snapshots.arn}"
+      ]
+    },
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "${aws_s3_bucket.manual_snapshots.arn}/*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_policy_attachment" "manual_snapshot_role_policy_attachment" {
+  name       = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-bucket-policy-attachment"
+  roles      = ["${aws_iam_role.manual_snapshot_role.name}"]
+  policy_arn = "${aws_iam_policy.manual_snapshot_bucket_policy.arn}"
+}
+
+# policy used (by a human!) to configure the elasticsearch domain to use the snapshot bucket, see:
+# https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains-snapshots.html#es-managedomains-snapshot-prerequisites
+resource "aws_iam_policy" "manual_snapshot_domain_configuration_policy" {
+  name = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-domain-configuration-policy"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "${aws_iam_role.manual_snapshot_role.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "es:ESHttpPut",
+      "Resource": "${aws_elasticsearch_domain.elasticsearch5.arn}/*"
+    }
+  ]
+}
+POLICY
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -276,4 +382,9 @@ output "service_endpoint" {
 output "service_dns_name" {
   value       = "${aws_route53_record.service_record.fqdn}"
   description = "DNS name to access the Elasticsearch internal service"
+}
+
+output "domain_configuration_policy_arn" {
+  value       = "${aws_iam_policy.manual_snapshot_domain_configuration_policy.arn}"
+  description = "ARN of the policy used to configure the elasticsearch domain"
 }
