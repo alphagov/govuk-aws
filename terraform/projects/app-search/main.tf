@@ -54,6 +54,12 @@ variable "app_service_records" {
   default     = []
 }
 
+variable "remote_state_infra_database_backups_bucket_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_database_backups_bucket remote state"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -159,6 +165,33 @@ module "alarms-elb-search-internal" {
   httpcode_elb_5xx_threshold     = "100"
   surgequeuelength_threshold     = "0"
   healthyhostcount_threshold     = "0"
+}
+
+data "terraform_remote_state" "infra_database_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "eu-west-1"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "write_search_database_backups_iam_role_policy_attachment" {
+  role       = "${module.search.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.elasticsearch5_write_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "integration_read_search_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 1 : 0}"
+  role       = "${module.search.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_elasticsearch5_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_search_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 1 : 0}"
+  role       = "${module.search.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_elasticsearch5_read_database_backups_bucket_policy_arn}"
 }
 
 # Outputs
