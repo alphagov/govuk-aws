@@ -51,6 +51,11 @@ resource "aws_s3_bucket" "govuk_mirror_access_logs" {
 resource "aws_s3_bucket" "govuk_mirror" {
   bucket = "govuk-mirror-${var.aws_environment}"
 
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = ["https://assets.staging.publishing.service.gov.uk", "https://assets.publishing.service.gov.uk"]
+  }
+
   tags {
     aws_environment = "${var.aws_environment}"
     Name            = "govuk-mirror-${var.aws_environment}"
