@@ -133,6 +133,16 @@ resource "aws_security_group_rule" "cache-external-elb_ingress_public_https" {
   ]
 }
 
+# allow gatling to load test www-origin
+resource "aws_security_group_rule" "cache-external-elb_ingress_gatling_https" {
+  type                     = "ingress"
+  to_port                  = 443
+  from_port                = 443
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.cache_external_elb.id}"
+  source_security_group_id = "${aws_security_group.gatling.id}"
+}
+
 resource "aws_security_group_rule" "cache-external-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
