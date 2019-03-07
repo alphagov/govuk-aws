@@ -108,6 +108,16 @@ resource "aws_security_group_rule" "graphite-external-elb_ingress_office_https" 
   cidr_blocks       = ["${var.office_ips}"]
 }
 
+resource "aws_security_group_rule" "graphite-external-elb_ingress_carrenza_https" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.graphite_external_elb.id}"
+  cidr_blocks       = ["${var.carrenza_env_ips}"]
+}
+
 # TODO: Audit
 resource "aws_security_group_rule" "graphite-external-elb_ingress_management_https" {
   type      = "ingress"
