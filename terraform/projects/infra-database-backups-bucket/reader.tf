@@ -607,6 +607,27 @@ data "aws_iam_policy_document" "production_dbadmin_database_backups_reader" {
   }
 }
 
+resource "aws_iam_policy" "production_content_data_api_dbadmin_database_backups_reader" {
+  name        = "govuk-production-content-data-api_dbadmin_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.production_content_data_api_dbadmin_database_backups_reader.json}"
+  description = "Allows reading from production database_backups bucket"
+}
+
+data "aws_iam_policy_document" "production_content_data_api_dbadmin_database_backups_reader" {
+  statement {
+    sid = "ContentDataAPIDBAdminReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::govuk-production-database-backups",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "production_transition_dbadmin_database_backups_reader" {
   name        = "govuk-production-transition_dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.production_transition_dbadmin_database_backups_reader.json}"
@@ -845,6 +866,11 @@ output "production_elasticsearch_read_database_backups_bucket_policy_arn" {
 output "production_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.production_dbadmin_database_backups_reader.arn}"
   description = "ARN of the production read DBAdmin database_backups-bucket policy"
+}
+
+output "production_content_data_api_dbadmin_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.production_content_data_api_dbadmin_database_backups_reader.arn}"
+  description = "ARN of the production database_backups bucket reader policy for the Content Data API"
 }
 
 output "production_transition_dbadmin_read_database_backups_bucket_policy_arn" {

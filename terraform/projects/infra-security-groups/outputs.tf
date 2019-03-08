@@ -86,6 +86,18 @@ output "sg_ckan_id" {
   value = "${aws_security_group.ckan.id}"
 }
 
+output "sg_content-data-api-db-admin_elb_id" {
+  value = "${aws_security_group.content-data-api-db-admin_elb.id}"
+}
+
+output "sg_content-data-api-db-admin_id" {
+  value = "${aws_security_group.content-data-api-db-admin.id}"
+}
+
+output "sg_content-data-api-postgresql-primary_id" {
+  value = "${aws_security_group.content-data-api-postgresql-primary.id}"
+}
+
 output "sg_content-store_external_elb_id" {
   value = "${aws_security_group.content-store_external_elb.id}"
 }
