@@ -383,7 +383,7 @@ variable "search_internal_service_cnames" {
   default = []
 }
 
-variable "search_api_internal_service_names" {
+variable "search_api_public_service_names" {
   type    = "list"
   default = []
 }
@@ -1806,6 +1806,18 @@ resource "aws_route53_record" "rummager_elasticsearch_carrenza_internal_service_
 # search
 #
 
+data "aws_autoscaling_groups" "search" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["blue-search"]
+  }
+}
+
 resource "aws_route53_record" "search_internal_service_names" {
   count   = "${length(var.search_internal_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
@@ -1828,13 +1840,44 @@ resource "aws_route53_record" "search_internal_service_cnames" {
 # search-api
 #
 
-resource "aws_route53_record" "search_api_internal_service_names" {
-  count   = "${length(var.search_api_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.search_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.search_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
+module "search_api_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-search-api-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-search-api-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+
+  listener_action = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  target_group_health_check_path = "/_healthcheck"
+  subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_search-api_external_elb_id}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                   = "${map("Project", var.stackname, "aws_migration", "search-api", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_route53_record" "search_api_public_service_names" {
+  count   = "${length(var.search_api_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.search_api_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.search_api_public_lb.lb_dns_name}"
+    zone_id                = "${module.search_api_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_autoscaling_attachment" "search_api_backend_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.search.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.search.names, 0)}"
+  alb_target_group_arn   = "${element(module.search_api_public_lb.target_group_arns, 0)}"
 }
 
 # support-api
