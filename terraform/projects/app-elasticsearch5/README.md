@@ -2,6 +2,25 @@
 
 Managed Elasticsearch 5 cluster
 
+This project has two gotchas, where we work around things terraform
+doesn't support:
+
+- Deploying the cluster across 3 availability zones: terraform has
+  some built-in validation which rejects using 3 master nodes and 3
+  data nodes across 3 availability zones.  To provision a new
+  cluster, only use two of everything, then bump the numbers in the
+  AWS console and in the terraform variables - it won't complain
+  when you next plan.
+
+  https://github.com/terraform-providers/terraform-provider-aws/issues/7504
+
+- Configuring a snapshot repository: terraform doesn't support this,
+  and as far as I can tell doesn't have any plans to.  There's a
+  Python script in the AWS documentation which sets things up.
+
+  https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains-snapshots.html
+
+
 
 ## Inputs
 
@@ -33,6 +52,7 @@ Managed Elasticsearch 5 cluster
 
 | Name | Description |
 |------|-------------|
+| domain_configuration_policy_arn | ARN of the policy used to configure the elasticsearch domain |
 | service_dns_name | DNS name to access the Elasticsearch internal service |
 | service_endpoint | Endpoint to submit index, search, and upload requests |
 | service_role_id | Unique identifier for the service-linked role |
