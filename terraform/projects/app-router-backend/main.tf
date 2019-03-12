@@ -306,6 +306,12 @@ resource "aws_iam_role_policy_attachment" "read_staging_router-backend_database_
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_mongo_router_read_database_backups_bucket_policy_arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "staging_read_production_router-backend_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.router-backend-1.instance_iam_role_name, module.router-backend-2.instance_iam_role_name, module.router-backend-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_mongo_router_read_database_backups_bucket_policy_arn}"
+}
+
 resource "aws_iam_policy" "router-backend_iam_policy" {
   name   = "${var.stackname}-router-backend-additional"
   path   = "/"
