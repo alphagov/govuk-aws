@@ -30,6 +30,7 @@ This project adds global resources for app components:
 | cache_public_service_names |  | list | `<list>` | no |
 | calculators_frontend_internal_service_cnames |  | list | `<list>` | no |
 | calculators_frontend_internal_service_names |  | list | `<list>` | no |
+| calendars_public_service_names |  | list | `<list>` | no |
 | ckan_internal_service_cnames |  | list | `<list>` | no |
 | ckan_internal_service_names |  | list | `<list>` | no |
 | ckan_public_service_cnames |  | list | `<list>` | no |

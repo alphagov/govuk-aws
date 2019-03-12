@@ -66,6 +66,10 @@ output "sg_cache_id" {
   value = "${aws_security_group.cache.id}"
 }
 
+output "sg_calendars_carrenza_alb_id" {
+  value = "${aws_security_group.calendars_carrenza_alb.id}"
+}
+
 output "sg_calculators-frontend_elb_id" {
   value = "${aws_security_group.calculators-frontend_elb.id}"
 }
