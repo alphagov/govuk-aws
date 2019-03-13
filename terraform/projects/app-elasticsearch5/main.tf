@@ -330,36 +330,33 @@ resource "aws_iam_role" "manual_snapshot_role" {
 POLICY
 }
 
-resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
-  count = "${length(var.elasticsearch5_manual_snapshot_bucket_arns)}"
-  name  = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-bucket-policy-${count.index}"
+data "aws_iam_policy_document" "manual_snapshot_bucket_policy" {
+  statement {
+    actions = [
+      "s3:ListBucket",
+    ]
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [{
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Effect": "Allow",
-      "Resource": [
-        "${element(var.elasticsearch5_manual_snapshot_bucket_arns, count.index)}"
-      ]
-    },
-    {
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
-      "Effect": "Allow",
-      "Resource": [
-        "${element(var.elasticsearch5_manual_snapshot_bucket_arns, count.index)}/*"
-      ]
-    }
-  ]
+    effect = "Allow"
+
+    resources = ["${var.elasticsearch5_manual_snapshot_bucket_arns}"]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+
+    effect = "Allow"
+
+    resources = ["${formatlist("%s/*", var.elasticsearch5_manual_snapshot_bucket_arns)}"]
+  }
 }
-POLICY
+
+resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
+  name   = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-bucket-policy"
+  policy = "${data.aws_iam_policy_document.manual_snapshot_bucket_policy.json}"
 }
 
 resource "aws_iam_policy_attachment" "manual_snapshot_role_policy_attachment" {
