@@ -782,7 +782,7 @@ data "aws_autoscaling_groups" "calendars" {
 
   filter {
     name   = "value"
-    values = ["blue-calendars"]
+    values = ["blue-calculators-frontend"]
   }
 }
 
