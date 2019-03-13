@@ -345,7 +345,7 @@ data "aws_iam_policy_document" "content_data_api_dbadmin_database_backups_writer
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/postgres/*/content_data_api_production.dump.gz",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/content-data-api-postgresql/*-content_data_api.gz",
     ]
   }
 }
