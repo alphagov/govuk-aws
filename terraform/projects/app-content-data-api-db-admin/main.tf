@@ -130,26 +130,16 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
 }
 
 # All environments should be able to write to the backups bucket for
-# the respective environment. For some reason, the "writer" policies
-# also include read access.
+# the respective environment.
 resource "aws_iam_role_policy_attachment" "write_to_database_backups_bucket_iam_role_policy_attachment" {
   role       = "${module.content-data-api-db-admin.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.content_data_api_dbadmin_write_database_backups_bucket_policy_arn}"
 }
 
-# The staging environment should be able to read from the production
-# database backups bucket, so that it can sync the data nightly.
-resource "aws_iam_role_policy_attachment" "read_production_database_backups_from_staging_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "staging" ? 1 : 0}"
-  role       = "${module.content-data-api-db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_content_data_api_dbadmin_read_database_backups_bucket_policy_arn}"
-}
-
-# The integration environment should be able to read from the
-# production database backups bucket, so that it can sync the data
-# nightly.
-resource "aws_iam_role_policy_attachment" "read_production_database_backups_from_integration_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "integration" ? 1 : 0}"
+# All environments should be able to read from the production database
+# backups bucket, to enable restoring the backups, and the overnight
+# data syncs.
+resource "aws_iam_role_policy_attachment" "read_from_production_database_backups_from_production_iam_role_policy_attachment" {
   role       = "${module.content-data-api-db-admin.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_content_data_api_dbadmin_read_database_backups_bucket_policy_arn}"
 }
