@@ -756,7 +756,7 @@ module "calendars_public_lb" {
 
   target_group_health_check_path = "/_healthcheck"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_calendars_external_elb_id}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_calendars_carrenza_alb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                   = "${map("Project", var.stackname, "aws_migration", "calendars", "aws_environment", var.aws_environment)}"
 }
