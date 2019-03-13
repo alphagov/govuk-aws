@@ -21,6 +21,16 @@ resource "aws_security_group" "calculators-frontend" {
   }
 }
 
+resource "aws_security_group" "calendars" {
+  name        = "${var.stackname}_calendars_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to the calendars host from its ELB"
+
+  tags {
+    Name = "${var.stackname}_calendars_access"
+  }
+}
+
 resource "aws_security_group_rule" "calculators-frontend_ingress_calculators-frontend-elb_http" {
   type      = "ingress"
   from_port = 80
