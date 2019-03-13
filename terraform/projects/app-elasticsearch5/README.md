@@ -35,6 +35,7 @@ doesn't support:
 | elasticsearch5_ebs_type | The type of EBS storage to attach | string | `gp2` | no |
 | elasticsearch5_instance_count | The number of ElasticSearch nodes | string | `3` | no |
 | elasticsearch5_instance_type | The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported | string | `r4.large.elasticsearch` | no |
+| elasticsearch5_manual_snapshot_bucket_arns | Bucket ARNs this domain can read/write for manual snapshots | list | `<list>` | no |
 | elasticsearch5_master_instance_count | Number of dedicated master nodes in the cluster | string | `3` | no |
 | elasticsearch5_master_instance_type | Instance type of the dedicated master nodes in the cluster | string | `c4.large.elasticsearch` | no |
 | elasticsearch5_snapshot_start_hour | The hour in which the daily snapshot is taken | string | `1` | no |

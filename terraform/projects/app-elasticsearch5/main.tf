@@ -102,6 +102,12 @@ variable "cloudwatch_log_retention" {
   default     = 90
 }
 
+variable "elasticsearch5_manual_snapshot_bucket_arns" {
+  type        = "list"
+  description = "Bucket ARNs this domain can read/write for manual snapshots"
+  default     = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -325,7 +331,8 @@ POLICY
 }
 
 resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
-  name = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-bucket-policy"
+  count = "${length(var.elasticsearch5_manual_snapshot_bucket_arns)}"
+  name  = "govuk-${var.aws_environment}-elasticsearch5-manual-snapshot-bucket-policy-${count.index}"
 
   policy = <<POLICY
 {
@@ -336,7 +343,7 @@ resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "${aws_s3_bucket.manual_snapshots.arn}"
+        "${element(var.elasticsearch5_manual_snapshot_bucket_arns, count.index)}"
       ]
     },
     {
@@ -347,7 +354,7 @@ resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "${aws_s3_bucket.manual_snapshots.arn}/*"
+        "${element(var.elasticsearch5_manual_snapshot_bucket_arns, count.index)}/*"
       ]
     }
   ]
