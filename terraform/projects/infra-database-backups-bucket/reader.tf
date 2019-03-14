@@ -615,11 +615,22 @@ resource "aws_iam_policy" "production_content_data_api_dbadmin_database_backups_
 
 data "aws_iam_policy_document" "production_content_data_api_dbadmin_database_backups_reader" {
   statement {
-    sid = "ContentDataAPIDBAdminReadBucket"
+    sid = "ContentDataAPIDBAdminListBucket"
 
     actions = [
-      "s3:Get*",
-      "s3:List*",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::govuk-production-database-backups",
+    ]
+  }
+
+  statement {
+    sid = "ContentDataAPIDBAdminGetObject"
+
+    actions = [
+      "s3:GetObject",
     ]
 
     resources = [
