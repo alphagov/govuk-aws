@@ -21,9 +21,14 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "jenkins_ssh_public_key" {
+variable "jenkins_carrenza_staging_ssh_public_key" {
   type        = "string"
-  description = "The SSH public key of the Jenkins instance for the relevant environment"
+  description = "The SSH public key of the Jenkins instance in the Carrenza staging environment"
+}
+
+variable "jenkins_carrenza_production_ssh_public_key" {
+  type        = "string"
+  description = "The SSH public key of the Jenkins instance in the Carrenza production environment"
 }
 
 variable "concourse_role_arn" {
@@ -50,10 +55,16 @@ resource "aws_iam_user_policy_attachment" "govuk_codecommit_user_policy_attachme
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
 
-resource "aws_iam_user_ssh_key" "govuk_codecommit_user_jenkins_ssh_key" {
+resource "aws_iam_user_ssh_key" "govuk_codecommit_user_jenkins_staging_ssh_key" {
   username   = "${aws_iam_user.govuk_codecommit_user.name}"
   encoding   = "SSH"
-  public_key = "${var.jenkins_ssh_public_key}"
+  public_key = "${var.jenkins_carrenza_staging_ssh_public_key}"
+}
+
+resource "aws_iam_user_ssh_key" "govuk_codecommit_user_jenkins_production_ssh_key" {
+  username   = "${aws_iam_user.govuk_codecommit_user.name}"
+  encoding   = "SSH"
+  public_key = "${var.jenkins_carrenza_production_ssh_public_key}"
 }
 
 resource "aws_iam_user" "govuk_concourse_codecommit_user" {
@@ -65,10 +76,16 @@ resource "aws_iam_user_policy_attachment" "govuk_concourse_codecommit_user_polic
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
 
-resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_user_ssh_key" {
+resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_staging_user_ssh_key" {
   username   = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
   encoding   = "SSH"
-  public_key = "${var.jenkins_ssh_public_key}"
+  public_key = "${var.jenkins_carrenza_staging_ssh_public_key}"
+}
+
+resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_production_user_ssh_key" {
+  username   = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
+  encoding   = "SSH"
+  public_key = "${var.jenkins_carrenza_production_ssh_public_key}"
 }
 
 resource "aws_iam_role" "govuk_concourse_codecommit_role" {
