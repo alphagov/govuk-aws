@@ -14,6 +14,7 @@ Manage the security groups for the entire infrastructure
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_staging_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_vpn_subnet_cidr | The Carrenza VPN subnet CIDR | list | `<list>` | no |
+| ithc_access_ips | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | list | `<list>` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
