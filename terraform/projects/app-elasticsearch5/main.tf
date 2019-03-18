@@ -310,6 +310,44 @@ resource "aws_s3_bucket" "manual_snapshots" {
   }
 }
 
+resource "aws_s3_bucket_policy" "manual_snapshots_cross_account_access" {
+  bucket = "${aws_s3_bucket.manual_snapshots.id}"
+  policy = "${data.aws_iam_policy_document.manual_snapshots_cross_account_access.json}"
+}
+
+data "aws_iam_policy_document" "manual_snapshots_cross_account_access" {
+  statement {
+    sid    = "CrossAccountAccess"
+    effect = "Allow"
+
+    principals = {
+      type = "AWS"
+
+      identifiers = [
+        "arn:aws:iam::210287912431:root",
+        "arn:aws:iam::696911096973:root",
+        "arn:aws:iam::172025368201:root",
+      ]
+    }
+
+    # this bucket is only used for the data sync, not for actual
+    # backups, so granting the ability to delete or modify things
+    # (which elasticsearch needs - it tests it has access to the
+    # bucket by writing to it!) doesn't risk anything important.
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.manual_snapshots.id}",
+      "${aws_s3_bucket.manual_snapshots.id}/*",
+    ]
+  }
+}
+
 resource "aws_iam_role" "manual_snapshot_role" {
   name = "${var.stackname}-elasticsearch5-manual-snapshot-role"
 
