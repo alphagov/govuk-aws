@@ -65,3 +65,9 @@ variable "carrenza_vpn_subnet_cidr" {
   description = "The Carrenza VPN subnet CIDR"
   default     = []
 }
+
+variable "ithc_access_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will be allowed temporary access for ITHC purposes."
+  default     = []
+}
