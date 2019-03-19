@@ -242,6 +242,11 @@ output "vpc_id" {
   description = "VPC ID where the stack resources are created"
 }
 
+output "nat_gateway_elastic_ips_list" {
+  value       = "${module.infra_nat.nat_gateway_elastic_ips_list}"
+  description = "List containing the public IPs associated with the NAT gateways"
+}
+
 output "public_subnet_ids" {
   value       = "${module.infra_public_subnet.subnet_ids}"
   description = "List of public subnet IDs"

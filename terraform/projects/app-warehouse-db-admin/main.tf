@@ -1,7 +1,7 @@
 /**
 * ## Project: app-warehouse-db-admin
 *
-* DB admin boxes for Warehouse's RDS instance
+* DB admin boxes for Warehouse's RDS instance
 */
 variable "aws_region" {
   type        = "string"

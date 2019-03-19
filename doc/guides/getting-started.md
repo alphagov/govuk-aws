@@ -73,8 +73,5 @@ Please [follow the styleguide](styleguide.md) when developing in the repository.
 
 ## Deploying code
 
-There are two ways to deploy code, and either are fine to use.
-
-Both are wrappers for Terraform which make use of our specific [project](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0010-terraform-directory-structure.md) and [data](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0017-terraform-data-structure.md) structure.
-
-Please see the [documentation about deployment](deploying-terraform.md).
+Please see the GOV.UK Developer Docs to [Deploy AWS infrastructure with
+Terraform](https://docs.publishing.service.gov.uk/manual/deploying-terraform.html)

@@ -66,6 +66,10 @@ output "sg_cache_id" {
   value = "${aws_security_group.cache.id}"
 }
 
+output "sg_calendars_carrenza_alb_id" {
+  value = "${aws_security_group.calendars_carrenza_alb.id}"
+}
+
 output "sg_calculators-frontend_elb_id" {
   value = "${aws_security_group.calculators-frontend_elb.id}"
 }
@@ -84,6 +88,18 @@ output "sg_ckan_elb_external_id" {
 
 output "sg_ckan_id" {
   value = "${aws_security_group.ckan.id}"
+}
+
+output "sg_content-data-api-db-admin_elb_id" {
+  value = "${aws_security_group.content-data-api-db-admin_elb.id}"
+}
+
+output "sg_content-data-api-db-admin_id" {
+  value = "${aws_security_group.content-data-api-db-admin.id}"
+}
+
+output "sg_content-data-api-postgresql-primary_id" {
+  value = "${aws_security_group.content-data-api-postgresql-primary.id}"
 }
 
 output "sg_content-store_external_elb_id" {
@@ -312,6 +328,10 @@ output "sg_router-api_elb_id" {
 
 output "sg_router-backend_id" {
   value = "${aws_security_group.router-backend.id}"
+}
+
+output "sg_search-api_external_elb_id" {
+  value = "${aws_security_group.search-api_external_elb.id}"
 }
 
 output "sg_search_elb_id" {

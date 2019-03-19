@@ -382,6 +382,30 @@ resource "aws_iam_role_policy_attachment" "staging_read_mongodb_database_backups
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_mongodb_read_database_backups_bucket_policy_arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "integration_read_production_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "integration_read_production_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_production_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "staging_read_production_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

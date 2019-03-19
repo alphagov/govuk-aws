@@ -2,8 +2,10 @@
 
 There may be instances where an application machine is rebuilt.
 
-At present applications are not automatically deployed on rebuild. This will be
-rectified in the future.
+All the applications should be automatically deployed to the new
+machine. This is currently done by the deploy-apps userdata snippet,
+which triggers the relevant Deploy Jenkins to deploy all the
+applications for that node.
 
 ## Redeploying from Jenkins CLI
 

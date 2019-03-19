@@ -30,10 +30,13 @@ This project adds global resources for app components:
 | cache_public_service_names |  | list | `<list>` | no |
 | calculators_frontend_internal_service_cnames |  | list | `<list>` | no |
 | calculators_frontend_internal_service_names |  | list | `<list>` | no |
+| calendars_public_service_names |  | list | `<list>` | no |
 | ckan_internal_service_cnames |  | list | `<list>` | no |
 | ckan_internal_service_names |  | list | `<list>` | no |
 | ckan_public_service_cnames |  | list | `<list>` | no |
 | ckan_public_service_names |  | list | `<list>` | no |
+| content_data_api_db_admin_internal_service_names |  | list | `<list>` | no |
+| content_data_api_postgresql_internal_service_names |  | list | `<list>` | no |
 | content_store_internal_service_names |  | list | `<list>` | no |
 | content_store_public_service_names |  | list | `<list>` | no |
 | db_admin_internal_service_names |  | list | `<list>` | no |
@@ -86,7 +89,7 @@ This project adds global resources for app components:
 | router_backend_internal_service_names |  | list | `<list>` | no |
 | rummager_elasticsearch_carrenza_internal_service_records |  | map | `<map>` | no |
 | rummager_elasticsearch_internal_service_names |  | list | `<list>` | no |
-| search_api_internal_service_names |  | list | `<list>` | no |
+| search_api_public_service_names |  | list | `<list>` | no |
 | search_internal_service_cnames |  | list | `<list>` | no |
 | search_internal_service_names |  | list | `<list>` | no |
 | stackname | Stackname | string | - | yes |

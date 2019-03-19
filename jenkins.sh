@@ -38,6 +38,8 @@ if [[ $TERRAFORM_VERSION != '' ]]; then
   echo "Terraform binary: $(which terraform)"
 fi
 
+rm -rf govuk-aws-data
+
 echo "Cloning govuk-aws-data"
 git clone git@github.com:alphagov/govuk-aws-data.git
 

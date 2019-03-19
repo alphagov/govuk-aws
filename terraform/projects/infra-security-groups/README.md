@@ -14,8 +14,10 @@ Manage the security groups for the entire infrastructure
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_staging_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_vpn_subnet_cidr | The Carrenza VPN subnet CIDR | list | `<list>` | no |
+| ithc_access_ips | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | list | `<list>` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
+| remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | string | - | yes |
 | traffic_replay_ips | An array of CIDR blocks that will replay traffic against an environment | list | - | yes |
@@ -42,9 +44,13 @@ Manage the security groups for the entire infrastructure
 | sg_cache_id |  |
 | sg_calculators-frontend_elb_id |  |
 | sg_calculators-frontend_id |  |
+| sg_calendars_carrenza_alb_id |  |
 | sg_ckan_elb_external_id |  |
 | sg_ckan_elb_internal_id |  |
 | sg_ckan_id |  |
+| sg_content-data-api-db-admin_elb_id |  |
+| sg_content-data-api-db-admin_id |  |
+| sg_content-data-api-postgresql-primary_id |  |
 | sg_content-store_external_elb_id |  |
 | sg_content-store_id |  |
 | sg_content-store_internal_elb_id |  |
@@ -108,6 +114,7 @@ Manage the security groups for the entire infrastructure
 | sg_router-backend_id |  |
 | sg_rummager-elasticsearch_elb_id |  |
 | sg_rummager-elasticsearch_id |  |
+| sg_search-api_external_elb_id |  |
 | sg_search_elb_id |  |
 | sg_search_id |  |
 | sg_support-api_external_elb_id |  |

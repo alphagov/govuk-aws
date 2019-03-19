@@ -51,7 +51,7 @@ variable "root_block_device_volume_size" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type"
-  default     = "c5.xlarge"
+  default     = "m5.xlarge"
 }
 
 # Resources
