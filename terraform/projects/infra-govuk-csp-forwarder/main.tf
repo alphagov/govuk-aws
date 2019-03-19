@@ -7,7 +7,7 @@
 variable "aws_region" {
   type        = "string"
   description = "AWS region"
-  default     = "eu-west-1"
+  default     = "eu-west-2"
 }
 
 variable "aws_environment" {
@@ -30,9 +30,16 @@ provider "aws" {
   version = "1.40.0"
 }
 
+provider "aws" {
+  region  = "eu-west-1"
+  version = "1.40.0"
+  alias   = "eu-west-1-region"
+}
+
 resource "aws_lambda_function" "govuk_csp_forwarder_lambda_function" {
+  provider      = "aws.eu-west-1-region"
   s3_bucket     = "govuk-integration-artefact"
-  s3_key        = "govuk-csp-forwarder/release/csp_forwarder"
+  s3_key        = "govuk-csp-forwarder/release/csp_forwarder.zip"
   function_name = "govuk-csp-forwarder"
   role          = "${aws_iam_role.govuk_csp_forwarder_lambda_role.arn}"
   handler       = "csp_forwarder"
