@@ -342,8 +342,8 @@ data "aws_iam_policy_document" "manual_snapshots_cross_account_access" {
     ]
 
     resources = [
-      "${aws_s3_bucket.manual_snapshots.id}",
-      "${aws_s3_bucket.manual_snapshots.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.manual_snapshots.id}",
+      "arn:aws:s3:::${aws_s3_bucket.manual_snapshots.id}/*",
     ]
   }
 }
