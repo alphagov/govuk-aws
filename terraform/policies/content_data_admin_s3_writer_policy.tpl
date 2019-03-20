@@ -4,7 +4,8 @@
         {
             "Effect": "Allow",
             "Action": [
-                "s3:ListBucket"
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
              ],
             "Resource": [
                 "arn:aws:s3:::${bucket}"
@@ -14,7 +15,8 @@
             "Effect": "Allow",
             "Action": [
                 "s3:GetObject",
-                "s3:PutObject"
+                "s3:PutObject",
+                "s3:PutObjectAcl"
             ],
             "Resource": [
                 "arn:aws:s3:::${bucket}/*"
