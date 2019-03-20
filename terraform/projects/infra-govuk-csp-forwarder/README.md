@@ -19,3 +19,9 @@ reports, filter them and forward them to Sentry.
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | Stackname | string | - | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| govuk_csp_forwarder_report_url |  |
+
