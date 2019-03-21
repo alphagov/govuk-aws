@@ -48,7 +48,6 @@ Manage the security groups for the entire infrastructure
 | sg_ckan_elb_external_id |  |
 | sg_ckan_elb_internal_id |  |
 | sg_ckan_id |  |
-| sg_content-data-api-db-admin_elb_id |  |
 | sg_content-data-api-db-admin_id |  |
 | sg_content-data-api-postgresql-primary_id |  |
 | sg_content-store_external_elb_id |  |
