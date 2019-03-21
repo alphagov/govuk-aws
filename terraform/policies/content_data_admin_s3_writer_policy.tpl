@@ -15,6 +15,7 @@
             "Effect": "Allow",
             "Action": [
                 "s3:GetObject",
+                "s3:GetObjectAcl",
                 "s3:PutObject",
                 "s3:PutObjectAcl"
             ],
