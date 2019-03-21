@@ -330,7 +330,7 @@ data "aws_iam_policy_document" "content_data_api_dbadmin_database_backups_writer
       variable = "s3:prefix"
 
       values = [
-        "postgres",
+        "content-data-api-postgresql",
       ]
     }
   }
