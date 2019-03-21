@@ -20,9 +20,3 @@ DB admin boxes for the Content Data API RDS instance
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
 
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| content-data-api-db-admin_elb_dns_name | DNS name to access the content-data-api-db-admin service |
-
