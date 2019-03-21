@@ -345,11 +345,11 @@ data "aws_iam_policy_document" "content_data_api_dbadmin_database_backups_writer
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/content-data-api-postgresql/*-content_data_api.gz",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/content-data-api-postgresql/*-content_data_api_production.gz",
 
       # The following line can be removed once the Content Data API
       # database is renamed
-      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/content-data-api-postgresql/*-content_performance_manager.gz",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/content-data-api-postgresql/*-content_performance_manager_production.gz",
     ]
   }
 }
