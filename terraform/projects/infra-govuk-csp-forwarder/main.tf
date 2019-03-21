@@ -30,15 +30,11 @@ provider "aws" {
   version = "1.40.0"
 }
 
-provider "aws" {
-  region  = "eu-west-1"
-  version = "1.40.0"
-  alias   = "eu-west-1-region"
-}
-
 resource "aws_lambda_function" "govuk_csp_forwarder_lambda_function" {
-  provider      = "aws.eu-west-1-region"
-  s3_bucket     = "govuk-integration-artefact"
+  # Use the replication bucket since it is located in eu-west-2 like the rest
+  # of the govuk-tools account contents
+  s3_bucket = "govuk-integration-artefact-replication-destination"
+
   s3_key        = "govuk-csp-forwarder/release/csp_forwarder.zip"
   function_name = "govuk-csp-forwarder"
   role          = "${aws_iam_role.govuk_csp_forwarder_lambda_role.arn}"
@@ -123,7 +119,6 @@ resource "aws_api_gateway_deployment" "govuk_csp_forwarder_api_gateway_deploymen
 }
 
 resource "aws_lambda_permission" "govuk_csp_forwarder_api_gateway_invoke_permission" {
-  provider      = "aws.eu-west-1-region"
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.govuk_csp_forwarder_lambda_function.arn}"
