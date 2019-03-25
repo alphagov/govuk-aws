@@ -93,6 +93,7 @@ This project adds global resources for app components:
 | search_internal_service_cnames |  | list | `<list>` | no |
 | search_internal_service_names |  | list | `<list>` | no |
 | stackname | Stackname | string | - | yes |
+| static_public_service_names |  | list | `<list>` | no |
 | support_api_public_service_names |  | list | `<list>` | no |
 | transition_db_admin_internal_service_names |  | list | `<list>` | no |
 | transition_postgresql_internal_service_names |  | list | `<list>` | no |

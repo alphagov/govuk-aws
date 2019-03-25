@@ -116,6 +116,7 @@ Manage the security groups for the entire infrastructure
 | sg_search-api_external_elb_id |  |
 | sg_search_elb_id |  |
 | sg_search_id |  |
+| sg_static_carrenza_alb_id |  |
 | sg_support-api_external_elb_id |  |
 | sg_transition-db-admin_elb_id |  |
 | sg_transition-db-admin_id |  |

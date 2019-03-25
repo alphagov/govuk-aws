@@ -338,6 +338,10 @@ output "sg_search_id" {
   value = "${aws_security_group.search.id}"
 }
 
+output "sg_static_carrenza_alb_id" {
+  value = "${aws_security_group.static_carrenza_alb.id}"
+}
+
 output "sg_transition-db-admin_elb_id" {
   value = "${aws_security_group.transition-db-admin_elb.id}"
 }
