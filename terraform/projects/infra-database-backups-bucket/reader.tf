@@ -634,7 +634,11 @@ data "aws_iam_policy_document" "production_content_data_api_dbadmin_database_bac
     ]
 
     resources = [
-      "arn:aws:s3:::govuk-production-database-backups/content-data-api-postgresql/*-content_data_api.gz",
+      "arn:aws:s3:::govuk-production-database-backups/content-data-api-postgresql/*-content_data_api_production.gz",
+
+      # This can be removed once the Content Data API is changed to
+      # use the content_data_api_production database
+      "arn:aws:s3:::govuk-production-database-backups/content-data-api-postgresql/*-content_performance_manager_production.gz",
 
       # The following resource is for the backups from Carrenza, and
       # can be removed when the Content Performance Manager no longer
