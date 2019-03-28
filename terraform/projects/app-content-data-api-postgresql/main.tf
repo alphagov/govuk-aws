@@ -112,18 +112,20 @@ resource "aws_route53_record" "replica_service_record" {
 }
 
 module "alarms-rds-content-data-api-postgresql-primary" {
-  source         = "../../modules/aws/alarms/rds"
-  name_prefix    = "${var.stackname}-content-data-api-postgresql-primary"
-  alarm_actions  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  db_instance_id = "${module.content-data-api-postgresql-primary_rds_instance.rds_instance_id}"
+  source                     = "../../modules/aws/alarms/rds"
+  name_prefix                = "${var.stackname}-content-data-api-postgresql-primary"
+  alarm_actions              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  db_instance_id             = "${module.content-data-api-postgresql-primary_rds_instance.rds_instance_id}"
+  freestoragespace_threshold = "536870912000"
 }
 
 module "alarms-rds-postgresql-standby" {
-  source               = "../../modules/aws/alarms/rds"
-  name_prefix          = "${var.stackname}-content-data-api-postgresql-standby"
-  alarm_actions        = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  db_instance_id       = "${module.content-data-api-postgresql-standby_rds_instance.rds_replica_id}"
-  replicalag_threshold = "300"
+  source                     = "../../modules/aws/alarms/rds"
+  name_prefix                = "${var.stackname}-content-data-api-postgresql-standby"
+  alarm_actions              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  db_instance_id             = "${module.content-data-api-postgresql-standby_rds_instance.rds_replica_id}"
+  replicalag_threshold       = "300"
+  freestoragespace_threshold = "536870912000"
 }
 
 module "content-data-api-postgresql-primary_log_exporter" {
