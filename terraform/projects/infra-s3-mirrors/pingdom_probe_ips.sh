@@ -11,7 +11,7 @@
 # https://www.terraform.io/docs/providers/external/data_source.html
 # https://github.com/hashicorp/terraform/issues/12256
 
-curl -s https://my.pingdom.com/probes/feed | grep "pingdom:ip" | sed -e 's|</.*||' -e 's|.*>||' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 | grep -v ":" | awk '
+curl -s https://my.pingdom.com/probes/feed | grep "pingdom:ip" | sed -e 's|</.*||' -e 's|.*>||' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 | grep -oE "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)" | awk '
 BEGIN { ORS = ""; print " { \"pingdom_probe_ips\": \""}
 { if (NR == 1) { print $1"/32" } else { print ","$1"/32" } }
 END { print "\" }" }
