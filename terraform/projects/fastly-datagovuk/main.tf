@@ -34,6 +34,11 @@ variable "domain" {
   description = "The domain of the data.gov.uk service to manage"
 }
 
+variable "backend_domain" {
+  type        = "string"
+  description = "The domain of the data.gov.uk PaaS instance to forward requests to"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -57,8 +62,8 @@ resource "fastly_service_v1" "datagovuk" {
   }
 
   backend {
-    name               = "cname find-data-beta.cloudapps.digital"
-    address            = "find-data-beta.cloudapps.digital"
+    name               = "cname ${var.backend_domain}"
+    address            = "${var.backend_domain}"
     port               = "443"
     use_ssl            = true
     auto_loadbalance   = false
