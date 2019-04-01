@@ -82,6 +82,12 @@ resource "fastly_service_v1" "datagovuk" {
     request_condition  = "education_standards"
   }
 
+  vcl {
+    name    = "datagovuk_vcl"
+    content = "${file("datagovuk.vcl")}"
+    main    = true
+  }
+
   condition {
     name      = "education_standards"
     type      = "request"
