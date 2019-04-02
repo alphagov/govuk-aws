@@ -17,14 +17,14 @@ data "aws_iam_policy_document" "s3_mirror_crawler_writer_policy_doc" {
     actions = ["s3:*"]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.govuk_mirror.id}",
-      "arn:aws:s3:::${aws_s3_bucket.govuk_mirror.id}/*",
+      "arn:aws:s3:::${module.govuk_mirror.bucket_id}",
+      "arn:aws:s3:::${module.govuk_mirror.bucket_id}/*",
     ]
   }
 }
 
 resource "aws_iam_policy" "s3_mirror_writer_policy" {
-  name   = "s3_mirror_writer_policy_for_${aws_s3_bucket.govuk_mirror.id}"
+  name   = "s3_mirror_writer_policy_for_${module.govuk_mirror.bucket_id}"
   policy = "${data.aws_iam_policy_document.s3_mirror_crawler_writer_policy_doc.json}"
 }
 

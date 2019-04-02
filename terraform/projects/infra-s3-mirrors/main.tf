@@ -48,25 +48,15 @@ resource "aws_s3_bucket" "govuk_mirror_access_logs" {
   acl    = "log-delivery-write"
 }
 
-resource "aws_s3_bucket" "govuk_mirror" {
-  bucket = "govuk-mirror-${var.aws_environment}"
-
-  tags {
-    aws_environment = "${var.aws_environment}"
-    Name            = "govuk-mirror-${var.aws_environment}"
-  }
-
-  versioning {
-    enabled = true
-  }
-
-  logging {
-    target_bucket = "${aws_s3_bucket.govuk_mirror_access_logs.id}"
-    target_prefix = "log/"
-  }
+module "govuk_mirror" {
+  source                       = "../../modules/aws/s3_bucket_lifecycle"
+  aws_environment              = "${var.aws_environment}"
+  bucket_name                  = "govuk-mirror-${var.aws_environment}"
+  target_bucketid_for_logs     = "${aws_s3_bucket.govuk_mirror_access_logs.id}"
+  enable_noncurrent_expiration = "true"
 }
 
 resource "aws_s3_bucket_policy" "govuk_mirror_read_policy" {
-  bucket = "${aws_s3_bucket.govuk_mirror.id}"
+  bucket = "${module.govuk_mirror.bucket_id}"
   policy = "${data.aws_iam_policy_document.s3_mirror_read_policy_doc.json}"
 }
