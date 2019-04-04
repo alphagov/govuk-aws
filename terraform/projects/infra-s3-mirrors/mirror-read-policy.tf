@@ -15,8 +15,8 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     actions = ["s3:GetObject"]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.govuk_mirror.id}",
-      "arn:aws:s3:::${aws_s3_bucket.govuk_mirror.id}/*",
+      "arn:aws:s3:::${module.govuk_mirror.bucket_id}",
+      "arn:aws:s3:::${module.govuk_mirror.bucket_id}/*",
     ]
 
     condition {
@@ -36,8 +36,8 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     actions = ["s3:GetObject"]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.govuk_mirror.id}",
-      "arn:aws:s3:::${aws_s3_bucket.govuk_mirror.id}/*",
+      "arn:aws:s3:::${module.govuk_mirror.bucket_id}",
+      "arn:aws:s3:::${module.govuk_mirror.bucket_id}/*",
     ]
 
     condition {
