@@ -22,6 +22,7 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | asg_desired_capacity | The autoscaling groups desired capacity | string | `1` | no |
+| asg_health_check_grace_period | The time to wait after creation before checking the status of the instance | string | `60` | no |
 | asg_max_size | The autoscaling groups max_size | string | `1` | no |
 | asg_min_size | The autoscaling groups max_size | string | `1` | no |
 | asg_notification_topic_arn | The Topic ARN for Autoscaling Group notifications to be sent to | string | `` | no |
