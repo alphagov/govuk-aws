@@ -58,6 +58,8 @@ function ssh_usage {
 
   node-types           List the types of instances available to connect to.
 
+  node-list <machine>  List the machines for a particular node. Try node-list whitehall_backend.
+
 EOF
 }
 
@@ -217,7 +219,14 @@ function run_ssh {
         ssh $SSH_USER@$JUMPBOX "govuk_node_list --classes"
       else
         ssh $SSH_USER@$JUMPBOX "aws ec2 describe-instances --region eu-west-1 |jq -r ' .Reservations[] | .Instances[] | .Tags[] | select(.Key | contains(\"aws_migration\")) | .Value' |sort |uniq |sort"
-      fi
+      fi;;
+
+    'node-list')
+      load_user
+
+      NODE_CLASS=$2
+      # shellcheck disable=SC2029
+      ssh $SSH_USER@$JUMPBOX "govuk_node_list -c ${NODE_CLASS}"
     ;;
 
     'help') ssh_usage;;
