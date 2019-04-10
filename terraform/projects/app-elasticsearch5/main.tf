@@ -300,14 +300,6 @@ resource "aws_s3_bucket" "manual_snapshots" {
     target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-elasticsearch5-manual-snapshots/"
   }
-
-  lifecycle_rule {
-    enabled = true
-
-    expiration {
-      days = 7
-    }
-  }
 }
 
 resource "aws_s3_bucket_policy" "manual_snapshots_cross_account_access" {
