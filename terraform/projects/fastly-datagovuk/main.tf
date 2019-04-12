@@ -82,6 +82,17 @@ resource "fastly_service_v1" "datagovuk" {
     request_condition  = "education_standards"
   }
 
+  backend {
+    name               = "cname contracts-finder-archive"
+    address            = "34.249.103.20"
+    port               = "80"
+    use_ssl            = false
+    auto_loadbalance   = false
+    first_byte_timeout = 120000
+    ssl_check_cert     = false
+    request_condition  = "contracts_finder_archive"
+  }
+
   vcl {
     name    = "datagovuk_vcl"
     content = "${file("datagovuk.vcl")}"
@@ -101,6 +112,30 @@ resource "fastly_service_v1" "datagovuk" {
     destination       = "url"
     source            = "regsub(req.url, \"^/education-standards\", \"\")"
     request_condition = "education_standards"
+  }
+
+  condition {
+    name      = "contracts_finder_archive"
+    type      = "request"
+    statement = "req.url ~ \"^/data/contracts-finder-archive\""
+  }
+
+  header {
+    name              = "contracts_finder_archive_url"
+    action            = "set"
+    type              = "request"
+    destination       = "url"
+    source            = "regsub(req.url, \"^/data/contracts-finder-archive\", \"\")"
+    request_condition = "contracts_finder_archive"
+  }
+
+  header {
+    name              = "contracts_finder_archive_script_name"
+    action            = "set"
+    type              = "request"
+    destination       = "http.X-Script-Name"
+    source            = "\"/data/contracts-finder-archive\""
+    request_condition = "contracts_finder_archive"
   }
 
   request_setting {
