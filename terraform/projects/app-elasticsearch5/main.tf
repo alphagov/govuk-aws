@@ -47,7 +47,7 @@ variable "elasticsearch5_instance_type" {
 variable "elasticsearch5_instance_count" {
   type        = "string"
   description = "The number of ElasticSearch nodes"
-  default     = "3"
+  default     = "6"
 }
 
 variable "elasticsearch5_dedicated_master_enabled" {
