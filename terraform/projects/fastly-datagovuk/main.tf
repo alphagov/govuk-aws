@@ -106,11 +106,20 @@ resource "fastly_service_v1" "datagovuk" {
   }
 
   header {
-    name              = "education_standards"
+    name              = "education_standards_url"
     action            = "set"
     type              = "request"
     destination       = "url"
     source            = "regsub(req.url, \"^/education-standards\", \"\")"
+    request_condition = "education_standards"
+  }
+
+  header {
+    name              = "education_standards_host"
+    action            = "set"
+    type              = "request"
+    destination       = "http.host"
+    source            = "\"dfe-app1.codeenigma.net\""
     request_condition = "education_standards"
   }
 
@@ -126,6 +135,15 @@ resource "fastly_service_v1" "datagovuk" {
     type              = "request"
     destination       = "url"
     source            = "regsub(req.url, \"^/data/contracts-finder-archive\", \"\")"
+    request_condition = "contracts_finder_archive"
+  }
+
+  header {
+    name              = "contracts_finder_archive_host"
+    action            = "set"
+    type              = "request"
+    destination       = "http.host"
+    source            = "\"34.249.103.20\""
     request_condition = "contracts_finder_archive"
   }
 
