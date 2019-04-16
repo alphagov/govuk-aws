@@ -56,15 +56,20 @@ fi
 function create_backend(){
   local PROJECT_NAME=$1
   local BACKEND_DIR="${PROJECTS_DIR}/${PROJECT_NAME}"
+  local BUCKET_NAME="govuk-terraform-steppingstone-${ENVIRONMENT}"
 
   if [[ ! -d $BACKEND_DIR ]]; then
     log_error "Could not find project directory: $BACKEND_DIR"
     exit 1
   fi
 
+  if [[ $ENVIRONMENT == "training" ]]; then
+    BUCKET_NAME="govuk-${ENVIRONMENT}-terraform-state"
+  fi
+
   local BACKEND_FILE="${BACKEND_DIR}/${BACKEND_FILENAME}"
   cat <<EOF > "$BACKEND_FILE"
-bucket  = "govuk-terraform-steppingstone-${ENVIRONMENT}"
+bucket  = "${BUCKET_NAME}"
 key     = "${STACKNAME}/${PROJECT_NAME}.tfstate"
 encrypt = true
 region  = "${REGION}"
