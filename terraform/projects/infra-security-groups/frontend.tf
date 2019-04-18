@@ -113,6 +113,7 @@ resource "aws_security_group" "static_carrenza_alb" {
 }
 
 resource "aws_security_group_rule" "static-carrenza-alb_ingress_443_carrenza" {
+  count     = "${length(var.carrenza_env_ips) > 0 ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443

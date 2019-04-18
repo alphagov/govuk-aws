@@ -89,6 +89,7 @@ resource "aws_security_group" "content-store_external_elb" {
 
 # TODO: Audit
 resource "aws_security_group_rule" "content-store-external-elb_ingress_public_https" {
+  count     = "${length(var.carrenza_env_ips) > 0 ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443
