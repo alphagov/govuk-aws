@@ -373,16 +373,6 @@ variable "router_backend_internal_service_names" {
   default = []
 }
 
-variable "rummager_elasticsearch_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "rummager_elasticsearch_carrenza_internal_service_records" {
-  type    = "map"
-  default = {}
-}
-
 variable "search_internal_service_names" {
   type    = "list"
   default = []
@@ -1838,33 +1828,6 @@ resource "aws_route53_record" "router_backend_internal_service_names" {
   name    = "${element(var.router_backend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.router_backend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# rummager_elasticsearch
-#
-
-resource "aws_route53_record" "rummager_elasticsearch_internal_service_names" {
-  count   = "${length(var.rummager_elasticsearch_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.rummager_elasticsearch_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.rummager_elasticsearch_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# rummager_elasticsearch_carrenza
-#
-
-resource "aws_route53_record" "rummager_elasticsearch_carrenza_internal_service_records" {
-  count   = "${length(keys(var.rummager_elasticsearch_carrenza_internal_service_records))}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(keys(var.rummager_elasticsearch_carrenza_internal_service_records), count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "A"
-
-  records = ["${element(values(var.rummager_elasticsearch_carrenza_internal_service_records), count.index)}"]
   ttl     = "300"
 }
 
