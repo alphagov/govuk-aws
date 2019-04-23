@@ -13,6 +13,6 @@ data "terraform_remote_state" "infra_networking" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
