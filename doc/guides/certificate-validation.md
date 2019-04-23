@@ -1,5 +1,10 @@
 # Certificate Validation
 
+*DEPRECATED*
+New environments should manage certificate validation with DNS via `infra-certificates` project.
+
+*Remove after importing all the certificates from existing environments into `infra-certificates`*
+
 If a certificate is registered through Amazon, then a few steps will be required to enable validation of the certificate.
 
 ## DNS

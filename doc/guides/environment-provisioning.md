@@ -117,12 +117,13 @@ The projects that need to be initially run in this way are:
 4. `infra-networking`
 5. `infra-root-dns-zones`
 6. `infra-stack-dns-zones`
-7. `infra-security-groups`
-8. `infra-database-backups-bucket`
-9. `infra-artefact-bucket`
-10. `infra-mirror-bucket`
-11. `infra-wal-e-warehouse-bucket`
-12. `infra-public-services`
+7. `infra-certificates`
+8. `infra-security-groups`
+9. `infra-database-backups-bucket`
+10. `infra-artefact-bucket`
+11. `infra-mirror-bucket`
+12. `infra-wal-e-warehouse-bucket`
+13. `infra-public-services`
 
 ### Update the NS records (if rebuilding infra-root-dns-zones in staging or integration)
 
