@@ -47,6 +47,7 @@ variable "carrenza_production_ips" {
 variable "carrenza_env_ips" {
   type        = "list"
   description = "An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox."
+  default     = []
 }
 
 variable "carrenza_draft_frontend_ips" {
