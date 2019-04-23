@@ -246,12 +246,12 @@ Create the following projects (in no particular order):
 To ensure that applications deploy correctly, ensure that the datastores exist:
 
 `app-backend-redis`
+`app-elasticsearch5`
 `app-mongo`
 `app-mysql`
 `app-postgresql`
 `app-rabbitmq`
 `app-router-backend`
-`app-rummager-elasticsearch`
 `app-transition-postgresql`
 
 Be aware that both RDS and Elasticache can take some time to deploy.
