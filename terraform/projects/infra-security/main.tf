@@ -7,6 +7,7 @@
 *  - Default IAM password policy
 *  - Default SSH key
 *  - CloudTrail settings and alarms
+*  - SOPS KMS key
 */
 
 variable "aws_region" {
@@ -91,6 +92,8 @@ provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
 }
+
+data "aws_caller_identity" "current" {}
 
 module "role_admin" {
   source           = "../../modules/aws/iam/role_user"
@@ -259,4 +262,105 @@ module "cloudtrail-alarm-root-account" {
   alarm_name                = "${var.stackname}-cloudtrail-root-event"
   alarm_description         = "Alarms when the root account is used."
   alarm_actions             = ["${aws_sns_topic.cloudtrail.arn}"]
+}
+
+# SOPS KMS key
+
+data "aws_iam_policy_document" "kms_sops_policy" {
+  statement {
+    sid = "Enable IAM User Permission"
+
+    actions = [
+      "kms:*",
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+
+  statement {
+    sid = "Allow access for Key Administrators"
+
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:TagResource",
+      "kms:UntagResource",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion",
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["${module.role_admin.role_arn}"]
+    }
+  }
+
+  statement {
+    sid = "Allow use of the key"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey",
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["${module.role_admin.role_arn}"]
+    }
+  }
+
+  statement {
+    sid = "Allow attachment of persistent resources"
+
+    actions = [
+      "kms:CreateGrant",
+      "kms:ListGrants",
+      "kms:RevokeGrant",
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["${module.role_admin.role_arn}"]
+    }
+  }
+}
+
+resource "aws_kms_key" "sops" {
+  description = "Sensitive data in govuk-aws-data"
+  policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
+}
+
+resource "aws_kms_alias" "sops" {
+  name          = "alias/govuk-terraform-data"
+  target_key_id = "${aws_kms_key.sops.key_id}"
+}
+
+# Outputs
+# --------------------------------------------------------------
+
+output "sops_kms_key_arn" {
+  value       = "${aws_kms_key.sops.arn}"
+  description = "The ARN of the Sops KMS key"
 }
