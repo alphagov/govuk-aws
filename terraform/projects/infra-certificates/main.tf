@@ -75,16 +75,18 @@ resource "aws_acm_certificate" "certificate_external" {
 }
 
 resource "aws_route53_record" "certificate_external_validation" {
-  name    = "${aws_acm_certificate.certificate_external.domain_validation_options.0.resource_record_name}"
-  type    = "${aws_acm_certificate.certificate_external.domain_validation_options.0.resource_record_type}"
+  count = "${length(aws_acm_certificate.certificate_external.domain_validation_options)}"
+
+  name    = "${lookup(aws_acm_certificate.certificate_external.domain_validation_options[count.index], "resource_record_name")}"
+  type    = "${lookup(aws_acm_certificate.certificate_external.domain_validation_options[count.index], "resource_record_type")}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  records = ["${aws_acm_certificate.certificate_external.domain_validation_options.0.resource_record_value}"]
+  records = ["${lookup(aws_acm_certificate.certificate_external.domain_validation_options[count.index], "resource_record_value")}"]
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "certificate_external" {
   certificate_arn         = "${aws_acm_certificate.certificate_external.arn}"
-  validation_record_fqdns = ["${aws_route53_record.certificate_external_validation.fqdn}"]
+  validation_record_fqdns = ["${aws_route53_record.certificate_external_validation.*.fqdn}"]
 }
 
 resource "aws_acm_certificate" "certificate_internal" {
@@ -94,16 +96,18 @@ resource "aws_acm_certificate" "certificate_internal" {
 }
 
 resource "aws_route53_record" "certificate_internal_validation" {
-  name    = "${aws_acm_certificate.certificate_internal.domain_validation_options.0.resource_record_name}"
-  type    = "${aws_acm_certificate.certificate_internal.domain_validation_options.0.resource_record_type}"
+  count = "${length(aws_acm_certificate.certificate_internal.domain_validation_options)}"
+
+  name    = "${lookup(aws_acm_certificate.certificate_internal.domain_validation_options[count.index], "resource_record_name")}"
+  type    = "${lookup(aws_acm_certificate.certificate_internal.domain_validation_options[count.index], "resource_record_type")}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_dns_validation_zone_id}"
-  records = ["${aws_acm_certificate.certificate_internal.domain_validation_options.0.resource_record_value}"]
+  records = ["${lookup(aws_acm_certificate.certificate_internal.domain_validation_options[count.index], "resource_record_value")}"]
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "certificate_internal" {
   certificate_arn         = "${aws_acm_certificate.certificate_internal.arn}"
-  validation_record_fqdns = ["${aws_route53_record.certificate_internal_validation.fqdn}"]
+  validation_record_fqdns = ["${aws_route53_record.certificate_internal_validation.*.fqdn}"]
 }
 
 # Outputs
