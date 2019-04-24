@@ -44,6 +44,12 @@ variable "root_domain_external_name" {
   default     = "mydomain.external"
 }
 
+variable "create_internal_zone_dns_validation" {
+  type        = "string"
+  description = "Create a public DNS zone to validate the internal domain certificate (default false)"
+  default     = false
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -90,6 +96,15 @@ resource "aws_route53_zone" "external_zone" {
   }
 }
 
+resource "aws_route53_zone" "internal_zone_dns_validation" {
+  count = "${var.create_internal_zone_dns_validation}"
+  name  = "${var.root_domain_internal_name}"
+
+  tags {
+    Project = "infra-root-dns-zones"
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -111,4 +126,9 @@ output "external_root_zone_id" {
 output "external_root_domain_name" {
   value       = "${join("", aws_route53_zone.external_zone.*.name)}"
   description = "Route53 External Root Domain Name"
+}
+
+output "internal_root_dns_validation_zone_id" {
+  value       = "${join("", aws_route53_zone.internal_zone_dns_validation.*.zone_id)}"
+  description = "Route53 Zone ID for DNS certificate validation of the internal domain"
 }
