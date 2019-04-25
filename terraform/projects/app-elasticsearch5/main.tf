@@ -41,7 +41,7 @@ variable "stackname" {
 variable "elasticsearch5_instance_type" {
   type        = "string"
   description = "The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported"
-  default     = "r4.large.elasticsearch"
+  default     = "r4.xlarge.elasticsearch"
 }
 
 variable "elasticsearch5_instance_count" {
