@@ -216,7 +216,8 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters {
-        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
+        ignore.malformed.json = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -396,7 +397,8 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters {
-        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
+        ignore.malformed.json = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -576,7 +578,8 @@ resource "aws_glue_catalog_table" "bouncer" {
       name = "ser_de_name"
 
       parameters {
-        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit"
+        ignore.malformed.json = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
