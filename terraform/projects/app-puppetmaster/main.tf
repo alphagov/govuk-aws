@@ -42,6 +42,16 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name."
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -60,6 +70,11 @@ data "aws_acm_certificate" "elb_internal_cert" {
 }
 
 data "aws_caller_identity" "current" {}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
+}
 
 resource "aws_elb" "puppetmaster_bootstrap_elb" {
   count           = "${var.enable_bootstrap}"
@@ -154,8 +169,8 @@ resource "aws_elb" "puppetmaster_internal_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "puppet.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "puppet.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -166,8 +181,8 @@ resource "aws_route53_record" "service_record" {
 }
 
 resource "aws_route53_record" "puppetdb_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "puppetdb.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "puppetdb.${var.internal_domain_name}"
   type    = "A"
 
   alias {
