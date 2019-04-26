@@ -108,6 +108,18 @@ variable "elasticsearch5_manual_snapshot_bucket_arns" {
   default     = []
 }
 
+variable "downstream_lambda_arn" {
+  type        = "list"
+  description = "ARN (or empty) of the lambda function to notify when the manual snapshots bucket is updated"
+  default     = []
+}
+
+variable "upstream_bucket_arn" {
+  type        = "list"
+  description = "ARN (or empty) of the S3 bucket which will notify the lambda function in this environment"
+  default     = []
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -419,6 +431,57 @@ resource "aws_iam_policy" "manual_snapshot_domain_configuration_policy" {
 POLICY
 }
 
+# a lambda to update the *upstream* bucket (staging lambda ->
+# production bucket) and a notification on update to the *downstream*
+# lambda (production bucket -> staging lambda)
+resource "aws_iam_role" "manual_snapshot_permissions_lambda" {
+  name = "manual_snapshot_permissions_lambda"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_lambda_function" "fix_manual_snapshot_permissions" {
+  filename      = "../../lambda/ElasticsearchSnapshotOwnership/ElasticsearchSnapshotOwnership.zip"
+  function_name = "fix_manual_snapshot_permissions"
+  role          = "${aws_iam_role.manual_snapshot_permissions_lambda.arn}"
+  handler       = "main.lambda_handler"
+  runtime       = "python2.7"
+}
+
+resource "aws_lambda_permission" "allow_upstream_bucket" {
+  count = "${length(var.upstream_bucket_arn) > 0 ? 1 : 0}"
+
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.fix_manual_snapshot_permissions.arn}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "${index(var.upstream_bucket_arn,0)}"
+}
+
+resource "aws_s3_bucket_notification" "downstream_bucket_notification" {
+  count = "${length(var.downstream_lambda_arn) > 0 ? 1 : 0}"
+
+  bucket = "${aws_s3_bucket.manual_snapshots.id}"
+
+  lambda_function {
+    lambda_function_arn = "${index(var.downstream_lambda_arn,0)}"
+    events              = ["s3:ObjectCreated:*"]
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -440,4 +503,14 @@ output "service_dns_name" {
 output "domain_configuration_policy_arn" {
   value       = "${aws_iam_policy.manual_snapshot_domain_configuration_policy.arn}"
   description = "ARN of the policy used to configure the elasticsearch domain"
+}
+
+output "manual_snapshots_bucket_arn" {
+  value       = "${aws_s3_bucket.manual_snapshots.arn}"
+  description = "ARN of the bucket to store manual snapshots"
+}
+
+output "manual_snapshots_lambda_arn" {
+  value       = "${aws_lambda_function.fix_manual_snapshot_permissions.arn}"
+  description = "ARN of the lambda function to update the upstream bucket"
 }
