@@ -3,6 +3,11 @@
 *
 * Manages the Fastly service for data.gov.uk
 */
+variable "aws_region" {
+  type        = "string"
+  description = "AWS region"
+  default     = "eu-west-1"
+}
 
 variable "stackname" {
   type        = "string"
