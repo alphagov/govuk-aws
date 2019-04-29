@@ -468,7 +468,7 @@ resource "aws_lambda_permission" "allow_upstream_bucket" {
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.fix_manual_snapshot_permissions.arn}"
   principal     = "s3.amazonaws.com"
-  source_arn    = "${index(var.upstream_bucket_arn,0)}"
+  source_arn    = "${var.upstream_bucket_arn[0]}"
 }
 
 resource "aws_s3_bucket_notification" "downstream_bucket_notification" {
@@ -477,7 +477,7 @@ resource "aws_s3_bucket_notification" "downstream_bucket_notification" {
   bucket = "${aws_s3_bucket.manual_snapshots.id}"
 
   lambda_function {
-    lambda_function_arn = "${index(var.downstream_lambda_arn,0)}"
+    lambda_function_arn = "${var.downstream_lambda_arn[0]}"
     events              = ["s3:ObjectCreated:*"]
   }
 }
