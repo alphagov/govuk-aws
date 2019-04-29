@@ -343,6 +343,7 @@ data "aws_iam_policy_document" "manual_snapshots_cross_account_access" {
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
+      "s3:PutObjectAcl",
     ]
 
     resources = [
@@ -453,12 +454,56 @@ resource "aws_iam_role" "manual_snapshot_permissions_lambda" {
 EOF
 }
 
+resource "aws_iam_policy" "manual_snapshot_permissions_lambda_policy" {
+  count = "${length(var.upstream_bucket_arn) > 0 ? 1 : 0}"
+
+  name = "govuk-${var.aws_environment}-fix-manual-snapshot-permissions-policy"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*",
+      "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "arn:aws:s3:::*",
+      "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "s3:PutObjectAcl"
+      ],
+      "Resource": "${var.upstream_bucket_arn[0]}/*",
+      "Effect": "Allow"
+    }
+  ]
+}
+POLICY
+}
+
 resource "aws_lambda_function" "fix_manual_snapshot_permissions" {
   filename      = "../../lambda/ElasticsearchSnapshotOwnership/ElasticsearchSnapshotOwnership.zip"
   function_name = "fix_manual_snapshot_permissions"
   role          = "${aws_iam_role.manual_snapshot_permissions_lambda.arn}"
   handler       = "main.lambda_handler"
   runtime       = "python2.7"
+}
+
+resource "aws_iam_role_policy_attachment" "fix_manual_snapshot_permissions" {
+  count = "${length(var.upstream_bucket_arn) > 0 ? 1 : 0}"
+
+  role       = "${aws_iam_role.manual_snapshot_permissions_lambda.name}"
+  policy_arn = "${aws_iam_policy.manual_snapshot_permissions_lambda_policy.*.arn[0]}"
 }
 
 resource "aws_lambda_permission" "allow_upstream_bucket" {
