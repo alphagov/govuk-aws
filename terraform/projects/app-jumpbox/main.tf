@@ -25,6 +25,16 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "external_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains external records"
+}
+
+variable "external_domain_name" {
+  type        = "string"
+  description = "The domain name of the external DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -35,6 +45,11 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_route53_zone" "external" {
+  name         = "${var.external_zone_name}"
+  private_zone = false
 }
 
 resource "aws_elb" "jumpbox_external_elb" {
@@ -73,8 +88,8 @@ resource "aws_elb" "jumpbox_external_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "jumpbox.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "jumpbox.${var.external_domain_name}"
   type    = "A"
 
   alias {
