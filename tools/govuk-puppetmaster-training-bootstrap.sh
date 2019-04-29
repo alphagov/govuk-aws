@@ -84,6 +84,10 @@ then
   cp ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/${GOVUK_ENVIRONMENT}.yaml ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/production.yaml
   cp ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/${GOVUK_ENVIRONMENT}_credentials.yaml ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/production_credentials.yaml
 
+  if [[ -f "${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/apps/${GOVUK_ENVIRONMENT}_credentials.yaml" ]]
+  then
+    cp ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/apps/${GOVUK_ENVIRONMENT}_credentials.yaml ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/apps/production_credentials.yaml
+  fi
 fi
 
 # Move puppet release to the expected location
