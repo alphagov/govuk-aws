@@ -51,7 +51,7 @@ git clone git@github.com:alphagov/govuk-secrets.git
 > **NOTE: Ensure Puppet has all dependencies installed**
 >
 > Follow the instructions [in the govuk-puppet repository](https://github.com/alphagov/govuk-puppet#installing)
-> to ensure that all Puppet modules and depencencies are pulled in.
+> to ensure that all Puppet modules and dependencies are pulled in.
 >
 > If this step is not completed you may see errors when deploying about
 > missing functions
@@ -155,24 +155,49 @@ region  = "<region>"
 
 ## Build the Puppet Master
 
-Puppet master configuration/installation is triggered by a terraform userdata snippet which clones govuk-aws and executes tools/govuk-puppetmaster-bootstrap.sh.
+Puppet master configuration/installation is triggered by a terraform userdata snippet which clones govuk-aws and executes tools/govuk-puppetmaster-<environment>-bootstrap.sh.
 
-The script requires for secrets to be available to the blue-puppetmaster role in the AWS SSM parameter store in base64 encoding:
+1. Create new govuk-aws-data files in the app-puppetmaster directory for your environment
+2. Create new userdata snippet for the new puppetmaster environment: `terraform/userdata/20-puppetmaster-<environment>`
+3. Create new bootstrap script for the environment: `tools/govuk-puppetmaster-<environment>-bootstrap.sh`. Make sure the file is executable
 
+```
+chmod 755 tools/govuk-puppetmaster-<environment>-bootstrap.sh
+```
+
+4. Add SSM parameters for the Puppetmaster bootstrap:
+
+The bootstrap script requires for secrets to be available to the `<stackname>-puppetmaster` role in the AWS SSM parameter store in base64 encoding:
 - `govuk_base64_github.com_hostkey`, The public host key of github.com used to automatically clone repositories
 - `govuk_base64_github.com_ssh_readonly`, The private SSH key to allow access to github.com:alphagov/govuk-secrets
 - `govuk_base64_gpg_1_of_3`, First part of the GPG key. See below.
 - `govuk_base64_gpg_2_of_3`, Second part of the GPG key. See below.
 - `govuk_base64_gpg_3_of_3`, Third part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters. 
 
+5. Create Hieradata files for the new environment, changing relevant values:
+
+- govuk-puppet/hieradata_aws/<environment>.yaml
+- Credential files in govuk-secrets for the environment and apps/<environment>
+
+6. Build the Terraform project with `enable_bootstrap` variable, to create an ELB with SSH access to the machine (We don't have any Jumpbox on the environment yet)
+
 ```
-tools/build-terraform-project.sh -c plan -p app-puppetmaster
+TF_VAR_enable_bootstrap=1 ./tools/build-terraform-project.sh -c plan -p app-puppetmaster -e <environment> -d ../govuk-aws-data/data -s govuk
 ...terraform output...
-tools/build-terraform-project.sh -c apply -p app-puppetmaster
+TF_VAR_enable_bootstrap=1 ./tools/build-terraform-project.sh -c apply -p app-puppetmaster -e <environment> -d ../govuk-aws-data/data -s govuk
 ...terraform output...
 ```
 
+If you need to verify the Puppetmaster provisioning, you can access the Puppetmaster using the bootstrap ELB DNS record.
+
 If Puppet master is rebuild (i.e. clients to already have certificates in place) it is then required to cycle the Puppet certificates by deleting the directory /etc/puppet/ssl and run `sudo puppet agent -t` on all nodes before issuing `puppet cert sign --all` on the Puppet master.  
+
+After building a Jumpbox, you should run again Terraform without `enable_bootstrap` to destroy the initial boostrap ELB:
+
+```
+./tools/build-terraform-project.sh -c apply -p app-puppetmaster -e <environment> -d ../govuk-aws-data/data -s govuk
+...terraform output...
+```
 
 ## Build the jumpbox
 
