@@ -11,24 +11,13 @@ Install [Terraform](https://terraform.io) by either:
  - [Downloading the binary](https://www.terraform.io/downloads.html).
  - Using [Homebrew](https://brew.sh/)
 
-If you use Homebrew you may consider using [chtf](https://github.com/Yleisradio/homebrew-terraforms).
+You may consider using [Tfenv](https://github.com/tfutils/tfenv) to manage Terraform versions.
 
 ### Data
 
 We split data out from the Terraform manifests. Please see [this ADR for context](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0017-terraform-data-structure.md).
 
-Data used to configure terraform is stored in the [govuk-aws-data](https://github.com/alphagov/govuk-aws-data) repo. Sensitive data in that repository is encrypted and decrypted using the [SOPS editor](https://github.com/mozilla/sops).
-
-To install this (using brew):
-
-`brew install sops`
-
-Generally data should be encrypted/decrypted using [KMS](https://aws.amazon.com/kms/), to configure this:
-
-```
-export AWS_ACCESS_KEY_ID=<id>
-export AWS_SECRET_ACCESS_KEY=<key>
-```
+Data used to configure terraform is stored in the [govuk-aws-data](https://github.com/alphagov/govuk-aws-data) repo. Follow the instructions in that repository for up-to-date information on how to work with data.
 
 ## Developing in the repo
 
