@@ -68,7 +68,7 @@ data "terraform_remote_state" "infra_vpc" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
@@ -78,7 +78,7 @@ data "terraform_remote_state" "infra_networking" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
@@ -88,7 +88,7 @@ data "terraform_remote_state" "infra_security_groups" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_security_groups_key_stack, var.stackname)}/infra-security-groups.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
@@ -98,7 +98,7 @@ data "terraform_remote_state" "infra_root_dns_zones" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_root_dns_zones_key_stack, var.stackname)}/infra-root-dns-zones.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
@@ -108,7 +108,7 @@ data "terraform_remote_state" "infra_stack_dns_zones" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_stack_dns_zones_key_stack, var.stackname)}/infra-stack-dns-zones.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
@@ -118,7 +118,7 @@ data "terraform_remote_state" "infra_monitoring" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 EOT

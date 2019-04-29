@@ -8,6 +8,7 @@ Manages the Fastly service for data.gov.uk
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
+| aws_region | AWS region | string | `eu-west-1` | no |
 | backend_domain | The domain of the data.gov.uk PaaS instance to forward requests to | string | - | yes |
 | domain | The domain of the data.gov.uk service to manage | string | - | yes |
 | fastly_api_key | API key to authenticate with Fastly | string | - | yes |
