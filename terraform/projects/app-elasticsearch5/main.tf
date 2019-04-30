@@ -492,11 +492,12 @@ POLICY
 }
 
 resource "aws_lambda_function" "fix_manual_snapshot_permissions" {
-  filename      = "../../lambda/ElasticsearchSnapshotOwnership/ElasticsearchSnapshotOwnership.zip"
-  function_name = "fix_manual_snapshot_permissions"
-  role          = "${aws_iam_role.manual_snapshot_permissions_lambda.arn}"
-  handler       = "main.lambda_handler"
-  runtime       = "python2.7"
+  filename         = "../../lambda/ElasticsearchSnapshotOwnership/ElasticsearchSnapshotOwnership.zip"
+  source_code_hash = "${base64sha256(file("../../lambda/ElasticsearchSnapshotOwnership/ElasticsearchSnapshotOwnership.zip"))}"
+  function_name    = "fix_manual_snapshot_permissions"
+  role             = "${aws_iam_role.manual_snapshot_permissions_lambda.arn}"
+  handler          = "main.lambda_handler"
+  runtime          = "python2.7"
 }
 
 resource "aws_iam_role_policy_attachment" "fix_manual_snapshot_permissions" {
