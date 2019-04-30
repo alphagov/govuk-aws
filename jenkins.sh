@@ -40,8 +40,12 @@ fi
 
 rm -rf govuk-aws-data
 
+if [[ "$GOVUK_AWS_DATA_BRANCH" == "" ]]; then
+  GOVUK_AWS_DATA_BRANCH="master"
+fi
+
 echo "Cloning govuk-aws-data"
-git clone git@github.com:alphagov/govuk-aws-data.git
+git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alphagov/govuk-aws-data.git
 
 case $COMMAND in
   'apply') EXTRA='-auto-approve';;
