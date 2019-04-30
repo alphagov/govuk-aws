@@ -6,6 +6,7 @@ Infrastructure security settings:
  - Default IAM password policy
  - Default SSH key
  - CloudTrail settings and alarms
+ - SOPS KMS key
 
 
 ## Inputs
@@ -24,4 +25,10 @@ Infrastructure security settings:
 | role_user_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
 | ssh_public_key | The public part of an SSH keypair | string | - | yes |
 | stackname | Stackname | string | `` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| sops_kms_key_arn | The ARN of the Sops KMS key |
 
