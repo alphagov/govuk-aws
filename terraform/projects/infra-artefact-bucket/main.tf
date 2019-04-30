@@ -39,11 +39,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "aws_account_id" {
-  type        = "string"
-  description = "The AWS Account ID"
-}
-
 variable "aws_subscription_account_id" {
   type        = "string"
   description = "The AWS Account ID that will appear on the subscription"
@@ -67,13 +62,8 @@ variable "artefact_source" {
 }
 
 variable "aws_s3_access_account" {
-  type        = "string"
+  type        = "list"
   description = "Here we define the account that will have access to the Artefact S3 bucket."
-}
-
-variable "deployer_role" {
-  type        = "string"
-  description = "Define the role name used by the Jenkins deployer"
 }
 
 variable "stackname" {
@@ -109,6 +99,8 @@ provider "aws" {
   region  = "${var.aws_secondary_region}"
   version = "1.40.0"
 }
+
+data "aws_caller_identity" "current" {}
 
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
@@ -181,29 +173,30 @@ resource "aws_s3_bucket" "artefact" {
 * methods are available
 */
 
+data "aws_iam_policy_document" "govuk-artefact-bucket" {
+  statement {
+    sid = "Stmt1519740678001"
+
+    actions = [
+      "s3:*",
+    ]
+
+    resources = ["arn:aws:s3:::govuk-${var.aws_environment}-artefact/*"]
+
+    principals {
+      type = "AWS"
+
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        "${var.aws_s3_access_account}",
+      ]
+    }
+  }
+}
+
 resource "aws_s3_bucket_policy" "govuk-artefact-bucket-policy" {
   bucket = "${aws_s3_bucket.artefact.id}"
-
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Id": "ArtefactBucketPolicy1519740678",
-    "Statement": [
-        {
-            "Sid": "Stmt1519740678001",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": [
-                         "arn:aws:iam::${var.aws_account_id}:root",
-                         "arn:aws:iam::${var.aws_s3_access_account}:root"
-]
-            },
-            "Action": "s3:*",
-            "Resource": "arn:aws:s3:::govuk-${var.aws_environment}-artefact/*"
-        }
-    ]
-}
-POLICY
+  policy = "${data.aws_iam_policy_document.govuk-artefact-bucket.json}"
 }
 
 # Create an AWS SNS Topic
@@ -269,7 +262,7 @@ resource "aws_sns_topic_subscription" "artefact_topic_subscription" {
   count     = "${var.create_sns_subscription ? 1 : 0}"
   topic_arn = "arn:aws:sns:${var.aws_region}:${var.aws_subscription_account_id}:govuk-${var.artefact_source}-artefact"
   protocol  = "lambda"
-  endpoint  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:govuk-${var.aws_environment}-artefact"
+  endpoint  = "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:govuk-${var.aws_environment}-artefact"
 }
 
 # AWS Lambda
