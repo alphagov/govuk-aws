@@ -56,6 +56,12 @@ variable "create_sns_subscription" {
   description = "Indicates whether to create an SNS subscription"
 }
 
+variable "aws_subscription_account_region" {
+  type        = "string"
+  default     = "eu-west-1"
+  description = "AWS region of the SNS topic"
+}
+
 variable "artefact_source" {
   type        = "string"
   description = "Identifies the source artefact environment"
@@ -97,6 +103,12 @@ provider "aws" {
 provider "aws" {
   alias   = "secondary"
   region  = "${var.aws_secondary_region}"
+  version = "1.40.0"
+}
+
+provider "aws" {
+  alias   = "subscription"
+  region  = "${var.aws_subscription_account_region}"
   version = "1.40.0"
 }
 
@@ -260,7 +272,8 @@ resource "aws_s3_bucket_notification" "artefact_bucket_notification" {
 # AWS SNS Subscription
 resource "aws_sns_topic_subscription" "artefact_topic_subscription" {
   count     = "${var.create_sns_subscription ? 1 : 0}"
-  topic_arn = "arn:aws:sns:${var.aws_region}:${var.aws_subscription_account_id}:govuk-${var.artefact_source}-artefact"
+  provider  = "aws.subscription"
+  topic_arn = "arn:aws:sns:${var.aws_subscription_account_region}:${var.aws_subscription_account_id}:govuk-${var.artefact_source}-artefact"
   protocol  = "lambda"
   endpoint  = "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:govuk-${var.aws_environment}-artefact"
 }
