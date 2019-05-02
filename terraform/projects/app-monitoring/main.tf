@@ -88,6 +88,33 @@ resource "aws_elb" "monitoring_external_elb" {
     ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
+  listener {
+    instance_port     = 6514
+    instance_protocol = "tcp"
+    lb_port           = 6514
+    lb_protocol       = "ssl"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  listener {
+    instance_port     = 6515
+    instance_protocol = "tcp"
+    lb_port           = 6515
+    lb_protocol       = "ssl"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  listener {
+    instance_port     = 6516
+    instance_protocol = "tcp"
+    lb_port           = 6516
+    lb_protocol       = "ssl"
+
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
