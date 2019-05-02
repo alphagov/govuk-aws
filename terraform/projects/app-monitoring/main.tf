@@ -67,6 +67,9 @@ data "aws_acm_certificate" "elb_internal_cert" {
   statuses = ["ISSUED"]
 }
 
+# This ELB is the entry point for the fastly rsyslog backup and hence,
+# the monitoring.* domain name should be directed to a suitable load-balancer
+# if this load-balancer is removed/changed
 resource "aws_elb" "monitoring_external_elb" {
   name            = "${var.stackname}-monitoring-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
@@ -225,6 +228,19 @@ resource "aws_iam_role_policy_attachment" "monitoring_iam_role_policy_attachment
 resource "aws_route53_record" "external_service_record" {
   zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
   name    = "alert.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.monitoring_external_elb.dns_name}"
+    zone_id                = "${aws_elb.monitoring_external_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+# This DNS record is used by fastly rsyslog
+resource "aws_route53_record" "fastly_external_service_record" {
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "monitoring.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
   type    = "A"
 
   alias {
