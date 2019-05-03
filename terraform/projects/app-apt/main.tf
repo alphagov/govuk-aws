@@ -45,6 +45,26 @@ variable "apt_1_subnet" {
   description = "Name of the subnet to place the apt instance 1 and EBS volume"
 }
 
+variable "external_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains external records"
+}
+
+variable "external_domain_name" {
+  type        = "string"
+  description = "The domain name of the external DNS records, it could be different from the zone name"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -55,6 +75,16 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_route53_zone" "external" {
+  name         = "${var.external_zone_name}"
+  private_zone = false
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 locals {
@@ -87,8 +117,8 @@ module "apt_external_lb" {
 }
 
 resource "aws_route53_record" "apt_external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "apt.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "apt.${var.external_domain_name}"
   type    = "A"
 
   alias {
@@ -117,8 +147,8 @@ module "apt_internal_lb" {
 }
 
 resource "aws_route53_record" "gemstash_internal_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "gemstash.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "gemstash.${var.internal_domain_name}"
   type    = "A"
 
   alias {
