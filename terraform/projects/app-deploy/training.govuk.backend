@@ -1,0 +1,4 @@
+bucket  = "govuk-training-terraform-state"
+key     = "govuk/app-deploy.tfstate"
+encrypt = true
+region  = "eu-west-2"
