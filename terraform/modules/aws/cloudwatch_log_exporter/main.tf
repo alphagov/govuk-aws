@@ -53,9 +53,7 @@ variable "lambda_log_retention_in_days" {
 # Resources
 #--------------------------------------------------------------
 
-data "aws_region" "current" {
-  current = true
-}
+data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
