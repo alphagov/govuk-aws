@@ -51,6 +51,31 @@ variable "remote_state_infra_artefact_bucket_key_stack" {
   default     = ""
 }
 
+variable "external_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains external records"
+}
+
+variable "external_domain_name" {
+  type        = "string"
+  description = "The domain name of the external DNS records, it could be different from the zone name"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
+variable "create_external_elb" {
+  description = "Create the external ELB"
+  default     = true
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -66,7 +91,7 @@ data "terraform_remote_state" "artefact_bucket" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_artefact_bucket_key_stack, var.stackname)}/infra-artefact-bucket.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
@@ -75,12 +100,24 @@ provider "aws" {
   version = "1.40.0"
 }
 
+data "aws_route53_zone" "external" {
+  name         = "${var.external_zone_name}"
+  private_zone = false
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
+}
+
 data "aws_acm_certificate" "elb_external_cert" {
   domain   = "${var.elb_external_certname}"
   statuses = ["ISSUED"]
 }
 
 resource "aws_elb" "deploy_elb" {
+  count = "${var.create_external_elb}"
+
   name            = "${var.stackname}-deploy"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_elb_id}"]
@@ -162,8 +199,10 @@ resource "aws_elb" "deploy_internal_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "deploy.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  count = "${var.create_external_elb}"
+
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "deploy.${var.external_domain_name}"
   type    = "A"
 
   alias {
@@ -174,8 +213,8 @@ resource "aws_route53_record" "service_record" {
 }
 
 resource "aws_route53_record" "service_record_internal" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "deploy.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "deploy.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -183,6 +222,11 @@ resource "aws_route53_record" "service_record_internal" {
     zone_id                = "${aws_elb.deploy_internal_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+locals {
+  instance_elb_ids_length = "${var.create_external_elb ? 2 : 1}"
+  instance_elb_ids        = "${compact(list(join("", aws_elb.deploy_elb.*.id), aws_elb.deploy_internal_elb.id))}"
 }
 
 module "deploy" {
@@ -194,8 +238,8 @@ module "deploy" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "t2.medium"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.deploy_elb.id}", "${aws_elb.deploy_internal_elb.id}"]
+  instance_elb_ids_length       = "${local.instance_elb_ids_length}"
+  instance_elb_ids              = ["${local.instance_elb_ids}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
@@ -238,15 +282,20 @@ resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
   policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
 }
 
+locals {
+  elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 50 : 0}"
+  elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 50 : 0}"
+}
+
 module "alarms-elb-deploy-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-deploy-external"
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.deploy_elb.name}"
+  elb_name                       = "${join("", aws_elb.deploy_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "50"
+  httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
   httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "50"
+  httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
   surgequeuelength_threshold     = "0"
   healthyhostcount_threshold     = "0"
 }
@@ -255,6 +304,6 @@ module "alarms-elb-deploy-external" {
 # --------------------------------------------------------------
 
 output "deploy_elb_dns_name" {
-  value       = "${aws_elb.deploy_elb.dns_name}"
+  value       = "${join("", aws_elb.deploy_elb.*.dns_name)}"
   description = "DNS name to access the deploy service"
 }
