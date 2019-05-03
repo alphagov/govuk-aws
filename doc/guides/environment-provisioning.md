@@ -127,13 +127,13 @@ The projects that need to be initially run in this way are:
 
 ### Update the NS records (if rebuilding infra-root-dns-zones in staging or integration)
 
-Since we do not access multiple accounts for a single terraform run, the apex NS records for 
+Since we do not access multiple accounts for a single terraform run, the apex NS records for
 the environment specific subdomains have to be updated if the `infra-networking` project is rebuilt and the subdomain NS resources are rewritten.
 
 For integration these are:
 - integration.publishing.service.gov.uk
 - integration.govuk-internal.digital
-- integration.govuk.digital 
+- integration.govuk.digital
 
 For staging these are:
 - staging.publishing.service.gov.uk
@@ -172,7 +172,7 @@ The bootstrap script requires for secrets to be available to the `<stackname>-pu
 - `govuk_base64_github.com_ssh_readonly`, The private SSH key to allow access to github.com:alphagov/govuk-secrets
 - `govuk_base64_gpg_1_of_3`, First part of the GPG key. See below.
 - `govuk_base64_gpg_2_of_3`, Second part of the GPG key. See below.
-- `govuk_base64_gpg_3_of_3`, Third part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters. 
+- `govuk_base64_gpg_3_of_3`, Third part of the GPG key. At the moment the length of SecretString in the AWS SSM parameter store is limited to 4096 characters.
 
 5. Create Hieradata files for the new environment, changing relevant values:
 
@@ -257,8 +257,7 @@ Create the following projects (in no particular order):
 
 `app-apt`
 `app-db-admin`
-`app-email-alert-api-db-admin`
-`app-publishing-api-db-admin`
+`app-content-data-api-db-admin`
 `app-transition-db-admin`
 `app-warehouse-db-admin`
 `app-graphite`
