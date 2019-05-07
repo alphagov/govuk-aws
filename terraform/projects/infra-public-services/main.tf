@@ -32,6 +32,12 @@ variable "elb_public_secondary_certname" {
   description = "The ACM secondary cert domain name to find the ARN of"
 }
 
+variable "app_stackname" {
+  type        = "string"
+  description = "Stackname of the app projects in this environment"
+  default     = "blue"
+}
+
 variable "apt_public_service_names" {
   type    = "list"
   default = []
@@ -1024,7 +1030,7 @@ data "aws_autoscaling_groups" "deploy" {
 
   filter {
     name   = "value"
-    values = ["blue-deploy"]
+    values = ["${var.app_stackname}-deploy"]
   }
 }
 
