@@ -45,6 +45,26 @@ variable "monitoring_subnet" {
   description = "Name of the subnet to place the monitoring instance and the EBS volume"
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
+variable "external_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains external records"
+}
+
+variable "external_domain_name" {
+  type        = "string"
+  description = "The domain name of the external DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -55,6 +75,16 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
+}
+
+data "aws_route53_zone" "external" {
+  name         = "${var.external_zone_name}"
+  private_zone = false
 }
 
 data "aws_acm_certificate" "elb_external_cert" {
@@ -226,8 +256,8 @@ resource "aws_iam_role_policy_attachment" "monitoring_iam_role_policy_attachment
 }
 
 resource "aws_route53_record" "external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "alert.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "alert.${var.external_domain_name}"
   type    = "A"
 
   alias {
@@ -251,8 +281,8 @@ resource "aws_route53_record" "fastly_external_service_record" {
 }
 
 resource "aws_route53_record" "internal_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "alert.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "alert.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -263,8 +293,8 @@ resource "aws_route53_record" "internal_service_record" {
 }
 
 resource "aws_route53_record" "terraboard_external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "terraboard.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "terraboard.${var.external_domain_name}"
   type    = "A"
 
   alias {
