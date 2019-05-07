@@ -1431,7 +1431,7 @@ data "aws_autoscaling_groups" "graphite" {
 
   filter {
     name   = "value"
-    values = ["blue-graphite-1"]
+    values = ["${var.app_stackname}-graphite-1"]
   }
 }
 
@@ -1740,7 +1740,7 @@ data "aws_autoscaling_groups" "monitoring" {
 
   filter {
     name   = "value"
-    values = ["blue-monitoring"]
+    values = ["${var.app_stackname}-monitoring"]
   }
 }
 
