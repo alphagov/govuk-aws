@@ -259,7 +259,6 @@ Create the following projects (in no particular order):
 `app-db-admin`
 `app-content-data-api-db-admin`
 `app-transition-db-admin`
-`app-warehouse-db-admin`
 `app-graphite`
 `app-monitoring`
 
