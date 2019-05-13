@@ -4,41 +4,19 @@
 * This module creates Load Balancer listener rules and target groups for
 * an existing listener resource.
 *
-* You can specify rules based on host header with the `rules_host` variable,
-* path pattern with the `rules_path` variable, or both with the `rules_host_and_path`
-* variable. Rules from the three variables are merged and prioritised in the order
-* `rules_host_and_path`, `rules_host` and `rules_path`.
-*
-* The three variables are map types. The values of the maps define the target group
-* port and protocol where requests are routed when they meet the rule condition, with
-* the format TARGET_GROUP_PROTOCOL:TARGET_GROUP_PORT.
-*
-* The keys of `rules_host` are evaluated against the Host header of the request. The
-* keys of `rules_path` are evaluated against the path of the request. If the 
-* `rules_host_and_path` variable is provided, the key has the format FIELD:VALUE.
-* FIELD must be one of 'path-pattern' for path based routing or 'host-header' for host
-* based routing.
-*
-*```
-* rules_host {
-*   "www.example1.com" = "HTTP:8080"
-*   "www.example2.com" = "HTTPS:9091"
-*   "www.example3.*"   = "HTTP:8080"
-* }
-*
-* rules_host_and_path {
-*  "host-header:www.example1.com" = "HTTP:8080"
-*  "host-header:www.example2.com" = "HTTPS:9091"
-*  "path-pattern:/example3"       = "HTTPS:9091"
-* }
-*```
-*
 * Limitations:
 *  - The target group deregistration_delay, health_check_interval and health_check_timeout
 * values can be configured with variables, but will be the same for all the target groups
 *  - With Terraform we can't provide a 'count' or list for listener_rule condition blocks,
 * so at the moment only one condition can be specified per rule
+*  - At the moment this module only implements Host Header based rules
 */
+
+variable "default_tags" {
+  type        = "map"
+  description = "Additional resource tags"
+  default     = {}
+}
 
 variable "listener_arn" {
   type        = "string"
@@ -46,31 +24,36 @@ variable "listener_arn" {
 }
 
 variable "rules_host" {
-  type        = "map"
-  description = "A map with the value of a host-header rule condition and the target group associated."
-  default     = {}
+  type        = "list"
+  description = "A list with the values to create Host-header based listener rules and target groups."
+  default     = []
 }
 
-variable "rules_path" {
-  type        = "map"
-  description = "A map with the value of a path-pattern rule condition and the target group associated"
-  default     = {}
-}
-
-variable "rules_host_and_path" {
-  type        = "map"
-  description = "A map with the value of a rule with the format FIELD:VALUE and the target group associated. FIELD can be one of 'host-header' or 'path-pattern'"
-  default     = {}
+variable "rules_host_domain" {
+  type        = "string"
+  description = "Host header domain to append to the hosts in rules_host."
+  default     = "*"
 }
 
 variable "name" {
   type        = "string"
-  description = "Prefix of the target group names. The final name is name-PROTOCOL-PORT."
+  description = "Prefix of the target group names. The final name is name-rulename."
+}
+
+variable "priority_offset" {
+  type        = "string"
+  description = "first priority number assigned to the rules managed by the module."
+  default     = 1
 }
 
 variable "vpc_id" {
   type        = "string"
   description = "The ID of the VPC in which the default target groups are created."
+}
+
+variable "autoscaling_group_name" {
+  type        = "string"
+  description = "Name of ASG to associate with the target group."
 }
 
 variable "target_group_deregistration_delay" {
@@ -91,56 +74,74 @@ variable "target_group_health_check_timeout" {
   default     = 5
 }
 
+variable "target_group_port" {
+  type        = "string"
+  description = "The port on which targets receive traffic."
+  default     = 80
+}
+
+variable "target_group_protocol" {
+  type        = "string"
+  description = "The protocol to use for routing traffic to the targets."
+  default     = "HTTP"
+}
+
+variable "target_group_health_check_path_prefix" {
+  type        = "string"
+  description = "The prefix destination for the health check request."
+  default     = "/_healthcheck-"
+}
+
+variable "target_group_health_check_matcher" {
+  type        = "string"
+  description = "The HTTP codes to use when checking for a successful response from a target."
+  default     = "200-399"
+}
+
 # Resources
 #--------------------------------------------------------------
 
-locals {
-  hosts = "${zipmap(formatlist("%s:%s", "host-header", keys(var.rules_host)), values(var.rules_host))}"
-  paths = "${zipmap(formatlist("%s:%s", "path-pattern", keys(var.rules_path)), values(var.rules_path))}"
-  rules = "${merge(var.rules_host_and_path, local.hosts, local.paths)}"
-}
-
-locals {
-  target_groups = "${distinct(values(local.rules))}"
-}
-
 resource "aws_lb_target_group" "tg" {
-  count                = "${length(local.target_groups)}"
-  name                 = "${var.name}-${replace(element(local.target_groups, count.index), ":", "-")}"
-  port                 = "${element(split(":", element(local.target_groups, count.index)), 1)}"
-  protocol             = "${element(split(":", element(local.target_groups, count.index)), 0)}"
+  count                = "${length(var.rules_host)}"
+  name                 = "${format("%.10s-%.21s", var.name, var.rules_host[count.index])}"
+  port                 = "${var.target_group_port}"
+  protocol             = "${var.target_group_protocol}"
   vpc_id               = "${var.vpc_id}"
   deregistration_delay = "${var.target_group_deregistration_delay}"
 
   health_check {
     interval            = "${var.target_group_health_check_interval}"
-    path                = "/"
-    matcher             = "200-499"
+    path                = "${var.target_group_health_check_path_prefix}${var.rules_host[count.index]}"
+    matcher             = "${var.target_group_health_check_matcher}"
     port                = "traffic-port"
-    protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
+    protocol            = "${var.target_group_protocol}"
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = "${var.target_group_health_check_timeout}"
   }
+
+  tags = "${var.default_tags}"
 }
 
-locals {
-  target_groups_arns = "${zipmap(aws_lb_target_group.tg.*.name, aws_lb_target_group.tg.*.arn)}"
+resource "aws_autoscaling_attachment" "tg" {
+  count                  = "${length(var.rules_host)}"
+  autoscaling_group_name = "${var.autoscaling_group_name}"
+  alb_target_group_arn   = "${aws_lb_target_group.tg.*.arn[count.index]}"
 }
 
 resource "aws_lb_listener_rule" "routing" {
-  count        = "${length(keys(local.rules))}"
+  count        = "${length(var.rules_host)}"
   listener_arn = "${var.listener_arn}"
-  priority     = "${count.index + 1}"
+  priority     = "${count.index + var.priority_offset}"
 
   action {
     type             = "forward"
-    target_group_arn = "${lookup(local.target_groups_arns, "${var.name}-${replace(element(values(local.rules), count.index), ":", "-")}")}"
+    target_group_arn = "${aws_lb_target_group.tg.*.arn[count.index]}"
   }
 
   condition {
-    field  = "${element(split(":", element(keys(local.rules), count.index)), 0)}"
-    values = ["${element(split(":", element(keys(local.rules), count.index)), 1)}"]
+    field  = "host-header"
+    values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
   }
 }
 
