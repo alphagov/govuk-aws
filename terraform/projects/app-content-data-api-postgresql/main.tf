@@ -63,23 +63,73 @@ provider "aws" {
   version = "1.40.0"
 }
 
+resource "aws_db_parameter_group" "content_data_api" {
+  name_prefix = "govuk.content-data-api"
+  family      = "postgres9.6"
+
+  # DBInstanceClassMemory is in bytes, divide by 1024 * 16 to convert
+  # to kilobytes, and specify that a a 16th of the overall system
+  # memory should be available as work_mem for each session.
+  #
+  # As this is per session, the actual overall peak memory usage can
+  # be many times this value, if there are many active sessions.
+  parameter {
+    name  = "work_mem"
+    value = "GREATEST({DBInstanceClassMemory/${1024 * 16}},65536)"
+  }
+
+  # Just use a single worker, as some tables are very large, and it's
+  # probably better just to vacuum one table at a time
+  parameter {
+    name  = "autovacuum_max_workers"
+    value = 1
+  }
+
+  # DBInstanceClassMemory is in bytes, divide by 1024 * 3 to convert
+  # to kilobytes, and specify that a third of the overall memory
+  # should be available as work_mem
+  parameter {
+    name  = "maintenance_work_mem"
+    value = "GREATEST({DBInstanceClassMemory/${1024 * 3}},65536)"
+  }
+
+  # Log information about autovacuuming activity, so this can be
+  # better understood
+  parameter {
+    name  = "rds.force_autovacuum_logging_level"
+    value = "log"
+  }
+
+  # Only log information about autovacuuming activity if it takes
+  # longer than 10000ms.
+  parameter {
+    name  = "log_autovacuum_min_duration"
+    value = 10000
+  }
+
+  tags {
+    aws_stackname = "${var.stackname}"
+  }
+}
+
 module "content-data-api-postgresql-primary_rds_instance" {
-  source              = "../../modules/aws/rds_instance"
-  name                = "${var.stackname}-content-data-api-postgresql-primary"
-  engine_name         = "postgres"
-  engine_version      = "9.6"
-  default_tags        = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_primary")}"
-  subnet_ids          = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username            = "${var.username}"
-  password            = "${var.password}"
-  allocated_storage   = "1024"
-  instance_class      = "db.m4.large"
-  instance_name       = "${var.stackname}-content-data-api-postgresql-primary"
-  multi_az            = "${var.multi_az}"
-  security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-postgresql-primary_id}"]
-  event_sns_topic_arn = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
-  skip_final_snapshot = "${var.skip_final_snapshot}"
-  snapshot_identifier = "${var.snapshot_identifier}"
+  source               = "../../modules/aws/rds_instance"
+  name                 = "${var.stackname}-content-data-api-postgresql-primary"
+  parameter_group_name = "${aws_db_parameter_group.content_data_api.name}"
+  engine_name          = "postgres"
+  engine_version       = "9.6"
+  default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_primary")}"
+  subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username             = "${var.username}"
+  password             = "${var.password}"
+  allocated_storage    = "1024"
+  instance_class       = "db.m4.large"
+  instance_name        = "${var.stackname}-content-data-api-postgresql-primary"
+  multi_az             = "${var.multi_az}"
+  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-postgresql-primary_id}"]
+  event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot  = "${var.skip_final_snapshot}"
+  snapshot_identifier  = "${var.snapshot_identifier}"
 }
 
 resource "aws_route53_record" "service_record" {
