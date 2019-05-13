@@ -8,17 +8,18 @@
       ],
       "Effect": "Allow",
       "Resource": [
-        "${govuk-mirror-1}"
+        "${govuk_mirror_arn}"
       ]
     },
     {
       "Action": [
         "s3:GetObjectVersion",
-        "s3:GetObjectVersionAcl"
+        "s3:GetObjectVersionAcl",
+        "s3:GetObjectVersionTagging"
       ],
       "Effect": "Allow",
       "Resource": [
-        "${govuk-mirror-1}/*"
+        "${govuk_mirror_arn}/*"
       ]
     },
     {
@@ -27,7 +28,7 @@
         "s3:ReplicateDelete"
       ],
       "Effect": "Allow",
-      "Resource": "${govuk-mirror-2}/*"
+      "Resource": "${govuk_mirror_replica_arn}/*"
     }
   ]
 }
