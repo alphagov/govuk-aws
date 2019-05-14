@@ -64,7 +64,7 @@ provider "aws" {
 }
 
 resource "aws_db_parameter_group" "content_data_api" {
-  name_prefix = "govuk.content-data-api"
+  name_prefix = "govuk-content-data-api"
   family      = "postgres9.6"
 
   # DBInstanceClassMemory is in bytes, divide by 1024 * 16 to convert
