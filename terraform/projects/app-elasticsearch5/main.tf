@@ -17,9 +17,7 @@
 *
 * - Configuring a snapshot repository: terraform doesn't support this,
 *   and as far as I can tell doesn't have any plans to.  There's a
-*   Python script in the AWS documentation which sets things up.
-*
-*   https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains-snapshots.html
+*   Python script in this directory which sets those up.
 *
 */
 variable "aws_environment" {
