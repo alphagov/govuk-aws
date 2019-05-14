@@ -97,19 +97,19 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 provider "aws" {
   alias   = "secondary"
   region  = "${var.aws_secondary_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 provider "aws" {
   alias   = "subscription"
   region  = "${var.aws_subscription_account_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 data "aws_caller_identity" "current" {}
