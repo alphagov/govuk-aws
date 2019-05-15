@@ -81,8 +81,9 @@ resource "aws_db_parameter_group" "content_data_api" {
   # Just use a single worker, as some tables are very large, and it's
   # probably better just to vacuum one table at a time
   parameter {
-    name  = "autovacuum_max_workers"
-    value = 1
+    name         = "autovacuum_max_workers"
+    value        = 1
+    apply_method = "pending-reboot"
   }
 
   # DBInstanceClassMemory is in bytes, divide by 1024 * 3 to convert
