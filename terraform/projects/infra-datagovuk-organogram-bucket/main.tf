@@ -18,6 +18,11 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "domain" {
+  type        = "string"
+  description = "The domain of the data.gov.uk service to manage"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -57,6 +62,11 @@ data "terraform_remote_state" "infra_monitoring" {
 
 resource "aws_s3_bucket" "datagovuk-organogram" {
   bucket = "datagovuk-${var.aws_environment}-ckan-organogram"
+
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = ["${var.domain}"]
+  }
 
   tags {
     Name            = "datagovuk-${var.aws_environment}-ckan-organogram"
