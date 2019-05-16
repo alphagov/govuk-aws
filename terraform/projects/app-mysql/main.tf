@@ -57,6 +57,16 @@ variable "storage_size" {
   default     = "30"
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -67,6 +77,11 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 # MySQL Primary instance
@@ -111,8 +126,8 @@ resource "aws_db_parameter_group" "mysql-primary" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "mysql-primary.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "mysql-primary.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
   records = ["${module.mysql_primary_rds_instance.rds_instance_address}"]
@@ -149,8 +164,8 @@ module "mysql_replica_rds_instance" {
 }
 
 resource "aws_route53_record" "replica_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "mysql-replica.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "mysql-replica.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
   records = ["${module.mysql_replica_rds_instance.rds_replica_address}"]
