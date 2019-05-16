@@ -17,6 +17,7 @@ Create resources to manage infrastructure and app monitoring:
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| aws_secondary_region | Secondary AWS region | string | `eu-west-2` | no |
 | stackname | Stackname | string | `` | no |
 
 ## Outputs
@@ -25,6 +26,7 @@ Create resources to manage infrastructure and app monitoring:
 |------|-------------|
 | aws_logging_bucket_arn | ARN of the AWS logging bucket |
 | aws_logging_bucket_id | Name of the AWS logging bucket |
+| aws_secondary_logging_bucket_id | Name of the AWS logging bucket |
 | firehose_logs_role_arn | ARN of the Kinesis Firehose stream AWS credentials |
 | lambda_logs_role_arn | ARN of the IAM role attached to the Lambda logs Function |
 | lambda_rds_logs_to_s3_role_arn | ARN of the IAM role attached to the Lambda RDS logs to S3 Function |

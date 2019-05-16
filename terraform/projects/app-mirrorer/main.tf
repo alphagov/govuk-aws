@@ -119,3 +119,7 @@ module "alarms-ec2-mirrorer" {
 # Outputs
 # --------------------------------------------------------------
 
+output "instance_iam_role_name" {
+  value       = "${module.mirrorer.instance_iam_role_name}"
+  description = "name of the instance iam role"
+}

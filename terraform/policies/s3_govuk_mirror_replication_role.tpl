@@ -1,9 +1,9 @@
 {
   "Version": "2012-10-17",
-  "Statement": [ 
+  "Statement": [
     {
     "Action": "sts:AssumeRole",
-    "Principal": { 
+    "Principal": {
       "Service": "s3.amazonaws.com"
     },
     "Effect": "Allow",

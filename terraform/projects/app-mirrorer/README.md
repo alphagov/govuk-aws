@@ -23,3 +23,9 @@ Mirrorer node
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| instance_iam_role_name | name of the instance iam role |
+
