@@ -25,6 +25,16 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -35,6 +45,11 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 resource "aws_elb" "rabbitmq_elb" {
@@ -74,8 +89,8 @@ resource "aws_elb" "rabbitmq_elb" {
 }
 
 resource "aws_route53_record" "rabbitmq_internal_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "rabbitmq.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "rabbitmq.${var.internal_domain_name}"
   type    = "A"
 
   alias {
