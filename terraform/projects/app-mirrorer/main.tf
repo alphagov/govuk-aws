@@ -36,6 +36,12 @@ variable "mirrorer_instance_type" {
   default     = "m5.large"
 }
 
+variable "mirrorer_ebs_size" {
+  type        = "string"
+  description = "Size of addtiional EBS volume in GB"
+  default     = "100"
+}
+
 variable "mirrorer_subnet" {
   type        = "string"
   description = "Subnet to contain mirrorer and its EBS volume"
@@ -75,7 +81,7 @@ module "mirrorer" {
 resource "aws_ebs_volume" "mirrorer" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mirrorer_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = 100
+  size              = "${var.mirrorer_ebs_size}"
   type              = "gp2"
 
   tags {
