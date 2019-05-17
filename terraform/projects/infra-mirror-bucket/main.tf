@@ -198,3 +198,27 @@ resource "aws_iam_policy_attachment" "govuk_mirror_replication_policy_attachment
   roles      = ["${aws_iam_role.govuk_mirror_replication_role.name}"]
   policy_arn = "${aws_iam_policy.govuk_mirror_replication_policy.arn}"
 }
+
+data "template_file" "s3_govuk_mirror_read_policy_template" {
+  template = "${file("${path.module}/../../policies/s3_govuk_mirror_read_policy.tpl")}"
+
+  vars {
+    govuk_mirror_arn = "${aws_s3_bucket.govuk-mirror.arn}"
+  }
+}
+
+resource "aws_iam_policy" "govuk_mirror_read_policy" {
+  name        = "govuk-${var.aws_environment}-mirror-read-policy"
+  policy      = "${data.template_file.s3_govuk_mirror_read_policy_template.rendered}"
+  description = "Allow the listing and reading of the primary govuk mirror bucket"
+}
+
+resource "aws_iam_user" "govuk_mirror_google_reader" {
+  name = "govuk_mirror_google_reader"
+}
+
+resource "aws_iam_policy_attachment" "govuk_mirror_read_policy_attachment" {
+  name       = "s3-govuk-mirror-read-policy-attachment"
+  users      = ["${aws_iam_user.govuk_mirror_google_reader.name}"]
+  policy_arn = "${aws_iam_policy.govuk_mirror_read_policy.arn}"
+}
