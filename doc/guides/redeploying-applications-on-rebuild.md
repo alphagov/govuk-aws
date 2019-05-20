@@ -26,7 +26,8 @@ This will trigger all the apps to redeploy. It assumes that each app will be rel
 asset-manager
 collections-publisher
 contacts
-content-performance-manager
+content-data-admin
+content-data-api
 content-tagger
 email-alert-api
 email-alert-service
