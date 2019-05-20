@@ -39,6 +39,18 @@ variable "role_admin_policy_arns" {
   default     = []
 }
 
+variable "role_internal_admin_user_arns" {
+  type        = "list"
+  description = "List of ARNs of external users that can assume the role"
+  default     = []
+}
+
+variable "role_internal_admin_policy_arns" {
+  type        = "list"
+  description = "List of ARNs of policies to attach to the role"
+  default     = []
+}
+
 variable "role_platformhealth_poweruser_user_arns" {
   type        = "list"
   description = "List of ARNs of external users that can assume the role"
@@ -100,6 +112,13 @@ module "role_admin" {
   role_name        = "govuk-administrators"
   role_user_arns   = ["${var.role_admin_user_arns}"]
   role_policy_arns = ["${var.role_admin_policy_arns}"]
+}
+
+module "role_internal_admin" {
+  source           = "../../modules/aws/iam/role_user"
+  role_name        = "govuk-internal-administrators"
+  role_user_arns   = ["${var.role_internal_admin_user_arns}"]
+  role_policy_arns = ["${var.role_internal_admin_policy_arns}"]
 }
 
 module "role_platformhealth_poweruser" {

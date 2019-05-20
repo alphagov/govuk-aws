@@ -17,6 +17,8 @@ Infrastructure security settings:
 | aws_region | AWS region | string | `eu-west-1` | no |
 | role_admin_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
 | role_admin_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| role_internal_admin_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role_internal_admin_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
 | role_platformhealth_poweruser_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
 | role_platformhealth_poweruser_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
 | role_poweruser_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
