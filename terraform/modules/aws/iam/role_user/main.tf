@@ -80,7 +80,7 @@ resource "aws_iam_role" "user_role" {
 
 resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
   count      = "${length(var.role_policy_arns) * local.create_role}"
-  role       = "${var.role_name}"
+  role       = "${aws_iam_role.user_role.name}"
   policy_arn = "${element(var.role_policy_arns, count.index)}"
 }
 
