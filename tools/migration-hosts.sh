@@ -8,7 +8,8 @@ backend
 bouncer
 collections-publisher
 contacts-admin
-content-performance-manager
+content-data-admin
+content-data-api
 content-tagger
 deploy
 draft-origin
