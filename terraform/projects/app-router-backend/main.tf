@@ -81,6 +81,16 @@ variable "remote_state_infra_database_backups_bucket_key_stack" {
   default     = ""
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -91,6 +101,11 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
@@ -137,8 +152,8 @@ resource "aws_elb" "router_api_elb" {
 }
 
 resource "aws_route53_record" "router_api_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "router-api.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "router-api.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -165,8 +180,8 @@ resource "aws_network_interface" "router-backend-1_eni" {
 }
 
 resource "aws_route53_record" "router-backend_1_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "router-backend-1.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "router-backend-1.${var.internal_domain_name}"
   type    = "A"
   records = ["${var.router-backend_1_ip}"]
   ttl     = 300
@@ -205,8 +220,8 @@ resource "aws_network_interface" "router-backend-2_eni" {
 }
 
 resource "aws_route53_record" "router-backend_2_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "router-backend-2.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "router-backend-2.${var.internal_domain_name}"
   type    = "A"
   records = ["${var.router-backend_2_ip}"]
   ttl     = 300
@@ -245,8 +260,8 @@ resource "aws_network_interface" "router-backend-3_eni" {
 }
 
 resource "aws_route53_record" "router-backend_3_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "router-backend-3.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "router-backend-3.${var.internal_domain_name}"
   type    = "A"
   records = ["${var.router-backend_3_ip}"]
   ttl     = 300
@@ -284,7 +299,7 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
