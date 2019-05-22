@@ -11,6 +11,8 @@ RDS Transition PostgreSQL Primary instance
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
 | instance_name | The RDS Instance Name. | string | `` | no |
+| internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
+| internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
 | multi_az | Enable multi-az. | string | `true` | no |
 | password | DB password | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
