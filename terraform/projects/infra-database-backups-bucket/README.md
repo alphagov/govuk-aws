@@ -16,6 +16,7 @@ database-backups: The bucket that will hold database backups
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | stackname | Stackname | string | - | yes |
+| training_and_integration_only | Only apply these policies to training or integration | string | `false` | no |
 
 ## Outputs
 

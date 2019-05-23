@@ -40,6 +40,12 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "training_and_integration_only" {
+  type        = "string"
+  description = "Only apply these policies to training or integration "
+  default     = "false"
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
