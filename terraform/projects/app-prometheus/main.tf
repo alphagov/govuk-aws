@@ -47,7 +47,6 @@ provider "aws" {
 module "prometheus-1" {
   source       = "../../modules/aws/node_group"
   name         = "${var.stackname}-prometheus-1"
-  vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
 var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1")}"
 

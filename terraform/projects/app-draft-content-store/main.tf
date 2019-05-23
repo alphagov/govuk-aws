@@ -164,7 +164,6 @@ resource "aws_route53_record" "internal_service_record" {
 module "draft-content-store" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-draft-content-store"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "draft_content_store", "aws_hostname", "draft-content-store-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_draft-content-store_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]

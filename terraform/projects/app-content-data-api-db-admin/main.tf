@@ -40,7 +40,6 @@ provider "aws" {
 module "content-data-api-db-admin" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-content-data-api-db-admin"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_db_admin", "aws_hostname", "content-data-api-db-admin-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-db-admin_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]

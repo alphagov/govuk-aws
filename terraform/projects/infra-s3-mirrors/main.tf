@@ -19,16 +19,6 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "stackname" {
-  type        = "string"
-  description = "Stackname"
-}
-
-variable "remote_state_bucket" {
-  type        = "string"
-  description = "S3 bucket we store our terraform state in"
-}
-
 # Resources
 # --------------------------------------------------------------
 
