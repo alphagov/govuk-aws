@@ -21,7 +21,7 @@ service = 'es'
 credentials = boto3.Session().get_credentials()
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, region, service, session_token=credentials.token)
 
-def register_repository(name, role_arn, delete_first=False):
+def register_repository(name, role_arn, delete_first=False, read_only=False):
     print(name)
 
     url = host + '_snapshot/' + name
@@ -36,7 +36,8 @@ def register_repository(name, role_arn, delete_first=False):
         "settings": {
             "bucket": name + '-elasticsearch5-manual-snapshots',
             "region": region,
-            "role_arn": role_arn
+            "role_arn": role_arn,
+            "readonly": read_only
         }
     }
 
@@ -50,14 +51,14 @@ delete_first = 'DELETE_FIRST' in os.environ
 
 if sys.argv[1] == 'integration':
     role_arn = 'arn:aws:iam::210287912431:role/blue-elasticsearch5-manual-snapshot-role'
-    register_repository('govuk-integration', role_arn, delete_first=delete_first) # write
-    register_repository('govuk-staging', role_arn, delete_first=delete_first) # read
+    register_repository('govuk-integration', role_arn, delete_first=delete_first)
+    register_repository('govuk-staging', role_arn, delete_first=delete_first, read_only=True)
 elif sys.argv[1] == 'staging':
     role_arn = 'arn:aws:iam::696911096973:role/blue-elasticsearch5-manual-snapshot-role'
-    register_repository('govuk-staging', role_arn, delete_first=delete_first) # write
-    register_repository('govuk-production', role_arn, delete_first=delete_first) # read
+    register_repository('govuk-staging', role_arn, delete_first=delete_first)
+    register_repository('govuk-production', role_arn, delete_first=delete_first, read_only=True)
 elif sys.argv[1] == 'production':
     role_arn = 'arn:aws:iam::172025368201:role/blue-elasticsearch5-manual-snapshot-role'
-    register_repository('govuk-production', role_arn, delete_first=delete_first) # write
+    register_repository('govuk-production', role_arn, delete_first=delete_first)
 else:
     print('expected one of [integration|staging|production]')
