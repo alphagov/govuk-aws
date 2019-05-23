@@ -159,6 +159,11 @@ function get_context {
   check_allowed_contexts
 }
 
+function print_context {
+  get_context
+  echo "$CONTEXT"
+}
+
 function load_user {
   SSH_USER_FILE=$CONFIG_DIR/ssh-user
   if [[ -f $SSH_USER_FILE ]] && [[ $(cat $SSH_USER_FILE) != '' ]]; then
@@ -352,7 +357,7 @@ EOF
 COMMAND=$1
 shift
 case ${COMMAND} in
-  'get-context') get_context;;
+  'get-context') print_context;;
   'list-contexts') list_contexts;;
   'set-context') set_context $1;;
   'ssh') run_ssh "$@";;
