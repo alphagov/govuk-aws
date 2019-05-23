@@ -45,7 +45,6 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | instance_user_data | User_data provisioning script (default user_data.sh in module directory) | string | `user_data.sh` | no |
 | name | Jumpbox resources name. Only alphanumeric characters and hyphens allowed | string | - | yes |
 | root_block_device_volume_size | The size of the instance root volume in gigabytes | string | `20` | no |
-| vpc_id | The ID of the VPC in which the jumpbox is created | string | - | yes |
 
 ## Outputs
 

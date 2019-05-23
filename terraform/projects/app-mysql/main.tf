@@ -19,12 +19,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "instance_name" {
-  type        = "string"
-  description = "The RDS Instance Name."
-  default     = ""
-}
-
 variable "cloudwatch_log_retention" {
   type        = "string"
   description = "Number of days to retain Cloudwatch logs for"

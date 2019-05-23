@@ -133,7 +133,6 @@ resource "aws_route53_record" "app_service_records" {
 module "frontend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-frontend"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "frontend", "aws_hostname", "frontend-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]

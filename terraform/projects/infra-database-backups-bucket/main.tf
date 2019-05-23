@@ -40,10 +40,10 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
-variable "backup_source_bucket" {
+variable "training_and_integration_only" {
   type        = "string"
-  description = "This variable is used to pass the backup bucket that is used to get the data (from production)."
-  default     = ""
+  description = "Only apply these policies to training or integration "
+  default     = "false"
 }
 
 # Set up the backend & provider for each region

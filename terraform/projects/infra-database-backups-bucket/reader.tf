@@ -9,6 +9,7 @@
 */
 
 resource "aws_iam_policy" "training_mongo_api_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-mongo-api_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_mongo_api_database_backups_reader.json}"
   description = "Allows reading the mongo-api database_backups bucket"
@@ -34,6 +35,7 @@ data "aws_iam_policy_document" "training_mongo_api_database_backups_reader" {
 }
 
 resource "aws_iam_policy" "training_mongo_router_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-mongo-router_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_mongo_router_database_backups_reader.json}"
   description = "Allows reading the mongo-router database_backups bucket"
@@ -61,6 +63,7 @@ data "aws_iam_policy_document" "training_mongo_router_database_backups_reader" {
 }
 
 resource "aws_iam_policy" "training_mongodb_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-mongodb_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_mongodb_database_backups_reader.json}"
   description = "Allows reading the mongodb database_backups bucket"
@@ -86,6 +89,7 @@ data "aws_iam_policy_document" "training_mongodb_database_backups_reader" {
 }
 
 resource "aws_iam_policy" "training_elasticsearch_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-elasticsearch_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_elasticsearch_database_backups_reader.json}"
   description = "Allows reading the elasticsearch database_backups bucket"
@@ -111,6 +115,7 @@ data "aws_iam_policy_document" "training_elasticsearch_database_backups_reader" 
 }
 
 resource "aws_iam_policy" "training_dbadmin_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_dbadmin_database_backups_reader.json}"
   description = "Allows reading the dbadmin database_backups bucket"
@@ -138,6 +143,7 @@ data "aws_iam_policy_document" "training_dbadmin_database_backups_reader" {
 }
 
 resource "aws_iam_policy" "training_transition_dbadmin_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-transition_dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_transition_dbadmin_database_backups_reader.json}"
   description = "Allows reading the transition_dbadmin database_backups bucket"
@@ -163,6 +169,7 @@ data "aws_iam_policy_document" "training_transition_dbadmin_database_backups_rea
 }
 
 resource "aws_iam_policy" "training_publishing-api_dbadmin_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-publishing-api_dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_publishing-api_dbadmin_database_backups_reader.json}"
   description = "Allows reading the publishing-api_dbadmin database_backups bucket"
@@ -186,6 +193,7 @@ data "aws_iam_policy_document" "training_publishing-api_dbadmin_database_backups
 }
 
 resource "aws_iam_policy" "training_email-alert-api_dbadmin_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-email-alert-api_dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_email-alert-api_dbadmin_database_backups_reader.json}"
   description = "Allows reading the email-alert-api_dbadmin database_backups bucket"
@@ -209,6 +217,7 @@ data "aws_iam_policy_document" "training_email-alert-api_dbadmin_database_backup
 }
 
 resource "aws_iam_policy" "training_graphite_database_backups_reader" {
+  count       = "${var.training_and_integration_only == true ? 1 : 0}"
   name        = "govuk-training-graphite_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.training_graphite_database_backups_reader.json}"
   description = "Allows reading the graphite database_backups bucket"

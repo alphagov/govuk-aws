@@ -87,7 +87,6 @@ resource "aws_route53_record" "service_record" {
 module "ubuntutest" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ubuntutest"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ubuntutest", "aws_hostname", "ubuntutest-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ubuntutest_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]

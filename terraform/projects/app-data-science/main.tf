@@ -110,7 +110,6 @@ resource "aws_elb" "data-science_external_elb" {
 module "data-science-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "data-science-1"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.public_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
@@ -126,7 +125,6 @@ module "data-science-1" {
 module "data-science-2" {
   source                        = "../../modules/aws/node_group"
   name                          = "data-science-2"
-  vpc_id                        = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-2")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.public_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]

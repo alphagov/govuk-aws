@@ -10,11 +10,6 @@ variable "aws_region" {
   default     = "eu-west-2"
 }
 
-variable "aws_environment" {
-  type        = "string"
-  description = "AWS Environment"
-}
-
 variable "stackname" {
   type        = "string"
   description = "Stackname"
