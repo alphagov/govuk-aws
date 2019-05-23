@@ -1,0 +1,4 @@
+bucket  = "govuk-training-terraform-state"
+key     = "govuk/app-elasticsearch5.tfstate"
+encrypt = true
+region  = "eu-west-2"
