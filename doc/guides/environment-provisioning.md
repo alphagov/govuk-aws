@@ -122,8 +122,7 @@ The projects that need to be initially run in this way are:
 9. `infra-database-backups-bucket`
 10. `infra-artefact-bucket`
 11. `infra-mirror-bucket`
-12. `infra-wal-e-warehouse-bucket`
-13. `infra-public-services`
+12. `infra-public-services`
 
 ### Update the NS records (if rebuilding infra-root-dns-zones in staging or integration)
 
