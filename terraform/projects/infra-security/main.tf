@@ -325,7 +325,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}"]
+      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
     }
   }
 
@@ -344,7 +344,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}"]
+      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
     }
   }
 
@@ -361,7 +361,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}"]
+      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
     }
   }
 }
