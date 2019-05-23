@@ -396,31 +396,6 @@ data "aws_iam_policy_document" "integration_transition_dbadmin_database_backups_
   }
 }
 
-resource "aws_iam_policy" "integration_warehouse_dbadmin_database_backups_reader" {
-  name        = "govuk-integration-warehouse_dbadmin_database_backups-reader-policy"
-  policy      = "${data.aws_iam_policy_document.integration_warehouse_dbadmin_database_backups_reader.json}"
-  description = "Allows reading the warehouse_dbadmin database_backups bucket"
-}
-
-data "aws_iam_policy_document" "integration_warehouse_dbadmin_database_backups_reader" {
-  statement {
-    sid = "WarehouseDBAdminReadBucket"
-
-    actions = [
-      "s3:Get*",
-      "s3:List*",
-    ]
-
-    # Need access to the top level of the tree.
-    resources = [
-      "arn:aws:s3:::govuk-integration-database-backups",
-      "arn:aws:s3:::govuk-integration-database-backups/*warehouse*",
-      "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*warehouse*",
-    ]
-  }
-}
-
 resource "aws_iam_policy" "integration_publishing-api_dbadmin_database_backups_reader" {
   name        = "govuk-integration-publishing-api_dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.integration_publishing-api_dbadmin_database_backups_reader.json}"
@@ -628,29 +603,6 @@ data "aws_iam_policy_document" "staging_transition_dbadmin_database_backups_read
     resources = [
       "arn:aws:s3:::govuk-staging-database-backups",
       "arn:aws:s3:::govuk-staging-database-backups/*transition*",
-    ]
-  }
-}
-
-resource "aws_iam_policy" "staging_warehouse_dbadmin_database_backups_reader" {
-  name        = "govuk-staging-warehouse_dbadmin_database_backups-reader-policy"
-  policy      = "${data.aws_iam_policy_document.staging_warehouse_dbadmin_database_backups_reader.json}"
-  description = "Allows reading the warehouse_dbadmin database_backups bucket"
-}
-
-data "aws_iam_policy_document" "staging_warehouse_dbadmin_database_backups_reader" {
-  statement {
-    sid = "WarehouseDBAdminReadBucket"
-
-    actions = [
-      "s3:Get*",
-      "s3:List*",
-    ]
-
-    # Need access to the top level of the tree.
-    resources = [
-      "arn:aws:s3:::govuk-staging-database-backups",
-      "arn:aws:s3:::govuk-staging-database-backups/*warehouse*",
     ]
   }
 }
@@ -905,29 +857,6 @@ data "aws_iam_policy_document" "production_transition_dbadmin_database_backups_r
   }
 }
 
-resource "aws_iam_policy" "production_warehouse_dbadmin_database_backups_reader" {
-  name        = "govuk-production-warehouse_dbadmin_database_backups-reader-policy"
-  policy      = "${data.aws_iam_policy_document.production_warehouse_dbadmin_database_backups_reader.json}"
-  description = "Allows reading the warehouse_dbadmin database_backups bucket"
-}
-
-data "aws_iam_policy_document" "production_warehouse_dbadmin_database_backups_reader" {
-  statement {
-    sid = "WarehouseDBAdminReadBucket"
-
-    actions = [
-      "s3:Get*",
-      "s3:List*",
-    ]
-
-    # Need access to the top level of the tree.
-    resources = [
-      "arn:aws:s3:::govuk-production-database-backups",
-      "arn:aws:s3:::govuk-production-database-backups/*warehouse*",
-    ]
-  }
-}
-
 resource "aws_iam_policy" "production_publishing-api_dbadmin_database_backups_reader" {
   name        = "govuk-production-publishing-api_dbadmin_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.production_publishing-api_dbadmin_database_backups_reader.json}"
@@ -1032,11 +961,6 @@ output "integration_publishing-api_dbadmin_read_database_backups_bucket_policy_a
   description = "ARN of the integration read publishing-apiDBAdmin database_backups-bucket policy"
 }
 
-output "integration_warehouse_dbadmin_read_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.integration_warehouse_dbadmin_database_backups_reader.arn}"
-  description = "ARN of the integration read WarehouseDBAdmin database_backups-bucket policy"
-}
-
 output "integration_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.integration_email-alert-api_dbadmin_database_backups_reader.arn}"
   description = "ARN of the integration read EmailAlertAPUDBAdmin database_backups-bucket policy"
@@ -1080,11 +1004,6 @@ output "staging_transition_dbadmin_read_database_backups_bucket_policy_arn" {
 output "staging_publishing-api_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.staging_publishing-api_dbadmin_database_backups_reader.arn}"
   description = "ARN of the staging read publishing-apiDBAdmin database_backups-bucket policy"
-}
-
-output "staging_warehouse_dbadmin_read_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.staging_warehouse_dbadmin_database_backups_reader.arn}"
-  description = "ARN of the staging read WarehouseDBAdmin database_backups-bucket policy"
 }
 
 output "staging_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn" {
@@ -1135,11 +1054,6 @@ output "production_transition_dbadmin_read_database_backups_bucket_policy_arn" {
 output "production_publishing-api_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.production_publishing-api_dbadmin_database_backups_reader.arn}"
   description = "ARN of the production read publishing-apiDBAdmin database_backups-bucket policy"
-}
-
-output "production_warehouse_dbadmin_read_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.production_warehouse_dbadmin_database_backups_reader.arn}"
-  description = "ARN of the production read WarehouseDBAdmin database_backups-bucket policy"
 }
 
 output "production_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn" {
