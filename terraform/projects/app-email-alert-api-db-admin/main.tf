@@ -91,7 +91,6 @@ resource "aws_elb" "email-alert-api-db-admin_elb" {
 module "email-alert-api-db-admin" {
   source       = "../../modules/aws/node_group"
   name         = "${var.stackname}-email-alert-api-db-admin"
-  vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags = "${map("Project", var.stackname,
   "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "email_alert_api_db_admin", "aws_hostname", "email-alert-api-db-admin-1")}"
 

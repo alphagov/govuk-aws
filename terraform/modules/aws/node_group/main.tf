@@ -28,11 +28,6 @@ variable "default_tags" {
   default     = {}
 }
 
-variable "vpc_id" {
-  type        = "string"
-  description = "The ID of the VPC in which the jumpbox is created"
-}
-
 variable "instance_subnet_ids" {
   type        = "list"
   description = "List of subnet ids where the instance can be deployed"

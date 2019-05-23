@@ -161,7 +161,6 @@ resource "aws_route53_record" "gemstash_internal_service_record" {
 module "apt" {
   source                            = "../../modules/aws/node_group"
   name                              = "${var.stackname}-apt"
-  vpc_id                            = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "apt", "aws_hostname", "apt-1")}"
   instance_subnet_ids               = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.apt_1_subnet))}"
   instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_apt_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
