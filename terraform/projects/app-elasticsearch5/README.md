@@ -27,7 +27,6 @@ doesn't support:
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | `90` | no |
-| downstream_lambda_arn | ARN (or empty) of the lambda function to notify when the manual snapshots bucket is updated | list | `<list>` | no |
 | elasticsearch5_dedicated_master_enabled | Indicates whether dedicated master nodes are enabled for the cluster | string | `true` | no |
 | elasticsearch5_ebs_encrypt | Whether to encrypt the EBS volume at rest | string | - | yes |
 | elasticsearch5_ebs_size | The amount of EBS storage to attach | string | `32` | no |
@@ -49,7 +48,6 @@ doesn't support:
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | Stackname | string | - | yes |
-| upstream_bucket_arn | ARN (or empty) of the S3 bucket which will notify the lambda function in this environment | list | `<list>` | no |
 
 ## Outputs
 
@@ -57,7 +55,6 @@ doesn't support:
 |------|-------------|
 | domain_configuration_policy_arn | ARN of the policy used to configure the elasticsearch domain |
 | manual_snapshots_bucket_arn | ARN of the bucket to store manual snapshots |
-| manual_snapshots_lambda_arn | ARN of the lambda function to update the upstream bucket |
 | service_dns_name | DNS name to access the Elasticsearch internal service |
 | service_endpoint | Endpoint to submit index, search, and upload requests |
 | service_role_id | Unique identifier for the service-linked role |
