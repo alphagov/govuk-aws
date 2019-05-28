@@ -58,6 +58,7 @@ This project adds global resources for app components:
 | elb_public_secondary_certname | The ACM secondary cert domain name to find the ARN of | string | - | yes |
 | email_alert_api_internal_service_names |  | list | `<list>` | no |
 | email_alert_api_public_service_names |  | list | `<list>` | no |
+| enable_lb_app_healthchecks | Use application specific target groups and healthchecks based on the list of services in the cname variable. | string | `false` | no |
 | feedback_public_service_names |  | list | `<list>` | no |
 | frontend_internal_service_cnames |  | list | `<list>` | no |
 | frontend_internal_service_names |  | list | `<list>` | no |

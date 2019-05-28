@@ -38,6 +38,12 @@ variable "app_stackname" {
   default     = "blue"
 }
 
+variable "enable_lb_app_healthchecks" {
+  type        = "string"
+  description = "Use application specific target groups and healthchecks based on the list of services in the cname variable."
+  default     = false
+}
+
 variable "apt_public_service_names" {
   type    = "list"
   default = []
@@ -518,6 +524,7 @@ module "backend_public_lb" {
 resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
   count        = "${length(var.backend_alb_blocked_host_headers)}"
   listener_arn = "${element(module.backend_public_lb.load_balancer_ssl_listeners, 0)}"
+  priority     = "${count.index + 1}"
 
   action {
     type             = "fixed-response"
@@ -533,6 +540,18 @@ resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
     field  = "host-header"
     values = ["${element(var.backend_alb_blocked_host_headers, count.index)}"]
   }
+}
+
+module "backend_public_lb_rules" {
+  source                 = "../../modules/aws/lb_listener_rules"
+  name                   = "backend"
+  autoscaling_group_name = "${data.aws_autoscaling_groups.backend.names[0]}"
+  rules_host_domain      = "${var.aws_environment}.*"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn           = "${module.backend_public_lb.load_balancer_ssl_listeners[0]}"
+  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.backend_public_service_cnames) : ""))}"]
+  priority_offset        = "${length(var.backend_alb_blocked_host_headers) + 1}"
+  default_tags           = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
 }
 
 resource "aws_route53_record" "backend_public_service_names" {
