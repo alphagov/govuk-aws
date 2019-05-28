@@ -25,7 +25,7 @@ so at the moment only one condition can be specified per rule
 | target_group_deregistration_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused. | string | `300` | no |
 | target_group_health_check_interval | The approximate amount of time, in seconds, between health checks of an individual target. Minimum value 5 seconds, Maximum value 300 seconds. | string | `30` | no |
 | target_group_health_check_matcher | The HTTP codes to use when checking for a successful response from a target. | string | `200-399` | no |
-| target_group_health_check_path_prefix | The prefix destination for the health check request. | string | `/_healthcheck-` | no |
+| target_group_health_check_path_prefix | The prefix destination for the health check request. | string | `/_healthcheck_` | no |
 | target_group_health_check_timeout | The amount of time, in seconds, during which no response means a failed health check. | string | `5` | no |
 | target_group_port | The port on which targets receive traffic. | string | `80` | no |
 | target_group_protocol | The protocol to use for routing traffic to the targets. | string | `HTTP` | no |
