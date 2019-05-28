@@ -12,6 +12,7 @@ Draft Frontend application servers
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
+| enable_alb | Use application specific target groups and healthchecks based on the list of services in the cname variable. | string | `false` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
