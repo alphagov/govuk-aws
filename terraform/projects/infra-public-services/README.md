@@ -98,8 +98,6 @@ This project adds global resources for app components:
 | transition_db_admin_internal_service_names |  | list | `<list>` | no |
 | transition_postgresql_internal_service_names |  | list | `<list>` | no |
 | ubuntutest_public_service_names |  | list | `<list>` | no |
-| warehouse_db_admin_internal_service_names |  | list | `<list>` | no |
-| warehouse_postgresql_internal_service_names |  | list | `<list>` | no |
 | whitehall_backend_internal_service_cnames |  | list | `<list>` | no |
 | whitehall_backend_internal_service_names |  | list | `<list>` | no |
 | whitehall_backend_public_service_cnames |  | list | `<list>` | no |
