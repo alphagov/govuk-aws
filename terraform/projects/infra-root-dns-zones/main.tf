@@ -78,9 +78,12 @@ data "terraform_remote_state" "infra_vpc" {
 }
 
 resource "aws_route53_zone" "internal_zone" {
-  count  = "${var.create_internal_zone}"
-  name   = "${var.root_domain_internal_name}"
-  vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  count = "${var.create_internal_zone}"
+  name  = "${var.root_domain_internal_name}"
+
+  vpc {
+    vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  }
 
   tags {
     Project = "infra-root-dns-zones"
