@@ -36,7 +36,6 @@ database-backups: The bucket that will hold database backups
 | integration_mongodb_read_database_backups_bucket_policy_arn | ARN of the integration read mongodb database_backups-bucket policy |
 | integration_publishing-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the integration read publishing-apiDBAdmin database_backups-bucket policy |
 | integration_transition_dbadmin_read_database_backups_bucket_policy_arn | ARN of the integration read TransitionDBAdmin database_backups-bucket policy |
-| integration_warehouse_dbadmin_read_database_backups_bucket_policy_arn | ARN of the integration read WarehouseDBAdmin database_backups-bucket policy |
 | mongo_api_write_database_backups_bucket_policy_arn | ARN of the mongo-api write database_backups-bucket policy |
 | mongo_router_write_database_backups_bucket_policy_arn | ARN of the router_backend write database_backups-bucket policy |
 | mongodb_write_database_backups_bucket_policy_arn | ARN of the mongodb write database_backups-bucket policy |
@@ -50,7 +49,6 @@ database-backups: The bucket that will hold database backups
 | production_mongodb_read_database_backups_bucket_policy_arn | ARN of the production read mongodb database_backups-bucket policy |
 | production_publishing-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read publishing-apiDBAdmin database_backups-bucket policy |
 | production_transition_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read TransitionDBAdmin database_backups-bucket policy |
-| production_warehouse_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read WarehouseDBAdmin database_backups-bucket policy |
 | publishing-api_dbadmin_write_database_backups_bucket_policy_arn | ARN of the publishing-apiDBAdmin write database_backups-bucket policy |
 | staging_dbadmin_read_database_backups_bucket_policy_arn | ARN of the staging read DBAdmin database_backups-bucket policy |
 | staging_elasticsearch_read_database_backups_bucket_policy_arn | ARN of the staging read elasticsearch database_backups-bucket policy |
@@ -61,7 +59,5 @@ database-backups: The bucket that will hold database backups
 | staging_mongodb_read_database_backups_bucket_policy_arn | ARN of the staging read mongodb database_backups-bucket policy |
 | staging_publishing-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the staging read publishing-apiDBAdmin database_backups-bucket policy |
 | staging_transition_dbadmin_read_database_backups_bucket_policy_arn | ARN of the staging read TransitionDBAdmin database_backups-bucket policy |
-| staging_warehouse_dbadmin_read_database_backups_bucket_policy_arn | ARN of the staging read WarehouseDBAdmin database_backups-bucket policy |
 | transition_dbadmin_write_database_backups_bucket_policy_arn | ARN of the TransitionDBAdmin write database_backups-bucket policy |
-| warehouse_dbadmin_write_database_backups_bucket_policy_arn | ARN of the WarehouseDBAdmin write database_backups-bucket policy |
 
