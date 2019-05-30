@@ -6,10 +6,9 @@ require 'json'
 require 'uri'
 
 # Fields from the command line
-command = ARGV[0]
-environment = ARGV[1]
-stack = ARGV[2]
-project = ARGV[3]
+command, environment, stack, project, *rest= ARGV
+
+abort("too many arguments: #{rest}") unless rest.empty?
 
 # Valid values for each field
 valid_commands = %w(plan apply plan-destroy destroy).freeze
