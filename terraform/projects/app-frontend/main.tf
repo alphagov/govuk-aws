@@ -54,6 +54,12 @@ variable "instance_type" {
   default     = "m5.xlarge"
 }
 
+variable "enable_alb" {
+  type        = "string"
+  description = "Use application specific target groups and healthchecks based on the list of services in the cname variable."
+  default     = false
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -115,8 +121,8 @@ resource "aws_route53_record" "service_record" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.frontend_elb.dns_name}"
-    zone_id                = "${aws_elb.frontend_elb.zone_id}"
+    name                   = "${var.enable_alb ? module.internal_lb.lb_dns_name : aws_elb.frontend_elb.dns_name}"
+    zone_id                = "${var.enable_alb ? module.internal_lb.lb_zone_id : aws_elb.frontend_elb.zone_id}"
     evaluate_target_health = true
   }
 }
@@ -130,22 +136,51 @@ resource "aws_route53_record" "app_service_records" {
   ttl     = "300"
 }
 
+module "internal_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-frontend-internal"
+  internal                                   = true
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-frontend-internal-elb"
+  listener_certificate_domain_name           = "${var.elb_internal_certname}"
+  listener_secondary_certificate_domain_name = ""
+  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
+  subnets                                    = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                               = "${map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "frontend")}"
+}
+
+module "internal_lb_rules" {
+  source                 = "../../modules/aws/lb_listener_rules"
+  name                   = "frontend-internal"
+  autoscaling_group_name = "${module.frontend.autoscaling_group_name}"
+  rules_host_domain      = "*"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn           = "${module.internal_lb.load_balancer_ssl_listeners[0]}"
+  rules_host             = ["${concat(list("frontend"), var.app_service_records)}"]
+  default_tags           = "${map("Project", var.stackname, "aws_migration", "frontend", "aws_environment", var.aws_environment)}"
+}
+
 module "frontend" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-frontend"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "frontend", "aws_hostname", "frontend-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "1"
-  instance_elb_ids              = ["${aws_elb.frontend_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_max_size                  = "${var.asg_size}"
-  asg_min_size                  = "${var.asg_size}"
-  asg_desired_capacity          = "${var.asg_size}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "${var.root_block_device_volume_size}"
+  source                            = "../../modules/aws/node_group"
+  name                              = "${var.stackname}-frontend"
+  default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "frontend", "aws_hostname", "frontend-1")}"
+  instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                     = "${var.instance_type}"
+  instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length           = "1"
+  instance_elb_ids                  = ["${aws_elb.frontend_elb.id}"]
+  instance_target_group_arns_length = "${var.enable_alb ? 1 : 0}"
+  instance_target_group_arns        = ["${var.enable_alb ? module.internal_lb.target_group_arns[0] : ""}"]
+  instance_ami_filter_name          = "${var.instance_ami_filter_name}"
+  asg_max_size                      = "${var.asg_size}"
+  asg_min_size                      = "${var.asg_size}"
+  asg_desired_capacity              = "${var.asg_size}"
+  asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size     = "${var.root_block_device_volume_size}"
 }
 
 module "alarms-elb-frontend-internal" {
