@@ -55,7 +55,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 data "terraform_remote_state" "infra_root_dns_zones" {

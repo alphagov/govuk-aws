@@ -60,7 +60,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 module "publishing-api-postgresql-primary_rds_instance" {

@@ -57,13 +57,13 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 provider "aws" {
   region  = "${var.aws_replica_region}"
   alias   = "aws_replica"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 data "aws_caller_identity" "current" {}

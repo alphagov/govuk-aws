@@ -64,7 +64,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.40.0"
+  version = "1.60.0"
 }
 
 data "terraform_remote_state" "infra_vpc" {
@@ -78,9 +78,12 @@ data "terraform_remote_state" "infra_vpc" {
 }
 
 resource "aws_route53_zone" "internal_zone" {
-  count  = "${var.create_internal_zone}"
-  name   = "${var.root_domain_internal_name}"
-  vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  count = "${var.create_internal_zone}"
+  name  = "${var.root_domain_internal_name}"
+
+  vpc {
+    vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  }
 
   tags {
     Project = "infra-root-dns-zones"
