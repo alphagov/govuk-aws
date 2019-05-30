@@ -104,3 +104,4 @@ This project adds global resources for app components:
 | whitehall_backend_public_service_cnames |  | list | `<list>` | no |
 | whitehall_backend_public_service_names |  | list | `<list>` | no |
 | whitehall_frontend_internal_service_names |  | list | `<list>` | no |
+

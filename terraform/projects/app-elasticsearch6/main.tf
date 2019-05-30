@@ -155,10 +155,6 @@ data "aws_route53_zone" "internal" {
   private_zone = true
 }
 
-resource "aws_iam_service_linked_role" "role" {
-  aws_service_name = "es.amazonaws.com"
-}
-
 resource "aws_cloudwatch_log_group" "elasticsearch6_application_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch6-domain/es6-application-logs"
   retention_in_days = "${var.cloudwatch_log_retention}"
@@ -286,9 +282,7 @@ CONFIG
     aws_environment = "${var.aws_environment}"
   }
 
-  depends_on = [
-    "aws_iam_service_linked_role.role",
-  ]
+  depends_on = []
 }
 
 resource "aws_route53_record" "service_record" {
@@ -436,11 +430,6 @@ POLICY
 
 # Outputs
 # --------------------------------------------------------------
-
-output "service_role_id" {
-  value       = "${aws_iam_service_linked_role.role.id}"
-  description = "Unique identifier for the service-linked role"
-}
 
 output "service_endpoint" {
   value       = "${aws_elasticsearch_domain.elasticsearch6.endpoint}"
