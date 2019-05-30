@@ -12,7 +12,7 @@ stack = ARGV[2]
 project = ARGV[3]
 
 # Valid values for each field
-valid_commands = %w(plan apply destroy).freeze
+valid_commands = %w(plan apply plan-destroy destroy).freeze
 valid_environments = %w(integration staging production test tools).freeze
 valid_stacks = %w(blue green govuk).freeze
 
@@ -59,6 +59,11 @@ jenkins_crumb_request.basic_auth(ENV['GITHUB_USERNAME'], ENV['GITHUB_TOKEN'])
 jenkins_crumb_response = jenkins_crumb_http.request(jenkins_crumb_request)
 abort('Could not get crumb from Jenkins') unless jenkins_crumb_response.code == '200'
 jenkins_crumb = JSON.parse(jenkins_crumb_response.body)
+
+if command == 'plan-destroy'
+  # The Jenkins job uses a slightly different command
+  command = 'plan (destroy)'
+end
 
 # Make a request to the Jenkins API to queue the build
 puts 'Queuing Jenkins job...'
