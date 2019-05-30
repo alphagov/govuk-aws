@@ -103,7 +103,7 @@ variable "target_group_health_check_matcher" {
 
 resource "aws_lb_target_group" "tg" {
   count                = "${length(var.rules_host)}"
-  name                 = "${format("%.10s-%.21s", var.name, var.rules_host[count.index])}"
+  name                 = "${replace(format("%.10s-%.21s", var.name, var.rules_host[count.index]), "/-$/", "")}"
   port                 = "${var.target_group_port}"
   protocol             = "${var.target_group_protocol}"
   vpc_id               = "${var.vpc_id}"
