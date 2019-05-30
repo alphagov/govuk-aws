@@ -25,7 +25,7 @@ abort("stack must be one of #{valid_stacks.join(', ')}\n#{usage}") unless valid_
 
 # Make sure the user is happy to go ahead
 puts "You're about to #{command} the #{stack}/#{project} project in #{environment}"
-puts 'Do you want to go ahead? [y/N]'
+print 'Do you want to go ahead? [y/N] '
 continue = STDIN.gets.chomp
 abort('Build aborted') unless continue.downcase == 'y'
 
