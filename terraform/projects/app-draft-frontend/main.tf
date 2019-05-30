@@ -48,6 +48,12 @@ variable "enable_alb" {
   default     = false
 }
 
+variable "root_block_device_volume_size" {
+  type        = "string"
+  description = "The size of the instance root volume in gigabytes"
+  default     = "40"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -168,6 +174,7 @@ module "draft-frontend" {
   asg_min_size                      = "${var.asg_size}"
   asg_desired_capacity              = "${var.asg_size}"
   asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size     = "${var.root_block_device_volume_size}"
 }
 
 module "alarms-elb-draft-frontend-internal" {
