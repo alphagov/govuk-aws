@@ -270,6 +270,7 @@ To ensure that applications deploy correctly, ensure that the datastores exist:
 
 `app-backend-redis`
 `app-elasticsearch5`
+`app-elasticsearch6`
 `app-mongo`
 `app-mysql`
 `app-postgresql`

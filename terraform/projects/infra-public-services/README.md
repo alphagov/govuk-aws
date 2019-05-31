@@ -54,6 +54,7 @@ This project adds global resources for app components:
 | draft_frontend_internal_service_names |  | list | `<list>` | no |
 | draft_whitehall_frontend_internal_service_names |  | list | `<list>` | no |
 | elasticsearch5_internal_service_names |  | list | `<list>` | no |
+| elasticsearch6_internal_service_names |  | list | `<list>` | no |
 | elb_public_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | elb_public_secondary_certname | The ACM secondary cert domain name to find the ARN of | string | - | yes |
 | email_alert_api_internal_service_names |  | list | `<list>` | no |
