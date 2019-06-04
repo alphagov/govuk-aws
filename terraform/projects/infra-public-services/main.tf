@@ -715,6 +715,17 @@ resource "aws_route53_record" "cache_public_service_cnames" {
   ttl     = "300"
 }
 
+module "cache_public_lb_rules" {
+  source                 = "../../modules/aws/lb_listener_rules"
+  name                   = "cache"
+  autoscaling_group_name = "${data.aws_autoscaling_groups.cache.names[0]}"
+  rules_host_domain      = "*"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn           = "${module.cache_public_lb.load_balancer_ssl_listeners[0]}"
+  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.cache_public_service_cnames) : ""))}"]
+  default_tags           = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
+}
+
 data "aws_autoscaling_groups" "cache" {
   filter {
     name   = "key"
