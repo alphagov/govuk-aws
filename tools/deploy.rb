@@ -6,13 +6,12 @@ require 'json'
 require 'uri'
 
 # Fields from the command line
-command = ARGV[0]
-environment = ARGV[1]
-stack = ARGV[2]
-project = ARGV[3]
+command, environment, stack, project, *rest= ARGV
+
+abort("too many arguments: #{rest}") unless rest.empty?
 
 # Valid values for each field
-valid_commands = %w(plan apply destroy).freeze
+valid_commands = %w(plan apply plan-destroy destroy).freeze
 valid_environments = %w(integration staging production test tools).freeze
 valid_stacks = %w(blue green govuk).freeze
 
@@ -26,7 +25,7 @@ abort("stack must be one of #{valid_stacks.join(', ')}\n#{usage}") unless valid_
 
 # Make sure the user is happy to go ahead
 puts "You're about to #{command} the #{stack}/#{project} project in #{environment}"
-puts 'Do you want to go ahead? [y/N]'
+print 'Do you want to go ahead? [y/N] '
 continue = STDIN.gets.chomp
 abort('Build aborted') unless continue.downcase == 'y'
 
@@ -59,6 +58,11 @@ jenkins_crumb_request.basic_auth(ENV['GITHUB_USERNAME'], ENV['GITHUB_TOKEN'])
 jenkins_crumb_response = jenkins_crumb_http.request(jenkins_crumb_request)
 abort('Could not get crumb from Jenkins') unless jenkins_crumb_response.code == '200'
 jenkins_crumb = JSON.parse(jenkins_crumb_response.body)
+
+if command == 'plan-destroy'
+  # The Jenkins job uses a slightly different command
+  command = 'plan (destroy)'
+end
 
 # Make a request to the Jenkins API to queue the build
 puts 'Queuing Jenkins job...'
