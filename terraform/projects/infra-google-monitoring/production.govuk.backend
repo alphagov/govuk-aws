@@ -1,0 +1,3 @@
+bucket  = "govuk-terraform-steppingstone-production"
+project = "govuk-production"
+prefix  = "govuk/infra-google-monitoring"
