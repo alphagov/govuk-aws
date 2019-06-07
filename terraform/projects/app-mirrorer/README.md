@@ -11,6 +11,7 @@ Mirrorer node
 | aws_region | AWS region | string | `eu-west-1` | no |
 | ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
+| mirrorer_ebs_size | Size of addtiional EBS volume in GB | string | `100` | no |
 | mirrorer_instance_type | Instance type for the mirrorer instance | string | `m5.large` | no |
 | mirrorer_subnet | Subnet to contain mirrorer and its EBS volume | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
