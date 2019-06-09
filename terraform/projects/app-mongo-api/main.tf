@@ -81,11 +81,26 @@ variable "remote_state_infra_database_backups_bucket_key_stack" {
   default     = ""
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
   required_version = "= 0.11.7"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 provider "aws" {
@@ -110,8 +125,8 @@ resource "aws_network_interface" "mongo-api-1_eni" {
 }
 
 resource "aws_route53_record" "mongo_api_1_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "mongo-api-1.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "mongo-api-1.${var.internal_domain_name}"
   type    = "A"
   records = ["${var.mongo_1_ip}"]
   ttl     = 300
@@ -167,8 +182,8 @@ resource "aws_network_interface" "mongo-api-2_eni" {
 }
 
 resource "aws_route53_record" "mongo_api_2_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "mongo-api-2.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "mongo-api-2.${var.internal_domain_name}"
   type    = "A"
   records = ["${var.mongo_2_ip}"]
   ttl     = 300
@@ -224,8 +239,8 @@ resource "aws_network_interface" "mongo-api-3_eni" {
 }
 
 resource "aws_route53_record" "mongo_api_3_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "mongo-api-3.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "mongo-api-3.${var.internal_domain_name}"
   type    = "A"
   records = ["${var.mongo_3_ip}"]
   ttl     = 300
@@ -339,7 +354,7 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 
