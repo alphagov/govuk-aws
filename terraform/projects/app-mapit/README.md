@@ -13,6 +13,8 @@ Mapit node
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | instance_type | The type of EC2 instance to use for both ASGs. | string | `t2.medium` | no |
+| internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
+| internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
 | mapit_1_subnet | Name of the subnet to place the mapit instance 1 and EBS volume | string | - | yes |
 | mapit_2_subnet | Name of the subnet to place the mapit instance 1 and EBS volume | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
