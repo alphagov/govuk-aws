@@ -14,19 +14,14 @@ variable "bucket_name" {
   default = "govuk-mongodb-backup-s3"
 }
 
-variable "team" {
-  type    = "string"
-  default = "Infrastructure"
-}
-
 variable "username" {
   type    = "string"
   default = "govuk-mongodb-backup-s3"
 }
 
-variable "versioning" {
-  type    = "string"
-  default = "true"
+variable "stackname" {
+  type        = "string"
+  description = "Stackname"
 }
 
 terraform {
@@ -48,62 +43,22 @@ resource "template_file" "readwrite_policy_file" {
   }
 }
 
-resource "aws_s3_bucket" "govuk-mongodb-backup-s3" {
-  bucket = "${var.bucket_name}-${var.aws_environment}"
-
-  tags {
-    Environment = "${var.aws_environment}"
-    Team        = "${var.team}"
-  }
-
-  versioning {
-    enabled = "${var.versioning}"
-  }
-
-  lifecycle_rule {
-    prefix  = ""
-    enabled = true
-
-    expiration {
-      days = 7
-    }
-
-    noncurrent_version_expiration {
-      days = 7
-    }
-  }
+module "govuk-mongodb-backup-s3" {
+  source                       = "../../modules/aws/s3_bucket_lifecycle"
+  aws_environment              = "${var.aws_environment}"
+  bucket_name                  = "${var.bucket_name}-${var.aws_environment}"
+  target_bucketid_for_logs     = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  target_prefix_for_logs       = "s3/${var.bucket_name}-${var.aws_environment}/"
+  enable_noncurrent_expiration = "true"
 }
 
-resource "aws_s3_bucket" "govuk-mongodb-backup-s3-daily" {
-  bucket = "${var.bucket_name}-daily-${var.aws_environment}"
-
-  tags {
-    Environment = "${var.aws_environment}"
-    Team        = "${var.team}"
-  }
-
-  versioning {
-    enabled = "${var.versioning}"
-  }
-
-  lifecycle_rule {
-    prefix  = ""
-    enabled = true
-
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA"
-    }
-
-    transition {
-      days          = 60
-      storage_class = "GLACIER"
-    }
-
-    expiration {
-      days = 365
-    }
-  }
+module "govuk-mongodb-backup-s3-daily" {
+  source                       = "../../modules/aws/s3_bucket_lifecycle"
+  aws_environment              = "${var.aws_environment}"
+  bucket_name                  = "${var.bucket_name}-daily-${var.aws_environment}"
+  target_bucketid_for_logs     = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  target_prefix_for_logs       = "s3/${var.bucket_name}-daily-${var.aws_environment}/"
+  enable_noncurrent_expiration = "true"
 }
 
 resource "aws_iam_policy" "readwrite_policy" {
