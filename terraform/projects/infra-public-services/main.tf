@@ -540,8 +540,8 @@ resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
 module "backend_public_lb_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
   name                   = "backend"
-  autoscaling_group_name = "${data.aws_autoscaling_groups.backend.names[0]}"
-  rules_host_domain      = "${var.aws_environment}.*"
+  autoscaling_group_name = "${data.aws_autoscaling_group.backend.name}"
+  rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   listener_arn           = "${module.backend_public_lb.load_balancer_ssl_listeners[0]}"
   rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.backend_public_service_cnames) : ""))}"]
@@ -571,21 +571,13 @@ resource "aws_route53_record" "backend_public_service_cnames" {
   ttl     = "300"
 }
 
-data "aws_autoscaling_groups" "backend" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-backend"]
-  }
+data "aws_autoscaling_group" "backend" {
+  name = "${var.app_stackname}-backend"
 }
 
 resource "aws_autoscaling_attachment" "backend_asg_attachment_alb" {
-  count                  = "${length(data.aws_autoscaling_groups.backend.names) > 0 ? 1 : 0}"
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.backend.names, 0)}"
+  count                  = "${data.aws_autoscaling_group.backend.name != "" ? 1 : 0}"
+  autoscaling_group_name = "${data.aws_autoscaling_group.backend.name}"
   alb_target_group_arn   = "${element(module.backend_public_lb.target_group_arns, 0)}"
 }
 
@@ -718,7 +710,7 @@ resource "aws_route53_record" "cache_public_service_cnames" {
 module "cache_public_lb_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
   name                   = "cache"
-  autoscaling_group_name = "${data.aws_autoscaling_groups.cache.names[0]}"
+  autoscaling_group_name = "${data.aws_autoscaling_group.cache.name}"
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   listener_arn           = "${module.cache_public_lb.load_balancer_ssl_listeners[0]}"
@@ -726,21 +718,13 @@ module "cache_public_lb_rules" {
   default_tags           = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
 }
 
-data "aws_autoscaling_groups" "cache" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-cache"]
-  }
+data "aws_autoscaling_group" "cache" {
+  name = "${var.app_stackname}-cache"
 }
 
 resource "aws_autoscaling_attachment" "cache_asg_attachment_alb" {
-  count                  = "${length(data.aws_autoscaling_groups.cache.names) > 0 ? 1 : 0}"
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.cache.names, 0)}"
+  count                  = "${data.aws_autoscaling_group.cache.name != "" ? 1 : 0}"
+  autoscaling_group_name = "${data.aws_autoscaling_group.cache.name}"
   alb_target_group_arn   = "${element(module.cache_public_lb.target_group_arns, 0)}"
 }
 
@@ -2059,8 +2043,8 @@ resource "aws_route53_record" "support_api_public_service_names" {
 }
 
 resource "aws_autoscaling_attachment" "support_api_backend_asg_attachment_alb" {
-  count                  = "${length(data.aws_autoscaling_groups.backend.names) > 0 ? 1 : 0}"
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.backend.names, 0)}"
+  count                  = "${data.aws_autoscaling_group.backend.name != "" ? 1 : 0}"
+  autoscaling_group_name = "${data.aws_autoscaling_group.backend.name}"
   alb_target_group_arn   = "${element(module.support_api_public_lb.target_group_arns, 0)}"
 }
 
