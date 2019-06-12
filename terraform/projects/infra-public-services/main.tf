@@ -1548,7 +1548,7 @@ data "aws_autoscaling_groups" "jumpbox" {
 
   filter {
     name   = "value"
-    values = ["blue-jumpbox"]
+    values = ["${var.app_stackname}-jumpbox"]
   }
 }
 
@@ -1556,6 +1556,19 @@ resource "aws_autoscaling_attachment" "jumpbox_asg_attachment_elb" {
   count                  = "${length(data.aws_autoscaling_groups.jumpbox.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.jumpbox.names, 0)}"
   elb                    = "${aws_elb.jumpbox_public_elb.id}"
+}
+
+module "alarms-elb-jumpbox-public" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-jumpbox"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  elb_name                       = "${aws_elb.jumpbox_public_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "0"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "0"
+  surgequeuelength_threshold     = "200"
+  healthyhostcount_threshold     = "1"
 }
 
 #
