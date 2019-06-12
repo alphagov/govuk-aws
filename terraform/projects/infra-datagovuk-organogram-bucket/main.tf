@@ -65,7 +65,7 @@ resource "aws_s3_bucket" "datagovuk-organogram" {
 
   cors_rule {
     allowed_methods = ["GET"]
-    allowed_origins = ["${var.domain}"]
+    allowed_origins = "${compact(list(var.domain, var.aws_environment == "production" ? "https://staging.data.gov.uk" : ""))}"
   }
 
   tags {
