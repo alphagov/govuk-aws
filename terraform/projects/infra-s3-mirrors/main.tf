@@ -43,6 +43,7 @@ module "govuk_mirror" {
   aws_environment              = "${var.aws_environment}"
   bucket_name                  = "govuk-mirror-${var.aws_environment}"
   target_bucketid_for_logs     = "${aws_s3_bucket.govuk_mirror_access_logs.id}"
+  target_prefix_for_logs       = "log/"
   enable_noncurrent_expiration = "true"
 }
 
