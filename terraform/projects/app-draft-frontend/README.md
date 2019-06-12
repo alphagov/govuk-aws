@@ -21,6 +21,7 @@ Draft Frontend application servers
 | remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
+| root_block_device_volume_size | The size of the instance root volume in gigabytes | string | `40` | no |
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
 
