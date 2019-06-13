@@ -15,6 +15,7 @@
                 "rds:Describe*",
                 "rds:ListTagsForResource",
                 "elasticache:Describe*",
+                "elasticloadbalancing:Describe*",
                 "cloudwatch:DescribeAlarmHistory",
                 "cloudwatch:GetDashboard",
                 "cloudwatch:GetMetricData",
