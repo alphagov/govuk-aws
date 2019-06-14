@@ -226,3 +226,11 @@ resource "aws_iam_policy_attachment" "backup_replication_policy_attachment" {
   roles      = ["${aws_iam_role.backup_replication_role.name}"]
   policy_arn = "${aws_iam_policy.backup_replication_policy.arn}"
 }
+
+# Outputs
+#--------------------------------------------------------------
+
+output "s3_database_backups_bucket_name" {
+  value       = "${aws_s3_bucket.database_backups.id}"
+  description = "The name of the database backups bucket"
+}
