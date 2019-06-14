@@ -27,7 +27,7 @@ provider "aws" {
 }
 
 module "cyber_security_audit_role" {
-  source = "git::https://github.com/alphagov/tech-ops//cyber-security/modules/gds_security_audit_role?ref=2d39415f6f92874dcf5eaee376f4d0af49992b8d"
+  source = "git::https://github.com/alphagov/tech-ops.git?ref=13f54e5//cyber-security/modules/gds_security_audit_role"
 
   chain_account_id = "988997429095"
 }
