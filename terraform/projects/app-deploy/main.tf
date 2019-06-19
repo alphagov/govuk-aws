@@ -86,7 +86,7 @@ variable "instance_type" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 # This is one of two places that should need to use this particular remote state

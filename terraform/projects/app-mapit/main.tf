@@ -65,7 +65,7 @@ variable "internal_domain_name" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 data "aws_route53_zone" "internal" {
