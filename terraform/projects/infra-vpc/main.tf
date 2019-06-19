@@ -90,10 +90,10 @@ resource "aws_cloudwatch_log_group" "log" {
 }
 
 resource "aws_flow_log" "vpc_flow_log" {
-  log_group_name = "${aws_cloudwatch_log_group.log.name}"
-  iam_role_arn   = "${aws_iam_role.vpc_flow_logs_role.arn}"
-  vpc_id         = "${module.vpc.vpc_id}"
-  traffic_type   = "${var.traffic_type}"
+  log_destination = "${aws_cloudwatch_log_group.log.arn}"
+  iam_role_arn    = "${aws_iam_role.vpc_flow_logs_role.arn}"
+  vpc_id          = "${module.vpc.vpc_id}"
+  traffic_type    = "${var.traffic_type}"
 }
 
 resource "aws_iam_role" "vpc_flow_logs_role" {
