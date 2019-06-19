@@ -188,8 +188,8 @@ module "calculators-frontend" {
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length           = "1"
   instance_elb_ids                  = ["${aws_elb.calculators-frontend_elb.id}"]
-  instance_target_group_arns_length = "${var.enable_alb ? 1 : 0}"
-  instance_target_group_arns        = ["${var.enable_alb ? module.internal_lb.target_group_arns[0] : ""}"]
+  instance_target_group_arns_length = "1"
+  instance_target_group_arns        = ["${module.internal_lb.target_group_arns[0]}"]
   instance_ami_filter_name          = "${var.instance_ami_filter_name}"
   asg_max_size                      = "${var.asg_size}"
   asg_min_size                      = "${var.asg_size}"
