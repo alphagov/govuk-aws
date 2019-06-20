@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-integration"
-key     = "govuk/infra-s3-mirrors.tfstate"
-encrypt = true
-region  = "eu-west-1"
