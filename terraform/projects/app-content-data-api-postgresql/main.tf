@@ -51,6 +51,12 @@ variable "snapshot_identifier" {
   default     = ""
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for RDS resources"
+  default     = "db.m4.large"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -124,7 +130,7 @@ module "content-data-api-postgresql-primary_rds_instance" {
   username             = "${var.username}"
   password             = "${var.password}"
   allocated_storage    = "1024"
-  instance_class       = "db.m4.large"
+  instance_class       = "${var.instance_type}"
   instance_name        = "${var.stackname}-content-data-api-postgresql-primary"
   multi_az             = "${var.multi_az}"
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-postgresql-primary_id}"]

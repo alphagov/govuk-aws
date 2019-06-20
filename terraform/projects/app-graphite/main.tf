@@ -76,6 +76,12 @@ variable "create_external_elb" {
   default     = true
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -251,7 +257,7 @@ module "graphite-1" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "graphite", "aws_hostname", "graphite-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.xlarge"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "${local.instance_elb_ids_length}"
   instance_elb_ids              = ["${local.instance_elb_ids}"]

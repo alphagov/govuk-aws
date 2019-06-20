@@ -6,6 +6,7 @@
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*` | no |
+| instance_type | Instance type used for EC2 resources | string | `t2.micro` | no |
 | prometheus_1_subnet | Name of the subnet to place the Prometheus instance and EBS volume | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |

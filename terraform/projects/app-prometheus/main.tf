@@ -32,6 +32,12 @@ variable "prometheus_1_subnet" {
   description = "Name of the subnet to place the Prometheus instance and EBS volume"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "t2.micro"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -54,7 +60,7 @@ var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-
 keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
 
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.micro"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"

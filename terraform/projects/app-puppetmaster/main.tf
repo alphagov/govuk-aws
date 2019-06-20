@@ -19,12 +19,6 @@ variable "aws_environment" {
   description = "AWS environment"
 }
 
-variable "puppetmaster_instance_type" {
-  type        = "string"
-  description = "Instance type for the mirrorer instance"
-  default     = "m5.xlarge"
-}
-
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -50,6 +44,12 @@ variable "internal_zone_name" {
 variable "internal_domain_name" {
   type        = "string"
   description = "The domain name of the internal DNS records, it could be different from the zone name."
+}
+
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.xlarge"
 }
 
 # Resources
@@ -198,7 +198,7 @@ module "puppetmaster" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.puppetmaster_instance_type}"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.puppetmaster_internal_elb.id}", "${aws_elb.puppetmaster_bootstrap_elb.*.id}"]
   instance_elb_ids_length       = "${var.enable_bootstrap > 0 ? 2 : 1}"
