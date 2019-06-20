@@ -405,3 +405,7 @@ output "sg_aws-vpn_id" {
 output "sg_support-api_external_elb_id" {
   value = "${aws_security_group.support-api_external_elb.id}"
 }
+
+output "sg_related-links_id" {
+  value = "${aws_security_group.related-links.id}"
+}
