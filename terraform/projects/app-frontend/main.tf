@@ -50,7 +50,7 @@ variable "root_block_device_volume_size" {
 
 variable "instance_type" {
   type        = "string"
-  description = "Instance type"
+  description = "Instance type used for EC2 resources"
   default     = "m5.xlarge"
 }
 

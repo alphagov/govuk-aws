@@ -32,6 +32,18 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "c5.4xlarge"
+}
+
+variable "machine_learning_instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "p3.8xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -113,7 +125,7 @@ module "data-science-1" {
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.public_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
-  instance_type                 = "c5.4xlarge"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.data-science_external_elb.id}"]
   instance_elb_ids_length       = "1"
@@ -128,7 +140,7 @@ module "data-science-2" {
   default_tags                  = "${map("aws_environment", var.aws_environment, "aws_migration", "data-science", "aws_hostname", "data-science-2")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.public_subnet_ids}"
   instance_security_group_ids   = ["${aws_security_group.data-science.id}"]
-  instance_type                 = "p3.8xlarge"
+  instance_type                 = "${var.machine_learning_instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids              = ["${aws_elb.data-science_external_elb.id}"]
   instance_elb_ids_length       = "1"

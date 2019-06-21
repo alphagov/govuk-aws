@@ -47,7 +47,7 @@ variable "elb_internal_certname" {
 
 variable "instance_type" {
   type        = "string"
-  description = "The type of EC2 instance to use for both ASGs."
+  description = "Instance type used for EC2 resources"
   default     = "t2.medium"
 }
 

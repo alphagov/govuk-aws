@@ -61,6 +61,12 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for RDS resources"
+  default     = "db.m5.2xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -89,7 +95,7 @@ module "postgresql-primary_rds_instance" {
   username            = "${var.username}"
   password            = "${var.password}"
   allocated_storage   = "190"
-  instance_class      = "db.m5.2xlarge"
+  instance_class      = "${var.instance_type}"
   instance_name       = "${var.stackname}-postgresql-primary"
   multi_az            = "${var.multi_az}"
   security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
@@ -111,7 +117,7 @@ module "postgresql-standby_rds_instance" {
 
   name                       = "${var.stackname}-postgresql-standby"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_standby")}"
-  instance_class             = "db.m5.2xlarge"
+  instance_class             = "${var.instance_type}"
   instance_name              = "${var.stackname}-postgresql-standby"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
   create_replicate_source_db = "1"
