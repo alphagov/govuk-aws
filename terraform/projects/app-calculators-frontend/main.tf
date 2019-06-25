@@ -147,7 +147,7 @@ resource "aws_route53_record" "app_service_records" {
   zone_id = "${data.aws_route53_zone.internal.zone_id}"
   name    = "${element(var.app_service_records, count.index)}.${var.internal_domain_name}"
   type    = "CNAME"
-  records = ["calculators-frontend.${var.internal_domain_name}"]
+  records = ["calculators-frontend.${var.internal_domain_name}."]
   ttl     = "300"
 }
 
