@@ -29,6 +29,16 @@ variable "office_ips" {
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
+variable "concourse_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that represent ingress Concourse"
+}
+
+variable "concourse_aws_account_id" {
+  type        = "string"
+  description = "AWS account ID which contains the Concourse role"
+}
+
 variable "carrenza_integration_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will be allowed to SSH to the jumpbox."

@@ -10,6 +10,7 @@ RDS Transition PostgreSQL Primary instance
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
+| instance_type | Instance type used for RDS resources | string | `db.m4.large` | no |
 | internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
 | internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
 | multi_az | Enable multi-az. | string | `true` | no |

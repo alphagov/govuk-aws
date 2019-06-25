@@ -25,11 +25,26 @@ variable "remote_state_infra_database_backups_bucket_key_stack" {
   default     = ""
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 provider "aws" {
@@ -91,8 +106,8 @@ module "publishing-api-db-admin" {
 }
 
 resource "aws_route53_record" "publishing-api_db_admin_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "publishing-api-db-admin.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "publishing-api-db-admin.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -124,7 +139,7 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
-    region = "eu-west-1"
+    region = "${var.aws_region}"
   }
 }
 

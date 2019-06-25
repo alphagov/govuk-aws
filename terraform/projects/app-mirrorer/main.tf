@@ -30,9 +30,9 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
-variable "mirrorer_instance_type" {
+variable "instance_type" {
   type        = "string"
-  description = "Instance type for the mirrorer instance"
+  description = "Instance type used for EC2 resources"
   default     = "m5.large"
 }
 
@@ -51,7 +51,7 @@ variable "mirrorer_subnet" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -65,7 +65,7 @@ module "mirrorer" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mirrorer", "aws_hostname", "mirrorer-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mirrorer_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mirrorer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.mirrorer_instance_type}"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "0"
   instance_elb_ids              = []

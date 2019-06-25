@@ -12,6 +12,7 @@ Whitehall Frontend nodes
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
+| instance_type | Instance type used for EC2 resources | string | `m5.large` | no |
 | internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
 | internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
