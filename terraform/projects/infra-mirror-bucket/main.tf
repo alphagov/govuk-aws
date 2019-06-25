@@ -290,7 +290,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
   count = "${var.cloudfront_create}"
 
   origin {
-    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_regional_domain_name}"
+    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_domain_name}"
     origin_id   = "S3 www"
     origin_path = "/www.gov.uk"
 
@@ -362,7 +362,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   count = "${var.cloudfront_create}"
 
   origin {
-    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_regional_domain_name}"
+    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_domain_name}"
     origin_id   = "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
     origin_path = "/assets.publishing.service.gov.uk"
 
@@ -387,7 +387,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3 www"
+    target_origin_id = "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
 
     forwarded_values {
       query_string = false
