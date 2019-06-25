@@ -15,6 +15,12 @@ The primary bucket should be in London and the backup in Ireland.
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region where primary s3 bucket is located | string | `eu-west-2` | no |
 | aws_replica_region | AWS region where replica s3 bucket is located | string | `eu-west-1` | no |
+| cloudfront_assets_certificate_domain | The domain of the Assets CloudFront certificate to look up. | string | `` | no |
+| cloudfront_assets_distribution_aliases | Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution. | list | `<list>` | no |
+| cloudfront_create | Create Cloudfront resources. | string | `false` | no |
+| cloudfront_enable | Enable Cloudfront distributions. | string | `false` | no |
+| cloudfront_www_certificate_domain | The domain of the WWW CloudFront certificate to look up. | string | `` | no |
+| cloudfront_www_distribution_aliases | Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution. | list | `<list>` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_app_mirrorer_key_stack | stackname path to app_mirrorer remote state | string | `` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
