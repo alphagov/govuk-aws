@@ -42,7 +42,7 @@ variable "remote_state_infra_monitoring_key_stack" {
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -65,7 +65,7 @@ resource "aws_s3_bucket" "datagovuk-organogram" {
 
   cors_rule {
     allowed_methods = ["GET"]
-    allowed_origins = ["${var.domain}"]
+    allowed_origins = "${compact(list(var.domain, var.aws_environment == "production" ? "https://staging.data.gov.uk" : ""))}"
   }
 
   tags {

@@ -14,6 +14,8 @@ Manage the security groups for the entire infrastructure
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_staging_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_vpn_subnet_cidr | The Carrenza VPN subnet CIDR | list | `<list>` | no |
+| concourse_aws_account_id | AWS account ID which contains the Concourse role | string | - | yes |
+| concourse_ips | An array of CIDR blocks that represent ingress Concourse | list | - | yes |
 | ithc_access_ips | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | list | `<list>` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
@@ -110,6 +112,7 @@ Manage the security groups for the entire infrastructure
 | sg_puppetmaster_id |  |
 | sg_rabbitmq_elb_id |  |
 | sg_rabbitmq_id |  |
+| sg_related-links_id |  |
 | sg_router-api_elb_id |  |
 | sg_router-backend_id |  |
 | sg_search-api_external_elb_id |  |

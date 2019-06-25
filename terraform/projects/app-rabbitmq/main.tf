@@ -35,11 +35,17 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "t2.medium"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -106,7 +112,7 @@ module "rabbitmq" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "rabbitmq", "aws_hostname", "rabbitmq")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.rabbitmq_elb.id}"]

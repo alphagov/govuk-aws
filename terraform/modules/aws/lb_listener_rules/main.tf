@@ -1,8 +1,11 @@
 /**
 * ## Modules: aws/lb_listener_rules
 *
-* This module creates Load Balancer listener rules and target groups for
+* This module creates Load Balancer listener rules based on Host header and target groups for
 * an existing listener resource.
+*
+* If the parameter `autoscaling_group_name` is non empty, the module also creates an attachment
+* from each target group to the ASG with the specified name.
 *
 * Limitations:
 *  - The target group deregistration_delay, health_check_interval and health_check_timeout
@@ -53,7 +56,8 @@ variable "vpc_id" {
 
 variable "autoscaling_group_name" {
   type        = "string"
-  description = "Name of ASG to associate with the target group."
+  description = "Name of ASG to associate with the target group. An empty value does not create any attachment to the LB target group."
+  default     = ""
 }
 
 variable "target_group_deregistration_delay" {
@@ -124,7 +128,7 @@ resource "aws_lb_target_group" "tg" {
 }
 
 resource "aws_autoscaling_attachment" "tg" {
-  count                  = "${length(var.rules_host)}"
+  count                  = "${var.autoscaling_group_name != "" ? length(var.rules_host) : 0}"
   autoscaling_group_name = "${var.autoscaling_group_name}"
   alb_target_group_arn   = "${aws_lb_target_group.tg.*.arn[count.index]}"
 }

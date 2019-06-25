@@ -50,6 +50,7 @@ database-backups: The bucket that will hold database backups
 | production_publishing-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read publishing-apiDBAdmin database_backups-bucket policy |
 | production_transition_dbadmin_read_database_backups_bucket_policy_arn | ARN of the production read TransitionDBAdmin database_backups-bucket policy |
 | publishing-api_dbadmin_write_database_backups_bucket_policy_arn | ARN of the publishing-apiDBAdmin write database_backups-bucket policy |
+| s3_database_backups_bucket_name | The name of the database backups bucket |
 | staging_dbadmin_read_database_backups_bucket_policy_arn | ARN of the staging read DBAdmin database_backups-bucket policy |
 | staging_elasticsearch_read_database_backups_bucket_policy_arn | ARN of the staging read elasticsearch database_backups-bucket policy |
 | staging_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn | ARN of the staging read EmailAlertAPUDBAdmin database_backups-bucket policy |

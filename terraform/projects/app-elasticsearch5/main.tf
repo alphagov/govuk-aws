@@ -36,7 +36,7 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "elasticsearch5_instance_type" {
+variable "instance_type" {
   type        = "string"
   description = "The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported"
   default     = "r4.xlarge.elasticsearch"
@@ -54,7 +54,7 @@ variable "elasticsearch5_dedicated_master_enabled" {
   default     = "true"
 }
 
-variable "elasticsearch5_master_instance_type" {
+variable "master_instance_type" {
   type        = "string"
   description = "Instance type of the dedicated master nodes in the cluster"
   default     = "c4.large.elasticsearch"
@@ -120,7 +120,7 @@ variable "internal_domain_name" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -216,10 +216,10 @@ resource "aws_elasticsearch_domain" "elasticsearch5" {
   elasticsearch_version = "5.6"
 
   cluster_config {
-    instance_type            = "${var.elasticsearch5_instance_type}"
+    instance_type            = "${var.instance_type}"
     instance_count           = "${var.elasticsearch5_instance_count}"
     dedicated_master_enabled = "${var.elasticsearch5_dedicated_master_enabled}"
-    dedicated_master_type    = "${var.elasticsearch5_master_instance_type}"
+    dedicated_master_type    = "${var.master_instance_type}"
     dedicated_master_count   = "${var.elasticsearch5_master_instance_count}"
     zone_awareness_enabled   = true
   }

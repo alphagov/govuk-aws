@@ -14,6 +14,9 @@ Draft Frontend application servers
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | enable_alb | Use application specific target groups and healthchecks based on the list of services in the cname variable. | string | `false` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
+| instance_type | Instance type used for EC2 resources | string | `m5.large` | no |
+| internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
+| internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
@@ -21,6 +24,7 @@ Draft Frontend application servers
 | remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
+| root_block_device_volume_size | The size of the instance root volume in gigabytes | string | `40` | no |
 | stackname | Stackname | string | - | yes |
 | user_data_snippets | List of user-data snippets | list | - | yes |
 

@@ -10,6 +10,7 @@
 | enable_noncurrent_expiration | Enables this lifecycle rule | string | `false` | no |
 | noncurrent_expiration_days | Number of days to keep noncurrent versions | string | `5` | no |
 | target_bucketid_for_logs | ID for logging bucket | string | - | yes |
+| target_prefix_for_logs | Prefix for logs written to the s3 bucket | string | - | yes |
 
 ## Outputs
 

@@ -1,0 +1,4 @@
+bucket  = "govuk-training-terraform-state"
+key     = "govuk/app-email-alert-api-db-admin.tfstate"
+encrypt = true
+region  = "eu-west-2"
