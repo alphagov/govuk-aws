@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-integration"
-key     = "govuk/infra-s3-mirrors.tfstate"
+key     = "govuk/infra-mongodb-backup.tfstate"
 encrypt = true
 region  = "eu-west-1"

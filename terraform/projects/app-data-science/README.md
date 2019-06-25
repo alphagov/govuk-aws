@@ -12,6 +12,8 @@ Run resource intensive scripts for data science purposes.
 | aws_environment | AWS environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-2` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
+| instance_type | Instance type used for EC2 resources | string | `c5.4xlarge` | no |
+| machine_learning_instance_type | Instance type used for EC2 resources | string | `p3.8xlarge` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |

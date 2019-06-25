@@ -10,6 +10,7 @@ RDS PostgreSQL instance for the Content Data API
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | cloudwatch_log_retention | Number of days to retain Cloudwatch logs for | string | - | yes |
+| instance_type | Instance type used for RDS resources | string | `db.m4.large` | no |
 | multi_az | Enable multi-az. | string | `true` | no |
 | password | DB password | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |

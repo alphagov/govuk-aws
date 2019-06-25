@@ -47,16 +47,57 @@ variable "asg_size" {
   default     = "2"
 }
 
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "external_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains external records"
+}
+
+variable "external_domain_name" {
+  type        = "string"
+  description = "The domain name of the external DNS records, it could be different from the zone name"
+}
+
+variable "create_external_elb" {
+  description = "Create the external ELB"
+  default     = true
+}
+
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.large"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.60.0"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
+}
+
+data "aws_route53_zone" "external" {
+  name         = "${var.external_zone_name}"
+  private_zone = false
 }
 
 data "aws_acm_certificate" "elb_external_cert" {
@@ -107,8 +148,8 @@ resource "aws_elb" "whitehall-backend_internal_elb" {
 }
 
 resource "aws_route53_record" "internal_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "whitehall-backend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "whitehall-backend.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -120,14 +161,16 @@ resource "aws_route53_record" "internal_service_record" {
 
 resource "aws_route53_record" "internal_app_service_records" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${var.internal_domain_name}"
   type    = "CNAME"
-  records = ["whitehall-backend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  records = ["whitehall-backend.${var.internal_domain_name}}"]
   ttl     = "300"
 }
 
 resource "aws_elb" "whitehall-backend_external_elb" {
+  count = "${var.create_external_elb}"
+
   name            = "${var.stackname}-whitehall-backend-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_external_elb_id}"]
@@ -165,8 +208,10 @@ resource "aws_elb" "whitehall-backend_external_elb" {
 }
 
 resource "aws_route53_record" "external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "whitehall-backend.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  count = "${var.create_external_elb}"
+
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "whitehall-backend.${var.external_domain_name}"
   type    = "A"
 
   alias {
@@ -178,11 +223,16 @@ resource "aws_route53_record" "external_service_record" {
 
 resource "aws_route53_record" "app_service_records" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${var.external_domain_name}"
   type    = "CNAME"
-  records = ["whitehall-backend.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  records = ["whitehall-backend.${var.external_domain_name}"]
   ttl     = "300"
+}
+
+locals {
+  instance_elb_ids_length = "${var.create_external_elb ? 2 : 1}"
+  instance_elb_ids        = "${compact(list( aws_elb.whitehall-backend_internal_elb.id, join("", aws_elb.whitehall-backend_external_elb.*.id) ))}"
 }
 
 module "whitehall-backend" {
@@ -191,10 +241,10 @@ module "whitehall-backend" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "whitehall_backend", "aws_hostname", "whitehall-backend-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.large"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.whitehall-backend_internal_elb.id}", "${aws_elb.whitehall-backend_external_elb.id}"]
+  instance_elb_ids_length       = "${local.instance_elb_ids_length}"
+  instance_elb_ids              = ["${local.instance_elb_ids}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "${var.asg_size}"
   asg_min_size                  = "${var.asg_size}"
@@ -215,15 +265,22 @@ module "alarms-elb-whitehall-backend-internal" {
   healthyhostcount_threshold     = "0"
 }
 
+locals {
+  elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 100 : 0}"
+  elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 100 : 0}"
+  elb_httpcode_elb_4xx_threshold     = "${var.create_external_elb ? 100 : 0}"
+}
+
 module "alarms-elb-whitehall-backend-external" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-whitehall-backend-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.whitehall-backend_external_elb.name}"
+  source        = "../../modules/aws/alarms/elb"
+  name_prefix   = "${var.stackname}-whitehall-backend-external"
+  alarm_actions = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  elb_name      = "${join("", aws_elb.whitehall-backend_external_elb.*.name)}"
+
   httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "100"
-  httpcode_elb_4xx_threshold     = "100"
-  httpcode_elb_5xx_threshold     = "100"
+  httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
+  httpcode_elb_4xx_threshold     = "${local.elb_httpcode_elb_4xx_threshold}"
+  httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
   surgequeuelength_threshold     = "0"
   healthyhostcount_threshold     = "0"
 }
@@ -242,11 +299,11 @@ output "internal_service_dns_name" {
 }
 
 output "whitehall-backend_external_elb_address" {
-  value       = "${aws_elb.whitehall-backend_external_elb.dns_name}"
+  value       = "${join("", aws_elb.whitehall-backend_external_elb.*.dns_name)}"
   description = "AWS' external DNS name for the whitehall-backend ELB"
 }
 
 output "external_service_dns_name" {
-  value       = "${aws_route53_record.external_service_record.name}"
+  value       = "${join("", aws_elb.whitehall-backend_external_elb.*.dns_name)}"
   description = "DNS name to access the external node service"
 }

@@ -65,11 +65,17 @@ variable "external_domain_name" {
   description = "The domain name of the external DNS records, it could be different from the zone name"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -217,7 +223,7 @@ module "monitoring" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "aws_hostname", "monitoring-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.monitoring_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.xlarge"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.monitoring_external_elb.id}", "${aws_elb.monitoring_internal_elb.id}"]

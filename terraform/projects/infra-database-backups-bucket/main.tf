@@ -49,7 +49,7 @@ variable "training_and_integration_only" {
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -225,4 +225,12 @@ resource "aws_iam_policy_attachment" "backup_replication_policy_attachment" {
   name       = "s3-backup-replication-policy-attachment"
   roles      = ["${aws_iam_role.backup_replication_role.name}"]
   policy_arn = "${aws_iam_policy.backup_replication_policy.arn}"
+}
+
+# Outputs
+#--------------------------------------------------------------
+
+output "s3_database_backups_bucket_name" {
+  value       = "${aws_s3_bucket.database_backups.id}"
+  description = "The name of the database backups bucket"
 }

@@ -1,7 +1,10 @@
 ## Modules: aws/lb_listener_rules
 
-This module creates Load Balancer listener rules and target groups for
+This module creates Load Balancer listener rules based on Host header and target groups for
 an existing listener resource.
+
+If the parameter `autoscaling_group_name` is non empty, the module also creates an attachment
+from each target group to the ASG with the specified name.
 
 Limitations:
  - The target group deregistration_delay, health_check_interval and health_check_timeout
@@ -15,7 +18,7 @@ so at the moment only one condition can be specified per rule
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| autoscaling_group_name | Name of ASG to associate with the target group. | string | - | yes |
+| autoscaling_group_name | Name of ASG to associate with the target group. An empty value does not create any attachment to the LB target group. | string | `` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
 | listener_arn | ARN of the listener. | string | - | yes |
 | name | Prefix of the target group names. The final name is name-rulename. | string | - | yes |

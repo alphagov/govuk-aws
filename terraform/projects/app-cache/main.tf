@@ -47,16 +47,57 @@ variable "asg_size" {
   default     = "2"
 }
 
+variable "external_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains external records"
+}
+
+variable "external_domain_name" {
+  type        = "string"
+  description = "The domain name of the external DNS records, it could be different from the zone name"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
+variable "create_external_elb" {
+  description = "Create the external ELB"
+  default     = true
+}
+
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.60.0"
+}
+
+data "aws_route53_zone" "external" {
+  name         = "${var.external_zone_name}"
+  private_zone = false
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
@@ -108,8 +149,8 @@ resource "aws_elb" "cache_elb" {
 }
 
 resource "aws_route53_record" "cache_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "cache.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "cache.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -122,14 +163,16 @@ resource "aws_route53_record" "cache_service_record" {
 # TODO publicapi is a special set of nginx config that routes /api requests to
 # their relevant apps upstream.
 resource "aws_route53_record" "cache_publicapi_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "publicapi.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "publicapi.${var.internal_domain_name}"
   type    = "CNAME"
-  records = ["cache.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  records = ["cache.${var.internal_domain_name}."]
   ttl     = 300
 }
 
 resource "aws_elb" "cache_external_elb" {
+  count = "${var.create_external_elb}"
+
   name            = "${var.stackname}-cache-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_cache_external_elb_id}"]
@@ -168,8 +211,10 @@ resource "aws_elb" "cache_external_elb" {
 }
 
 resource "aws_route53_record" "cache_external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "cache.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  count = "${var.create_external_elb}"
+
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "cache.${var.external_domain_name}"
   type    = "A"
 
   alias {
@@ -181,11 +226,16 @@ resource "aws_route53_record" "cache_external_service_record" {
 
 resource "aws_route53_record" "app_service_records" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${var.external_domain_name}"
   type    = "CNAME"
-  records = ["cache.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  records = ["cache.${var.external_domain_name}."]
   ttl     = "300"
+}
+
+locals {
+  instance_elb_ids_length = "${var.create_external_elb ? 2 : 1}"
+  instance_elb_ids        = "${compact(list(join("", aws_elb.cache_external_elb.*.id), aws_elb.cache_elb.id))}"
 }
 
 module "cache" {
@@ -194,10 +244,10 @@ module "cache" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "cache", "aws_hostname", "cache-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_cache_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.xlarge"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "2"
-  instance_elb_ids              = ["${aws_elb.cache_elb.id}", "${aws_elb.cache_external_elb.id}"]
+  instance_elb_ids_length       = "${local.instance_elb_ids_length}"
+  instance_elb_ids              = ["${local.instance_elb_ids}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "${var.asg_size}"
   asg_min_size                  = "${var.asg_size}"
@@ -218,15 +268,20 @@ module "alarms-elb-cache-internal" {
   healthyhostcount_threshold     = "0"
 }
 
+locals {
+  elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 50 : 0}"
+  elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 50 : 0}"
+}
+
 module "alarms-elb-cache-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-cache-external"
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.cache_external_elb.name}"
+  elb_name                       = "${join("", aws_elb.cache_external_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "50"
+  httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
   httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "50"
+  httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
   surgequeuelength_threshold     = "0"
   healthyhostcount_threshold     = "0"
 }
@@ -245,11 +300,11 @@ output "service_dns_name" {
 }
 
 output "cache_external_elb_dns_name" {
-  value       = "${aws_elb.cache_external_elb.dns_name}"
+  value       = "${join("", aws_elb.cache_external_elb.*.dns_name)}"
   description = "DNS name to access the external cache service"
 }
 
 output "external_service_dns_name" {
-  value       = "${aws_route53_record.cache_external_service_record.fqdn}"
+  value       = "${join("", aws_route53_record.cache_external_service_record.*.fqdn)}"
   description = "DNS name to access the external service"
 }
