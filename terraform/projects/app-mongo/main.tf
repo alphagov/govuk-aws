@@ -91,11 +91,17 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.large"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -138,7 +144,7 @@ module "mongo-1" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_1_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.large"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "0"
   instance_elb_ids              = []
@@ -195,7 +201,7 @@ module "mongo-2" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-2")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_2_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.large"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "0"
   instance_elb_ids              = []
@@ -252,7 +258,7 @@ module "mongo-3" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-3")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_3_subnet))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "m5.large"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "0"
   instance_elb_ids              = []
@@ -382,6 +388,18 @@ resource "aws_iam_role_policy_attachment" "integration_read_mongodb_database_bac
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongodb_read_database_backups_bucket_policy_arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "training_read_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "training" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.training_mongo_api_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "training_read_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "training" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.training_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
 resource "aws_iam_role_policy_attachment" "staging_read_mongoapi_database_backups_iam_role_policy_attachment" {
   count      = "${var.aws_environment == "staging" ? 3 : 0}"
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
@@ -404,6 +422,18 @@ resource "aws_iam_role_policy_attachment" "integration_read_production_mongodb_d
   count      = "${var.aws_environment == "integration" ? 3 : 0}"
   role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_mongodb_read_database_backups_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "training_read_integration_mongoapi_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "training" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongodb_database_backups_reader}"
+}
+
+resource "aws_iam_role_policy_attachment" "training_read_integration_mongodb_database_backups_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "training" ? 3 : 0}"
+  role       = "${element(list(module.mongo-1.instance_iam_role_name, module.mongo-2.instance_iam_role_name, module.mongo-3.instance_iam_role_name), count.index)}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_mongodb_database_backups_reader}"
 }
 
 resource "aws_iam_role_policy_attachment" "staging_read_production_mongoapi_database_backups_iam_role_policy_attachment" {

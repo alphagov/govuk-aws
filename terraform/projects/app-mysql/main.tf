@@ -61,11 +61,17 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for RDS resources"
+  default     = "db.m4.xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -90,7 +96,7 @@ module "mysql_primary_rds_instance" {
   username             = "${var.username}"
   password             = "${var.password}"
   allocated_storage    = "${var.storage_size}"
-  instance_class       = "db.m4.xlarge"
+  instance_class       = "${var.instance_type}"
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
   parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
   event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
@@ -148,7 +154,7 @@ module "mysql_replica_rds_instance" {
   source                     = "../../modules/aws/rds_instance"
   name                       = "${var.stackname}-mysql-replica"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-replica")}"
-  instance_class             = "db.m4.xlarge"
+  instance_class             = "${var.instance_type}"
   instance_name              = "${var.stackname}-mysql-replica"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-replica_id}"]
   create_replicate_source_db = "1"

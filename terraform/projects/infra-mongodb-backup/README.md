@@ -1,11 +1,3 @@
-## Project: infra-s3-mirrors
-
-This creates two s3 buckets
-
-govuk-mirror-{env}-access-logs: The bucket that will hold the access logs
-govuk-mirror-{env}: The bucket that will hold the mirror content
-
-
 
 ## Inputs
 
@@ -13,4 +5,8 @@ govuk-mirror-{env}: The bucket that will hold the mirror content
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| bucket_name |  | string | `govuk-mongodb-backup-s3` | no |
+| team |  | string | `Infrastructure` | no |
+| username |  | string | `govuk-mongodb-backup-s3` | no |
+| versioning |  | string | `true` | no |
 

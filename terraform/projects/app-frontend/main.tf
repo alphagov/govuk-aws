@@ -50,7 +50,7 @@ variable "root_block_device_volume_size" {
 
 variable "instance_type" {
   type        = "string"
-  description = "Instance type"
+  description = "Instance type used for EC2 resources"
   default     = "m5.xlarge"
 }
 
@@ -60,11 +60,26 @@ variable "enable_alb" {
   default     = false
 }
 
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 provider "aws" {
@@ -116,8 +131,8 @@ resource "aws_elb" "frontend_elb" {
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "frontend.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -129,10 +144,10 @@ resource "aws_route53_record" "service_record" {
 
 resource "aws_route53_record" "app_service_records" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${var.internal_domain_name}"
   type    = "CNAME"
-  records = ["frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  records = ["frontend.${var.internal_domain_name}"]
   ttl     = "300"
 }
 
@@ -173,8 +188,8 @@ module "frontend" {
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length           = "1"
   instance_elb_ids                  = ["${aws_elb.frontend_elb.id}"]
-  instance_target_group_arns_length = "${var.enable_alb ? 1 : 0}"
-  instance_target_group_arns        = ["${var.enable_alb ? module.internal_lb.target_group_arns[0] : ""}"]
+  instance_target_group_arns_length = "1"
+  instance_target_group_arns        = ["${module.internal_lb.target_group_arns[0]}"]
   instance_ami_filter_name          = "${var.instance_ami_filter_name}"
   asg_max_size                      = "${var.asg_size}"
   asg_min_size                      = "${var.asg_size}"

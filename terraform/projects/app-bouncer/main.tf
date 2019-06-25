@@ -41,11 +41,17 @@ variable "asg_size" {
   default     = "2"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "t3.xlarge"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -156,7 +162,7 @@ module "bouncer" {
   default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "bouncer", "aws_hostname", "bouncer-1")}"
   instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                     = "t3.xlarge"
+  instance_type                     = "${var.instance_type}"
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length           = "1"
   instance_elb_ids                  = ["${aws_elb.bouncer_external_elb.id}"]

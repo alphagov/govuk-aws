@@ -48,16 +48,43 @@ variable "enable_alb" {
   default     = false
 }
 
+variable "root_block_device_volume_size" {
+  type        = "string"
+  description = "The size of the instance root volume in gigabytes"
+  default     = "40"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "m5.large"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.60.0"
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 data "aws_acm_certificate" "elb_cert" {
@@ -104,8 +131,8 @@ resource "aws_elb" "draft-frontend_elb" {
 }
 
 resource "aws_route53_record" "draft-frontend_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "draft-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "draft-frontend.${var.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -117,10 +144,10 @@ resource "aws_route53_record" "draft-frontend_service_record" {
 
 resource "aws_route53_record" "app_service_records" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${var.internal_domain_name}"
   type    = "CNAME"
-  records = ["draft-frontend.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  records = ["draft-frontend.${var.internal_domain_name}"]
   ttl     = "300"
 }
 
@@ -157,17 +184,18 @@ module "draft-frontend" {
   default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "draft_frontend", "aws_hostname", "draft-frontend-1")}"
   instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_draft-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                     = "m5.large"
+  instance_type                     = "${var.instance_type}"
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length           = "1"
   instance_elb_ids                  = ["${aws_elb.draft-frontend_elb.id}"]
-  instance_target_group_arns_length = "${var.enable_alb ? 1 : 0}"
-  instance_target_group_arns        = ["${var.enable_alb ? module.internal_lb.target_group_arns[0] : ""}"]
+  instance_target_group_arns_length = "1"
+  instance_target_group_arns        = ["${module.internal_lb.target_group_arns[0]}"]
   instance_ami_filter_name          = "${var.instance_ami_filter_name}"
   asg_max_size                      = "${var.asg_size}"
   asg_min_size                      = "${var.asg_size}"
   asg_desired_capacity              = "${var.asg_size}"
   asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size     = "${var.root_block_device_volume_size}"
 }
 
 module "alarms-elb-draft-frontend-internal" {

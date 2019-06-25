@@ -47,6 +47,12 @@ variable "asg_size" {
   default     = "2"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "t2.medium"
+}
+
 variable "external_zone_name" {
   type        = "string"
   description = "The name of the Route53 zone that contains external records"
@@ -76,7 +82,7 @@ variable "create_external_elb" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -250,7 +256,7 @@ module "draft-cache" {
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "draft_cache", "aws_hostname", "draft-cache-1")}"
   instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_draft-cache_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "t2.medium"
+  instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "${local.instance_elb_ids_length}"
   instance_elb_ids              = ["${local.instance_elb_ids}"]

@@ -65,11 +65,17 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for EC2 resources"
+  default     = "t2.medium"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.7"
+  required_version = "= 0.11.14"
 }
 
 provider "aws" {
@@ -164,7 +170,7 @@ module "apt" {
   default_tags                      = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "apt", "aws_hostname", "apt-1")}"
   instance_subnet_ids               = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.apt_1_subnet))}"
   instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_apt_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                     = "t2.medium"
+  instance_type                     = "${var.instance_type}"
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_target_group_arns        = ["${concat(module.apt_internal_lb.target_group_arns, module.apt_external_lb.target_group_arns)}"]
   instance_target_group_arns_length = "${length(distinct(values(local.external_lb_map))) + length(distinct(values(local.internal_lb_map)))}"

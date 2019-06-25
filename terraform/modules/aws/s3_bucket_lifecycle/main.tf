@@ -21,6 +21,11 @@ variable "target_bucketid_for_logs" {
   description = "ID for logging bucket"
 }
 
+variable "target_prefix_for_logs" {
+  type        = "string"
+  description = "Prefix for logs written to the s3 bucket"
+}
+
 # lifecycle rule 1 vars
 variable "enable_current_expiration" {
   type        = "string"
@@ -65,7 +70,7 @@ resource "aws_s3_bucket" "s3_bucket" {
 
   logging {
     target_bucket = "${var.target_bucketid_for_logs}"
-    target_prefix = "log/"
+    target_prefix = "${var.target_prefix_for_logs}"
   }
 
   lifecycle_rule {
