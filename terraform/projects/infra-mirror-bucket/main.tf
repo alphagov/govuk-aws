@@ -371,10 +371,9 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
     }
   }
 
-  enabled             = "${var.cloudfront_enable}"
-  is_ipv6_enabled     = true
-  comment             = "Assets"
-  default_root_object = "index.html"
+  enabled         = "${var.cloudfront_enable}"
+  is_ipv6_enabled = true
+  comment         = "Assets"
 
   logging_config {
     include_cookies = false
