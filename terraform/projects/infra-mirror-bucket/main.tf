@@ -306,7 +306,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
     prefix          = "cloudfront/"
   }
 
@@ -377,7 +377,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
     prefix          = "cloudfront/"
   }
 
