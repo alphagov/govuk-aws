@@ -59,7 +59,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.60.0"
+  version = "2.16.0"
 }
 
 data "terraform_remote_state" "infra_monitoring" {

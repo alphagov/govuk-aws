@@ -49,7 +49,7 @@ data "aws_route53_zone" "internal" {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.60.0"
+  version = "2.16.0"
 }
 
 resource "aws_elb" "publishing-api-db-admin_elb" {
