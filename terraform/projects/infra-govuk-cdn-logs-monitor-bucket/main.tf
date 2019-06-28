@@ -33,7 +33,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "1.60.0"
+  version = "2.16.0"
 }
 
 resource "aws_s3_bucket" "cdn_logs_monitor" {

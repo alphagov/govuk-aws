@@ -108,4 +108,5 @@ resource "aws_cloudwatch_log_subscription_filter" "log" {
   log_group_name  = "${var.log_group_name}"
   filter_pattern  = "[]"
   destination_arn = "${aws_lambda_function.lambda_logs_to_firehose.arn}"
+  distribution    = "ByLogStream"
 }
