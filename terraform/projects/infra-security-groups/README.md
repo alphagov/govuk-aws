@@ -82,6 +82,7 @@ Manage the security groups for the entire infrastructure
 | sg_feedback_elb_id |  |
 | sg_frontend_elb_id |  |
 | sg_frontend_id |  |
+| sg_gatling_external_elb_id |  |
 | sg_gatling_id |  |
 | sg_graphite_external_elb_id |  |
 | sg_graphite_id |  |

@@ -214,6 +214,10 @@ output "sg_gatling_id" {
   value = "${aws_security_group.gatling.id}"
 }
 
+output "sg_gatling_external_elb_id" {
+  value = "${aws_security_group.gatling_external_elb.id}"
+}
+
 output "sg_graphite_id" {
   value = "${aws_security_group.graphite.id}"
 }
