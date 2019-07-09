@@ -125,12 +125,20 @@ resource "aws_lb_target_group" "tg" {
   }
 
   tags = "${var.default_tags}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_attachment" "tg" {
   count                  = "${var.autoscaling_group_name != "" ? length(var.rules_host) : 0}"
   autoscaling_group_name = "${var.autoscaling_group_name}"
   alb_target_group_arn   = "${aws_lb_target_group.tg.*.arn[count.index]}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener_rule" "routing" {
@@ -146,6 +154,10 @@ resource "aws_lb_listener_rule" "routing" {
   condition {
     field  = "host-header"
     values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
