@@ -152,3 +152,22 @@ resource "aws_security_group_rule" "cache-external-elb_egress_any_any" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.cache_external_elb.id}"
 }
+
+resource "aws_security_group" "cache_ithc_access" {
+  name        = "${var.stackname}_cache_ithc_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Control access to ITHC SSH"
+
+  tags {
+    Name = "${var.stackname}_cache_ithc_access"
+  }
+}
+
+resource "aws_security_group_rule" "ithc_ingress_cache_ssh" {
+  type              = "ingress"
+  to_port           = 22
+  from_port         = 22
+  protocol          = "tcp"
+  cidr_blocks       = "${var.ithc_access_ips}"
+  security_group_id = "${aws_security_group.cache_ithc_access.id}"
+}
