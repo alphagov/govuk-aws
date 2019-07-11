@@ -375,6 +375,13 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     error_caching_min_ttl = 300
   }
 
+  custom_error_response {
+    error_code            = 404
+    response_code         = 503
+    response_page_path    = "/error/503.html"
+    error_caching_min_ttl = 300
+  }
+
   tags = {
     Project         = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
@@ -407,7 +414,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   aliases = ["${var.cloudfront_assets_distribution_aliases}"]
 
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
 
@@ -417,6 +424,8 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
       cookies {
         forward = "none"
       }
+
+      headers = ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"]
     }
 
     viewer_protocol_policy = "redirect-to-https"
