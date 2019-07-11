@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "offsite-ssh_ingress_office-and-carrenza_ssh"
   from_port   = 22
   to_port     = 22
   protocol    = "tcp"
-  cidr_blocks = ["${concat(var.office_ips, var.carrenza_production_ips, var.carrenza_staging_ips)}"]
+  cidr_blocks = ["${concat(var.office_ips, var.carrenza_production_ips, var.carrenza_staging_ips, var.ithc_access_ips)}"]
 
   security_group_id = "${aws_security_group.offsite_ssh.id}"
 }
