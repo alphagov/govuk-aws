@@ -103,6 +103,7 @@ resource "aws_security_group_rule" "router-api-elb_egress_any_any" {
 }
 
 resource "aws_security_group" "router-backend_ithc_access" {
+  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_router-backend_ithc_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Control access to ITHC SSH"
@@ -113,6 +114,7 @@ resource "aws_security_group" "router-backend_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_router-backend_ssh" {
+  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   type              = "ingress"
   to_port           = 22
   from_port         = 22

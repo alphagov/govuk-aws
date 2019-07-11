@@ -55,6 +55,7 @@ resource "aws_security_group_rule" "feedback-elb_egress_any_any" {
 }
 
 resource "aws_security_group" "feedback_ithc_access" {
+  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_feedback_ithc_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Control access to ITHC SSH"
@@ -65,6 +66,7 @@ resource "aws_security_group" "feedback_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_feedback_ssh" {
+  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   type              = "ingress"
   to_port           = 22
   from_port         = 22
