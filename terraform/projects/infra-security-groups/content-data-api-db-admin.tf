@@ -21,6 +21,7 @@ resource "aws_security_group" "content-data-api-db-admin" {
 }
 
 resource "aws_security_group" "content-data-api-db-admin_ithc_access" {
+  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_content-data-api-db-admin_ithc_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Control access to ITHC SSH"
@@ -31,6 +32,7 @@ resource "aws_security_group" "content-data-api-db-admin_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_content-data-api-db-admin_ssh" {
+  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   type              = "ingress"
   to_port           = 22
   from_port         = 22

@@ -139,6 +139,7 @@ resource "aws_security_group_rule" "draft-cache-external-elb_egress_any_any" {
 }
 
 resource "aws_security_group" "draft-cache_ithc_access" {
+  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_draft-cache_ithc_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Control access to ITHC SSH"
@@ -149,6 +150,7 @@ resource "aws_security_group" "draft-cache_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_draft-cache_ssh" {
+  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   type              = "ingress"
   to_port           = 22
   from_port         = 22
