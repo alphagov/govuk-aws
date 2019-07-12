@@ -348,6 +348,12 @@ resource "aws_cloudfront_distribution" "www_distribution" {
       }
     }
 
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = "${aws_lambda_function.url_rewrite.arn}:1"
+      include_body = false
+    }
+
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 86400
@@ -452,4 +458,41 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
     Project         = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
+}
+
+resource "aws_iam_role" "basic_lambda_role" {
+  name = "basic_lambda_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "lambda.amazonaws.com",
+          "edgelambda.amazonaws.com"
+        ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "basic_lambda_attach" {
+  name       = "basic-lambda-attachment"
+  roles      = ["${aws_iam_role.basic_lambda_role.name}"]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_lambda_function" "url_rewrite" {
+  filename      = "../../lambda/CloudfrontUrlRewrite/CloudfrontUrlRewrite.zip"
+  function_name = "url_rewrite"
+  role          = "${aws_iam_role.basic_lambda_role.arn}"
+  handler       = "index.handler"
+  runtime       = "nodejs8.10"
+  provider      = "aws.aws_cloudfront_certificate"
 }
