@@ -187,6 +187,13 @@ resource "aws_s3_bucket" "govuk-mirror" {
       }
     }
   }
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    max_age_seconds = 3000
+  }
 }
 
 resource "aws_s3_bucket" "govuk-mirror-replica" {
@@ -341,6 +348,12 @@ resource "aws_cloudfront_distribution" "www_distribution" {
       }
     }
 
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = "${aws_lambda_function.url_rewrite.arn}:1"
+      include_body = false
+    }
+
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 86400
@@ -363,6 +376,13 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
   custom_error_response {
     error_code            = 403
+    response_code         = 503
+    response_page_path    = "/error/503.html"
+    error_caching_min_ttl = 300
+  }
+
+  custom_error_response {
+    error_code            = 404
     response_code         = 503
     response_page_path    = "/error/503.html"
     error_caching_min_ttl = 300
@@ -400,7 +420,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   aliases = ["${var.cloudfront_assets_distribution_aliases}"]
 
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
 
@@ -410,6 +430,8 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
       cookies {
         forward = "none"
       }
+
+      headers = ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"]
     }
 
     viewer_protocol_policy = "redirect-to-https"
@@ -436,4 +458,41 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
     Project         = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
+}
+
+resource "aws_iam_role" "basic_lambda_role" {
+  name = "basic_lambda_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "lambda.amazonaws.com",
+          "edgelambda.amazonaws.com"
+        ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "basic_lambda_attach" {
+  name       = "basic-lambda-attachment"
+  roles      = ["${aws_iam_role.basic_lambda_role.name}"]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_lambda_function" "url_rewrite" {
+  filename      = "../../lambda/CloudfrontUrlRewrite/CloudfrontUrlRewrite.zip"
+  function_name = "url_rewrite"
+  role          = "${aws_iam_role.basic_lambda_role.arn}"
+  handler       = "index.handler"
+  runtime       = "nodejs8.10"
+  provider      = "aws.aws_cloudfront_certificate"
 }
