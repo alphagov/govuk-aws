@@ -685,6 +685,11 @@ module "cache_public_lb" {
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
 }
 
+resource "aws_wafregional_web_acl_association" "cache_public_web_acl" {
+  resource_arn = "${module.cache_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+}
+
 resource "aws_route53_record" "cache_public_service_names" {
   count   = "${length(var.cache_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
