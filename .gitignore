@@ -2,3 +2,6 @@
 *.tfstate
 *.tfstate.backup
 *.swp
+
+# ignore lambda zip artifact from archive_file
+terraform/lambda/WAFLogTrimmer/lambda.zip

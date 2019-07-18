@@ -114,16 +114,56 @@ resource "aws_iam_role_policy" "aws_waf_firehose" {
               "s3:GetObject",
               "s3:ListBucket",
               "s3:ListBucketMultipartUploads",
-              "s3:PutObject"
+              "s3:PutObject",
+              "lambda:InvokeFunction",
+              "lambda:GetFunctionConfiguration"
           ],
           "Resource": [
               "arn:aws:s3:::${aws_s3_bucket.aws_waf_logs.bucket}",
-              "arn:aws:s3:::${aws_s3_bucket.aws_waf_logs.bucket}/*"
+              "arn:aws:s3:::${aws_s3_bucket.aws_waf_logs.bucket}/*",
+              "${aws_lambda_function.aws_waf_log_trimmer.arn}",
+              "${aws_lambda_function.aws_waf_log_trimmer.arn}:*"
           ]
       }
     ]
 }
 EOF
+}
+
+resource "aws_iam_role" "aws_waf_log_trimmer" {
+  name = "${var.aws_environment}-aws-waf-log-trimmer"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+data "archive_file" "aws_waf_log_trimmer" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/WAFLogTrimmer/lambda.js"
+  output_path = "${path.module}/../../lambda/WAFLogTrimmer/lambda.zip"
+}
+
+resource "aws_lambda_function" "aws_waf_log_trimmer" {
+  filename         = "${data.archive_file.aws_waf_log_trimmer.output_path}"
+  function_name    = "${var.aws_environment}-waf-log-trimmer"
+  source_code_hash = "${data.archive_file.aws_waf_log_trimmer.output_base64sha256}"
+  role             = "${aws_iam_role.aws_waf_log_trimmer.arn}"
+  handler          = "lambda.handler"
+  runtime          = "nodejs8.10"
+  timeout          = 190
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "splunk" {
@@ -148,5 +188,33 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
     hec_acknowledgment_timeout = 180
     hec_endpoint_type          = "Raw"
     s3_backup_mode             = "AllEvents"
+
+    processing_configuration {
+      enabled = "true"
+
+      processors {
+        type = "Lambda"
+
+        parameters {
+          parameter_name  = "LambdaArn"
+          parameter_value = "${aws_lambda_function.aws_waf_log_trimmer.arn}:$LATEST"
+        }
+
+        parameters {
+          parameter_name  = "RoleArn"
+          parameter_value = "${aws_iam_role.aws_waf_firehose.arn}"
+        }
+
+        parameters {
+          parameter_name  = "BufferSizeInMBs"
+          parameter_value = "3"
+        }
+
+        parameters {
+          parameter_name  = "BufferIntervalInSeconds"
+          parameter_value = "180"
+        }
+      }
+    }
   }
 }
