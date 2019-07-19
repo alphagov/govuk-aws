@@ -157,6 +157,7 @@ resource "aws_s3_bucket" "artefact" {
     role = "${aws_iam_role.artefact_replication.arn}"
 
     rules {
+      id     = "govuk-artefact-replication-whole-bucket-rule"
       status = "Enabled"
       prefix = ""
 
