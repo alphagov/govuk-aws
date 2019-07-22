@@ -445,6 +445,16 @@ variable "draft_content_store_public_service_names" {
   default = []
 }
 
+variable "waf_logs_hec_endpoint" {
+  description = "Splunk endpoint for shipping application firewall logs"
+  type        = "string"
+}
+
+variable "waf_logs_hec_token" {
+  description = "Splunk token for shipping application firewall logs"
+  type        = "string"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
