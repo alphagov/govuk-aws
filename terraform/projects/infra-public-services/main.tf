@@ -526,6 +526,11 @@ module "backend_public_lb" {
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
 }
 
+resource "aws_wafregional_web_acl_association" "backend_public_lb" {
+  resource_arn = "${module.backend_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+}
+
 resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
   count        = "${length(var.backend_alb_blocked_host_headers)}"
   listener_arn = "${element(module.backend_public_lb.load_balancer_ssl_listeners, 0)}"
@@ -2133,6 +2138,11 @@ module "whitehall_backend_public_lb" {
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_external_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "whitehall_backend", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_wafregional_web_acl_association" "whitehall_backend_public_lb" {
+  resource_arn = "${module.whitehall_backend_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
 }
 
 resource "aws_route53_record" "whitehall_backend_public_service_names" {
