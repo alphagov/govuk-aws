@@ -1,33 +1,3 @@
-resource "aws_wafregional_regex_pattern_set" "x_always_block" {
-  name                  = "XAlwaysBlock"
-  regex_pattern_strings = ["true"]
-}
-
-resource "aws_wafregional_regex_match_set" "x_always_block" {
-  name = "XAlwaysBlock"
-
-  regex_match_tuple {
-    field_to_match {
-      data = "X-Always-Block"
-      type = "HEADER"
-    }
-
-    regex_pattern_set_id = "${aws_wafregional_regex_pattern_set.x_always_block.id}"
-    text_transformation  = "NONE"
-  }
-}
-
-resource "aws_wafregional_rule" "x_always_block" {
-  name        = "XAlwaysBlock"
-  metric_name = "XAlwaysBlock"
-
-  predicate {
-    data_id = "${aws_wafregional_regex_match_set.x_always_block.id}"
-    negated = false
-    type    = "RegexMatch"
-  }
-}
-
 resource "aws_wafregional_web_acl" "default" {
   name        = "CachePublicWebACL"
   metric_name = "CachePublicWebACL"
@@ -45,6 +15,24 @@ resource "aws_wafregional_web_acl" "default" {
     rule_id  = "${aws_wafregional_rule.x_always_block.id}"
   }
 
+  rule {
+    action {
+      type = "ALLOW" # FIXME: Change this to BLOCK after 25th July 2019
+    }
+
+    priority = 3
+    rule_id  = "${aws_wafregional_rule.sqli.id}"
+  }
+
+  rule {
+    action {
+      type = "ALLOW" # FIXME: Change this to BLOCK after 25th July 2019
+    }
+
+    priority = 4
+    rule_id  = "${aws_wafregional_rule.xss.id}"
+  }
+
   logging_configuration {
     log_destination = "${aws_kinesis_firehose_delivery_stream.splunk.arn}"
 
@@ -60,7 +48,11 @@ resource "aws_wafregional_web_acl" "default" {
     }
   }
 
-  depends_on = ["aws_wafregional_rule.x_always_block"]
+  depends_on = [
+    "aws_wafregional_rule.x_always_block",
+    "aws_wafregional_rule.sqli",
+    "aws_wafregional_rule.xss",
+  ]
 }
 
 resource "aws_s3_bucket" "aws_waf_logs" {
