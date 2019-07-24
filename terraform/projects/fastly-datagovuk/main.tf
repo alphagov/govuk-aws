@@ -55,6 +55,10 @@ provider "fastly" {
   api_key = "${var.fastly_api_key}"
 }
 
+data "external" "fastly" {
+  program = ["/bin/bash", "${path.module}/fastly.sh"]
+}
+
 resource "fastly_service_v1" "datagovuk" {
   name = "${title(var.aws_environment)} data.gov.uk"
 
@@ -100,13 +104,13 @@ resource "fastly_service_v1" "datagovuk" {
 
   vcl {
     name    = "datagovuk_vcl"
-    content = "${file("datagovuk.vcl")}"
+    content = "${file(data.external.fastly.result.fastly)}"
     main    = true
   }
 
   condition {
     name      = "education_standards"
-    type      = "request"
+    type      = "REQUEST"
     statement = "req.url ~ \"^/education-standards\""
   }
 
@@ -130,7 +134,7 @@ resource "fastly_service_v1" "datagovuk" {
 
   condition {
     name      = "contracts_finder_archive"
-    type      = "request"
+    type      = "REQUEST"
     statement = "req.url ~ \"^/data/contracts-finder-archive\""
   }
 
