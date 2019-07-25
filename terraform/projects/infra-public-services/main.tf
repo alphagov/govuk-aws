@@ -705,6 +705,11 @@ resource "aws_wafregional_web_acl_association" "cache_public_web_acl" {
   web_acl_id   = "${aws_wafregional_web_acl.default.id}"
 }
 
+resource "aws_shield_protection" "cache_public_web_acl" {
+  name         = "${var.stackname}-cache-public"
+  resource_arn = "${module.cache_public_lb.lb_id}"
+}
+
 resource "aws_route53_record" "cache_public_service_names" {
   count   = "${length(var.cache_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
