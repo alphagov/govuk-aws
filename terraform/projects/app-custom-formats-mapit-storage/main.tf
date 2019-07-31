@@ -83,7 +83,7 @@ resource "aws_s3_bucket" "custom_formats_mapit" {
 }
 
 resource "aws_s3_bucket" "custom_formats_mapit_replica" {
-  bucket   = "custom_formats_mapit_replica"
+  bucket   = "${var.bucket_name}-replica-${var.aws_environment}"
   region   = "${var.aws_replica_region}"
   provider = "aws.aws_replica"
 
