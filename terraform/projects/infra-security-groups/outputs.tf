@@ -138,6 +138,10 @@ output "sg_docker_management_id" {
   value = "${aws_security_group.docker_management.id}"
 }
 
+output "sg_documentdb_id" {
+  value = "${aws_security_group.documentdb.id}"
+}
+
 output "sg_draft-cache_id" {
   value = "${aws_security_group.draft-cache.id}"
 }

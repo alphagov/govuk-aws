@@ -62,6 +62,7 @@ Manage the security groups for the entire infrastructure
 | sg_deploy_internal_elb_id |  |
 | sg_docker_management_etcd_elb_id |  |
 | sg_docker_management_id |  |
+| sg_documentdb_id |  |
 | sg_draft-cache_elb_id |  |
 | sg_draft-cache_external_elb_id |  |
 | sg_draft-cache_id |  |

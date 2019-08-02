@@ -26,9 +26,29 @@ variable "instance_type" {
 }
 
 variable "instance_count" {
-  type        = "number"
+  type        = "string"
   description = "Instance count used for DocumentDB resources"
-  default     = 3
+  default     = "3"
+}
+
+variable "master_username" {
+  type        = "string"
+  description = "Username of master user on DocumentDB cluster"
+}
+
+variable "master_password" {
+  type        = "string"
+  description = "Password of master user on DocumentDB cluster"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
 # Resources
@@ -45,40 +65,36 @@ provider "aws" {
 
 resource "aws_docdb_cluster_instance" "cluster_instances" {
   count              = "${var.instance_count}"
-  identifier         = "docdb-cluster-demo-${count.index}"
-  cluster_identifier = "${aws_docdb_cluster.default.id}"
+  identifier         = "documentdb-${count.index}"
+  cluster_identifier = "${aws_docdb_cluster.cluster.id}"
   instance_class     = "${var.instance_type}"
+  tags               = "${aws_docdb_cluster.cluster.tags}"
+}
+
+resource "aws_docdb_subnet_group" "cluster_subnet" {
+  name       = "documentdb-${var.aws_environment}"
+  subnet_ids = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
 }
 
 resource "aws_docdb_cluster" "cluster" {
-  cluster_identifier = "docdb-cluster-${aws_environment}"
-  availability_zones = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-  master_username    = "${var.master_username}"
-  master_password    = "${var.master_password}"
+  cluster_identifier     = "documentdb-${var.aws_environment}"
+  availability_zones     = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  db_subnet_group_name   = "${aws_docdb_subnet_group.cluster_subnet.name}"
+  master_username        = "${var.master_username}"
+  master_password        = "${var.master_password}"
+  vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_documentdb_id}"]
+
+  tags = {
+    Service  = "documentdb"
+    Customer = "licensify"
+    Name     = "documentdb-licensify"
+    Source   = "app-documentdb"
+  }
 }
 
-resource "aws_security_group" "docdb_sg" {
-  name        = "documentdb_sg"
-  description = "Allow access to cluster from client instances"
-  vpc_id      = "${aws_vpc.main.id}"
-
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 443
-    to_port     = 443
-    protocol    = "-1"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks = # add a CIDR block here
-  }
-
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-    prefix_list_ids = ["pl-12c4e678"]
-  }
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
 }
 
 resource "aws_route53_record" "service_record" {
@@ -88,7 +104,3 @@ resource "aws_route53_record" "service_record" {
   ttl     = 300
   records = ["${aws_docdb_cluster.cluster.endpoint}"]
 }
-
-#security
-
-#tagging
