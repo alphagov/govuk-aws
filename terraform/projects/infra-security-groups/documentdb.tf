@@ -32,3 +32,4 @@ resource "aws_security_group_rule" "documentdb_ingress_db-admin_mongodb" {
 }
 
 # TODO: Add an entry for the security group containing the Licensify instances.
+
