@@ -19,6 +19,7 @@ The primary bucket should be in London and the backup in Ireland.
 | cloudfront_assets_distribution_aliases | Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution. | list | `<list>` | no |
 | cloudfront_create | Create Cloudfront resources. | string | `false` | no |
 | cloudfront_enable | Enable Cloudfront distributions. | string | `false` | no |
+| cloudfront_lambda_version | The version of the lambda to use with the cloudfront instance | string | `` | no |
 | cloudfront_www_certificate_domain | The domain of the WWW CloudFront certificate to look up. | string | `` | no |
 | cloudfront_www_distribution_aliases | Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution. | list | `<list>` | no |
 | office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |

@@ -86,6 +86,12 @@ variable "cloudfront_assets_certificate_domain" {
   default     = ""
 }
 
+variable "cloudfront_lambda_version" {
+  type        = "string"
+  description = "The version of the lambda to use with the cloudfront instance"
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -350,7 +356,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
     lambda_function_association {
       event_type   = "viewer-request"
-      lambda_arn   = "${aws_lambda_function.url_rewrite.arn}:1"
+      lambda_arn   = "${aws_lambda_function.url_rewrite.arn}:${var.cloudfront_lambda_version}"
       include_body = false
     }
 
