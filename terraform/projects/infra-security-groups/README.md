@@ -89,6 +89,9 @@ Manage the security groups for the entire infrastructure
 | sg_graphite_id |  |
 | sg_graphite_internal_elb_id |  |
 | sg_jumpbox_id |  |
+| sg_licensify-backend_external_elb_id |  |
+| sg_licensify-backend_id |  |
+| sg_licensify-backend_internal_elb_id |  |
 | sg_management_id |  |
 | sg_mapit_carrenza_alb_id |  |
 | sg_mapit_elb_id |  |
