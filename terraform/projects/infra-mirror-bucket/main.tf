@@ -350,7 +350,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
     lambda_function_association {
       event_type   = "viewer-request"
-      lambda_arn   = "${aws_lambda_function.url_rewrite.arn}:1"
+      lambda_arn   = "${aws_lambda_function.url_rewrite.arn}:5"
       include_body = false
     }
 
