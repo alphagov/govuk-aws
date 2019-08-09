@@ -72,3 +72,33 @@ resource "aws_security_group_rule" "licensify-frontend-elb_egress_any_any" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
 }
+
+# Internal Loadbalancer
+resource "aws_security_group" "licensify-frontend_internal_lb" {
+  name        = "${var.stackname}_licensify-frontend_lb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the licensify-frontend LB"
+
+  tags {
+    Name = "${var.stackname}_licensify-frontend_internal_lb_access"
+  }
+}
+
+resource "aws_security_group_rule" "licensify-frontend-internal-lb_ingress_management_https" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.licensify-frontend_internal_lb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "licensify-frontend-internal-lb_egress_any_any" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.licensify-frontend_internal_lb.id}"
+}

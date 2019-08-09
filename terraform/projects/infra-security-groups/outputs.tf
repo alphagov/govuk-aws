@@ -250,6 +250,10 @@ output "sg_licensify-frontend_external_elb_id" {
   value = "${aws_security_group.licensify-frontend_external_elb.id}"
 }
 
+output "sg_licensify-frontend_internal_lb_id" {
+  value = "${aws_security_group.licensify-frontend_internal_lb.id}"
+}
+
 output "sg_licensify-frontend_id" {
   value = "${aws_security_group.licensify-frontend.id}"
 }
