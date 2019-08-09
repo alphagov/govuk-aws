@@ -95,43 +95,27 @@ data "aws_acm_certificate" "elb_cert" {
   statuses = ["ISSUED"]
 }
 
-resource "aws_elb" "licensify-frontend_elb" {
-  name            = "${var.stackname}-licensify-frontend"
+module "internal_lb" {
+  source                           = "../../modules/aws/lb"
+  name                             = "${var.stackname}-licensify-frontend-internal"
+  internal                         = true
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix        = "elb/licensify-frontend-internal-lb"
+  listener_certificate_domain_name = "${var.elb_internal_certname}"
+
+  listener_action = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-frontend_elb_id}"]
-  internal        = "true"
-
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-licensify-frontend-internal-elb"
-    interval      = 60
-  }
-
-  listener {
-    instance_port     = 80
-    instance_protocol = "http"
-    lb_port           = "443"
-    lb_protocol       = "https"
-
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "TCP:80"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-frontend_internal_lb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
     Project         = "${var.stackname}"
-    aws_migration   = "licensify-frontend"
+    aws_migration   = "licensing_frontend"
+    aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
 }
@@ -142,8 +126,8 @@ resource "aws_route53_record" "service_record" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.licensify-frontend_elb.dns_name}"
-    zone_id                = "${aws_elb.licensify-frontend_elb.zone_id}"
+    name                   = "${module.internal_lb.lb_dns_name}"
+    zone_id                = "${module.internal_lb.lb_zone_id}"
     evaluate_target_health = true
   }
 }
@@ -158,33 +142,28 @@ resource "aws_route53_record" "app_service_records" {
 }
 
 module "licensify-frontend" {
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-licensify-frontend"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "licensing_frontend", "aws_hostname", "licensify-frontend-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "1"
-  instance_elb_ids              = ["${aws_elb.licensify-frontend_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_max_size                  = "${var.asg_size}"
-  asg_min_size                  = "${var.asg_size}"
-  asg_desired_capacity          = "${var.asg_size}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-}
+  source = "../../modules/aws/node_group"
+  name   = "${var.stackname}-licensify-frontend"
 
-module "alarms-elb-licensify-frontend-internal" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-licensify-frontend-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.licensify-frontend_elb.name}"
-  httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "100"
-  httpcode_elb_4xx_threshold     = "100"
-  httpcode_elb_5xx_threshold     = "100"
-  surgequeuelength_threshold     = "0"
-  healthyhostcount_threshold     = "0"
+  default_tags = {
+    Project         = "${var.stackname}"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+    aws_migration   = "licensing_frontend"
+    aws_hostname    = "licensify-frontend-1"
+  }
+
+  instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                     = "${var.instance_type}"
+  instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_target_group_arns_length = "1"
+  instance_target_group_arns        = ["${module.internal_lb.target_group_arns[0]}"]
+  instance_ami_filter_name          = "${var.instance_ami_filter_name}"
+  asg_max_size                      = "${var.asg_size}"
+  asg_min_size                      = "${var.asg_size}"
+  asg_desired_capacity              = "${var.asg_size}"
+  asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
 # Outputs

@@ -91,6 +91,7 @@ Manage the security groups for the entire infrastructure
 | sg_jumpbox_id |  |
 | sg_licensify-frontend_external_elb_id |  |
 | sg_licensify-frontend_id |  |
+| sg_licensify-frontend_internal_lb_id |  |
 | sg_management_id |  |
 | sg_mapit_carrenza_alb_id |  |
 | sg_mapit_elb_id |  |
