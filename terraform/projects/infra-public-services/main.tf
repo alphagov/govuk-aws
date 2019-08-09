@@ -159,22 +159,7 @@ variable "ubuntutest_public_service_names" {
   default = []
 }
 
-variable "licensify_backend_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "licensify_backend_internal_service_cnames" {
-  type    = "list"
-  default = []
-}
-
 variable "licensify_backend_public_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "licensify_backend_public_service_cnames" {
   type    = "list"
   default = []
 }
@@ -1675,13 +1660,12 @@ resource "aws_autoscaling_attachment" "ubuntutest_asg_attachment_elb" {
 #
 
 module "licensify_backend_public_lb" {
-  # XXX Need to verify healthcheck config
   source                                     = "../../modules/aws/lb"
-  name                                       = "${var.stackname}-licensify-backend-public"
+  name                                       = "licensify-backend-public"
   internal                                   = false
   vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix                  = "elb/${var.stackname}-licensify-backend-public-elb"
+  access_logs_bucket_prefix                  = "elb/licensify-backend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
 
@@ -1721,7 +1705,7 @@ data "aws_autoscaling_groups" "licensify_backend" {
 
   filter {
     name   = "value"
-    values = ["blue-licensify-backend"]
+    values = ["licensify-backend"]
   }
 }
 

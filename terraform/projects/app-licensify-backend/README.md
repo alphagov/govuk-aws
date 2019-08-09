@@ -7,11 +7,11 @@ Licensify Backend nodes
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| app_service_records | List of application service names that get traffic via this loadbalancer | list | `<list>` | no |
-| asg_size | The autoscaling groups desired/max/min capacity | string | `2` | no |
+| app_service_records | List of application service names that get traffic via the internal LB | list | `<list>` | no |
+| asg_size | The autoscaling group's desired/max/min capacity | string | `2` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
-| elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
+| elb_internal_certname | The domain name of the ACM cert to use for the internal LB | string | - | yes |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | instance_type | Instance type used for EC2 resources | string | `m5.large` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |

@@ -27,18 +27,18 @@ variable "instance_ami_filter_name" {
 
 variable "elb_internal_certname" {
   type        = "string"
-  description = "The ACM cert domain name to find the ARN of"
+  description = "The domain name of the ACM cert to use for the internal LB"
 }
 
 variable "app_service_records" {
   type        = "list"
-  description = "List of application service names that get traffic via this loadbalancer"
+  description = "List of application service names that get traffic via the internal LB"
   default     = []
 }
 
 variable "asg_size" {
   type        = "string"
-  description = "The autoscaling groups desired/max/min capacity"
+  description = "The autoscaling group's desired/max/min capacity"
   default     = "2"
 }
 
@@ -71,13 +71,12 @@ data "aws_acm_certificate" "elb_internal_cert" {
 }
 
 module "internal_lb" {
-  # XXX Need to verify healthcheck config
   source                           = "../../modules/aws/lb"
-  name                             = "${var.stackname}-licensify-backend-internal"
+  name                             = "licensify-backend-internal"
   internal                         = true
   vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix        = "elb/${var.stackname}-licensify-backend-internal-elb"
+  access_logs_bucket_prefix        = "elb/licensify-backend-internal-elb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
 
   listener_action = {
@@ -96,7 +95,7 @@ module "internal_lb" {
 }
 
 # For each service name (licensify-admin, licensify-feed), create DNS A records
-# pointing at the IPv4 addresses of the internal LBs.
+# pointing at the internal LB.
 resource "aws_route53_record" "internal_service_names" {
   count   = "${length(var.app_service_records)}"
   zone_id = "${data.aws_route53_zone.internal.zone_id}"
@@ -112,10 +111,8 @@ resource "aws_route53_record" "internal_service_names" {
 
 module "licensify-backend" {
   source = "../../modules/aws/node_group"
-  name   = "${var.stackname}-licensify-backend"
+  name   = "licensify-backend"
 
-  # XXX not sure if passing a map literal works; if not, try making it a local
-  # and assigning it here using string interpolation.
   default_tags = {
     Project         = "${var.stackname}"
     aws_stackname   = "${var.stackname}"

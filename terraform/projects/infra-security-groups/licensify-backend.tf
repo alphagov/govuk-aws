@@ -4,20 +4,17 @@
 # The licensify-backend needs to be accessible on ports:
 #   - 443 from the other VMs
 #
-# === Variables:
-# stackname - string
-#
 # === Outputs:
 # sg_licensify-backend_id
 # sg_licensify-backend_elb_id
 
 resource "aws_security_group" "licensify-backend" {
-  name        = "${var.stackname}_licensify-backend_access"
+  name        = "licensify-backend_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the licensify-backend host from its ELB"
 
   tags {
-    Name = "${var.stackname}_licensify-backend_access"
+    Name = "licensify-backend_access"
   }
 }
 
@@ -48,12 +45,12 @@ resource "aws_security_group_rule" "licensify-backend_ingress_licensify-backend-
 }
 
 resource "aws_security_group" "licensify-backend_internal_elb" {
-  name        = "${var.stackname}_licensify-backend_elb_access"
+  name        = "licensify-backend_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the licensify-backend ELB"
 
   tags {
-    Name = "${var.stackname}_licensify-backend_internal_elb_access"
+    Name = "licensify-backend_internal_elb_access"
   }
 }
 
@@ -77,12 +74,12 @@ resource "aws_security_group_rule" "licensify-backend-internal-elb_egress_any_an
 }
 
 resource "aws_security_group" "licensify-backend_external_elb" {
-  name        = "${var.stackname}_licensify-backend_external_elb_access"
+  name        = "licensify-backend_external_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the licensify-backend external ELB"
 
   tags {
-    Name = "${var.stackname}_licensify-backend_external_elb_access"
+    Name = "licensify-backend_external_elb_access"
   }
 }
 
