@@ -179,6 +179,11 @@ variable "ubuntutest_public_service_names" {
   default = []
 }
 
+variable "licensify_backend_public_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "mapit_public_service_names" {
   type    = "list"
   default = []
@@ -1755,6 +1760,66 @@ resource "aws_autoscaling_attachment" "ubuntutest_asg_attachment_elb" {
   count                  = "${length(data.aws_autoscaling_groups.ubuntutest.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.ubuntutest.names, 0)}"
   elb                    = "${aws_elb.ubuntutest_public_elb.id}"
+}
+
+#
+# Licensing (Licensify) backend
+#
+
+module "licensify_backend_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "licensify-backend-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/licensify-backend-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+
+  listener_action = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-backend_external_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+
+  default_tags = {
+    Project         = "${var.stackname}"
+    aws_migration   = "licensify_backend"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_route53_record" "licensify_backend_public_service_names" {
+  count   = "${length(var.licensify_backend_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.licensify_backend_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.licensify_backend_public_lb.lb_dns_name}"
+    zone_id                = "${module.licensify_backend_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+data "aws_autoscaling_groups" "licensify_backend" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["licensify-backend"]
+  }
+}
+
+resource "aws_autoscaling_attachment" "licensify_backend_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.licensify_backend.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.licensify_backend.names, 0)}"
+  alb_target_group_arn   = "${element(module.licensify_backend_public_lb.target_group_arns, 0)}"
 }
 
 #
