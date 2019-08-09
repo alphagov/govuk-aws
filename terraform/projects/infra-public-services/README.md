@@ -67,6 +67,10 @@ This project adds global resources for app components:
 | graphite_public_service_names |  | list | `<list>` | no |
 | jumpbox_public_service_names |  | list | `<list>` | no |
 | licensify_backend_public_service_names |  | list | `<list>` | no |
+| licensify_frontend_internal_service_cnames |  | list | `<list>` | no |
+| licensify_frontend_internal_service_names |  | list | `<list>` | no |
+| licensify_frontend_public_service_cnames |  | list | `<list>` | no |
+| licensify_frontend_public_service_names |  | list | `<list>` | no |
 | mapit_internal_service_names |  | list | `<list>` | no |
 | mapit_public_service_names |  | list | `<list>` | no |
 | mongo_api_internal_service_names |  | list | `<list>` | no |

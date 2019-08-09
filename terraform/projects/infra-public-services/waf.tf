@@ -198,11 +198,6 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
         }
 
         parameters {
-          parameter_name  = "BufferSizeInMBs"
-          parameter_value = "3"
-        }
-
-        parameters {
           parameter_name  = "BufferIntervalInSeconds"
           parameter_value = "180"
         }
