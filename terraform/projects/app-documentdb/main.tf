@@ -41,16 +41,6 @@ variable "master_password" {
   description = "Password of master user on DocumentDB cluster"
 }
 
-variable "internal_zone_name" {
-  type        = "string"
-  description = "The name of the Route53 zone that contains internal records"
-}
-
-variable "internal_domain_name" {
-  type        = "string"
-  description = "The domain name of the internal DNS records, it could be different from the zone name"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -90,17 +80,4 @@ resource "aws_docdb_cluster" "cluster" {
     Name     = "documentdb-licensify"
     Source   = "app-documentdb"
   }
-}
-
-data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
-  private_zone = true
-}
-
-resource "aws_route53_record" "service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
-  name    = "documentdb.${var.internal_domain_name}"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["${aws_docdb_cluster.cluster.endpoint}"]
 }
