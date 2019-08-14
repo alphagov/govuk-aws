@@ -11,8 +11,6 @@ Shared DocumentDB initially for Licensify
 | aws_region | AWS region | string | `eu-west-1` | no |
 | instance_count | Instance count used for DocumentDB resources | string | `3` | no |
 | instance_type | Instance type used for DocumentDB resources | string | `db.r5.large` | no |
-| internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
-| internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
 | master_password | Password of master user on DocumentDB cluster | string | - | yes |
 | master_username | Username of master user on DocumentDB cluster | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
