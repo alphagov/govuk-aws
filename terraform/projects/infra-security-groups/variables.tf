@@ -66,6 +66,11 @@ variable "carrenza_draft_frontend_ips" {
   default     = []
 }
 
+variable "carrenza_rabbitmq_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will be allowed to federate with the rabbitmq nodes."
+}
+
 variable "traffic_replay_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will replay traffic against an environment"
