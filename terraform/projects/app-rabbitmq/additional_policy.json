@@ -5,7 +5,9 @@
             "Sid": "Stmt1499854881000",
             "Effect": "Allow",
             "Action": [
-                "autoscaling:DescribeAutoScalingInstances"
+                "autoscaling:DescribeAutoScalingInstances",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:AttachNetworkInterface"
             ],
             "Resource": [
                 "*"

@@ -13,6 +13,12 @@ Rabbitmq cluster
 | instance_type | Instance type used for EC2 resources | string | `t2.medium` | no |
 | internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
 | internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
+| rabbitmq_1_ip | IP address of the private IP to assign to the instance | string | - | yes |
+| rabbitmq_1_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
+| rabbitmq_2_ip | IP address of the private IP to assign to the instance | string | - | yes |
+| rabbitmq_2_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
+| rabbitmq_3_ip | IP address of the private IP to assign to the instance | string | - | yes |
+| rabbitmq_3_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
