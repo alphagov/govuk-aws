@@ -246,6 +246,10 @@ output "sg_jumpbox_id" {
   value = "${aws_security_group.jumpbox.id}"
 }
 
+output "sg_licensify_documentdb_id" {
+  value = "${aws_security_group.licensify_documentdb.id}"
+}
+
 output "sg_licensify-frontend_external_elb_id" {
   value = "${aws_security_group.licensify-frontend_external_elb.id}"
 }
