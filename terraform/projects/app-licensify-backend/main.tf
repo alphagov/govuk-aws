@@ -78,6 +78,7 @@ module "internal_lb" {
   access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/licensify-backend-internal-elb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
+  target_group_health_check_path   = "/healthcheck"
 
   listener_action = {
     "HTTPS:443" = "HTTP:80"
@@ -94,8 +95,8 @@ module "internal_lb" {
   }
 }
 
-# For each service name (licensify-admin, licensify-feed), create DNS A records
-# pointing at the internal LB.
+# For each service name (there is only licensify-admin for now), create DNS A
+# records pointing at the internal LB.
 resource "aws_route53_record" "internal_service_names" {
   count   = "${length(var.app_service_records)}"
   zone_id = "${data.aws_route53_zone.internal.zone_id}"

@@ -1618,6 +1618,7 @@ module "licensify_frontend_public_lb" {
   access_logs_bucket_prefix                  = "elb/${var.stackname}-licensify-frontend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  target_group_health_check_path             = "/api/licences"
 
   listener_action = {
     "HTTPS:443" = "HTTP:80"
@@ -1775,6 +1776,7 @@ module "licensify_backend_public_lb" {
   access_logs_bucket_prefix                  = "elb/licensify-backend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  target_group_health_check_path             = "/healthcheck"
 
   listener_action = {
     "HTTPS:443" = "HTTP:80"
