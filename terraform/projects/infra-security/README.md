@@ -31,5 +31,6 @@ Infrastructure security settings:
 
 | Name | Description |
 |------|-------------|
+| licensify_documentdb_kms_key_arn | The ARN of the Licensify DocumentDB KMS key |
 | sops_kms_key_arn | The ARN of the Sops KMS key |
 
