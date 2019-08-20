@@ -69,3 +69,14 @@ resource "aws_security_group_rule" "documentdb_ingress_router-backend_mongodb" {
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.router-backend.id}"
 }
+
+resource "aws_security_group_rule" "documentdb_ingress_self_mongodb" {
+  type      = "ingress"
+  from_port = 27017
+  to_port   = 27017
+  protocol  = "tcp"
+  self      = "true"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.documentdb.id}"
+}
