@@ -24,6 +24,18 @@ variable "master_username" {
   description = "Username of master user on Licensify DocumentDB cluster"
 }
 
+variable "tls" {
+  type        = "string"
+  description = "Whether to enable or disable TLS for the Licensify DocumentDB cluster. Must be either 'enabled' or 'disabled'."
+  default     = "enabled"
+}
+
+variable "backup_retention_period" {
+  type        = "string"
+  description = "Retention period in days for DocumentDB automatic snapshots"
+  default     = "1"
+}
+
 variable "instance_count" {
   type        = "string"
   description = "Instance count used for Licensify DocumentDB resources"
@@ -65,7 +77,7 @@ resource "aws_docdb_cluster_parameter_group" "licensify_parameter_group" {
 
   parameter {
     name  = "tls"
-    value = "enabled"
+    value = "${var.tls}"
   }
 }
 
@@ -77,6 +89,7 @@ resource "aws_docdb_cluster" "licensify_cluster" {
   master_username                 = "${var.master_username}"
   master_password                 = "${var.master_password}"
   storage_encrypted               = true
+  backup_retention_period         = "${var.backup_retention_period}"
   kms_key_id                      = "${data.terraform_remote_state.infra_security.licensify_documentdb_kms_key_arn}"
   vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_licensify_documentdb_id}"]
 
