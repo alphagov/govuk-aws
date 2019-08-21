@@ -38,8 +38,8 @@ variable "app_service_records" {
 
 variable "asg_size" {
   type        = "string"
-  description = "The autoscaling group's desired/max/min capacity"
-  default     = "2"
+  description = "The autoscaling group's desired/max/min capacity. licensify-feed can only have one master instance and mastership is manually configured."
+  default     = "1"
 }
 
 variable "instance_type" {
