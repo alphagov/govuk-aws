@@ -8,7 +8,7 @@ Licensify Backend nodes
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | app_service_records | List of application service names that get traffic via the internal LB | list | `<list>` | no |
-| asg_size | The autoscaling group's desired/max/min capacity | string | `2` | no |
+| asg_size | The autoscaling group's desired/max/min capacity. licensify-feed can only have one master instance and mastership is manually configured. | string | `1` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | elb_internal_certname | The domain name of the ACM cert to use for the internal LB | string | - | yes |
