@@ -44,7 +44,7 @@ variable "asg_size" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "t3.xlarge"
+  default     = "t3.large"
 }
 
 # Resources
