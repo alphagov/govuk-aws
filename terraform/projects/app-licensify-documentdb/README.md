@@ -9,6 +9,7 @@ DocumentDB cluster for Licensify
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| backup_retention_period | Retention period in days for DocumentDB automatic snapshots | string | `1` | no |
 | instance_count | Instance count used for Licensify DocumentDB resources | string | `3` | no |
 | instance_type | Instance type used for Licensify DocumentDB resources | string | `db.r5.large` | no |
 | master_password | Password of master user on Licensify DocumentDB cluster | string | - | yes |
@@ -18,6 +19,7 @@ DocumentDB cluster for Licensify
 | remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_security_key_stack | Override infra_security stackname path to infra_vpc remote state | string | `` | no |
 | stackname | Stackname | string | - | yes |
+| tls | Whether to enable or disable TLS for the Licensify DocumentDB cluster. Must be either 'enabled' or 'disabled'. | string | `enabled` | no |
 
 ## Outputs
 
