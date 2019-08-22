@@ -249,6 +249,7 @@ locals {
 
 resource "aws_lb_target_group" "tg_default" {
   count                = "${length(local.target_groups)}"
+  name                 = "${replace(format("%.21s-%.10s", var.name, replace(local.target_groups[count.index], ":", "-")), "/-$/", "")}"
   port                 = "${element(split(":", element(local.target_groups, count.index)), 1)}"
   protocol             = "${element(split(":", element(local.target_groups, count.index)), 0)}"
   vpc_id               = "${var.vpc_id}"
