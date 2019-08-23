@@ -34,6 +34,17 @@ resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_amqp" {
   source_security_group_id = "${aws_security_group.rabbitmq_elb.id}"
 }
 
+resource "aws_security_group_rule" "rabbitmq_ingress_carrenza-rabbitmq_amqp" {
+  type      = "ingress"
+  from_port = 5672
+  to_port   = 5672
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.rabbitmq.id}"
+  cidr_blocks       = ["${var.carrenza_rabbitmq_ips}"]
+}
+
 resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_rabbitmq-stomp" {
   type      = "ingress"
   from_port = 6163

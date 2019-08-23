@@ -21,11 +21,15 @@ echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: find network interface ID ..
 if [[ -z $F_MIGRATION ]] || [[ -z $F_STACKNAME ]] || [[ -z $F_HOSTNAME ]] ; then
   echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: ERROR facts not found, skipping associate-eni"
 else
-  NETWORK_INTERFACE_ID=$(aws ec2 describe-network-interfaces --region=$REGION --filters "Name=tag:aws_migration,Values=$F_MIGRATION" "Name=tag:aws_hostname,Values=$F_HOSTNAME" "Name=tag:aws_stackname,Values=$F_STACKNAME" --output=json | jq -r '.NetworkInterfaces[] | .NetworkInterfaceId ')
+  NETWORK_INTERFACE_ID=$(aws ec2 describe-network-interfaces --region=$REGION --filters "Name=tag:aws_migration,Values=$F_MIGRATION" "Name=tag:aws_hostname,Values=$F_HOSTNAME" "Name=tag:aws_stackname,Values=$F_STACKNAME" "Name=status,Values=available" --output=json | jq -r '.NetworkInterfaces[] | .NetworkInterfaceId ')
 
   if [[ -z $NETWORK_INTERFACE_ID ]] ; then
     echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: ERROR ENI not found"
   else
+# If more than one interface ID is returned, select the first one    
+    if [[ $( echo $NETWORK_INTERFACE_ID | wc -w) -gt 1 ]] ; then
+      NETWORK_INTERFACE_ID=$(echo $NETWORK_INTERFACE_ID | awk '{print $1}')
+    fi
     echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: attaching eni to instance ..."
     aws ec2 attach-network-interface --region=$REGION --instance-id=$INSTANCE_ID --network-interface-id=$NETWORK_INTERFACE_ID --device-index ${IFACE_INDEX}
 

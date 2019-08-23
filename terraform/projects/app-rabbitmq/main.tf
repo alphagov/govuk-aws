@@ -41,6 +41,36 @@ variable "instance_type" {
   default     = "t2.medium"
 }
 
+variable "rabbitmq_1_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "rabbitmq_2_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "rabbitmq_3_reserved_ips_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the reserved IP of the instance"
+}
+
+variable "rabbitmq_1_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "rabbitmq_2_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
+variable "rabbitmq_3_ip" {
+  type        = "string"
+  description = "IP address of the private IP to assign to the instance"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -146,6 +176,54 @@ module "alarms-elb-rabbitmq-internal" {
   httpcode_elb_5xx_threshold     = "0"
   surgequeuelength_threshold     = "200"
   healthyhostcount_threshold     = "1"
+}
+
+# Interface 1
+resource "aws_network_interface" "rabbitmq-1_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.rabbitmq_1_reserved_ips_subnet)}"
+  private_ips     = ["${var.rabbitmq_1_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}"]
+
+  tags {
+    Name            = "${var.stackname}-rabbitmq"
+    Project         = "${var.stackname}"
+    aws_hostname    = "rabbitmq"
+    aws_migration   = "rabbitmq"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+# Interface 2
+resource "aws_network_interface" "rabbitmq-2_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.rabbitmq_2_reserved_ips_subnet)}"
+  private_ips     = ["${var.rabbitmq_2_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}"]
+
+  tags {
+    Name            = "${var.stackname}-rabbitmq"
+    Project         = "${var.stackname}"
+    aws_hostname    = "rabbitmq"
+    aws_migration   = "rabbitmq"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+# Interface 3
+resource "aws_network_interface" "rabbitmq-3_eni" {
+  subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.rabbitmq_3_reserved_ips_subnet)}"
+  private_ips     = ["${var.rabbitmq_3_ip}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}"]
+
+  tags {
+    Name            = "${var.stackname}-rabbitmq"
+    Project         = "${var.stackname}"
+    aws_hostname    = "rabbitmq"
+    aws_migration   = "rabbitmq"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
 }
 
 # Outputs
