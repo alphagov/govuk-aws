@@ -266,6 +266,10 @@ resource "aws_lb_target_group" "tg_default" {
     timeout             = "${var.target_group_health_check_timeout}"
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = "${merge(
     var.default_tags,
     map(
