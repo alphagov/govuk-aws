@@ -128,6 +128,12 @@ resource "aws_vpn_gateway_route_propagation" "Carrenza_route_propagation" {
   route_table_id = "${element(values(data.terraform_remote_state.infra_networking.private_subnet_names_route_tables_map), count.index)}"
 }
 
+resource "aws_vpn_gateway_route_propagation" "Carrenza_route_propagation_reserved_ips" {
+  count          = "${length(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_route_tables_map)}"
+  vpn_gateway_id = "${aws_vpn_gateway.aws_vpn_gateway.id}"
+  route_table_id = "${element(values(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_route_tables_map), count.index)}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
