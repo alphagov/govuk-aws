@@ -88,6 +88,7 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   lifecycle_rule {
+    id      = "mysql_lifecycle_rule"
     prefix  = "mysql/"
     enabled = true
 
@@ -107,6 +108,7 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   lifecycle_rule {
+    id      = "postgres_lifecycle_rule"
     prefix  = "postgres/"
     enabled = true
 
@@ -126,6 +128,7 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   lifecycle_rule {
+    id      = "mongo_daily_lifecycle_rule"
     prefix  = "mongodb/daily"
     enabled = true
 
@@ -145,6 +148,7 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   lifecycle_rule {
+    id      = "mongo_regular_lifecycle_rule"
     prefix  = "mongodb/regular"
     enabled = true
 
@@ -154,6 +158,7 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   lifecycle_rule {
+    id      = "whisper_lifecycle_rule"
     prefix  = "whisper/"
     enabled = true
 
@@ -170,6 +175,7 @@ resource "aws_s3_bucket" "database_backups" {
     role = "${aws_iam_role.backup_replication_role.arn}"
 
     rules {
+      id     = "main_replication_rule"
       prefix = ""
       status = "Enabled"
 
