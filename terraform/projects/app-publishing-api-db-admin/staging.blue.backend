@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-staging"
-key     = "blue/app-publishing-api-db-admin.tfstate"
-encrypt = true
-region  = "eu-west-1"
