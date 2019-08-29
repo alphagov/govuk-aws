@@ -440,16 +440,6 @@ variable "transition_postgresql_internal_service_names" {
   default = []
 }
 
-variable "publishing-api_db_admin_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "publishing-api_postgresql_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
 variable "whitehall_backend_internal_service_names" {
   type    = "list"
   default = []
@@ -2270,32 +2260,6 @@ resource "aws_route53_record" "transition_postgresql_internal_service_names" {
   name    = "${element(var.transition_postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.transition_postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# publishing-api_db_admin
-#
-
-resource "aws_route53_record" "publishing-api_db_admin_internal_service_names" {
-  count   = "${length(var.publishing-api_db_admin_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.publishing-api_db_admin_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.publishing-api_db_admin_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# publishing-api_postgresql
-#
-
-resource "aws_route53_record" "publishing-api_postgresql_internal_service_names" {
-  count   = "${length(var.publishing-api_postgresql_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.publishing-api_postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.publishing-api_postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

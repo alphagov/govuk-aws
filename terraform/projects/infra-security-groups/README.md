@@ -112,9 +112,6 @@ Manage the security groups for the entire infrastructure
 | sg_postgresql-primary_id |  |
 | sg_prometheus_external_elb_id |  |
 | sg_prometheus_id |  |
-| sg_publishing-api-db-admin_elb_id |  |
-| sg_publishing-api-db-admin_id |  |
-| sg_publishing-api-postgresql-primary_id |  |
 | sg_publishing-api_elb_external_id |  |
 | sg_publishing-api_elb_internal_id |  |
 | sg_publishing-api_id |  |
