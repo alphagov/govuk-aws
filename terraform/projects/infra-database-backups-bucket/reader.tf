@@ -362,9 +362,11 @@ data "aws_iam_policy_document" "integration_dbadmin_database_backups_reader" {
     # Need access to the top level of the tree.
     resources = [
       "arn:aws:s3:::govuk-integration-database-backups",
+      "arn:aws:s3:::govuk-integration-database-backups/*mongo-licensing*",
       "arn:aws:s3:::govuk-integration-database-backups/*mysql*",
       "arn:aws:s3:::govuk-integration-database-backups/*postgres*",
       "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*mongo-licensing*",
       "arn:aws:s3:::govuk-staging-database-backups/*mysql*",
       "arn:aws:s3:::govuk-staging-database-backups/*postgres*",
     ]
@@ -580,6 +582,7 @@ data "aws_iam_policy_document" "staging_dbadmin_database_backups_reader" {
       "arn:aws:s3:::govuk-staging-database-backups",
       "arn:aws:s3:::govuk-staging-database-backups/*mysql*",
       "arn:aws:s3:::govuk-staging-database-backups/*postgres*",
+      "arn:aws:s3:::govuk-staging-database-backups/*mongo-licensing*",
     ]
   }
 }
@@ -789,6 +792,7 @@ data "aws_iam_policy_document" "production_dbadmin_database_backups_reader" {
       "arn:aws:s3:::govuk-production-database-backups",
       "arn:aws:s3:::govuk-production-database-backups/*mysql*",
       "arn:aws:s3:::govuk-production-database-backups/*postgres*",
+      "arn:aws:s3:::govuk-production-database-backups/*mongo-licensing*",
     ]
   }
 }
