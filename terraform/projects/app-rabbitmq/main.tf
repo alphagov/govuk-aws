@@ -19,6 +19,12 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "federation" {
+  type        = "string"
+  description = "Whether we do RabbitMQ federation or not"
+  default     = "false"
+}
+
 variable "instance_ami_filter_name" {
   type        = "string"
   description = "Name to use to find AMI images"
@@ -42,31 +48,37 @@ variable "instance_type" {
 }
 
 variable "rabbitmq_1_reserved_ips_subnet" {
+  default     = ""
   type        = "string"
   description = "Name of the subnet to place the reserved IP of the instance"
 }
 
 variable "rabbitmq_2_reserved_ips_subnet" {
+  default     = ""
   type        = "string"
   description = "Name of the subnet to place the reserved IP of the instance"
 }
 
 variable "rabbitmq_3_reserved_ips_subnet" {
+  default     = ""
   type        = "string"
   description = "Name of the subnet to place the reserved IP of the instance"
 }
 
 variable "rabbitmq_1_ip" {
+  default     = ""
   type        = "string"
   description = "IP address of the private IP to assign to the instance"
 }
 
 variable "rabbitmq_2_ip" {
+  default     = ""
   type        = "string"
   description = "IP address of the private IP to assign to the instance"
 }
 
 variable "rabbitmq_3_ip" {
+  default     = ""
   type        = "string"
   description = "IP address of the private IP to assign to the instance"
 }
@@ -180,6 +192,7 @@ module "alarms-elb-rabbitmq-internal" {
 
 # Interface 1
 resource "aws_network_interface" "rabbitmq-1_eni" {
+  count           = "${var.federation ? 1 : 0}"
   subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.rabbitmq_1_reserved_ips_subnet)}"
   private_ips     = ["${var.rabbitmq_1_ip}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}"]
@@ -196,6 +209,7 @@ resource "aws_network_interface" "rabbitmq-1_eni" {
 
 # Interface 2
 resource "aws_network_interface" "rabbitmq-2_eni" {
+  count           = "${var.federation ? 1 : 0}"
   subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.rabbitmq_2_reserved_ips_subnet)}"
   private_ips     = ["${var.rabbitmq_2_ip}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}"]
@@ -212,6 +226,7 @@ resource "aws_network_interface" "rabbitmq-2_eni" {
 
 # Interface 3
 resource "aws_network_interface" "rabbitmq-3_eni" {
+  count           = "${var.federation ? 1 : 0}"
   subnet_id       = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_ids_map, var.rabbitmq_3_reserved_ips_subnet)}"
   private_ips     = ["${var.rabbitmq_3_ip}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_rabbitmq_id}"]

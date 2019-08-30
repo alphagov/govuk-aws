@@ -35,6 +35,7 @@ resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_amqp" {
 }
 
 resource "aws_security_group_rule" "rabbitmq_ingress_carrenza-rabbitmq_amqp" {
+  count     = "${var.carrenza_rabbitmq_ips[0] != "" ? 1 : 0}"
   type      = "ingress"
   from_port = 5672
   to_port   = 5672

@@ -12,7 +12,7 @@ Manage the security groups for the entire infrastructure
 | carrenza_env_ips | An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox. | list | `<list>` | no |
 | carrenza_integration_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_production_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
-| carrenza_rabbitmq_ips | An array of CIDR blocks that will be allowed to federate with the rabbitmq nodes. | list | - | yes |
+| carrenza_rabbitmq_ips | An array of CIDR blocks that will be allowed to federate with the rabbitmq nodes. | list | `<list>` | no |
 | carrenza_staging_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | list | - | yes |
 | carrenza_vpn_subnet_cidr | The Carrenza VPN subnet CIDR | list | `<list>` | no |
 | concourse_aws_account_id | AWS account ID which contains the Concourse role | string | - | yes |
