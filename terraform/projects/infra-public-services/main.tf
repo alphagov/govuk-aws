@@ -1793,6 +1793,11 @@ module "licensify_backend_public_lb" {
   }
 }
 
+resource "aws_wafregional_web_acl_association" "licensify_backend_public_lb" {
+  resource_arn = "${module.licensify_backend_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+}
+
 resource "aws_route53_record" "licensify_backend_public_service_names" {
   count   = "${length(var.licensify_backend_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
