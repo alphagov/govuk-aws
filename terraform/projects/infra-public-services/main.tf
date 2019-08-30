@@ -1793,6 +1793,24 @@ module "licensify_backend_public_lb" {
   }
 }
 
+# Listener for licensify-admin HTTP-to-HTTPS redirect. Does not forward any
+# traffic, only serves redirects directly from the ALB.
+resource "aws_lb_listener" "licensify_backend_http_80" {
+  load_balancer_arn = "${module.licensify_backend_public_lb.lb_id}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
 resource "aws_route53_record" "licensify_backend_public_service_names" {
   count   = "${length(var.licensify_backend_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
