@@ -11,11 +11,6 @@
 # sg_rabbitmq_id
 # sg_rabbitmq_elb_id
 
-variable "aws_environment" {
-  type        = "string"
-  description = "AWS environment"
-}
-
 resource "aws_security_group" "rabbitmq" {
   name        = "${var.stackname}_rabbitmq_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
