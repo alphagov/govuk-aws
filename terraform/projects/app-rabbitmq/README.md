@@ -9,7 +9,7 @@ Rabbitmq cluster
 |------|-------------|:----:|:-----:|:-----:|
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
-| federation | Wether we do rabbitmq federation or not | string | `false` | no |
+| federation | Whether we do RabbitMQ federation or not | string | `false` | no |
 | instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
 | instance_type | Instance type used for EC2 resources | string | `t2.medium` | no |
 | internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |

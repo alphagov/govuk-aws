@@ -21,7 +21,7 @@ variable "aws_environment" {
 
 variable "federation" {
   type        = "string"
-  description = "Wether we do rabbitmq federation or not"
+  description = "Whether we do RabbitMQ federation or not"
   default     = "false"
 }
 
