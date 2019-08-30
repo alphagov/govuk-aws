@@ -14,7 +14,7 @@
 resource "aws_security_group" "licensify-frontend" {
   name        = "${var.stackname}_licensify-frontend_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access to the licensify-frontend host from its public ELB"
+  description = "Access to the licensify-frontend host from its public ELB and internal LB"
 
   tags {
     Name = "${var.stackname}_licensify-frontend_access"
@@ -34,6 +34,19 @@ resource "aws_security_group_rule" "licensify-frontend_ingress_licensify-fronten
   source_security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
 }
 
+resource "aws_security_group_rule" "licensify-frontend_ingress_licensify-frontend-internal-lb_http" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.licensify-frontend.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.licensify-frontend_internal_lb.id}"
+}
+
 resource "aws_security_group" "licensify-frontend_external_elb" {
   name        = "${var.stackname}_licensify-frontend_external_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
@@ -45,6 +58,7 @@ resource "aws_security_group" "licensify-frontend_external_elb" {
 }
 
 resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_https" {
+  count     = "${(var.aws_environment == "integration") || (var.aws_environment == "staging") ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -54,7 +68,19 @@ resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_https"
   cidr_blocks       = ["${var.office_ips}"]
 }
 
+resource "aws_security_group_rule" "licensify-frontend-elb_ingress_public_https" {
+  count     = "${var.aws_environment == "production"? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_http" {
+  count     = "${(var.aws_environment == "integration") || (var.aws_environment == "staging") ? 1 : 0}"
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -62,6 +88,17 @@ resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_http" 
 
   security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
   cidr_blocks       = ["${var.office_ips}"]
+}
+
+resource "aws_security_group_rule" "licensify-frontend-elb_ingress_public_http" {
+  count     = "${var.aws_environment == "production"? 1 : 0}"
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "licensify-frontend-elb_egress_any_any" {
