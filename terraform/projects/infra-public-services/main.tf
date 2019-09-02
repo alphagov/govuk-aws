@@ -1809,6 +1809,10 @@ resource "aws_lb_listener" "licensify_backend_http_80" {
       status_code = "HTTP_301"
     }
   }
+
+resource "aws_wafregional_web_acl_association" "licensify_backend_public_lb" {
+  resource_arn = "${module.licensify_backend_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
 }
 
 resource "aws_route53_record" "licensify_backend_public_service_names" {
