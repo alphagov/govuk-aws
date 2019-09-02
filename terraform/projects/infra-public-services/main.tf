@@ -1793,6 +1793,24 @@ module "licensify_backend_public_lb" {
   }
 }
 
+# Listener for licensify-admin HTTP-to-HTTPS redirect. Does not forward any
+# traffic, only serves redirects directly from the ALB.
+resource "aws_lb_listener" "licensify_backend_http_80" {
+  load_balancer_arn = "${module.licensify_backend_public_lb.lb_id}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
 resource "aws_wafregional_web_acl_association" "licensify_backend_public_lb" {
   resource_arn = "${module.licensify_backend_public_lb.lb_id}"
   web_acl_id   = "${aws_wafregional_web_acl.default.id}"
