@@ -4,6 +4,14 @@
 * Manage the security groups for the entire infrastructure
 */
 
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
+}
+
+# Resources
+# --------------------------------------------------------------
+
 terraform {
   backend          "s3"             {}
   required_version = "= 0.11.14"
