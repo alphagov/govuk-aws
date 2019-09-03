@@ -82,8 +82,6 @@ This project adds global resources for app components:
 | postgresql_internal_service_names |  | list | `<list>` | no |
 | prometheus_internal_service_names |  | list | `<list>` | no |
 | prometheus_public_service_names |  | list | `<list>` | no |
-| publishing-api_db_admin_internal_service_names |  | list | `<list>` | no |
-| publishing-api_postgresql_internal_service_names |  | list | `<list>` | no |
 | publishing_api_internal_service_names |  | list | `<list>` | no |
 | puppetmaster_internal_service_names |  | list | `<list>` | no |
 | rabbitmq_internal_service_names |  | list | `<list>` | no |
