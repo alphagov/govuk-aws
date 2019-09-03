@@ -22,19 +22,19 @@ variable "aws_environment" {
 variable "asg_desired_capacity" {
   type        = "string"
   description = "The autoscaling groups desired capacity"
-  default     = "1"
+  default     = "2"
 }
 
 variable "asg_max_size" {
   type        = "string"
   description = "The autoscaling groups max_size"
-  default     = "1"
+  default     = "2"
 }
 
 variable "asg_min_size" {
   type        = "string"
   description = "The autoscaling groups max_size"
-  default     = "1"
+  default     = "2"
 }
 
 variable "ebs_encrypted" {
@@ -66,7 +66,7 @@ variable "instance_ami_filter_name" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "m5.large"
+  default     = "m5.2xlarge"
 }
 
 # Resources
