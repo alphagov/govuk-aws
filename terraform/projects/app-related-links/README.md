@@ -22,3 +22,10 @@ Run resource intensive scripts for data science purposes.
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
 | stackname | Stackname | string | - | yes |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| policy_read_content_store_backups_bucket_policy_arn | ARN of the policy used to read content store backups from the database backups bucket |
+| policy_read_write_related_links_bucket_policy_arn | ARN of the policy used to read/write data from/to the related links bucket |
+

@@ -112,9 +112,8 @@ resource "aws_iam_policy" "scale_asg_policy" {
   policy = "${data.aws_iam_policy_document.scale_asg_policy_document.json}"
 }
 
-resource "aws_iam_policy_attachment" "scale_asg_concourse_role_attachment" {
-  name       = "scale_asg_concourse_role_attachment"
-  roles      = ["${aws_iam_role.concourse_role.name}"]
+resource "aws_iam_role_policy_attachment" "scale_asg_concourse_role_attachment" {
+  role       = "${aws_iam_role.concourse_role.name}"
   policy_arn = "${aws_iam_policy.scale_asg_policy.arn}"
 }
 
@@ -183,15 +182,13 @@ resource "aws_iam_policy" "read_write_related_links_bucket_policy" {
   policy = "${data.aws_iam_policy_document.read_write_related_links_bucket_policy_document.json}"
 }
 
-resource "aws_iam_policy_attachment" "attach_read_content_store_backups_bucket_policy" {
-  name       = "attach_read_content_store_backups_bucket_policy"
-  roles      = ["${aws_iam_role.ec2_role.name}"]
+resource "aws_iam_role_policy_attachment" "attach_read_content_store_backups_bucket_policy" {
+  role       = "${aws_iam_role.ec2_role.name}"
   policy_arn = "${aws_iam_policy.read_content_store_backups_bucket_policy.arn}"
 }
 
-resource "aws_iam_policy_attachment" "attach_read_write_related_links_bucket_policy" {
-  name       = "attach_read_write_related_links_bucket_policy"
-  roles      = ["${aws_iam_role.ec2_role.name}"]
+resource "aws_iam_role_policy_attachment" "attach_read_write_related_links_bucket_policy" {
+  role       = "${aws_iam_role.ec2_role.name}"
   policy_arn = "${aws_iam_policy.read_write_related_links_bucket_policy.arn}"
 }
 
@@ -309,3 +306,12 @@ resource "aws_autoscaling_group" "related-links-ingestion" {
 # Outputs
 # --------------------------------------------------------------
 
+output "policy_read_content_store_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.read_content_store_backups_bucket_policy.arn}"
+  description = "ARN of the policy used to read content store backups from the database backups bucket"
+}
+
+output "policy_read_write_related_links_bucket_policy_arn" {
+  value       = "${aws_iam_policy.read_write_related_links_bucket_policy.arn}"
+  description = "ARN of the policy used to read/write data from/to the related links bucket"
+}
