@@ -2177,6 +2177,18 @@ resource "aws_route53_record" "search_api_public_service_names" {
   }
 }
 
+module "search_api_public_lb_rules" {
+  source                 = "../../modules/aws/lb_listener_rules"
+  name                   = "search-api"
+  autoscaling_group_name = "${data.aws_autoscaling_groups.search.names[0]}"
+  rules_host_domain      = "${var.aws_environment}.*"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn           = "${module.search_api_public_lb.load_balancer_ssl_listeners[0]}"
+  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.search_api_public_service_names) : ""))}"]
+  priority_offset        = "1"
+  default_tags           = "${map("Project", var.stackname, "aws_migration", "search-api", "aws_environment", var.aws_environment)}"
+}
+
 resource "aws_autoscaling_attachment" "search_api_backend_asg_attachment_alb" {
   count                  = "${length(data.aws_autoscaling_groups.search.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.search.names, 0)}"
