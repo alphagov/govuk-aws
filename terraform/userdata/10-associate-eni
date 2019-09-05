@@ -4,6 +4,9 @@
 # Snippet: associate-eni
 #
 
+# See https://aws.amazon.com/premiumsupport/knowledge-center/ec2-ubuntu-secondary-network-interface/
+# for explanation of what this script does and why.
+
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] START SNIPPET: associate-eni"
 
 # The environment variables INSTANCE_ID and REGION are set
@@ -62,6 +65,17 @@ auto ${IFACE}
 iface ${IFACE} inet dhcp
 up ip route add default via ${GATEWAY} dev ${IFACE} table ${IFACE}_rt
 up ip rule add from ${SUBNET}/24 lookup ${IFACE}_rt prio 1000
+EOF
+
+# Prevent the default gateway from being overwritten on the main route table.
+cat <<'EOF' > /etc/dhcp/dhclient-enter-hooks.d/restrict-default-gw
+case ${interface} in
+  eth0)
+    ;;
+  *)
+    unset new_routers
+    ;;
+esac
 EOF
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] associate-eni: cycling ${IFACE}"
