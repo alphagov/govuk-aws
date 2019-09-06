@@ -433,3 +433,11 @@ output "sg_support-api_external_elb_id" {
 output "sg_related-links_id" {
   value = "${aws_security_group.related-links.id}"
 }
+
+output "sg_knowledge-graph_id" {
+  value = "${aws_security_group.knowledge-graph.id}"
+}
+
+output "sg_knowledge-graph_elb_external_id" {
+  value = "${aws_security_group.knowledge-graph_elb_external.id}"
+}
