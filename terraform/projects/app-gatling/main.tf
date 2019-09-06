@@ -69,6 +69,11 @@ variable "instance_type" {
   default     = "m5.2xlarge"
 }
 
+variable "office_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that will be allowed offsite access."
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -140,6 +145,43 @@ module "gatling" {
   instance_target_group_arns        = "${module.gatling_external_lb.target_group_arns}"
   instance_target_group_arns_length = "${length(distinct(values(local.external_lb_map)))}"
   root_block_device_volume_size     = "30"
+}
+
+# S3 Bucket to store results
+resource "aws_s3_bucket" "results" {
+  bucket = "gatling-results-${var.aws_environment}"
+
+  website {
+    index_document = "index.html"
+  }
+}
+
+resource "aws_s3_bucket_policy" "results" {
+  bucket = "${aws_s3_bucket.results.id}"
+  policy = "${data.aws_iam_policy_document.results_bucket_access.json}"
+}
+
+data "aws_iam_policy_document" "results_bucket_access" {
+  statement {
+    sid     = "ReadResultsFromOffice"
+    actions = ["s3:GetObject", "s3:ListBucket"]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.results.id}",
+      "arn:aws:s3:::${aws_s3_bucket.results.id}/*",
+    ]
+
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values   = ["${var.office_ips}"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
 }
 
 # Outputs
