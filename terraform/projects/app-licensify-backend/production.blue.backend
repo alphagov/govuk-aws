@@ -1,4 +1,4 @@
 bucket  = "govuk-terraform-steppingstone-production"
 key     = "blue/app-licensify-backend.tfstate"
 encrypt = true
-region  = "eu-west-2"
+region  = "eu-west-1"
