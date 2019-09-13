@@ -47,6 +47,11 @@ terraform {
   backend "s3" {}
 }
 
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "2.16.0"
+}
+
 resource "aws_s3_bucket" "bucket" {
   bucket = "${var.bucket_name}-${var.aws_environment}"
   policy = "${data.aws_iam_policy_document.readonly_policy.json}"
