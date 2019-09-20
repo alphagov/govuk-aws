@@ -10,6 +10,11 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -54,6 +59,11 @@ variable "aws_tunnel1_psk" {
   description = "Explicit PSK in format required by UKCloud"
 }
 
+variable "aws_tunnel2_psk" {
+  type        = "string"
+  description = "Explicit PSK in format required by UKCloud"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -93,7 +103,7 @@ resource "aws_customer_gateway" "ukcloud_vpn_gateway" {
   type       = "ipsec.1"
 
   tags {
-    Name = "ukcloud - ${var.stackname}"
+    Name = "UK Cloud Gateway 1"
   }
 }
 
@@ -101,11 +111,12 @@ resource "aws_vpn_connection" "aws_ukcloud_vpn" {
   vpn_gateway_id        = "${var.aws_vpn_gateway_id}"
   customer_gateway_id   = "${aws_customer_gateway.ukcloud_vpn_gateway.id}"
   tunnel1_preshared_key = "${var.aws_tunnel1_psk}"
+  tunnel2_preshared_key = "${var.aws_tunnel2_psk}"
   type                  = "ipsec.1"
   static_routes_only    = true
 
   tags {
-    Name = "${var.stackname} AWS to UKcloud Licensify"
+    Name = "${title(var.aws_environment)} AWS to UKCloud Licensify"
   }
 }
 
