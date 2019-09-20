@@ -194,14 +194,6 @@ output "sg_email-alert-api_id" {
   value = "${aws_security_group.email-alert-api.id}"
 }
 
-output "sg_email-alert-api-postgresql-primary_id" {
-  value = "${aws_security_group.email-alert-api-postgresql-primary.id}"
-}
-
-output "sg_email-alert-api-postgresql-standby_id" {
-  value = "${aws_security_group.email-alert-api-postgresql-standby.id}"
-}
-
 output "sg_feedback_elb_id" {
   value = "${aws_security_group.feedback_elb.id}"
 }
@@ -392,14 +384,6 @@ output "sg_transition-postgresql-standby_id" {
 
 output "sg_offsite_ssh_id" {
   value = "${aws_security_group.offsite_ssh.id}"
-}
-
-output "sg_email-alert-api-db-admin_elb_id" {
-  value = "${aws_security_group.email-alert-api-db-admin_elb.id}"
-}
-
-output "sg_email-alert-api-db-admin_id" {
-  value = "${aws_security_group.email-alert-api-db-admin.id}"
 }
 
 output "sg_whitehall-backend_external_elb_id" {
