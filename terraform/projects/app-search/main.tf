@@ -182,6 +182,70 @@ module "alarms-elb-search-internal" {
   healthyhostcount_threshold     = "0"
 }
 
+resource "aws_s3_bucket" "sitemaps_bucket" {
+  bucket = "govuk-${var.aws_environment}-sitemaps"
+  region = "${var.aws_region}"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-sitemaps"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-sitemaps/"
+  }
+
+  lifecycle_rule {
+    id      = "sitemaps_lifecycle_rule"
+    prefix  = ""
+    enabled = true
+
+    expiration {
+      days = 3
+    }
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "sitemaps_bucket_access_iam_role_policy_attachment" {
+  role       = "${module.search.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.sitemaps_bucket_access.arn}"
+}
+
+resource "aws_iam_policy" "sitemaps_bucket_access" {
+  name        = "govuk-${var.aws_environment}-sitemaps-bucket-access-policy"
+  policy      = "${data.aws_iam_policy_document.sitemaps_bucket_policy.json}"
+  description = "Allows reading and writing of the sitemaps bucket"
+}
+
+data "aws_iam_policy_document" "sitemaps_bucket_policy" {
+  statement {
+    sid = "ReadListOfBuckets"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "SitemapAccess"
+
+    actions = [
+      "s3:DeleteObject",
+      "s3:Put*",
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.sitemaps_bucket.id}",
+      "arn:aws:s3:::${aws_s3_bucket.sitemaps_bucket.id}/*",
+    ]
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
