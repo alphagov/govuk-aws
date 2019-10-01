@@ -65,6 +65,14 @@ resource "aws_s3_bucket" "transition_fastly_logs" {
     target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
   }
+
+  lifecycle_rule {
+    enabled = true
+
+    expiration {
+      days = 30
+    }
+  }
 }
 
 # We require a user for Fastly to write to S3 buckets
