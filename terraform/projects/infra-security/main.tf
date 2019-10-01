@@ -171,19 +171,6 @@ resource "aws_iam_policy" "deny-eip-release" {
   policy      = "${data.aws_iam_policy_document.deny-eip-release.json}"
 }
 
-# TODO: this cloudtrail bucket is deprecated and is safe to remove
-# once terraform has been applied with force_destroy = true enabled
-resource "aws_s3_bucket" "cloudtrail" {
-  bucket        = "${var.stackname}-${var.aws_environment}-cloudtrail"
-  acl           = "private"
-  force_destroy = "true"
-
-  tags {
-    Name        = "${var.stackname}-${var.aws_environment}-cloudtrail"
-    Environment = "${var.aws_environment}"
-  }
-}
-
 # SOPS KMS key
 
 data "aws_iam_policy_document" "kms_sops_policy" {
