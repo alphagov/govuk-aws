@@ -48,7 +48,7 @@ resource "aws_s3_bucket" "fastly_logs" {
     enabled = true
 
     expiration {
-      days = 90
+      days = 30
     }
   }
 }
