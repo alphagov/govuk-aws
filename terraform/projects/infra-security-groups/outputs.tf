@@ -170,10 +170,6 @@ output "sg_draft-frontend_id" {
   value = "${aws_security_group.draft-frontend.id}"
 }
 
-output "sg_elasticsearch5_id" {
-  value = "${aws_security_group.elasticsearch5.id}"
-}
-
 output "sg_elasticsearch6_id" {
   value = "${aws_security_group.elasticsearch6.id}"
 }
