@@ -208,6 +208,10 @@ module "elasticsearch6_index_log_exporter" {
   lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
 }
 
+resource "aws_iam_service_linked_role" "role" {
+  aws_service_name = "es.amazonaws.com"
+}
+
 resource "aws_elasticsearch_domain" "elasticsearch6" {
   domain_name           = "${var.stackname}-elasticsearch6-domain"
   elasticsearch_version = "6.7"
@@ -282,7 +286,9 @@ CONFIG
     aws_environment = "${var.aws_environment}"
   }
 
-  depends_on = []
+  depends_on = [
+    "aws_iam_service_linked_role.role",
+  ]
 }
 
 resource "aws_route53_record" "service_record" {
