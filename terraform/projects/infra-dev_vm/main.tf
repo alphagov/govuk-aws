@@ -62,6 +62,13 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "bucket" {
+  bucket = "${aws_s3_bucket.bucket.id}"
+
+  block_public_acls   = false
+  block_public_policy = false
+}
+
 resource "aws_iam_policy" "readwrite_policy" {
   name        = "${var.bucket_name}_${var.username}-policy"
   description = "${var.bucket_name} allows writes"
