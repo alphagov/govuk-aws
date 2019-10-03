@@ -96,6 +96,20 @@ module "internal_lb" {
   }
 }
 
+# For each service name, create DNS A records pointing at the internal LB.
+resource "aws_route53_record" "internal_service_names" {
+  count   = "${length(var.app_service_records)}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.internal_lb.lb_dns_name}"
+    zone_id                = "${module.internal_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "whitehall-backend" {
   source = "../../modules/aws/node_group"
   name   = "${var.stackname}-whitehall-backend"

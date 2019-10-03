@@ -2358,24 +2358,6 @@ resource "aws_autoscaling_attachment" "whitehall_backend_asg_attachment_alb" {
   alb_target_group_arn   = "${element(module.whitehall_backend_public_lb.target_group_arns, 0)}"
 }
 
-resource "aws_route53_record" "whitehall_backend_internal_service_names" {
-  count   = "${length(var.whitehall_backend_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.whitehall_backend_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.whitehall_backend_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-resource "aws_route53_record" "whitehall_backend_internal_service_cnames" {
-  count   = "${length(var.whitehall_backend_internal_service_cnames)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.whitehall_backend_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.whitehall_backend_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
 #
 # whitehall_frontend
 #
