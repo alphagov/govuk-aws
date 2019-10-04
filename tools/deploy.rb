@@ -6,7 +6,7 @@ require 'json'
 require 'uri'
 
 # Fields from the command line
-command, environment, stack, project, *rest= ARGV
+stack, project, environment, command, *rest= ARGV
 
 abort("too many arguments: #{rest}") unless rest.empty?
 
@@ -15,7 +15,7 @@ valid_commands = %w(plan apply plan-destroy destroy).freeze
 valid_environments = %w(integration staging production test tools training).freeze
 valid_stacks = %w(blue green govuk).freeze
 
-usage = 'Usage: GITHUB_USERNAME=... GITHUB_TOKEN=... ruby deploy.rb <command> <environment> <stack> <project>'
+usage = 'Usage: GITHUB_USERNAME=... GITHUB_TOKEN=... ruby deploy.rb <stack> <project> <environment> <command>'
 
 abort("GITHUB_USERNAME environment variable must be set\n#{usage}") unless ENV.has_key?('GITHUB_USERNAME')
 abort("GITHUB_TOKEN environment variable must be set\n#{usage}") unless ENV.has_key?('GITHUB_TOKEN')
