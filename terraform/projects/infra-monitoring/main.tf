@@ -68,8 +68,6 @@ resource "aws_s3_bucket" "aws-logging" {
   lifecycle_rule {
     enabled = true
 
-    prefix = "/"
-
     expiration {
       days = 30
     }
