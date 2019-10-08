@@ -22,19 +22,19 @@ variable "aws_environment" {
 variable "asg_desired_capacity" {
   type        = "string"
   description = "The autoscaling groups desired capacity"
-  default     = "2"
+  default     = "0"
 }
 
 variable "asg_max_size" {
   type        = "string"
   description = "The autoscaling groups max_size"
-  default     = "2"
+  default     = "0"
 }
 
 variable "asg_min_size" {
   type        = "string"
   description = "The autoscaling groups max_size"
-  default     = "2"
+  default     = "0"
 }
 
 variable "ebs_encrypted" {
