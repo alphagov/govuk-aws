@@ -61,6 +61,22 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "lc_create_ebs_volume" {
+  type        = "string"
+  description = "Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1"
+}
+
+variable "ebs_device_volume_size" {
+  type        = "string"
+  description = "Size of additional ebs volume in GB"
+  default     = "20"
+}
+
+variable "ebs_device_name" {
+  type        = "string"
+  description = "Name of the block device to mount on the instance, e.g. xvdf"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -134,6 +150,7 @@ resource "aws_route53_record" "mapit_service_record" {
 }
 
 module "mapit-1" {
+  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-1"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-1")}"
@@ -146,6 +163,9 @@ module "mapit-1" {
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
+  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
+  ebs_encrypted                 = "${var.ebs_encrypted}"
+  ebs_device_name               = "${var.ebs_device_name}"
 }
 
 resource "aws_ebs_volume" "mapit-1" {
@@ -166,6 +186,7 @@ resource "aws_ebs_volume" "mapit-1" {
 }
 
 module "mapit-2" {
+  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-2"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-2")}"
@@ -178,6 +199,9 @@ module "mapit-2" {
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "20"
+  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
+  ebs_encrypted                 = "${var.ebs_encrypted}"
+  ebs_device_name               = "${var.ebs_device_name}"
 }
 
 resource "aws_ebs_volume" "mapit-2" {

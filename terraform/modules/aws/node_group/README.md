@@ -30,6 +30,9 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | create_asg_notifications | Enable Autoscaling Group notifications | string | `true` | no |
 | create_instance_key | Whether to create a key pair for the instance launch configuration | string | `false` | no |
 | default_tags | Additional resource tags | map | `<map>` | no |
+| ebs_device_name | Name of the block device to mount on the instance, e.g. xvdf | string | `xvdf` | no |
+| ebs_device_volume_size | Size of additional ebs volume in GB | string | `20` | no |
+| ebs_encrypted | Whether or not to encrypt the ebs volume | string | `false` | no |
 | instance_additional_user_data | Append additional user-data script | string | `` | no |
 | instance_ami_filter_name | Name to use to find AMI images for the instance | string | `ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*` | no |
 | instance_default_policy | Name of the JSON file containing the default IAM role policy for the instance | string | `default_policy.json` | no |
@@ -43,6 +46,7 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | instance_target_group_arns_length | Length of instance_target_group_arns | string | `0` | no |
 | instance_type | Instance type | string | `t2.micro` | no |
 | instance_user_data | User_data provisioning script (default user_data.sh in module directory) | string | `user_data.sh` | no |
+| lc_create_ebs_volume | Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1 | string | `0` | no |
 | name | Jumpbox resources name. Only alphanumeric characters and hyphens allowed | string | - | yes |
 | root_block_device_volume_size | The size of the instance root volume in gigabytes | string | `20` | no |
 

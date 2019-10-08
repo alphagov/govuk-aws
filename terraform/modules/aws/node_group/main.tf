@@ -163,6 +163,34 @@ variable "asg_notification_topic_arn" {
   default     = ""
 }
 
+variable "lc_create_ebs_volume" {
+  type        = "string"
+  description = "Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1"
+  default     = "0"
+}
+
+variable "ebs_device_volume_size" {
+  type        = "string"
+  description = "Size of additional ebs volume in GB"
+  default     = "20"
+}
+
+variable "ebs_encrypted" {
+  type        = "string"
+  description = "Whether or not to encrypt the ebs volume"
+  default     = "false"
+}
+
+variable "ebs_device_name" {
+  type        = "string"
+  description = "Name of the block device to mount on the instance, e.g. xvdf"
+  default     = "xvdf"
+}
+
+locals {
+  launch_configuration_name = "${coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name) )}"
+}
+
 # Resources
 #--------------------------------------------------------------
 
@@ -226,6 +254,7 @@ resource "aws_key_pair" "node_key" {
 }
 
 resource "aws_launch_configuration" "node_launch_configuration" {
+  count         = "${var.lc_create_ebs_volume == "1" ? 0 : 1 }"
   name_prefix   = "${var.name}-"
   image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
   instance_type = "${var.instance_type}"
@@ -241,6 +270,38 @@ resource "aws_launch_configuration" "node_launch_configuration" {
     volume_type           = "gp2"
     volume_size           = "${var.root_block_device_volume_size}"
     delete_on_termination = true
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_launch_configuration" "node_with_ebs_launch_configuration" {
+  count         = "${var.lc_create_ebs_volume}"
+  name_prefix   = "${var.name}-"
+  image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
+  instance_type = "${var.instance_type}"
+  user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
+
+  security_groups = ["${var.instance_security_group_ids}"]
+
+  iam_instance_profile        = "${aws_iam_instance_profile.node_instance_profile.name}"
+  associate_public_ip_address = false
+  key_name                    = "${var.instance_key_name}"
+
+  root_block_device {
+    volume_type           = "gp2"
+    volume_size           = "${var.root_block_device_volume_size}"
+    delete_on_termination = true
+  }
+
+  ebs_block_device {
+    volume_type           = "gp2"
+    volume_size           = "${var.ebs_device_volume_size}"
+    delete_on_termination = true
+    encrypted             = "${var.ebs_encrypted}"
+    device_name           = "${var.ebs_device_name}"
   }
 
   lifecycle {
@@ -272,7 +333,7 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   health_check_type         = "EC2"
   force_delete              = false
   wait_for_capacity_timeout = 0
-  launch_configuration      = "${aws_launch_configuration.node_launch_configuration.name}"
+  launch_configuration      = "${local.launch_configuration_name}"
 
   enabled_metrics = [
     "GroupMinSize",
