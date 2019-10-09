@@ -207,6 +207,19 @@ resource "aws_iam_role_policy_attachment" "db-admin_iam_role_policy_attachment" 
   policy_arn = "${aws_iam_policy.db-admin_iam_policy.arn}"
 }
 
+resource "aws_iam_policy" "db-admin_elasticache_iam_policy" {
+  count  = "${var.aws_environment == "integration" ? 1 : 0}"
+  name   = "${var.stackname}-db-admin-elasticache"
+  path   = "/"
+  policy = "${file("${path.module}/elasticache_policy.json")}"
+}
+
+resource "aws_iam_role_policy_attachment" "db-admin_elasticache_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 1 : 0}"
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.db-admin_elasticache_iam_policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
