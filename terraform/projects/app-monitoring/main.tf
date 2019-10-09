@@ -236,7 +236,7 @@ resource "aws_ebs_volume" "monitoring" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.monitoring_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
-  size              = 20
+  size              = 40
 
   tags {
     Name            = "${var.stackname}-monitoring"
