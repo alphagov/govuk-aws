@@ -83,10 +83,10 @@ def bulk_plan(environment, globs, dry_run: false)
       command = [
         "ruby",
         "tools/deploy.rb",
-        "plan",
-        environment,
         stack,
-        project
+        project,
+        environment,
+        "plan",
       ]
 
       if dry_run
