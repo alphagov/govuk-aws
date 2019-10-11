@@ -18,6 +18,8 @@ Create resources to manage infrastructure and app monitoring:
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
 | aws_secondary_region | Secondary AWS region | string | `eu-west-2` | no |
+| cyber_slunk_aws_account_id | AWS account ID of the Cyber S3 bucket where aws logging will be replicated | string | `na` | no |
+| cyber_slunk_s3_bucket_name | Name of the Cyber S3 bucket where aws logging will be replicated | string | `na` | no |
 | stackname | Stackname | string | `` | no |
 
 ## Outputs
