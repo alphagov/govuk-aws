@@ -89,6 +89,11 @@ data "aws_route53_zone" "external" {
   private_zone = false
 }
 
+data "aws_route53_zone" "external_without_stack" {
+  name         = "${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  private_zone = false
+}
+
 provider "aws" {
   region  = "${var.aws_region}"
   version = "2.16.0"
@@ -197,6 +202,20 @@ resource "aws_route53_record" "service_record_external" {
 
   zone_id = "${data.aws_route53_zone.external.zone_id}"
   name    = "publishing-api.${var.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.publishing-api_elb_external.dns_name}"
+    zone_id                = "${aws_elb.publishing-api_elb_external.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "service_record_dual_external" {
+  count = "${var.create_external_elb}"
+
+  zone_id = "${data.aws_route53_zone.external_without_stack.zone_id}"
+  name    = "publishing-api"
   type    = "A"
 
   alias {
