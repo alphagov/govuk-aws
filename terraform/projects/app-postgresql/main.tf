@@ -94,7 +94,7 @@ module "postgresql-primary_rds_instance" {
   subnet_ids          = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username            = "${var.username}"
   password            = "${var.password}"
-  allocated_storage   = "190"
+  allocated_storage   = "209"
   instance_class      = "${var.instance_type}"
   instance_name       = "${var.stackname}-postgresql-primary"
   multi_az            = "${var.multi_az}"
