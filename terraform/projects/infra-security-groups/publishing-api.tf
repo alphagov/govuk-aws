@@ -104,6 +104,18 @@ resource "aws_security_group_rule" "publishing-api-elb-external_ingress_office_h
   cidr_blocks       = ["${var.office_ips}"]
 }
 
+resource "aws_security_group_rule" "publishing-api-elb-external_ingress_carrenza_https" {
+  description = "Access from apps in Carrenza (6DG) to Pub API. Remove once everything is in AWS."
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.publishing-api_elb_external.id}"
+  cidr_blocks       = ["${var.carrenza_env_ips}"]
+}
+
 resource "aws_security_group_rule" "publishing-api-elb-external_egress_any_any" {
   type              = "egress"
   from_port         = 0
