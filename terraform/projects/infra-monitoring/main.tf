@@ -23,6 +23,18 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "cyber_slunk_s3_bucket_name" {
+  type        = "string"
+  description = "Name of the Cyber S3 bucket where aws logging will be replicated"
+  default     = "na"
+}
+
+variable "cyber_slunk_aws_account_id" {
+  type        = "string"
+  description = "AWS account ID of the Cyber S3 bucket where aws logging will be replicated"
+  default     = "na"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -54,6 +66,39 @@ data "template_file" "s3_aws_logging_policy_template" {
   }
 }
 
+data "template_file" "s3_govuk_aws_logging_replication_policy_template" {
+  template = "${file("${path.module}/../../policies/s3_govuk_aws_logging_replication_policy.tpl")}"
+
+  vars {
+    govuk_aws_logging_arn  = "${aws_s3_bucket.aws-logging.arn}"
+    govuk_cyber_splunk_arn = "arn:aws:s3:::${var.cyber_slunk_s3_bucket_name}"
+  }
+}
+
+data "template_file" "s3_govuk_aws_logging_replication_role_template" {
+  template = "${file("${path.module}/../../policies/s3_govuk_aws_logging_replication_role.tpl")}"
+}
+
+resource "aws_iam_policy" "govuk_aws_logging_replication_policy" {
+  #count       = "${var.aws_environment == "production"? 1 : 0}"
+  name        = "govuk-${var.aws_environment}-aws-logging-bucket-replication-policy"
+  policy      = "${data.template_file.s3_govuk_aws_logging_replication_policy_template.rendered}"
+  description = "Allows replication of the aws-logging bucket"
+}
+
+resource "aws_iam_role" "govuk_aws_logging_replication_role" {
+  #count              = "${var.aws_environment == "production"? 1 : 0}"
+  name               = "${var.stackname}-aws-logging-replication-role"
+  assume_role_policy = "${data.template_file.s3_govuk_aws_logging_replication_role_template.rendered}"
+}
+
+resource "aws_iam_policy_attachment" "govuk_aws_logging_replication_policy_attachment" {
+  #count      = "${var.aws_environment == "production"? 1 : 0}"
+  name       = "s3-govuk-aws-logging-replication-policy-attachment"
+  roles      = ["${aws_iam_role.govuk_aws_logging_replication_role.name}"]
+  policy_arn = "${aws_iam_policy.govuk_aws_logging_replication_policy.arn}"
+}
+
 # Create a bucket that allows AWS services to write to it
 resource "aws_s3_bucket" "aws-logging" {
   bucket = "govuk-${var.aws_environment}-aws-logging"
@@ -70,6 +115,30 @@ resource "aws_s3_bucket" "aws-logging" {
 
     expiration {
       days = 30
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  replication_configuration {
+    role = "${aws_iam_role.govuk_aws_logging_replication_role.arn}"
+
+    rules {
+      id     = "govuk-aws-logging-elb-govuk-public-ckan-rule"
+      prefix = "elb/govuk-ckan-public-elb"
+      status = "${var.aws_environment == "production"? "Enabled" : "Disabled"}"
+
+      destination {
+        bucket        = "arn:aws:s3:::${var.cyber_slunk_s3_bucket_name}"
+        storage_class = "STANDARD"
+        account_id    = "${var.cyber_slunk_aws_account_id}"
+
+        access_control_translation {
+          owner = "Destination"
+        }
+      }
     }
   }
 
