@@ -13,10 +13,15 @@ database-backups: The bucket that will hold database backups
 | aws_backup_region | AWS region | string | `eu-west-2` | no |
 | aws_environment | AWS Environment | string | - | yes |
 | aws_region | AWS region | string | `eu-west-1` | no |
+| expiration_time | Expiration time in days of S3 Objects | string | `120` | no |
+| expiration_time_whisper_mongo | Expiration time in days for Whisper/Mongo S3 database backups | string | `7` | no |
+| glacier_storage_time | Storage time in days for Glacier Objects | string | `90` | no |
+| integration_only | Only apply these policies to integration | string | `false` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
 | stackname | Stackname | string | - | yes |
-| training_and_integration_only | Only apply these policies to training or integration | string | `false` | no |
+| standard_s3_storage_time | Storage time in days for Standard S3 Bucket Objects | string | `30` | no |
+| training_only | Only apply these policies to training | string | `false` | no |
 
 ## Outputs
 

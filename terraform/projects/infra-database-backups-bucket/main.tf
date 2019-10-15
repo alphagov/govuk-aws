@@ -40,10 +40,40 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
-variable "training_and_integration_only" {
+variable "training_only" {
   type        = "string"
-  description = "Only apply these policies to training or integration "
+  description = "Only apply these policies to training "
   default     = "false"
+}
+
+variable "integration_only" {
+  type        = "string"
+  description = "Only apply these policies to integration "
+  default     = "false"
+}
+
+variable "standard_s3_storage_time" {
+  type        = "string"
+  description = "Storage time in days for Standard S3 Bucket Objects"
+  default     = "30"
+}
+
+variable "glacier_storage_time" {
+  type        = "string"
+  description = "Storage time in days for Glacier Objects"
+  default     = "90"
+}
+
+variable "expiration_time" {
+  type        = "string"
+  description = "Expiration time in days of S3 Objects"
+  default     = "120"
+}
+
+variable "expiration_time_whisper_mongo" {
+  type        = "string"
+  description = "Expiration time in days for Whisper/Mongo S3 database backups"
+  default     = "7"
 }
 
 # Set up the backend & provider for each region
@@ -94,56 +124,58 @@ resource "aws_s3_bucket" "database_backups" {
 
     transition {
       storage_class = "STANDARD_IA"
-      days          = 30
+      days          = "${var.standard_s3_storage_time}"
     }
 
     transition {
       storage_class = "GLACIER"
-      days          = 90
+      days          = "${var.glacier_storage_time}"
     }
 
     expiration {
-      days = 120
+      days = "${var.expiration_time}"
     }
   }
 
+  # The backup should only be stored for a long time in staging and production
+  # They are not needed in Integration
   lifecycle_rule {
     id      = "postgres_lifecycle_rule"
     prefix  = "postgres/"
-    enabled = true
+    enabled = "${var.integration_only == "false" ? true : false }"
 
     transition {
       storage_class = "STANDARD_IA"
-      days          = 30
+      days          = "${var.standard_s3_storage_time}"
     }
 
     transition {
       storage_class = "GLACIER"
-      days          = 90
+      days          = "${var.glacier_storage_time}"
     }
 
     expiration {
-      days = 120
+      days = "${var.expiration_time}"
     }
   }
 
   lifecycle_rule {
     id      = "mongo_daily_lifecycle_rule"
     prefix  = "mongodb/daily"
-    enabled = true
+    enabled = "${var.integration_only == "false" ? true : false }"
 
     transition {
       storage_class = "STANDARD_IA"
-      days          = 30
+      days          = "${var.standard_s3_storage_time}"
     }
 
     transition {
       storage_class = "GLACIER"
-      days          = 90
+      days          = "${var.glacier_storage_time}"
     }
 
     expiration {
-      days = 120
+      days = "${var.expiration_time}"
     }
   }
 
@@ -153,7 +185,7 @@ resource "aws_s3_bucket" "database_backups" {
     enabled = true
 
     expiration {
-      days = 7
+      days = "${var.expiration_time_whisper_mongo}"
     }
   }
 
@@ -163,14 +195,37 @@ resource "aws_s3_bucket" "database_backups" {
     enabled = true
 
     expiration {
-      days = 7
+      days = "${var.expiration_time_whisper_mongo}"
     }
   }
+
+  # Integration specific lifecycle rules START. These rules are created in all
+  # environments but are only enabled in Integration. 
+
+  lifecycle_rule {
+    id      = "postgres_lifecycle_rule_integration"
+    prefix  = "postgres/"
+    enabled = "${var.integration_only}"
+
+    expiration {
+      days = "${var.expiration_time}"
+    }
+  }
+  lifecycle_rule {
+    id      = "mongo_daily_lifecycle_rule_integration"
+    prefix  = "mongodb/daily"
+    enabled = "${var.integration_only}"
+
+    expiration {
+      days = "${var.expiration_time}"
+    }
+  }
+
+  # Integraion lifecycle specific rules END
 
   versioning {
     enabled = true
   }
-
   replication_configuration {
     role = "${aws_iam_role.backup_replication_role.arn}"
 
