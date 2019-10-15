@@ -25,7 +25,10 @@
     {
       "Action": [
         "s3:ReplicateObject",
-        "s3:ReplicateDelete"
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags",
+        "s3:GetObjectVersionTagging",
+        "s3:ObjectOwnerOverrideToBucketOwner"
       ],
       "Effect": "Allow",
       "Resource": "${govuk_cyber_splunk_arn}/*"
