@@ -117,10 +117,12 @@ resource "aws_s3_bucket" "database_backups" {
     target_prefix = "s3/govuk-${var.aws_environment}-database-backups/"
   }
 
+  # The backup should only be stored for a long time in staging and production
+  # They are not needed in Integration
   lifecycle_rule {
     id      = "mysql_lifecycle_rule"
     prefix  = "mysql/"
-    enabled = true
+    enabled = "${var.integration_only == "false" ? true : false }"
 
     transition {
       storage_class = "STANDARD_IA"
@@ -133,12 +135,10 @@ resource "aws_s3_bucket" "database_backups" {
     }
 
     expiration {
-      days = "${var.expiration_time}"
+      days = 120
     }
   }
 
-  # The backup should only be stored for a long time in staging and production
-  # They are not needed in Integration
   lifecycle_rule {
     id      = "postgres_lifecycle_rule"
     prefix  = "postgres/"
@@ -155,7 +155,7 @@ resource "aws_s3_bucket" "database_backups" {
     }
 
     expiration {
-      days = "${var.expiration_time}"
+      days = 120
     }
   }
 
@@ -175,7 +175,7 @@ resource "aws_s3_bucket" "database_backups" {
     }
 
     expiration {
-      days = "${var.expiration_time}"
+      days = 120
     }
   }
 
@@ -200,8 +200,17 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   # Integration specific lifecycle rules START. These rules are created in all
-  # environments but are only enabled in Integration. 
+  # environments but are only enabled in Integration.
 
+  lifecycle_rule {
+    id      = "mysql_lifecycle_rule_integration"
+    prefix  = "mysql/"
+    enabled = "${var.integration_only}"
+
+    expiration {
+      days = "${var.expiration_time}"
+    }
+  }
   lifecycle_rule {
     id      = "postgres_lifecycle_rule_integration"
     prefix  = "postgres/"
