@@ -53,7 +53,7 @@ provider "aws" {
   version = "1.40.0"
 }
 
-resource "aws_s3_bucket" "s3_bucket" {
+resource "aws_s3_bucket" "data_infrastructure_bucket" {
   bucket = "${local.data_infrastructure_bucket_name}"
 
   versioning {
@@ -202,9 +202,10 @@ data "template_file" "knowledge-graph_userdata" {
   template = "${file("${path.module}/userdata.tpl")}"
 
   vars {
-    elb_name                     = "${aws_elb.knowledge-graph_elb_external.name}"
-    database_backups_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
-    related_links_bucket_name    = "govuk-related-links-${var.aws_environment}"
+    elb_name                        = "${aws_elb.knowledge-graph_elb_external.name}"
+    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+    data_infrastructure_bucket_name = "${aws_s3_bucket.data_infrastructure_bucket.id}"
+    related_links_bucket_name       = "govuk-related-links-${var.aws_environment}"
   }
 }
 
