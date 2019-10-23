@@ -36,6 +36,10 @@ variable "elb_external_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+locals {
+  data_infrastructure_bucket_name = "govuk-data-infrastructure-${var.aws_environment}"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -47,6 +51,19 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+resource "aws_s3_bucket" "s3_bucket" {
+  bucket = "${local.data_infrastructure_bucket_name}"
+
+  versioning {
+    enabled = true
+  }
+
+  tags {
+    aws_environment = "${var.aws_environment}"
+    Name            = "${local.data_infrastructure_bucket_name}"
+  }
 }
 
 data "aws_ami" "neo4j_community_ami" {
@@ -108,6 +125,30 @@ data "aws_iam_policy_document" "knowledge-graph_register_instance_with_elb_polic
   }
 }
 
+data "aws_iam_policy_document" "read_write_data_infrastructure_bucket_policy_document" {
+  statement {
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.data_infrastructure_bucket_name}",
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:CreateMultipartUpload",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.data_infrastructure_bucket_name}/*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "knowledge-graph_register_instance_with_elb_policy" {
   name   = "knowledge-graph_register_instance_with_elb_policy"
   policy = "${data.aws_iam_policy_document.knowledge-graph_register_instance_with_elb_policy_document.json}"
@@ -118,6 +159,11 @@ resource "aws_iam_policy" "knowledge-graph_read_ssm_policy" {
   policy = "${data.aws_iam_policy_document.knowledge-graph_read_ssm_policy_document.json}"
 }
 
+resource "aws_iam_policy" "read_write_data_infrastructure_bucket_policy" {
+  name   = "read_write_data_infrastructure_bucket_policy"
+  policy = "${data.aws_iam_policy_document.read_write_data_infrastructure_bucket_policy_document.json}"
+}
+
 resource "aws_iam_role_policy_attachment" "knowledge-graph_register_instance_with_elb_role_attachment" {
   role       = "${aws_iam_role.knowledge-graph_role.name}"
   policy_arn = "${aws_iam_policy.knowledge-graph_register_instance_with_elb_policy.arn}"
@@ -126,6 +172,11 @@ resource "aws_iam_role_policy_attachment" "knowledge-graph_register_instance_wit
 resource "aws_iam_role_policy_attachment" "knowledge-graph_read_ssm_role_attachment" {
   role       = "${aws_iam_role.knowledge-graph_role.name}"
   policy_arn = "${aws_iam_policy.knowledge-graph_read_ssm_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "read_write_data_infrastructure_bucket_role_attachment" {
+  role       = "${aws_iam_role.knowledge-graph_role.name}"
+  policy_arn = "${aws_iam_policy.read_write_data_infrastructure_bucket_policy.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "knowledge-graph_read_content_store_backups_bucket_role_attachment" {
