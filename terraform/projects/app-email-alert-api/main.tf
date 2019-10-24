@@ -30,11 +30,6 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
-variable "elb_external_certname" {
-  type        = "string"
-  description = "The ACM cert domain name to find the ARN of"
-}
-
 variable "asg_size" {
   type        = "string"
   description = "The autoscaling groups desired/max/min capacity"
@@ -49,21 +44,6 @@ variable "internal_zone_name" {
 variable "internal_domain_name" {
   type        = "string"
   description = "The domain name of the internal DNS records, it could be different from the zone name"
-}
-
-variable "external_zone_name" {
-  type        = "string"
-  description = "The name of the Route53 zone that contains external records"
-}
-
-variable "external_domain_name" {
-  type        = "string"
-  description = "The domain name of the external DNS records, it could be different from the zone name"
-}
-
-variable "create_external_elb" {
-  description = "Create the external ELB"
-  default     = true
 }
 
 variable "instance_type" {
@@ -84,11 +64,6 @@ data "aws_route53_zone" "internal" {
   private_zone = true
 }
 
-data "aws_route53_zone" "external" {
-  name         = "${var.external_zone_name}"
-  private_zone = false
-}
-
 provider "aws" {
   region  = "${var.aws_region}"
   version = "2.16.0"
@@ -96,11 +71,6 @@ provider "aws" {
 
 data "aws_acm_certificate" "elb_internal_cert" {
   domain   = "${var.elb_internal_certname}"
-  statuses = ["ISSUED"]
-}
-
-data "aws_acm_certificate" "elb_external_cert" {
-  domain   = "${var.elb_external_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -129,7 +99,7 @@ resource "aws_elb" "email-alert-api_elb_internal" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TCP:80"
+    target              = "HTTP:80:/_healthcheck_email-alert-api"
     interval            = 30
   }
 
@@ -153,62 +123,6 @@ resource "aws_route53_record" "service_record_internal" {
   }
 }
 
-resource "aws_elb" "email-alert-api_elb_external" {
-  name            = "${var.stackname}-email-alert-api-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_email-alert-api_elb_external_id}"]
-  internal        = "false"
-
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-email-alert-api-external-elb"
-    interval      = 60
-  }
-
-  listener {
-    instance_port     = 80
-    instance_protocol = "http"
-    lb_port           = "443"
-    lb_protocol       = "https"
-
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "TCP:80"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-email-alert-api", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "email_alert_api")}"
-}
-
-resource "aws_route53_record" "service_record_external" {
-  count = "${var.create_external_elb}"
-
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
-  name    = "email-alert-api.${var.external_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.email-alert-api_elb_external.dns_name}"
-    zone_id                = "${aws_elb.email-alert-api_elb_external.zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-locals {
-  instance_elb_ids_length = "${var.create_external_elb ? 2 : 1}"
-  instance_elb_ids        = "${compact(list(aws_elb.email-alert-api_elb_internal.id, join("", aws_elb.email-alert-api_elb_external.*.id)))}"
-}
-
 module "email-alert-api" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-email-alert-api"
@@ -217,8 +131,8 @@ module "email-alert-api" {
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_email-alert-api_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "${local.instance_elb_ids_length}"
-  instance_elb_ids              = ["${local.instance_elb_ids}"]
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.email-alert-api_elb_internal.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   asg_max_size                  = "${var.asg_size}"
   asg_min_size                  = "${var.asg_size}"
@@ -239,25 +153,6 @@ module "alarms-elb-email-alert-api-internal" {
   healthyhostcount_threshold     = "0"
 }
 
-locals {
-  elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 100 : 0}"
-  elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 100 : 0}"
-  elb_httpcode_elb_4xx_threshold     = "${var.create_external_elb ? 100 : 0}"
-}
-
-module "alarms-elb-email-alert-api-external" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-email-alert-api-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${join("", aws_elb.email-alert-api_elb_external.*.name)}"
-  httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
-  httpcode_elb_4xx_threshold     = "${local.elb_httpcode_elb_4xx_threshold}"
-  httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
-  surgequeuelength_threshold     = "0"
-  healthyhostcount_threshold     = "0"
-}
-
 # Outputs
 # --------------------------------------------------------------
 
@@ -269,14 +164,4 @@ output "email-alert-api_elb_address_internal" {
 output "service_dns_name_internal" {
   value       = "${aws_route53_record.service_record_internal.name}"
   description = "DNS name to access the internal node service"
-}
-
-output "email-alert-api_elb_address_external" {
-  value       = "${join("", aws_elb.email-alert-api_elb_external.*.dns_name)}"
-  description = "AWS' external DNS name for the email-alert-api ELB"
-}
-
-output "service_dns_name_external" {
-  value       = "${join("", aws_route53_record.service_record_external.*.name)}"
-  description = "DNS name to access the external node service"
 }
