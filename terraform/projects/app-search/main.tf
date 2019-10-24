@@ -246,6 +246,62 @@ data "aws_iam_policy_document" "sitemaps_bucket_policy" {
   }
 }
 
+# s3 bucket for search relevancy
+
+resource "aws_s3_bucket" "search_relevancy_bucket" {
+  bucket = "govuk-${var.aws_environment}-search-relevancy"
+  region = "${var.aws_region}"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-search-relevancy"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-search-relevancy/"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "search_relevancy_bucket_access_iam_role_policy_attachment" {
+  role       = "${module.search.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.search_relevancy_bucket_access.arn}"
+}
+
+resource "aws_iam_policy" "search_relevancy_bucket_access" {
+  name        = "govuk-${var.aws_environment}-search-relevancy-bucket-access-policy"
+  policy      = "${data.aws_iam_policy_document.search_relevancy_bucket_policy.json}"
+  description = "Allows reading and writing of the search relevancy bucket"
+}
+
+data "aws_iam_policy_document" "search_relevancy_bucket_policy" {
+  statement {
+    sid = "ReadListOfBuckets"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "SearchRelevancyAccess"
+
+    actions = [
+      "s3:DeleteObject",
+      "s3:Put*",
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.search_relevancy_bucket.id}",
+      "arn:aws:s3:::${aws_s3_bucket.search_relevancy_bucket.id}/*",
+    ]
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
