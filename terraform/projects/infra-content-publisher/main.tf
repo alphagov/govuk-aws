@@ -35,13 +35,13 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 provider "aws" {
   region  = "${var.aws_replica_region}"
   alias   = "aws_replica"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 resource "aws_s3_bucket" "activestorage" {

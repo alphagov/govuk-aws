@@ -67,6 +67,18 @@ variable "instance_type" {
   default     = "db.m5.2xlarge"
 }
 
+variable "allocated_storage" {
+  type        = "string"
+  description = "current set minimum storage in GB for the RDS"
+  default     = "300"
+}
+
+variable "max_allocated_storage" {
+  type        = "string"
+  description = "current maximum storage in GB that AWS can autoscale the RDS storage to"
+  default     = "500"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -76,7 +88,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 data "aws_route53_zone" "internal" {
@@ -87,21 +99,22 @@ data "aws_route53_zone" "internal" {
 module "postgresql-primary_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
-  name                = "${var.stackname}-postgresql-primary"
-  engine_name         = "postgres"
-  engine_version      = "9.6"
-  default_tags        = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_primary")}"
-  subnet_ids          = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username            = "${var.username}"
-  password            = "${var.password}"
-  allocated_storage   = "209"
-  instance_class      = "${var.instance_type}"
-  instance_name       = "${var.stackname}-postgresql-primary"
-  multi_az            = "${var.multi_az}"
-  security_group_ids  = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
-  event_sns_topic_arn = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
-  skip_final_snapshot = "${var.skip_final_snapshot}"
-  snapshot_identifier = "${var.snapshot_identifier}"
+  name                  = "${var.stackname}-postgresql-primary"
+  engine_name           = "postgres"
+  engine_version        = "9.6"
+  default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_primary")}"
+  subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username              = "${var.username}"
+  password              = "${var.password}"
+  allocated_storage     = "${var.allocated_storage}"
+  max_allocated_storage = "${var.max_allocated_storage}"
+  instance_class        = "${var.instance_type}"
+  instance_name         = "${var.stackname}-postgresql-primary"
+  multi_az              = "${var.multi_az}"
+  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
+  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot   = "${var.skip_final_snapshot}"
+  snapshot_identifier   = "${var.snapshot_identifier}"
 }
 
 resource "aws_route53_record" "service_record" {

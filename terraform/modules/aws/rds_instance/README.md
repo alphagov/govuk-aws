@@ -21,6 +21,7 @@ Create an RDS instance
 | instance_class | The instance type of the RDS instance. | string | `db.t1.micro` | no |
 | instance_name | The RDS Instance Name. | string | `` | no |
 | maintenance_window | The window to perform maintenance in. | string | `Mon:04:00-Mon:06:00` | no |
+| max_allocated_storage | current maximum storage in GB that AWS can autoscale the RDS storage to, 0 means disabled autoscaling | string | `0` | no |
 | multi_az | Specifies if the RDS instance is multi-AZ | string | `true` | no |
 | name | The common name for all the resources created by this module | string | - | yes |
 | parameter_group_name | Name of the parameter group to make the instance a member of. | string | `` | no |

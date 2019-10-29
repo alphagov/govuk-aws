@@ -50,6 +50,12 @@ variable "allocated_storage" {
   default     = "10"
 }
 
+variable "max_allocated_storage" {
+  type        = "string"
+  description = "current maximum storage in GB that AWS can autoscale the RDS storage to, 0 means disabled autoscaling"
+  default     = "0"
+}
+
 variable "storage_type" {
   type        = "string"
   description = "One of standard (magnetic), gp2 (general purpose SSD), or io1 (provisioned IOPS SSD). The default is gp2"
@@ -217,6 +223,7 @@ resource "aws_db_instance" "db_instance" {
   username                = "${var.username}"
   password                = "${var.password}"
   allocated_storage       = "${var.allocated_storage}"
+  max_allocated_storage   = "${var.max_allocated_storage}"
   instance_class          = "${var.instance_class}"
   identifier              = "${var.instance_name}"
   storage_type            = "${var.storage_type}"

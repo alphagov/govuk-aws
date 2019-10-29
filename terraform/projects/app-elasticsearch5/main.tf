@@ -45,7 +45,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 # managed elasticsearch snapshots can't be given a prefix, so they

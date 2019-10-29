@@ -50,7 +50,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 data "aws_route53_zone" "internal" {

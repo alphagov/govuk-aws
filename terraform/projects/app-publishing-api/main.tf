@@ -96,7 +96,7 @@ data "aws_route53_zone" "external_without_stack" {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
