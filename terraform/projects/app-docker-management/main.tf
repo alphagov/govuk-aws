@@ -55,7 +55,7 @@ data "aws_route53_zone" "internal" {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 resource "aws_elb" "docker_management_etcd_elb" {

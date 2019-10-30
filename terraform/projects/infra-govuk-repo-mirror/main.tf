@@ -43,7 +43,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 resource "aws_iam_user" "govuk_codecommit_user" {

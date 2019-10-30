@@ -16,7 +16,7 @@ variable "aws_secondary_region" {
 provider "aws" {
   alias   = "aws_secondary"
   region  = "${var.aws_secondary_region}"
-  version = "2.16.0"
+  version = "2.33.0"
 }
 
 data "template_file" "s3_aws_secondary_logging_policy_template" {
