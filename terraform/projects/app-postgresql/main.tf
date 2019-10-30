@@ -121,6 +121,8 @@ module "postgresql-standby_rds_instance" {
   instance_name              = "${var.stackname}-postgresql-standby"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
   create_replicate_source_db = "1"
+  allocated_storage          = "${var.allocated_storage}"
+  max_allocated_storage      = "${var.max_allocated_storage}"
   replicate_source_db        = "${module.postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot        = "${var.skip_final_snapshot}"
