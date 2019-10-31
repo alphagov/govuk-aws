@@ -289,8 +289,9 @@ resource "aws_route53_record" "knowledge_graph_service_record_external" {
 }
 
 resource "aws_elb" "knowledge-graph_elb_external" {
-  name     = "${var.stackname}-knowledge-graph-external"
-  internal = false
+  name                = "${var.stackname}-knowledge-graph-external"
+  internal            = false
+  connection_draining = true
 
   listener {
     instance_port     = 22
