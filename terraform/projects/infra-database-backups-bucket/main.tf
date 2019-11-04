@@ -229,8 +229,18 @@ resource "aws_s3_bucket" "database_backups" {
       days = "${var.expiration_time}"
     }
   }
+  # Integration Rules for whole bucket
+  lifecycle_rule {
+    id      = "whole_bucket_lifecycle_rule_integration"
+    prefix  = ""
+    enabled = "${var.integration_only}"
 
-  # Integraion lifecycle specific rules END
+    expiration {
+      days = "${var.expiration_time}"
+    }
+  }
+
+  # Integration lifecycle specific rules END
 
   versioning {
     enabled = true
