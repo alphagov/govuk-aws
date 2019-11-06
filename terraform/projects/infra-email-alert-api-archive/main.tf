@@ -169,7 +169,7 @@ resource "aws_glue_catalog_table" "email_archive" {
       name = "ser_de_name"
 
       parameters {
-        paths = "archived_at_utc,content_change,created_at_utc,finished_sending_at_utc,id,sent,subject,subscriber_id"
+        paths = "archived_at_utc,content_change,message,created_at_utc,finished_sending_at_utc,id,sent,subject,subscriber_id"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -215,6 +215,11 @@ resource "aws_glue_catalog_table" "email_archive" {
         name    = "archived_at_utc"
         type    = "timestamp"
         comment = "Time that this Email was archvied"
+      },
+      {
+        name    = "message"
+        type    = "struct<message_ids:array<string>,digest_run_id:int,subscription_ids:array<string>>"
+        comment = "Data specifically associated with a message. Present if this email was sent for one"
       },
     ]
   }
