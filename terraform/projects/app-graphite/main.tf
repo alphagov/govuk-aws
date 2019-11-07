@@ -82,6 +82,12 @@ variable "instance_type" {
   default     = "m5.xlarge"
 }
 
+variable "ebs_volume_size" {
+  type        = "string"
+  description = "EBS Volume size in GB"
+  default     = "250"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -268,7 +274,7 @@ module "graphite-1" {
 resource "aws_ebs_volume" "graphite-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = 250
+  size              = "${var.ebs_volume_size}"
   type              = "io1"
   iops              = 1000
 
