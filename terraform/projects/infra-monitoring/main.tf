@@ -357,6 +357,25 @@ resource "aws_iam_role_policy_attachment" "xray_daemon_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.xray_daemon_policy.arn}"
 }
 
+#
+# Create an IAM user and role which allows the Icinga AWS IAM Check to query
+# the list of IAM users and the age of their keys
+#
+resource "aws_iam_user" "aws_iam_check_user" {
+  name = "govuk-aws-iam-check"
+}
+
+resource "aws_iam_policy" "aws_iam_check_policy" {
+  name   = "${var.stackname}-aws_iam_check-policy"
+  policy = "${file("${path.module}/../../policies/aws_iam_check_policy.json")}"
+}
+
+resource "aws_iam_policy_attachment" "aws_iam_check_user_policy_attachment" {
+  name       = "aws_iam_check_user_policy_attachment"
+  users      = ["${aws_iam_user.aws_iam_check_user.name}"]
+  policy_arn = "${aws_iam_policy.aws_iam_check_policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
