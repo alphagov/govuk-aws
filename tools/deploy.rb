@@ -88,4 +88,4 @@ jenkins_job_response = jenkins_job_http.request(jenkins_job_request)
 
 abort('Could not queue Jenkins job') unless jenkins_job_response.code == '201'
 
-puts 'Jenkins job queued'
+puts 'Jenkins job queued. View it at https://ci-deploy.integration.publishing.service.gov.uk/job/Deploy_Terraform_GOVUK_AWS/'
