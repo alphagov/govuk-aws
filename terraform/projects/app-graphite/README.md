@@ -11,6 +11,7 @@ Graphite node
 | aws_region | AWS region | string | `eu-west-1` | no |
 | create_external_elb | Create the external ELB | string | `true` | no |
 | ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
+| ebs_volume_size | EBS Volume size in GB | string | `250` | no |
 | elb_external_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | elb_internal_certname | The ACM cert domain name to find the ARN of | string | - | yes |
 | external_domain_name | The domain name of the external DNS records, it could be different from the zone name | string | - | yes |
