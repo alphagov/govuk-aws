@@ -238,6 +238,10 @@ resource "aws_s3_bucket" "database_backups" {
     expiration {
       days = "${var.expiration_time}"
     }
+
+    noncurrent_version_expiration{
+      days = "1"
+    }
   }
 
   # Integration lifecycle specific rules END
