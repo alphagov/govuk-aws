@@ -25,7 +25,9 @@
                 "cloudwatch:GetMetricStatistics",
                 "cloudwatch:ListMetrics",
                 "logs:DescribeLogStreams",
-                "logs:GetLogEvents"
+                "logs:GetLogEvents",
+                "iam:ListUsers",
+                "iam:ListAccessKeys"
             ],
             "Resource": [
                 "*"
