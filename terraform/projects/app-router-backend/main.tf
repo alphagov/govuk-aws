@@ -145,7 +145,7 @@ resource "aws_elb" "router_api_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:80"
+    target   = "HTTP:80/_healthcheck_router-api"
     interval = 30
   }
 
