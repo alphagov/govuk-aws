@@ -255,7 +255,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 }
 
 resource "aws_kms_key" "sops" {
-  description = "Sensitive data in govuk-aws-data"
+  description = "Encryption key for govuk-aws-data"
   policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
 }
 
@@ -265,7 +265,12 @@ resource "aws_kms_alias" "sops" {
 }
 
 resource "aws_kms_key" "licensify_documentdb" {
-  description = "Senstive data in Licensify DocumentDB"
+  description = "Encryption key for Licensify DocumentDB"
+  policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
+}
+
+resource "aws_kms_key" "shared_documentdb" {
+  description = "Encryption key for Shared DocumentDB"
   policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
 }
 
@@ -280,4 +285,9 @@ output "sops_kms_key_arn" {
 output "licensify_documentdb_kms_key_arn" {
   value       = "${aws_kms_key.licensify_documentdb.arn}"
   description = "The ARN of the Licensify DocumentDB KMS key"
+}
+
+output "shared_documentdb_kms_key_arn" {
+  value       = "${aws_kms_key.shared_documentdb.arn}"
+  description = "The ARN of the Shared DocumentDB KMS key"
 }
