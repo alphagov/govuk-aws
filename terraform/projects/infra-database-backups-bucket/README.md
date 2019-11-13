@@ -19,6 +19,7 @@ database-backups: The bucket that will hold database backups
 | integration_only | Only apply these policies to integration | string | `false` | no |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
+| replication_setting | Whether replication is Enabled or Disabled | string | `Enabled` | no |
 | stackname | Stackname | string | - | yes |
 | standard_s3_storage_time | Storage time in days for Standard S3 Bucket Objects | string | `30` | no |
 | training_only | Only apply these policies to training | string | `false` | no |
