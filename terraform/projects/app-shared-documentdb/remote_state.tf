@@ -23,6 +23,12 @@ variable "remote_state_infra_networking_key_stack" {
   default     = ""
 }
 
+variable "remote_state_infra_security_key_stack" {
+  type        = "string"
+  description = "Override infra_security stackname path to infra_vpc remote state "
+  default     = ""
+}
+
 variable "remote_state_infra_security_groups_key_stack" {
   type        = "string"
   description = "Override infra_security_groups stackname path to infra_vpc remote state "
@@ -66,6 +72,16 @@ data "terraform_remote_state" "infra_networking" {
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
+    region = "${var.aws_region}"
+  }
+}
+
+data "terraform_remote_state" "infra_security" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_security_key_stack, var.stackname)}/infra-security.tfstate"
     region = "${var.aws_region}"
   }
 }
