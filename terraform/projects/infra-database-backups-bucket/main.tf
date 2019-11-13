@@ -76,6 +76,12 @@ variable "expiration_time_whisper_mongo" {
   default     = "7"
 }
 
+variable "replication_setting" {
+  type        = "string"
+  description = "Whether replication is Enabled or Disabled"
+  default     = "Enabled"
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
@@ -239,7 +245,7 @@ resource "aws_s3_bucket" "database_backups" {
       days = "${var.expiration_time}"
     }
 
-    noncurrent_version_expiration{
+    noncurrent_version_expiration {
       days = "1"
     }
   }
@@ -255,7 +261,7 @@ resource "aws_s3_bucket" "database_backups" {
     rules {
       id     = "main_replication_rule"
       prefix = ""
-      status = "Enabled"
+      status = "${var.replication_setting}"
 
       destination {
         bucket        = "${aws_s3_bucket.database_backups_replica.arn}"
