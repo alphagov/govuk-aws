@@ -239,7 +239,7 @@ resource "aws_s3_bucket" "database_backups" {
       days = "${var.expiration_time}"
     }
 
-    noncurrent_version_expiration{
+    noncurrent_version_expiration {
       days = "1"
     }
   }
