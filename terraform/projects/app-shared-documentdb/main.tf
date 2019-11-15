@@ -101,6 +101,7 @@ resource "aws_docdb_cluster" "cluster" {
   db_cluster_parameter_group_name = "${aws_docdb_cluster_parameter_group.parameter_group.name}"
   kms_key_id                      = "${data.terraform_remote_state.infra_security.shared_documentdb_kms_key_arn}"
   vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_shared_documentdb_id}"]
+  apply_immediately               = true
 
   tags = {
     Service  = "shared documentdb"
