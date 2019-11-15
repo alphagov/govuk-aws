@@ -17,5 +17,7 @@ Stores ActiveStorage blobs uploaded via Content Publisher.
 | remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
 | remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
 | remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
+| replication_setting | Whether replication is Enabled or Disabled | string | `Enabled` | no |
 | stackname | Stackname | string | - | yes |
+| whole_bucket_lifecycle_rule_integration_enabled | Set to true in Integration data to only apply these rules for Integration | string | `false` | no |
 
