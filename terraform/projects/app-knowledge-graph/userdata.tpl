@@ -61,3 +61,10 @@ chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
 ./provision_knowledge_graph -i $instance_id -b ${database_backups_bucket_name} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name}
+
+# Set correct permissions for user journey visualisation viewer script
+cd /var/data/github/govuk-knowledge-graph/src/visualization
+chmod +x ./start-journey-visualisation-viewer
+
+# Run journey visualisation viewer
+./start-journey-visualisation-viewer
