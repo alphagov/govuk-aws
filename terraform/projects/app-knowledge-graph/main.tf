@@ -300,6 +300,14 @@ resource "aws_elb" "knowledge-graph_elb_external" {
   }
 
   listener {
+    instance_port      = 3000
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  listener {
     instance_port      = 7473
     instance_protocol  = "https"
     lb_port            = 7473
