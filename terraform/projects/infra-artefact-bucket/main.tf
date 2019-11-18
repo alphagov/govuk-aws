@@ -88,6 +88,18 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "whole_bucket_lifecycle_rule_integration_enabled" {
+  type        = "string"
+  description = "Set to true in Integration data to only apply these rules for Integration"
+  default     = "false"
+}
+
+variable "replication_setting" {
+  type        = "string"
+  description = "Whether replication is Enabled or Disabled"
+  default     = "Enabled"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -132,6 +144,20 @@ resource "aws_s3_bucket" "artefact_replication_destination" {
   versioning {
     enabled = true
   }
+
+  lifecycle_rule {
+    id      = "whole_bucket_lifecycle_rule_integration"
+    prefix  = ""
+    enabled = "${var.whole_bucket_lifecycle_rule_integration_enabled}"
+
+    expiration {
+      days = "7"
+    }
+
+    noncurrent_version_expiration {
+      days = "1"
+    }
+  }
 }
 
 # Main bucket
@@ -158,7 +184,7 @@ resource "aws_s3_bucket" "artefact" {
 
     rules {
       id     = "govuk-artefact-replication-whole-bucket-rule"
-      status = "Enabled"
+      status = "${var.replication_setting}"
       prefix = ""
 
       destination {
