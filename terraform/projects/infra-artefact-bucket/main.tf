@@ -390,6 +390,7 @@ resource "aws_iam_policy_attachment" "artefact_writer" {
   name       = "artefact-writer-policy-attachment"
   users      = ["${aws_iam_user.artefact_writer.name}"]
   policy_arn = "${aws_iam_policy.artefact_writer.arn}"
+  roles      = ["blue-deploy"]
 }
 
 data "template_file" "artefact_writer_policy_template" {
