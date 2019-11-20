@@ -33,7 +33,7 @@ variable "elb_internal_certname" {
 variable "asg_size" {
   type        = "string"
   description = "The autoscaling groups desired/max/min capacity"
-  default     = "4"
+  default     = "5"
 }
 
 variable "app_service_records" {
