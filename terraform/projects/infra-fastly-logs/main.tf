@@ -224,7 +224,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher"
         ignore.malformed.json = "true"
       }
 
@@ -248,6 +248,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
     // "fastly_backend":"%{json.escape(resp.http.Fastly-Backend-Name)}V",
     // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
+    // "cache_response":%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V,
     // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
     // }
@@ -324,7 +325,12 @@ resource "aws_glue_catalog_table" "govuk_www" {
       {
         name    = "cache_hit"
         type    = "boolean"
-        comment = "Whether this was served from cache or not"
+        comment = "Whether this object is cacheable or not"
+      },
+      {
+        name    = "cache_response"
+        type    = "string"
+        comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
       },
       {
         name = "tls_client_protocol"
@@ -405,7 +411,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,tls_client_protocol,tls_client_cipher"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher"
         ignore.malformed.json = "true"
       }
 
@@ -429,6 +435,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     // "fastly_backend":"%{json.escape(resp.http.Fastly-Backend-Name)}V",
     // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
+    // "cache_response":%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V,
     // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
     // }
@@ -505,7 +512,12 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       {
         name    = "cache_hit"
         type    = "boolean"
-        comment = "Whether this was served from cache or not"
+        comment = "Whether this object is cacheable or not"
+      },
+      {
+        name    = "cache_response"
+        type    = "string"
+        comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
       },
       {
         name = "tls_client_protocol"
@@ -586,7 +598,7 @@ resource "aws_glue_catalog_table" "bouncer" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
         ignore.malformed.json = "true"
       }
 
@@ -609,6 +621,7 @@ resource "aws_glue_catalog_table" "bouncer" {
     // "user_agent":"%{json.escape(req.http.User-Agent)}V",
     // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V
+    // "cache_response":%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V
     // }
     columns = [
       {
@@ -678,7 +691,12 @@ resource "aws_glue_catalog_table" "bouncer" {
       {
         name    = "cache_hit"
         type    = "boolean"
-        comment = "Whether this was served from cache or not"
+        comment = "Whether this object is cacheable or not"
+      },
+      {
+        name    = "cache_response"
+        type    = "string"
+        comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
       },
     ]
   }
