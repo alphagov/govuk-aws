@@ -109,6 +109,7 @@ data "aws_iam_policy_document" "knowledge-graph_read_ssm_policy_document" {
       "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_publishing_api_database",
       "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_publishing_api_user",
       "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_publishing_api_password",
+      "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_bolt_endpoint",
     ]
   }
 }
@@ -261,7 +262,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-up"
-  recurrence             = "0 9 * * MON-FRI"
+  recurrence             = "0 9 * * MON-SUN"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 1
@@ -271,6 +272,15 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-down"
   recurrence             = "55 17 * * MON-FRI"
+  min_size               = -1
+  max_size               = -1
+  desired_capacity       = 0
+}
+
+resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down-weekend" {
+  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
+  scheduled_action_name  = "knowledge-graph_schedule-spin-down-weekend"
+  recurrence             = "55 9 * * SAT-SUN"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
@@ -297,6 +307,14 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     instance_protocol = "tcp"
     lb_port           = 22
     lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port      = 3000
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   listener {
