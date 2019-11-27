@@ -171,6 +171,28 @@ resource "aws_iam_policy" "deny-eip-release" {
   policy      = "${data.aws_iam_policy_document.deny-eip-release.json}"
 }
 
+# Allow IAM Key Rotation
+data "aws_iam_policy_document" "allow-iam-key-rotation" {
+  statement {
+    actions = [
+      "iam:CreateAccessKey",
+      "iam:DeleteAccessKey",
+      "iam:GetAccessKeyLastUsed",
+      "iam:ListAccessKeys",
+      "iam:UpdateAccessKey",
+    ]
+
+    effect    = "Allow"
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "allow-iam-key-rotation" {
+  name        = "AllowIamKeyRotation"
+  description = "Allow users the ability to rotate AWS IAM Access Keys"
+  policy      = "${data.aws_iam_policy_document.allow-iam-key-rotation.json}"
+}
+
 # SOPS KMS key
 
 data "aws_iam_policy_document" "kms_sops_policy" {
