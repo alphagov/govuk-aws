@@ -36,22 +36,7 @@ jenkins_job_path = '/job/Deploy_Terraform_GOVUK_AWS/buildWithParameters'.freeze
 jenkins_crumb_issuer_uri = URI.parse("#{jenkins_url}#{jenkins_crumb_issuer_path}")
 jenkins_job_uri = URI.parse("#{jenkins_url}#{jenkins_job_path}")
 
-if ENV.key? 'AWS_SECRET_ACCESS_KEY'
-  puts 'Using AWS credentials from the environment'
-else
-  # Get temporary AWS credentials
-  puts 'Requesting temporary AWS credentials...'
-  `govukcli set-context #{environment}`
-  env = `govukcli aws invoke printenv`
-  abort('Could not get temporary AWS credentials') unless $?.exitstatus.zero?
-
-  # Set up the environment variables for the temporary AWS credentials
-  aws_credential_env_vars = %w(AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN).freeze
-  env.each_line do |env_var|
-    key, value = env_var.split('=')
-    ENV[key] = value.chomp if aws_credential_env_vars.include?(key)
-  end
-end
+puts 'Using AWS credentials from the environment as set by gds-cli...'
 
 # Get a Jenkins "crumb" to authenticate the next request
 puts 'Requesting Jenkins crumb...'
