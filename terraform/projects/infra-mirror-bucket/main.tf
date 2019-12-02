@@ -493,6 +493,6 @@ resource "aws_lambda_function" "url_rewrite" {
   function_name = "url_rewrite"
   role          = "${aws_iam_role.basic_lambda_role.arn}"
   handler       = "index.handler"
-  runtime       = "nodejs8.10"
+  runtime       = "nodejs10.x"
   provider      = "aws.aws_cloudfront_certificate"
 }
