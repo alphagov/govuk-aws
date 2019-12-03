@@ -13,10 +13,12 @@ aws elb register-instances-with-load-balancer --load-balancer-name ${elb_name} -
 
 sudo locale-gen en_GB.UTF-8
 
+# Upgrade pip
+pip install --upgrade pip
+
 # Install pip and dependencies used in this start-up script
 sudo apt install -y python-pip
 pip install awscli
-pip install csvkit
 
 # Install Python 3.6
 sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
@@ -32,6 +34,7 @@ cd envs
 sudo apt install -y virtualenv
 virtualenv -p python3.6 python36
 source python36/bin/activate
+pip install csvkit
 
 # Create data dir
 sudo mkdir /var/data
