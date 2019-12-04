@@ -24,6 +24,6 @@ Jumpbox node
 
 | Name | Description |
 |------|-------------|
-| service_dns_name | DNS name to access the node service |
 | ubuntutest_elb_address | AWS' internal DNS name for the ubuntutest ELB |
+| service_dns_name | DNS name to access the node service |
 

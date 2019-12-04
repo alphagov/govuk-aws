@@ -129,7 +129,9 @@ Manage the security groups for the entire infrastructure
 | sg_transition-db-admin_id |  |
 | sg_transition-postgresql-primary_id |  |
 | sg_transition-postgresql-standby_id |  |
-| sg_ubuntutest_id |  |
+| sg_warehouse-db-admin_elb_id |  |
+| sg_warehouse-db-admin_id |  |
+| sg_warehouse-postgresql-primary_id |  |
 | sg_whitehall-backend_external_elb_id |  |
 | sg_whitehall-backend_id |  |
 | sg_whitehall-backend_internal_elb_id |  |
