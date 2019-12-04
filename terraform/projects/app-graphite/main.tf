@@ -252,6 +252,18 @@ resource "aws_route53_record" "graphite_internal_service_record" {
   }
 }
 
+resource "aws_route53_record" "grafana_internal_service_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "grafana.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.graphite_internal_elb.dns_name}"
+    zone_id                = "${aws_elb.graphite_internal_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 locals {
   instance_elb_ids_length = "${var.create_external_elb ? 2 : 1}"
   instance_elb_ids        = "${compact(list(aws_elb.graphite_internal_elb.id, join("", aws_elb.graphite_external_elb.*.id)))}"
