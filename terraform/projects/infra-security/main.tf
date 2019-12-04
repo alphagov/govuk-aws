@@ -74,6 +74,18 @@ variable "role_poweruser_policy_arns" {
   default     = []
 }
 
+variable "role_datascienceuser_user_arns" {
+  type        = "list"
+  description = "List of ARNs of external users that can assume the role"
+  default     = []
+}
+
+variable "role_datascienceuser_policy_arns" {
+  type        = "list"
+  description = "List of ARNs of policies to attach to the role"
+  default     = []
+}
+
 variable "role_user_user_arns" {
   type        = "list"
   description = "List of ARNs of external users that can assume the role"
@@ -134,6 +146,13 @@ module "role_poweruser" {
   role_policy_arns = ["${var.role_poweruser_policy_arns}"]
 }
 
+module "role_datascienceuser" {
+  source           = "../../modules/aws/iam/role_user"
+  role_name        = "govuk-datascienceusers"
+  role_user_arns   = ["${var.role_datascienceuser_user_arns}"]
+  role_policy_arns = ["${var.role_datascienceuser_policy_arns}"]
+}
+
 module "role_user" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-users"
@@ -191,6 +210,50 @@ resource "aws_iam_policy" "allow-iam-key-rotation" {
   name        = "AllowIamKeyRotation"
   description = "Allow users the ability to rotate AWS IAM Access Keys"
   policy      = "${data.aws_iam_policy_document.allow-iam-key-rotation.json}"
+}
+
+# Data science access policy
+data "aws_iam_policy_document" "data-science-access-glue" {
+  statement {
+    actions = [
+      "glue:GetJob",
+      "glue:ListJobs",
+      "glue:StartJobRun",
+      "glue:BatchGetJobs",
+    ]
+
+    effect    = "Allow"
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "data-science-access-glue" {
+  name        = "DataScienceAccessGlue"
+  description = "Allows users access to Glue resources for data science on GOV.UK"
+  policy      = "${data.aws_iam_policy_document.data-science-access-glue.json}"
+}
+
+data "aws_iam_policy_document" "data-science-access-sagemaker" {
+  statement {
+    actions = [
+      "sagemaker:ListNotebookInstances",
+      "sagemaker:DescribeNotebookInstance",
+      "sagemaker:CreateNotebookInstance",
+      "sagemaker:UpdateNotebookInstance",
+      "sagemaker:DeleteNotebookInstance",
+      "sagemaker:StartNotebookInstance",
+      "sagemaker:StopNotebookInstance",
+    ]
+
+    effect    = "Allow"
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "data-science-access-sagemaker" {
+  name        = "DataScienceAccessSageMaker"
+  description = "Allows users access to SageMaker resources for data science on GOV.UK"
+  policy      = "${data.aws_iam_policy_document.data-science-access-sagemaker.json}"
 }
 
 # SOPS KMS key
