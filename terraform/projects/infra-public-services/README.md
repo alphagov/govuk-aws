@@ -99,7 +99,6 @@ This project adds global resources for app components:
 | support_api_public_service_names |  | list | `<list>` | no |
 | transition_db_admin_internal_service_names |  | list | `<list>` | no |
 | transition_postgresql_internal_service_names |  | list | `<list>` | no |
-| ubuntutest_public_service_names |  | list | `<list>` | no |
 | waf_logs_hec_endpoint | Splunk endpoint for shipping application firewall logs | string | - | yes |
 | waf_logs_hec_token | Splunk token for shipping application firewall logs | string | - | yes |
 | whitehall_backend_internal_service_cnames |  | list | `<list>` | no |

@@ -174,11 +174,6 @@ variable "licensify_frontend_public_service_cnames" {
   default = []
 }
 
-variable "ubuntutest_public_service_names" {
-  type    = "list"
-  default = []
-}
-
 variable "licensify_backend_public_service_names" {
   type    = "list"
   default = []
@@ -1680,76 +1675,6 @@ resource "aws_route53_record" "licensify_frontend_internal_service_cnames" {
   type    = "CNAME"
   records = ["${element(var.licensify_frontend_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
-}
-
-#
-# Ubuntu Test
-#
-
-resource "aws_elb" "ubuntutest_public_elb" {
-  name            = "${var.stackname}-ubuntutest"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
-  internal        = "false"
-
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-ubuntutest-public-elb"
-    interval      = 60
-  }
-
-  listener {
-    instance_port     = "22"
-    instance_protocol = "tcp"
-    lb_port           = "22"
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "TCP:22"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-ubuntutest", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ubuntutest")}"
-}
-
-resource "aws_route53_record" "ubuntutest_public_service_names" {
-  count   = "${length(var.ubuntutest_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.ubuntutest_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.ubuntutest_public_elb.dns_name}"
-    zone_id                = "${aws_elb.ubuntutest_public_elb.zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-data "aws_autoscaling_groups" "ubuntutest" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-ubuntutest"]
-  }
-}
-
-resource "aws_autoscaling_attachment" "ubuntutest_asg_attachment_elb" {
-  count                  = "${length(data.aws_autoscaling_groups.ubuntutest.names) > 0 ? 1 : 0}"
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.ubuntutest.names, 0)}"
-  elb                    = "${aws_elb.ubuntutest_public_elb.id}"
 }
 
 #

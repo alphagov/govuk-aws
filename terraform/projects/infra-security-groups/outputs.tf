@@ -250,10 +250,6 @@ output "sg_licensify-frontend_id" {
   value = "${aws_security_group.licensify-frontend.id}"
 }
 
-output "sg_ubuntutest_id" {
-  value = "${aws_security_group.ubuntutest.id}"
-}
-
 output "sg_licensify-backend_external_elb_id" {
   value = "${aws_security_group.licensify-backend_external_elb.id}"
 }
