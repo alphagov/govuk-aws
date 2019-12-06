@@ -179,6 +179,11 @@ variable "licensify_backend_public_service_names" {
   default = []
 }
 
+variable "licensify_backend_elb_public_certname" {
+  type        = "string"
+  description = "Domain name (CN) of the ACM cert to use for licensify_backend."
+}
+
 variable "mapit_public_service_names" {
   type    = "list"
   default = []
@@ -1682,15 +1687,14 @@ resource "aws_route53_record" "licensify_frontend_internal_service_cnames" {
 #
 
 module "licensify_backend_public_lb" {
-  source                                     = "../../modules/aws/lb"
-  name                                       = "licensify-backend-public"
-  internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix                  = "elb/licensify-backend-public-elb"
-  listener_certificate_domain_name           = "${var.elb_public_certname}"
-  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
-  target_group_health_check_path             = "/healthcheck"
+  source                           = "../../modules/aws/lb"
+  name                             = "licensify-backend-public"
+  internal                         = false
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix        = "elb/licensify-backend-public-elb"
+  listener_certificate_domain_name = "${var.licensify_backend_elb_public_certname}"
+  target_group_health_check_path   = "/healthcheck"
 
   listener_action = {
     "HTTPS:443" = "HTTP:80"
