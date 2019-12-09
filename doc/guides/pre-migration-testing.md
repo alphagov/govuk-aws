@@ -30,7 +30,7 @@ Try running one of the tests:
 
 If you receive an error about `phantomjs`, try installing the Homebrew package:
 
-`brew install phantomjs`
+`brew cask install phantomjs`
 
 If we wished to test against a different root domain, you should set the following environment variables:
 
