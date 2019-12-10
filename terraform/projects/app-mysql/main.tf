@@ -48,7 +48,13 @@ variable "snapshot_identifier" {
 variable "storage_size" {
   type        = "string"
   description = "Defines the AWS RDS storage capacity, in gigabytes."
-  default     = "30"
+  default     = "100"
+}
+
+variable "max_allocated_storage" {
+  type        = "string"
+  description = "Maximum size in GB up to which AWS can autoscale the RDS storage."
+  default     = "800"
 }
 
 variable "internal_zone_name" {
@@ -86,22 +92,23 @@ data "aws_route53_zone" "internal" {
 
 # MySQL Primary instance
 module "mysql_primary_rds_instance" {
-  source               = "../../modules/aws/rds_instance"
-  name                 = "${var.stackname}-mysql-primary"
-  instance_name        = "${var.stackname}-mysql-primary"
-  engine_name          = "mysql"
-  engine_version       = "5.6"
-  default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
-  subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username             = "${var.username}"
-  password             = "${var.password}"
-  allocated_storage    = "${var.storage_size}"
-  instance_class       = "${var.instance_type}"
-  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
-  parameter_group_name = "${aws_db_parameter_group.mysql-primary.name}"
-  event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
-  skip_final_snapshot  = "${var.skip_final_snapshot}"
-  snapshot_identifier  = "${var.snapshot_identifier}"
+  source                = "../../modules/aws/rds_instance"
+  name                  = "${var.stackname}-mysql-primary"
+  instance_name         = "${var.stackname}-mysql-primary"
+  engine_name           = "mysql"
+  engine_version        = "5.6"
+  default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-primary")}"
+  subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username              = "${var.username}"
+  password              = "${var.password}"
+  allocated_storage     = "${var.storage_size}"
+  max_allocated_storage = "${var.max_allocated_storage}"
+  instance_class        = "${var.instance_type}"
+  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
+  parameter_group_name  = "${aws_db_parameter_group.mysql-primary.name}"
+  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot   = "${var.skip_final_snapshot}"
+  snapshot_identifier   = "${var.snapshot_identifier}"
 }
 
 resource "aws_db_parameter_group" "mysql-primary" {
@@ -154,6 +161,8 @@ module "mysql_replica_rds_instance" {
   source                     = "../../modules/aws/rds_instance"
   name                       = "${var.stackname}-mysql-replica"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-replica")}"
+  allocated_storage          = "${var.storage_size}"
+  max_allocated_storage      = "${var.max_allocated_storage}"
   instance_class             = "${var.instance_type}"
   instance_name              = "${var.stackname}-mysql-replica"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-replica_id}"]

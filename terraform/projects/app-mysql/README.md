@@ -13,6 +13,7 @@ RDS Mysql Primary instance
 | instance_type | Instance type used for RDS resources | string | `db.m4.xlarge` | no |
 | internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
 | internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
+| max_allocated_storage | Maximum size in GB up to which AWS can autoscale the RDS storage. | string | `800` | no |
 | password | DB password | string | - | yes |
 | remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
 | remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
@@ -24,7 +25,7 @@ RDS Mysql Primary instance
 | skip_final_snapshot | Set to true to NOT create a final snapshot when the cluster is deleted. | string | - | yes |
 | snapshot_identifier | Specifies whether or not to create the database from this snapshot | string | `` | no |
 | stackname | Stackname | string | - | yes |
-| storage_size | Defines the AWS RDS storage capacity, in gigabytes. | string | `30` | no |
+| storage_size | Defines the AWS RDS storage capacity, in gigabytes. | string | `100` | no |
 | username | Mysql username | string | - | yes |
 
 ## Outputs
