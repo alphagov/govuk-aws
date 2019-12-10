@@ -94,7 +94,7 @@ module "asset-master" {
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "30"
+  root_block_device_volume_size = "50"
 }
 
 module "alarms-autoscaling-asset-master" {
