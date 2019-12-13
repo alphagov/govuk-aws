@@ -7,9 +7,6 @@ Create resources to manage infrastructure and app monitoring:
   - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
     the topic
   - Create an IAM user which allows Terraboard to read Terraform state files from S3
-  - Create an IAM user and role which allows the X-Ray daemon to upload trace
-    data to X-Ray (only required while trace data is sent from Carrenza)
-
 
 ## Inputs
 
@@ -35,5 +32,4 @@ Create resources to manage infrastructure and app monitoring:
 | sns_topic_autoscaling_group_events_arn | ARN of the SNS topic for ASG events |
 | sns_topic_cloudwatch_alarms_arn | ARN of the SNS topic for CloudWatch alarms |
 | sns_topic_rds_events_arn | ARN of the SNS topic for RDS events |
-| xray_daemon_role_arn | ARN of the IAM role with permissions to upload traces to X-Ray |
 
