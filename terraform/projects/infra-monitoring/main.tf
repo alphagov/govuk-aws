@@ -8,8 +8,6 @@
 *   - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
 *     the topic
 *   - Create an IAM user which allows Terraboard to read Terraform state files from S3
-*   - Create an IAM user and role which allows the X-Ray daemon to upload trace
-*     data to X-Ray (only required while trace data is sent from Carrenza)
 */
 
 variable "aws_region" {
@@ -324,39 +322,6 @@ resource "aws_iam_policy_attachment" "terraboard_user_policy_attachment" {
   policy_arn = "${aws_iam_policy.terraboard_policy.arn}"
 }
 
-#
-# Create an IAM user and role which allows the AWS X-Ray daemon to upload trace
-# data to AWS X-Ray (only required while trace data is sent from Carrenza)
-#
-
-resource "aws_iam_user" "xray_daemon_user" {
-  name = "govuk-xray-daemon"
-}
-
-data "template_file" "xray_daemon_policy_template" {
-  template = "${file("${path.module}/../../policies/xray_traces_assume_policy.tpl")}"
-
-  vars {
-    xray_daemon_user_arn = "${aws_iam_user.xray_daemon_user.arn}"
-  }
-}
-
-resource "aws_iam_policy" "xray_daemon_policy" {
-  name   = "${var.stackname}-xray-daemon-traces-policy"
-  path   = "/"
-  policy = "${file("${path.module}/../../policies/xray_traces_policy.json")}"
-}
-
-resource "aws_iam_role" "xray_daemon_role" {
-  name               = "${var.stackname}-xray-daemon-traces"
-  assume_role_policy = "${data.template_file.xray_daemon_policy_template.rendered}"
-}
-
-resource "aws_iam_role_policy_attachment" "xray_daemon_role_policy_attachment" {
-  role       = "${aws_iam_role.xray_daemon_role.name}"
-  policy_arn = "${aws_iam_policy.xray_daemon_policy.arn}"
-}
-
 # Outputs
 # --------------------------------------------------------------
 
@@ -398,9 +363,4 @@ output "sns_topic_autoscaling_group_events_arn" {
 output "sns_topic_rds_events_arn" {
   value       = "${aws_sns_topic.notifications.arn}"
   description = "ARN of the SNS topic for RDS events"
-}
-
-output "xray_daemon_role_arn" {
-  value       = "${aws_iam_role.xray_daemon_role.arn}"
-  description = "ARN of the IAM role with permissions to upload traces to X-Ray"
 }
