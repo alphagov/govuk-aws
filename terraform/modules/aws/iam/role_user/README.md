@@ -21,18 +21,17 @@ AssumeRole API action to gain AdministratorAccess permissions on our account:
 ]
 ```
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| role_name | The name of the Role | string | - | yes |
-| role_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_user_arns | List of ARNs of external users that can assume the role | list | - | yes |
+| role\_name | The name of the Role | string | n/a | yes |
+| role\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_user\_arns | List of ARNs of external users that can assume the role | list | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| role_arn | The ARN specifying the role. |
+| role\_arn | The ARN specifying the role. |
 

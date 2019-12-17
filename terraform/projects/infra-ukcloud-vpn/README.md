@@ -2,26 +2,25 @@
 
 Creates a VPN for AWS to connect to ukcloud
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS Environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| aws_tunnel1_psk | Explicit PSK in format required by UKCloud | string | - | yes |
-| aws_tunnel2_psk | Explicit PSK in format required by UKCloud | string | - | yes |
-| aws_vpn_gateway_id | ID of Virtual Private Gateway to use with VPN | string | `` | no |
-| civica_cidr | Civica ip/network range | string | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_networking_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| remote_state_infra_vpc_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| stackname | Stackname | string | `` | no |
-| ukcloud_vpn_endpoint_ip | Public IP address of the VPN gateway in ukcloud | string | - | yes |
+| aws\_environment | AWS Environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| aws\_tunnel1\_psk | Explicit PSK in format required by UKCloud | string | n/a | yes |
+| aws\_tunnel2\_psk | Explicit PSK in format required by UKCloud | string | n/a | yes |
+| aws\_vpn\_gateway\_id | ID of Virtual Private Gateway to use with VPN | string | `""` | no |
+| civica\_cidr | Civica ip/network range | string | n/a | yes |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_networking\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| remote\_state\_infra\_vpc\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| stackname | Stackname | string | `""` | no |
+| ukcloud\_vpn\_endpoint\_ip | Public IP address of the VPN gateway in ukcloud | string | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| aws_vpn_connection_id | The ID of the AWS to ukcloud VPN |
+| aws\_vpn\_connection\_id | The ID of the AWS to ukcloud VPN |
 

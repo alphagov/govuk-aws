@@ -15,20 +15,19 @@ AWS/EC2 metrics reference:
 
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ec2-metricscollected.html
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| alarm_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | list | - | yes |
-| autoscaling_group_name | The name of the AutoScalingGroup that we want to monitor. | string | - | yes |
-| cpuutilization_threshold | The value against which the CPUUtilization metric is compared, in percent. | string | `80` | no |
-| name_prefix | The alarm name prefix. | string | - | yes |
+| alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number \(ARN\). | list | n/a | yes |
+| autoscaling\_group\_name | The name of the AutoScalingGroup that we want to monitor. | string | n/a | yes |
+| cpuutilization\_threshold | The value against which the CPUUtilization metric is compared, in percent. | string | `"80"` | no |
+| name\_prefix | The alarm name prefix. | string | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| alarm_ec2_cpuutilization_id | The ID of the instance CPUUtilization health check. |
-| alarm_ec2_statuscheckfailed_instance_id | The ID of the instance StatusCheckFailed_Instance health check. |
+| alarm\_ec2\_cpuutilization\_id | The ID of the instance CPUUtilization health check. |
+| alarm\_ec2\_statuscheckfailed\_instance\_id | The ID of the instance StatusCheckFailed\_Instance health check. |
 

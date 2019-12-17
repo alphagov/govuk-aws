@@ -7,33 +7,32 @@ Infrastructure security settings:
  - Default SSH key
  - SOPS KMS key
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS Environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| role_admin_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_admin_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
-| role_datascienceuser_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_datascienceuser_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
-| role_internal_admin_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_internal_admin_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
-| role_platformhealth_poweruser_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_platformhealth_poweruser_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
-| role_poweruser_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_poweruser_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
-| role_user_policy_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
-| role_user_user_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
-| ssh_public_key | The public part of an SSH keypair | string | - | yes |
-| stackname | Stackname | string | `` | no |
+| aws\_environment | AWS Environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| role\_admin\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_admin\_user\_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| role\_datascienceuser\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_datascienceuser\_user\_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| role\_internal\_admin\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_internal\_admin\_user\_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| role\_platformhealth\_poweruser\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_platformhealth\_poweruser\_user\_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| role\_poweruser\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_poweruser\_user\_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| role\_user\_policy\_arns | List of ARNs of policies to attach to the role | list | `<list>` | no |
+| role\_user\_user\_arns | List of ARNs of external users that can assume the role | list | `<list>` | no |
+| ssh\_public\_key | The public part of an SSH keypair | string | n/a | yes |
+| stackname | Stackname | string | `""` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| licensify_documentdb_kms_key_arn | The ARN of the Licensify DocumentDB KMS key |
-| shared_documentdb_kms_key_arn | The ARN of the Shared DocumentDB KMS key |
-| sops_kms_key_arn | The ARN of the Sops KMS key |
+| licensify\_documentdb\_kms\_key\_arn | The ARN of the Licensify DocumentDB KMS key |
+| shared\_documentdb\_kms\_key\_arn | The ARN of the Shared DocumentDB KMS key |
+| sops\_kms\_key\_arn | The ARN of the Sops KMS key |
 
