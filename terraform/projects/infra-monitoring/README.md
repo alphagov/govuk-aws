@@ -8,29 +8,28 @@ Create resources to manage infrastructure and app monitoring:
     the topic
   - Create an IAM user which allows Terraboard to read Terraform state files from S3
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS Environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| aws_secondary_region | Secondary AWS region | string | `eu-west-2` | no |
-| cyber_slunk_aws_account_id | AWS account ID of the Cyber S3 bucket where aws logging will be replicated | string | `na` | no |
-| cyber_slunk_s3_bucket_name | Name of the Cyber S3 bucket where aws logging will be replicated | string | `na` | no |
-| stackname | Stackname | string | `` | no |
+| aws\_environment | AWS Environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| aws\_secondary\_region | Secondary AWS region | string | `"eu-west-2"` | no |
+| cyber\_slunk\_aws\_account\_id | AWS account ID of the Cyber S3 bucket where aws logging will be replicated | string | `"na"` | no |
+| cyber\_slunk\_s3\_bucket\_name | Name of the Cyber S3 bucket where aws logging will be replicated | string | `"na"` | no |
+| stackname | Stackname | string | `""` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| aws_logging_bucket_arn | ARN of the AWS logging bucket |
-| aws_logging_bucket_id | Name of the AWS logging bucket |
-| aws_secondary_logging_bucket_id | Name of the AWS logging bucket |
-| firehose_logs_role_arn | ARN of the Kinesis Firehose stream AWS credentials |
-| lambda_logs_role_arn | ARN of the IAM role attached to the Lambda logs Function |
-| lambda_rds_logs_to_s3_role_arn | ARN of the IAM role attached to the Lambda RDS logs to S3 Function |
-| sns_topic_autoscaling_group_events_arn | ARN of the SNS topic for ASG events |
-| sns_topic_cloudwatch_alarms_arn | ARN of the SNS topic for CloudWatch alarms |
-| sns_topic_rds_events_arn | ARN of the SNS topic for RDS events |
+| aws\_logging\_bucket\_arn | ARN of the AWS logging bucket |
+| aws\_logging\_bucket\_id | Name of the AWS logging bucket |
+| aws\_secondary\_logging\_bucket\_id | Name of the AWS logging bucket |
+| firehose\_logs\_role\_arn | ARN of the Kinesis Firehose stream AWS credentials |
+| lambda\_logs\_role\_arn | ARN of the IAM role attached to the Lambda logs Function |
+| lambda\_rds\_logs\_to\_s3\_role\_arn | ARN of the IAM role attached to the Lambda RDS logs to S3 Function |
+| sns\_topic\_autoscaling\_group\_events\_arn | ARN of the SNS topic for ASG events |
+| sns\_topic\_cloudwatch\_alarms\_arn | ARN of the SNS topic for CloudWatch alarms |
+| sns\_topic\_rds\_events\_arn | ARN of the SNS topic for RDS events |
 

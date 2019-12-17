@@ -3,32 +3,31 @@
 Shared DocumentDB to support the following apps:
   1. asset-manager
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| backup_retention_period | Retention period in days for DocumentDB automatic snapshots | string | `1` | no |
-| instance_count | Instance count used for DocumentDB resources | string | `3` | no |
-| instance_type | Instance type used for DocumentDB resources | string | `db.r5.large` | no |
-| master_password | Password of master user on DocumentDB cluster | string | - | yes |
-| master_username | Username of master user on DocumentDB cluster | string | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
-| remote_state_infra_root_dns_zones_key_stack | Override stackname path to infra_root_dns_zones remote state | string | `` | no |
-| remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
-| remote_state_infra_security_key_stack | Override infra_security stackname path to infra_vpc remote state | string | `` | no |
-| remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
-| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
-| stackname | Stackname | string | - | yes |
-| tls | Whether to enable or disable TLS for the DocumentDB cluster. Must be either 'enabled' or 'disabled'. | string | `disabled` | no |
+| aws\_environment | AWS environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| backup\_retention\_period | Retention period in days for DocumentDB automatic snapshots | string | `"1"` | no |
+| instance\_count | Instance count used for DocumentDB resources | string | `"3"` | no |
+| instance\_type | Instance type used for DocumentDB resources | string | `"db.r5.large"` | no |
+| master\_password | Password of master user on DocumentDB cluster | string | n/a | yes |
+| master\_username | Username of master user on DocumentDB cluster | string | n/a | yes |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | string | `""` | no |
+| remote\_state\_infra\_root\_dns\_zones\_key\_stack | Override stackname path to infra\_root\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_security\_groups\_key\_stack | Override infra\_security\_groups stackname path to infra\_vpc remote state | string | `""` | no |
+| remote\_state\_infra\_security\_key\_stack | Override infra\_security stackname path to infra\_vpc remote state | string | `""` | no |
+| remote\_state\_infra\_stack\_dns\_zones\_key\_stack | Override stackname path to infra\_stack\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_vpc\_key\_stack | Override infra\_vpc remote state path | string | `""` | no |
+| stackname | Stackname | string | n/a | yes |
+| tls | Whether to enable or disable TLS for the DocumentDB cluster. Must be either 'enabled' or 'disabled'. | string | `"disabled"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| shared_documentdb_endpoint | Outputs -------------------------------------------------------------- |
+| shared\_documentdb\_endpoint | The endpoint of the shared DocumentDB |
 

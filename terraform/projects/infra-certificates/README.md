@@ -2,24 +2,23 @@
 
 This module creates the environment certificates
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_region | AWS region | string | - | yes |
-| certificate_external_domain_name | Domain name for which the external certificate should be issued | string | - | yes |
-| certificate_external_subject_alternative_names | List of domains that should be SANs in the external issued certificate | list | `<list>` | no |
-| certificate_internal_domain_name | Domain name for which the internal certificate should be issued | string | - | yes |
-| certificate_internal_subject_alternative_names | List of domains that should be SANs in the internal issued certificate | list | `<list>` | no |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_root_dns_zones_key_stack | Override stackname path to infra_root_dns_zones remote state | string | `` | no |
-| stackname | Stackname | string | - | yes |
+| aws\_region | AWS region | string | n/a | yes |
+| certificate\_external\_domain\_name | Domain name for which the external certificate should be issued | string | n/a | yes |
+| certificate\_external\_subject\_alternative\_names | List of domains that should be SANs in the external issued certificate | list | `<list>` | no |
+| certificate\_internal\_domain\_name | Domain name for which the internal certificate should be issued | string | n/a | yes |
+| certificate\_internal\_subject\_alternative\_names | List of domains that should be SANs in the internal issued certificate | list | `<list>` | no |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_root\_dns\_zones\_key\_stack | Override stackname path to infra\_root\_dns\_zones remote state | string | `""` | no |
+| stackname | Stackname | string | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| external_certificate_arn | ARN of the external certificate |
-| internal_certificate_arn | ARN of the internal certificate |
+| external\_certificate\_arn | ARN of the external certificate |
+| internal\_certificate\_arn | ARN of the internal certificate |
 

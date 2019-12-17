@@ -30,29 +30,28 @@ AWS/ELB metrics reference:
 
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| alarm_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | list | - | yes |
-| elb_name | The name of the ELB that we want to monitor. | string | - | yes |
-| healthyhostcount_threshold | The value against which the HealthyHostCount metric is compared. | string | `0` | no |
-| httpcode_backend_4xx_threshold | The value against which the HTTPCode_Backend_4XX metric is compared. | string | `80` | no |
-| httpcode_backend_5xx_threshold | The value against which the HTTPCode_Backend_5XX metric is compared. | string | `80` | no |
-| httpcode_elb_4xx_threshold | The value against which the HTTPCode_ELB_4XX metric is compared. | string | `80` | no |
-| httpcode_elb_5xx_threshold | The value against which the HTTPCode_ELB_5XX metric is compared. | string | `80` | no |
-| name_prefix | The alarm name prefix. | string | - | yes |
-| surgequeuelength_threshold | The value against which the SurgeQueueLength metric is compared. The maximum size of the queue is 1,024. Additional requests are rejected when the queue is full. | string | `0` | no |
+| alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number \(ARN\). | list | n/a | yes |
+| elb\_name | The name of the ELB that we want to monitor. | string | n/a | yes |
+| healthyhostcount\_threshold | The value against which the HealthyHostCount metric is compared. | string | `"0"` | no |
+| httpcode\_backend\_4xx\_threshold | The value against which the HTTPCode\_Backend\_4XX metric is compared. | string | `"80"` | no |
+| httpcode\_backend\_5xx\_threshold | The value against which the HTTPCode\_Backend\_5XX metric is compared. | string | `"80"` | no |
+| httpcode\_elb\_4xx\_threshold | The value against which the HTTPCode\_ELB\_4XX metric is compared. | string | `"80"` | no |
+| httpcode\_elb\_5xx\_threshold | The value against which the HTTPCode\_ELB\_5XX metric is compared. | string | `"80"` | no |
+| name\_prefix | The alarm name prefix. | string | n/a | yes |
+| surgequeuelength\_threshold | The value against which the SurgeQueueLength metric is compared. The maximum size of the queue is 1,024. Additional requests are rejected when the queue is full. | string | `"0"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| alarm_elb_healthyhostcount_id | The ID of the ELB HealthyHostCount health check. |
-| alarm_elb_httpcode_backend_4xx_id | The ID of the ELB HTTPCode_Backend_4XX health check. |
-| alarm_elb_httpcode_backend_5xx_id | The ID of the ELB HTTPCode_Backend_5XX health check. |
-| alarm_elb_httpcode_elb_4xx_id | The ID of the ELB HTTPCode_ELB_4XX health check. |
-| alarm_elb_httpcode_elb_5xx_id | The ID of the ELB HTTPCode_ELB_5XX health check. |
-| alarm_elb_surgequeuelength_id | The ID of the ELB SurgeQueueLength health check. |
+| alarm\_elb\_healthyhostcount\_id | The ID of the ELB HealthyHostCount health check. |
+| alarm\_elb\_httpcode\_backend\_4xx\_id | The ID of the ELB HTTPCode\_Backend\_4XX health check. |
+| alarm\_elb\_httpcode\_backend\_5xx\_id | The ID of the ELB HTTPCode\_Backend\_5XX health check. |
+| alarm\_elb\_httpcode\_elb\_4xx\_id | The ID of the ELB HTTPCode\_ELB\_4XX health check. |
+| alarm\_elb\_httpcode\_elb\_5xx\_id | The ID of the ELB HTTPCode\_ELB\_5XX health check. |
+| alarm\_elb\_surgequeuelength\_id | The ID of the ELB SurgeQueueLength health check. |
 

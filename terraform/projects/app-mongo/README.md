@@ -2,43 +2,42 @@
 
 Mongo hosts
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS Environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
-| instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
-| instance_type | Instance type used for EC2 resources | string | `m5.large` | no |
-| internal_domain_name | The domain name of the internal DNS records, it could be different from the zone name | string | - | yes |
-| internal_zone_name | The name of the Route53 zone that contains internal records | string | - | yes |
-| mongo_1_ip | IP address of the private IP to assign to the instance | string | - | yes |
-| mongo_1_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
-| mongo_1_subnet | Name of the subnet to place the Mongo instance 1 and EBS volume | string | - | yes |
-| mongo_2_ip | IP address of the private IP to assign to the instance | string | - | yes |
-| mongo_2_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
-| mongo_2_subnet | Name of the subnet to place the Mongo 2 and EBS volume | string | - | yes |
-| mongo_3_ip | IP address of the private IP to assign to the instance | string | - | yes |
-| mongo_3_reserved_ips_subnet | Name of the subnet to place the reserved IP of the instance | string | - | yes |
-| mongo_3_subnet | Name of the subnet to place the Mongo 3 and EBS volume | string | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_database_backups_bucket_key_stack | Override stackname path to infra_database_backups_bucket remote state | string | `` | no |
-| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
-| remote_state_infra_root_dns_zones_key_stack | Override stackname path to infra_root_dns_zones remote state | string | `` | no |
-| remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
-| remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
-| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
-| stackname | Stackname | string | - | yes |
-| user_data_snippets | List of user-data snippets | list | - | yes |
+| aws\_environment | AWS Environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| ebs\_encrypted | Whether or not the EBS volume is encrypted | string | n/a | yes |
+| instance\_ami\_filter\_name | Name to use to find AMI images | string | `""` | no |
+| instance\_type | Instance type used for EC2 resources | string | `"m5.large"` | no |
+| internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | string | n/a | yes |
+| internal\_zone\_name | The name of the Route53 zone that contains internal records | string | n/a | yes |
+| mongo\_1\_ip | IP address of the private IP to assign to the instance | string | n/a | yes |
+| mongo\_1\_reserved\_ips\_subnet | Name of the subnet to place the reserved IP of the instance | string | n/a | yes |
+| mongo\_1\_subnet | Name of the subnet to place the Mongo instance 1 and EBS volume | string | n/a | yes |
+| mongo\_2\_ip | IP address of the private IP to assign to the instance | string | n/a | yes |
+| mongo\_2\_reserved\_ips\_subnet | Name of the subnet to place the reserved IP of the instance | string | n/a | yes |
+| mongo\_2\_subnet | Name of the subnet to place the Mongo 2 and EBS volume | string | n/a | yes |
+| mongo\_3\_ip | IP address of the private IP to assign to the instance | string | n/a | yes |
+| mongo\_3\_reserved\_ips\_subnet | Name of the subnet to place the reserved IP of the instance | string | n/a | yes |
+| mongo\_3\_subnet | Name of the subnet to place the Mongo 3 and EBS volume | string | n/a | yes |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_database\_backups\_bucket\_key\_stack | Override stackname path to infra\_database\_backups\_bucket remote state | string | `""` | no |
+| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | string | `""` | no |
+| remote\_state\_infra\_root\_dns\_zones\_key\_stack | Override stackname path to infra\_root\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_security\_groups\_key\_stack | Override infra\_security\_groups stackname path to infra\_vpc remote state | string | `""` | no |
+| remote\_state\_infra\_stack\_dns\_zones\_key\_stack | Override stackname path to infra\_stack\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_vpc\_key\_stack | Override infra\_vpc remote state path | string | `""` | no |
+| stackname | Stackname | string | n/a | yes |
+| user\_data\_snippets | List of user-data snippets | list | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| mongo_1_service_dns_name | DNS name to access the Mongo 1 internal service |
-| mongo_2_service_dns_name | DNS name to access the Mongo 2 internal service |
-| mongo_3_service_dns_name | DNS name to access the Mongo 3 internal service |
+| mongo\_1\_service\_dns\_name | DNS name to access the Mongo 1 internal service |
+| mongo\_2\_service\_dns\_name | DNS name to access the Mongo 2 internal service |
+| mongo\_3\_service\_dns\_name | DNS name to access the Mongo 3 internal service |
 

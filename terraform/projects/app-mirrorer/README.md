@@ -2,31 +2,30 @@
 
 Mirrorer node
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS Environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| ebs_encrypted | Whether or not the EBS volume is encrypted | string | - | yes |
-| instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
-| instance_type | Instance type used for EC2 resources | string | `m5.large` | no |
-| mirrorer_ebs_size | Size of addtiional EBS volume in GB | string | `100` | no |
-| mirrorer_subnet | Subnet to contain mirrorer and its EBS volume | string | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
-| remote_state_infra_root_dns_zones_key_stack | Override stackname path to infra_root_dns_zones remote state | string | `` | no |
-| remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
-| remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
-| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
-| stackname | Stackname | string | - | yes |
-| user_data_snippets | List of user-data snippets | list | - | yes |
+| aws\_environment | AWS Environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| ebs\_encrypted | Whether or not the EBS volume is encrypted | string | n/a | yes |
+| instance\_ami\_filter\_name | Name to use to find AMI images | string | `""` | no |
+| instance\_type | Instance type used for EC2 resources | string | `"m5.large"` | no |
+| mirrorer\_ebs\_size | Size of addtiional EBS volume in GB | string | `"100"` | no |
+| mirrorer\_subnet | Subnet to contain mirrorer and its EBS volume | string | n/a | yes |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | string | `""` | no |
+| remote\_state\_infra\_root\_dns\_zones\_key\_stack | Override stackname path to infra\_root\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_security\_groups\_key\_stack | Override infra\_security\_groups stackname path to infra\_vpc remote state | string | `""` | no |
+| remote\_state\_infra\_stack\_dns\_zones\_key\_stack | Override stackname path to infra\_stack\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_vpc\_key\_stack | Override infra\_vpc remote state path | string | `""` | no |
+| stackname | Stackname | string | n/a | yes |
+| user\_data\_snippets | List of user-data snippets | list | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| instance_iam_role_name | name of the instance iam role |
+| instance\_iam\_role\_name | name of the instance iam role |
 

@@ -4,30 +4,29 @@ Data science experimentation playground.
 
 Run resource intensive scripts for data science purposes.
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_environment | AWS environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-2` | no |
-| instance_ami_filter_name | Name to use to find AMI images | string | `` | no |
-| instance_type | Instance type used for EC2 resources | string | `c5.4xlarge` | no |
-| machine_learning_instance_type | Instance type used for EC2 resources | string | `p3.8xlarge` | no |
-| office_ips | An array of CIDR blocks that will be allowed offsite access. | list | - | yes |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| remote_state_infra_networking_key_stack | Override infra_networking remote state path | string | `` | no |
-| remote_state_infra_root_dns_zones_key_stack | Override stackname path to infra_root_dns_zones remote state | string | `` | no |
-| remote_state_infra_security_groups_key_stack | Override infra_security_groups stackname path to infra_vpc remote state | string | `` | no |
-| remote_state_infra_stack_dns_zones_key_stack | Override stackname path to infra_stack_dns_zones remote state | string | `` | no |
-| remote_state_infra_vpc_key_stack | Override infra_vpc remote state path | string | `` | no |
-| stackname | Stackname | string | - | yes |
-| user_data_snippets | List of user-data snippets | list | - | yes |
+| aws\_environment | AWS environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-2"` | no |
+| instance\_ami\_filter\_name | Name to use to find AMI images | string | `""` | no |
+| instance\_type | Instance type used for EC2 resources | string | `"c5.4xlarge"` | no |
+| machine\_learning\_instance\_type | Instance type used for EC2 resources | string | `"p3.8xlarge"` | no |
+| office\_ips | An array of CIDR blocks that will be allowed offsite access. | list | n/a | yes |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | string | `""` | no |
+| remote\_state\_infra\_root\_dns\_zones\_key\_stack | Override stackname path to infra\_root\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_security\_groups\_key\_stack | Override infra\_security\_groups stackname path to infra\_vpc remote state | string | `""` | no |
+| remote\_state\_infra\_stack\_dns\_zones\_key\_stack | Override stackname path to infra\_stack\_dns\_zones remote state | string | `""` | no |
+| remote\_state\_infra\_vpc\_key\_stack | Override infra\_vpc remote state path | string | `""` | no |
+| stackname | Stackname | string | n/a | yes |
+| user\_data\_snippets | List of user-data snippets | list | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| data-science_elb_address | AWS' internal DNS name for the data-science ELB |
+| data-science\_elb\_address | AWS' internal DNS name for the data-science ELB |
 

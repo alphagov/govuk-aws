@@ -17,16 +17,15 @@ AWS/ApplicationELB metrics reference:
 
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html#load-balancer-metric-dimensions-alb
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| alarm_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | list | `<list>` | no |
-| alb_arn_suffix | The ALB ARN suffix for use with CloudWatch Metrics. | string | - | yes |
-| httpcode_elb_4xx_count_threshold | The value against which the HTTPCode_ELB_4XX_Count metric is compared. | string | `0` | no |
-| httpcode_elb_5xx_count_threshold | The value against which the HTTPCode_ELB_5XX_Count metric is compared. | string | `80` | no |
-| httpcode_target_4xx_count_threshold | The value against which the HTTPCode_Target_4XX_Count metric is compared. | string | `0` | no |
-| httpcode_target_5xx_count_threshold | The value against which the HTTPCode_Target_5XX_Count metric is compared. | string | `80` | no |
-| name_prefix | The alarm name prefix. | string | - | yes |
+| alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number \(ARN\). | list | `<list>` | no |
+| alb\_arn\_suffix | The ALB ARN suffix for use with CloudWatch Metrics. | string | n/a | yes |
+| httpcode\_elb\_4xx\_count\_threshold | The value against which the HTTPCode\_ELB\_4XX\_Count metric is compared. | string | `"0"` | no |
+| httpcode\_elb\_5xx\_count\_threshold | The value against which the HTTPCode\_ELB\_5XX\_Count metric is compared. | string | `"80"` | no |
+| httpcode\_target\_4xx\_count\_threshold | The value against which the HTTPCode\_Target\_4XX\_Count metric is compared. | string | `"0"` | no |
+| httpcode\_target\_5xx\_count\_threshold | The value against which the HTTPCode\_Target\_5XX\_Count metric is compared. | string | `"80"` | no |
+| name\_prefix | The alarm name prefix. | string | n/a | yes |
 

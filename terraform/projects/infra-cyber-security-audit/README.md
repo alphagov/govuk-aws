@@ -2,11 +2,10 @@
 
 Role and policy for Cyber security audit, to eventually deprecate the CSW-specific role
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_region |  | string | `eu-west-1` | no |
-| chain_account_id |  | string | `988997429095` | no |
+| aws\_region |  | string | `"eu-west-1"` | no |
+| chain\_account\_id |  | string | `"988997429095"` | no |
 

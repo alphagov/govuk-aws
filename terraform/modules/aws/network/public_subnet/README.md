@@ -22,21 +22,20 @@ subnet_availability_zones = {
 }
 ```
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| default_tags | Additional resource tags | map | `<map>` | no |
-| route_table_public_id | The ID of the route table in the VPC | string | - | yes |
-| subnet_availability_zones | A map of which AZs the subnets should be created in. | map | - | yes |
-| subnet_cidrs | A map of the CIDRs for the subnets being created. | map | - | yes |
-| vpc_id | The ID of the VPC in which the public subnet is created. | string | - | yes |
+| default\_tags | Additional resource tags | map | `<map>` | no |
+| route\_table\_public\_id | The ID of the route table in the VPC | string | n/a | yes |
+| subnet\_availability\_zones | A map of which AZs the subnets should be created in. | map | n/a | yes |
+| subnet\_cidrs | A map of the CIDRs for the subnets being created. | map | n/a | yes |
+| vpc\_id | The ID of the VPC in which the public subnet is created. | string | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| subnet_ids | List containing the IDs of the created subnets. |
-| subnet_names_ids_map | Map containing the pair name-id for each subnet created. |
+| subnet\_ids | List containing the IDs of the created subnets. |
+| subnet\_names\_ids\_map | Map containing the pair name-id for each subnet created. |
 

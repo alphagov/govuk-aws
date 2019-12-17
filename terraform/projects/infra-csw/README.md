@@ -2,12 +2,11 @@
 
 Role and policy for CSW
 
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| aws_region | AWS region | string | `eu-west-1` | no |
-| csw_agent_account_id |  | string | - | yes |
-| csw_prefix |  | string | `csw-prod` | no |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| csw\_agent\_account\_id |  | string | n/a | yes |
+| csw\_prefix |  | string | `"csw-prod"` | no |
 

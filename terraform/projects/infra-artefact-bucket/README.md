@@ -20,31 +20,29 @@ This module creates the following.
      - AWS SNS subscription
      - AWS IAM roles and polisis for SNS and Lambda.
 
-
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| artefact_source | Identifies the source artefact environment | string | - | yes |
-| aws_environment | AWS Environment | string | - | yes |
-| aws_region | AWS region | string | `eu-west-1` | no |
-| aws_s3_access_account | Here we define the account that will have access to the Artefact S3 bucket. | list | - | yes |
-| aws_secondary_region | Secondary region for cross-replication | string | `eu-west-2` | no |
-| aws_subscription_account_id | The AWS Account ID that will appear on the subscription | string | - | yes |
-| aws_subscription_account_region | AWS region of the SNS topic | string | `eu-west-1` | no |
-| create_sns_subscription | Indicates whether to create an SNS subscription | string | `false` | no |
-| create_sns_topic | Indicates whether to create an SNS Topic | string | `false` | no |
-| remote_state_bucket | S3 bucket we store our terraform state in | string | - | yes |
-| remote_state_infra_monitoring_key_stack | Override stackname path to infra_monitoring remote state | string | `` | no |
-| replication_setting | Whether replication is Enabled or Disabled | string | `Enabled` | no |
-| stackname | Stackname | string | - | yes |
-| whole_bucket_lifecycle_rule_integration_enabled | Set to true in Integration data to only apply these rules for Integration | string | `false` | no |
+| artefact\_source | Identifies the source artefact environment | string | n/a | yes |
+| aws\_environment | AWS Environment | string | n/a | yes |
+| aws\_region | AWS region | string | `"eu-west-1"` | no |
+| aws\_s3\_access\_account | Here we define the account that will have access to the Artefact S3 bucket. | list | n/a | yes |
+| aws\_secondary\_region | Secondary region for cross-replication | string | `"eu-west-2"` | no |
+| aws\_subscription\_account\_id | The AWS Account ID that will appear on the subscription | string | n/a | yes |
+| aws\_subscription\_account\_region | AWS region of the SNS topic | string | `"eu-west-1"` | no |
+| create\_sns\_subscription | Indicates whether to create an SNS subscription | string | `"false"` | no |
+| create\_sns\_topic | Indicates whether to create an SNS Topic | string | `"false"` | no |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
+| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
+| replication\_setting | Whether replication is Enabled or Disabled | string | `"Enabled"` | no |
+| stackname | Stackname | string | n/a | yes |
+| whole\_bucket\_lifecycle\_rule\_integration\_enabled | Set to true in Integration data to only apply these rules for Integration | string | `"false"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| read_artefact_bucket_policy_arn | ARN of the read artefact-bucket policy |
-| write_artefact_bucket_policy_arn | ARN of the write artefact-bucket policy |
+| read\_artefact\_bucket\_policy\_arn | ARN of the read artefact-bucket policy |
+| write\_artefact\_bucket\_policy\_arn | ARN of the write artefact-bucket policy |
 
