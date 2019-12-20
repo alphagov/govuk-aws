@@ -248,7 +248,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
     // "fastly_backend":"%{json.escape(resp.http.Fastly-Backend-Name)}V",
     // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
-    // "cache_response":%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V,
+    // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V",
     // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
     // }
@@ -435,7 +435,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     // "fastly_backend":"%{json.escape(resp.http.Fastly-Backend-Name)}V",
     // "data_centre":"%{json.escape(server.datacenter)}V",
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
-    // "cache_response":%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V,
+    // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V",
     // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
     // }
@@ -620,8 +620,8 @@ resource "aws_glue_catalog_table" "bouncer" {
     // "location":"%{json.escape(resp.http.Location)}V",
     // "user_agent":"%{json.escape(req.http.User-Agent)}V",
     // "data_centre":"%{json.escape(server.datacenter)}V",
-    // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V
-    // "cache_response":%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V
+    // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
+    // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V"
     // }
     columns = [
       {
