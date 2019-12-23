@@ -33,22 +33,16 @@ jobs:
             type: docker-image
             source:
               repository: homebrew/brew
-              tag: 2.2.1
+              tag: 2.2.2
           inputs:
             - name: govuk-aws-pr
               path: repo
-          params:
-            HOMEBREW_NO_AUTO_UPDATE: 1
-            HOMEBREW_DEVELOPER: 1
           run:
             path: bash
             dir: repo
             args:
             - -c
             - |
-              # It's not a Concourse pipeline without some sed (until this gets into a Homebrew release)...
-              sed -i 's/azpl_job|docker|kubepods/azpl_job|docker|garden|kubepods/g' $(brew --repo)/Library/Homebrew/brew.sh
-              brew update
               brew install terraform-docs
 
               echo "Checking the updatedness of README files..."
