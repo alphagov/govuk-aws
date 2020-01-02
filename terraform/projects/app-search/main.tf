@@ -246,6 +246,29 @@ data "aws_iam_policy_document" "sitemaps_bucket_policy" {
   }
 }
 
+resource "aws_iam_role_policy_attachment" "invoke_sagemaker" {
+  role       = "${module.search.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.invoke_sagemaker.arn}"
+}
+
+resource "aws_iam_policy" "invoke_sagemaker" {
+  name        = "govuk-${var.aws_environment}-search-invoke-sagemaker-policy"
+  policy      = "${data.aws_iam_policy_document.invoke_sagemaker.json}"
+  description = "Allows invoking SageMaker endpoints"
+}
+
+data "aws_iam_policy_document" "invoke_sagemaker" {
+  statement {
+    sid = "InvokeSagemaker"
+
+    actions = [
+      "sagemaker:InvokeEndpoint",
+    ]
+
+    resources = ["arn:aws:sagemaker:*"]
+  }
+}
+
 # s3 bucket for search relevancy
 
 resource "aws_s3_bucket" "search_relevancy_bucket" {
