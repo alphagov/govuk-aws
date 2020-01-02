@@ -70,6 +70,11 @@ variable "instance_type" {
   default     = "c5.large"
 }
 
+variable "concourse_aws_account_id" {
+  type        = "string"
+  description = "AWS account ID which contains the Concourse role"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -302,6 +307,74 @@ data "aws_iam_policy_document" "search_relevancy_bucket_policy" {
   }
 }
 
+# Daily learn-to-rank
+
+resource "aws_iam_role" "concourse" {
+  name = "govuk-${var.aws_environment}-search-ltr-concourse-role"
+
+  assume_role_policy = "${data.template_file.concourse_template.rendered}"
+}
+
+resource "aws_iam_role_policy_attachment" "concourse" {
+  role       = "${aws_iam_role.concourse.name}"
+  policy_arn = "${aws_iam_policy.concourse.arn}"
+}
+
+resource "aws_iam_policy" "concourse" {
+  name        = "govuk-${var.aws_environment}-search-ltr-concourse-policy"
+  description = "Policy for the Search LTR Concourse pipeline to manage SageMaker resources"
+
+  policy = "${data.aws_iam_policy_document.concourse.json}"
+}
+
+data "template_file" "concourse_template" {
+  template = "${file("${path.module}/../../policies/concourse_assume_policy.tpl")}"
+
+  vars {
+    concourse_aws_account_id = "${var.concourse_aws_account_id}"
+  }
+}
+
+data "aws_iam_policy_document" "concourse" {
+  statement {
+    sid = "RelevancyBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+      "s3:Put*",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.search_relevancy_bucket.id}",
+      "arn:aws:s3:::${aws_s3_bucket.search_relevancy_bucket.id}/*",
+    ]
+  }
+
+  statement {
+    sid = "LearnToRank"
+
+    actions = [
+      "iam:PassRole",
+      "sagemaker:CreateEndpoint",
+      "sagemaker:CreateEndpointConfig",
+      "sagemaker:CreateEndpointConfig",
+      "sagemaker:CreateModel",
+      "sagemaker:CreateTrainingJob",
+      "sagemaker:DeleteEndpointConfig",
+      "sagemaker:DeleteModel",
+      "sagemaker:DescribeEndpoint",
+      "sagemaker:DescribeEndpointConfig",
+      "sagemaker:DescribeTrainingJob",
+      "sagemaker:UpdateEndpoint",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -313,4 +386,9 @@ output "search_elb_dns_name" {
 output "service_dns_name" {
   value       = "${aws_route53_record.service_record.name}"
   description = "DNS name to access the node service"
+}
+
+output "concourse_role_arn" {
+  value       = "${aws_iam_role.concourse.arn}"
+  description = "Concourse LTR role ARN"
 }
