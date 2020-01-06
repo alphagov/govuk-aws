@@ -335,7 +335,7 @@ data "aws_iam_policy_document" "search_relevancy_bucket_policy" {
 resource "aws_iam_role" "concourse" {
   name = "govuk-${var.aws_environment}-search-ltr-concourse-role"
 
-  assume_role_policy = "${data.template_file.concourse_template.rendered}"
+  assume_role_policy = "${data.aws_iam_policy_document.concourse-assume-role.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "concourse" {
@@ -347,18 +347,26 @@ resource "aws_iam_policy" "concourse" {
   name        = "govuk-${var.aws_environment}-search-ltr-concourse-policy"
   description = "Policy for the Search LTR Concourse pipeline to manage SageMaker resources"
 
-  policy = "${data.aws_iam_policy_document.concourse.json}"
+  policy = "${data.aws_iam_policy_document.concourse-permissions.json}"
 }
 
-data "template_file" "concourse_template" {
-  template = "${file("${path.module}/../../policies/concourse_assume_policy.tpl")}"
+data "aws_iam_policy_document" "concourse-assume-role" {
+  statement {
+    actions = ["sts:AssumeRole"]
 
-  vars {
-    concourse_aws_account_id = "${var.concourse_aws_account_id}"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.concourse_aws_account_id}:role/cd-govuk-tools-concourse-worker"]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["sagemaker.amazonaws.com"]
+    }
   }
 }
 
-data "aws_iam_policy_document" "concourse" {
+data "aws_iam_policy_document" "concourse-permissions" {
   statement {
     sid = "RelevancyBucket"
 
