@@ -387,6 +387,7 @@ data "aws_iam_policy_document" "concourse-permissions" {
 
     actions = [
       "iam:PassRole",
+      "sagemaker:BatchGetImage",
       "sagemaker:CreateEndpoint",
       "sagemaker:CreateEndpointConfig",
       "sagemaker:CreateEndpointConfig",
