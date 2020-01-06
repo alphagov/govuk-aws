@@ -332,25 +332,13 @@ data "aws_iam_policy_document" "search_relevancy_bucket_policy" {
 
 # Daily learn-to-rank
 
-resource "aws_iam_role" "concourse" {
-  name = "govuk-${var.aws_environment}-search-ltr-concourse-role"
+resource "aws_iam_role" "learntorank" {
+  name = "govuk-${var.aws_environment}-search-learntorank-role"
 
-  assume_role_policy = "${data.aws_iam_policy_document.concourse-assume-role.json}"
+  assume_role_policy = "${data.aws_iam_policy_document.learntorank-assume-role.json}"
 }
 
-resource "aws_iam_role_policy_attachment" "concourse" {
-  role       = "${aws_iam_role.concourse.name}"
-  policy_arn = "${aws_iam_policy.concourse.arn}"
-}
-
-resource "aws_iam_policy" "concourse" {
-  name        = "govuk-${var.aws_environment}-search-ltr-concourse-policy"
-  description = "Policy for the Search LTR Concourse pipeline to manage SageMaker resources"
-
-  policy = "${data.aws_iam_policy_document.concourse-permissions.json}"
-}
-
-data "aws_iam_policy_document" "concourse-assume-role" {
+data "aws_iam_policy_document" "learntorank-assume-role" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -366,45 +354,16 @@ data "aws_iam_policy_document" "concourse-assume-role" {
   }
 }
 
-data "aws_iam_policy_document" "concourse-permissions" {
-  statement {
-    sid = "RelevancyBucket"
+resource "aws_iam_role_policy_attachment" "learntorank-bucket" {
+  role       = "${aws_iam_role.learntorank.name}"
+  policy_arn = "${aws_iam_policy.search_relevancy_bucket_access.arn}"
+}
 
-    actions = [
-      "s3:Get*",
-      "s3:List*",
-      "s3:Put*",
-    ]
-
-    resources = [
-      "arn:aws:s3:::${aws_s3_bucket.search_relevancy_bucket.id}",
-      "arn:aws:s3:::${aws_s3_bucket.search_relevancy_bucket.id}/*",
-    ]
-  }
-
-  statement {
-    sid = "LearnToRank"
-
-    actions = [
-      "ecr:BatchGetImage",
-      "iam:PassRole",
-      "sagemaker:CreateEndpoint",
-      "sagemaker:CreateEndpointConfig",
-      "sagemaker:CreateEndpointConfig",
-      "sagemaker:CreateModel",
-      "sagemaker:CreateTrainingJob",
-      "sagemaker:DeleteEndpointConfig",
-      "sagemaker:DeleteModel",
-      "sagemaker:DescribeEndpoint",
-      "sagemaker:DescribeEndpointConfig",
-      "sagemaker:DescribeTrainingJob",
-      "sagemaker:UpdateEndpoint",
-    ]
-
-    resources = [
-      "*",
-    ]
-  }
+# this grants much broader permissions than we need, so we might want
+# to narrow this down in the future.
+resource "aws_iam_role_policy_attachment" "learntorank-sagemaker" {
+  role       = "${aws_iam_role.learntorank.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
 }
 
 # Outputs
@@ -420,7 +379,7 @@ output "service_dns_name" {
   description = "DNS name to access the node service"
 }
 
-output "concourse_role_arn" {
-  value       = "${aws_iam_role.concourse.arn}"
-  description = "Concourse LTR role ARN"
+output "ltr_role_arn" {
+  value       = "${aws_iam_role.learntorank.arn}"
+  description = "LTR role ARN"
 }
