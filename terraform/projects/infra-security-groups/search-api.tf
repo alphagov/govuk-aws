@@ -20,7 +20,7 @@ resource "aws_security_group" "search-api_external_elb" {
   }
 }
 
-resource "aws_security_group_rule" "search-api_ingress_external-elb_https" {
+resource "aws_security_group_rule" "search-api_ingress_carrenza_external-elb_https" {
   count     = "${length(var.carrenza_env_ips) > 0 ? 1 : 0}"
   type      = "ingress"
   from_port = 443
@@ -29,6 +29,17 @@ resource "aws_security_group_rule" "search-api_ingress_external-elb_https" {
 
   security_group_id = "${aws_security_group.search-api_external_elb.id}"
   cidr_blocks       = ["${var.carrenza_env_ips}"]
+}
+
+resource "aws_security_group_rule" "search-api_ingress_concourse_external-elb_https" {
+  count     = "${length(var.concourse_ips) > 0 ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.search-api_external_elb.id}"
+  cidr_blocks       = ["${var.concourse_ips}"]
 }
 
 resource "aws_security_group_rule" "search-api_egress_external_elb_any_any" {

@@ -12,6 +12,7 @@ Search application servers
 | asg\_min\_size | The minimum size of the autoscaling group | string | `"2"` | no |
 | aws\_environment | AWS Environment | string | n/a | yes |
 | aws\_region | AWS region | string | `"eu-west-1"` | no |
+| concourse\_aws\_account\_id | AWS account ID which contains the Concourse role | string | n/a | yes |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | string | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | string | `""` | no |
 | instance\_type | Instance type used for EC2 resources | string | `"c5.large"` | no |
@@ -31,6 +32,7 @@ Search application servers
 
 | Name | Description |
 |------|-------------|
+| concourse\_role\_arn | Concourse LTR role ARN |
 | search\_elb\_dns\_name | DNS name to access the search service |
 | service\_dns\_name | DNS name to access the node service |
 
