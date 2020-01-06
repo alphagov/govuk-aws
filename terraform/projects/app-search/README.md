@@ -32,7 +32,7 @@ Search application servers
 
 | Name | Description |
 |------|-------------|
-| concourse\_role\_arn | Concourse LTR role ARN |
+| ltr\_role\_arn | LTR role ARN |
 | search\_elb\_dns\_name | DNS name to access the search service |
 | service\_dns\_name | DNS name to access the node service |
 
