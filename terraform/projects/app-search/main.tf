@@ -366,6 +366,11 @@ resource "aws_iam_role_policy_attachment" "learntorank-sagemaker" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "learntorank-ecr" {
+  role       = "${aws_iam_role.learntorank.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
 # we might want to retire this in favour of a dedicated project
 resource "aws_ecr_repository" "repo" {
   name = "search"
@@ -392,8 +397,12 @@ data "aws_iam_policy_document" "ecr-usage" {
     ]
 
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.concourse_aws_account_id}:role/cd-govuk-tools-concourse-worker"]
+      type = "AWS"
+
+      identifiers = [
+        "arn:aws:iam::${var.concourse_aws_account_id}:root",
+        "${aws_iam_role.learntorank.arn}",
+      ]
     }
 
     principals {
