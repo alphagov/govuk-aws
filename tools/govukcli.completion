@@ -26,7 +26,6 @@ _govukcli ()
     list-contexts\
     set-context\
     ssh\
-    aws\
     help"
 
   SSH_COMMANDS="\
@@ -35,16 +34,6 @@ _govukcli ()
     <node>"
 
   case $firstword in
-    aws)
-      case "${lastword}" in
-        invoke)
-          ;;
-        *)
-          complete_words="invoke $(aws NOT_A_TOPIC 2>&1 | grep '|' | awk '{print $1; print $3}' | sort)"
-          ;;
-      esac
-      ;;
-
     ssh)
       case "${lastword}" in
         node-types)
