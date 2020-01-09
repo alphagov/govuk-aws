@@ -6,12 +6,12 @@ Use this guide to help you get started when working on this repository.
 
 ### Terraform
 
-Install [Terraform](https://terraform.io) by either:
+Use `tfenv` to install the version of Terraform specified in the `.terraform-version` file:
 
- - [Downloading the binary](https://www.terraform.io/downloads.html).
- - Using [Homebrew](https://brew.sh/)
-
-You may consider using [Tfenv](https://github.com/tfutils/tfenv) to manage Terraform versions.
+```sh
+brew install tfenv
+tfenv install
+```
 
 ### Data
 
