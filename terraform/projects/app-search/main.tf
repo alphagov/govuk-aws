@@ -366,6 +366,60 @@ resource "aws_iam_role_policy_attachment" "learntorank-sagemaker" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
 }
 
+# we might want to retire this in favour of a dedicated project
+resource "aws_ecr_repository" "repo" {
+  name = "search"
+
+  image_tag_mutability = "MUTABLE"
+}
+
+resource "aws_ecr_repository_policy" "policy" {
+  repository = "${aws_ecr_repository.repo.name}"
+  policy     = "${data.aws_iam_policy_document.ecr-usage.json}"
+}
+
+data "aws_iam_policy_document" "ecr-usage" {
+  statement {
+    sid = "read"
+
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:DescribeRepositories",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetRepositoryPolicy",
+      "ecr:ListImages",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.concourse_aws_account_id}:role/cd-govuk-tools-concourse-worker"]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["sagemaker.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid = "write"
+
+    actions = [
+      "ecr:BatchDeleteImage",
+      "ecr:CompleteLayerUpload",
+      "ecr:InitiateLayerUpload",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.concourse_aws_account_id}:role/cd-govuk-tools-concourse-worker"]
+    }
+  }
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -382,4 +436,9 @@ output "service_dns_name" {
 output "ltr_role_arn" {
   value       = "${aws_iam_role.learntorank.arn}"
   description = "LTR role ARN"
+}
+
+output "ecr_repository_url" {
+  value       = "${aws_ecr_repository.repo.repository_url}"
+  description = "URL of the ECR repository"
 }

@@ -32,6 +32,7 @@ Search application servers
 
 | Name | Description |
 |------|-------------|
+| ecr\_repository\_url | URL of the ECR repository |
 | ltr\_role\_arn | LTR role ARN |
 | search\_elb\_dns\_name | DNS name to access the search service |
 | service\_dns\_name | DNS name to access the node service |
