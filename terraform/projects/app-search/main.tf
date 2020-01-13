@@ -289,6 +289,26 @@ resource "aws_s3_bucket" "search_relevancy_bucket" {
     target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-search-relevancy/"
   }
+
+  lifecycle_rule {
+    id      = "expire_training_data"
+    prefix  = "data/"
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
+
+  lifecycle_rule {
+    id      = "expire_models"
+    prefix  = "model/"
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "search_relevancy_bucket_access_iam_role_policy_attachment" {
