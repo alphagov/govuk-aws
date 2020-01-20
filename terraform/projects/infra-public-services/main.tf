@@ -214,6 +214,11 @@ variable "whitehall_backend_public_service_cnames" {
   default = []
 }
 
+variable "whitehall_frontend_public_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "asset_master_internal_service_names" {
   type    = "list"
   default = []
@@ -2289,8 +2294,73 @@ resource "aws_autoscaling_attachment" "whitehall_backend_asg_attachment_alb" {
 }
 
 #
-# whitehall_frontend
+# whitehall-frontend
 #
+
+# whitehall_frontend_public_lb exists only to serve Worldwide API to client
+# apps in Carrenza. Once the last consumer of Worldwide API is moved to AWS,
+# this LB should be decommissioned.
+module "whitehall_frontend_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-whitehall-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-whitehall-frontend-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+
+  listener_action = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  target_group_health_check_path = "/_healthcheck_whitehall-frontend"
+  subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_external_elb_id}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+
+  default_tags = {
+    Project         = "${var.stackname}"
+    aws_migration   = "whitehall_frontend"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_wafregional_web_acl_association" "whitehall_frontend_public_lb" {
+  resource_arn = "${module.whitehall_frontend_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+}
+
+resource "aws_route53_record" "whitehall_frontend_public_service_names" {
+  count   = "${length(var.whitehall_frontend_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.whitehall_frontend_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.whitehall_frontend_public_lb.lb_dns_name}"
+    zone_id                = "${module.whitehall_frontend_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+data "aws_autoscaling_groups" "whitehall_frontend" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["blue-whitehall-frontend"]
+  }
+}
+
+resource "aws_autoscaling_attachment" "whitehall_frontend_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.whitehall_frontend.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.whitehall_frontend.names, 0)}"
+  alb_target_group_arn   = "${element(module.whitehall_frontend_public_lb.target_group_arns, 0)}"
+}
 
 # draft_whitehall internal names are actually alias for whitehall internal names
 resource "aws_route53_record" "draft_whitehall_frontend_internal_service_names" {
