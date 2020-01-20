@@ -394,6 +394,10 @@ output "sg_whitehall-frontend_elb_id" {
   value = "${aws_security_group.whitehall-frontend_elb.id}"
 }
 
+output "sg_whitehall-frontend_external_elb_id" {
+  value = "${aws_security_group.whitehall-frontend_external_elb.id}"
+}
+
 output "sg_whitehall-frontend_id" {
   value = "${aws_security_group.whitehall-frontend.id}"
 }
