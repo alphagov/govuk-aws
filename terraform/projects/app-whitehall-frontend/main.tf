@@ -99,7 +99,7 @@ resource "aws_elb" "whitehall-frontend_elb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TCP:80"
+    target              = "HTTP:80/_healthcheck_whitehall-frontend"
     interval            = 30
   }
 
