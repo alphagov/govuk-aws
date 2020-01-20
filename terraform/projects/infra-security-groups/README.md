@@ -140,5 +140,6 @@ Manage the security groups for the entire infrastructure
 | sg\_whitehall-backend\_id | n/a |
 | sg\_whitehall-backend\_internal\_elb\_id | n/a |
 | sg\_whitehall-frontend\_elb\_id | n/a |
+| sg\_whitehall-frontend\_external\_elb\_id | n/a |
 | sg\_whitehall-frontend\_id | n/a |
 
