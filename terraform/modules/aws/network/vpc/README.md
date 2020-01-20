@@ -2,13 +2,19 @@
 
 This module creates a VPC, Internet Gateway and route associated
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| cidr | The cidr block of the desired VPC | string | n/a | yes |
-| default\_tags | Additional resource tags | map | `<map>` | no |
-| name | A name tag for the VPC | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| cidr | The cidr block of the desired VPC | `string` | n/a | yes |
+| default\_tags | Additional resource tags | `map` | `{}` | no |
+| name | A name tag for the VPC | `string` | n/a | yes |
 
 ## Outputs
 

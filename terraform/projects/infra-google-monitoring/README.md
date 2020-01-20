@@ -2,15 +2,21 @@
 
 This project creates a multi-region EU bucket in google cloud, i.e. gcs.
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| google | = 2.4.1 |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| google\_environment | Google environment, which is govuk environment. e.g: staging | string | `""` | no |
-| google\_project\_id | Google project ID | string | `"eu-west2"` | no |
-| google\_region | Google region the provider | string | `"eu-west2"` | no |
-| location | location where to put the gcs bucket | string | `"eu"` | no |
-| storage\_class | the type of storage used for the gcs bucket | string | `"multi_regional"` | no |
+|------|-------------|------|---------|:-----:|
+| google\_environment | Google environment, which is govuk environment. e.g: staging | `string` | `""` | no |
+| google\_project\_id | Google project ID | `string` | `"eu-west2"` | no |
+| google\_region | Google region the provider | `string` | `"eu-west2"` | no |
+| location | location where to put the gcs bucket | `string` | `"eu"` | no |
+| storage\_class | the type of storage used for the gcs bucket | `string` | `"multi_regional"` | no |
 
 ## Outputs
 

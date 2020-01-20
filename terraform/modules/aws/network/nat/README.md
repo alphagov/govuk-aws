@@ -1,14 +1,20 @@
 ## Module: aws/network/nat
 
-Create a NAT gateway and associated EIP on each one of the public
+Create a NAT gateway and associated EIP on each one of the public  
 subnets provided.
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| subnet\_ids | List of public subnet IDs where you want to create a NAT Gateway | list | n/a | yes |
-| subnet\_ids\_length | Length of subnet\_ids variable | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| subnet\_ids | List of public subnet IDs where you want to create a NAT Gateway | `list` | n/a | yes |
+| subnet\_ids\_length | Length of subnet\_ids variable | `string` | n/a | yes |
 
 ## Outputs
 

@@ -4,23 +4,32 @@ This creates an s3 bucket
 
 database-backups: The bucket that will hold database backups
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | 2.33.0 2.33.0 |
+| aws.eu-london | 2.33.0 2.33.0 |
+| template | n/a |
+| terraform | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| aws\_backup\_region | AWS region | string | `"eu-west-2"` | no |
-| aws\_environment | AWS Environment | string | n/a | yes |
-| aws\_region | AWS region | string | `"eu-west-1"` | no |
-| expiration\_time | Expiration time in days of S3 Objects | string | `"120"` | no |
-| expiration\_time\_whisper\_mongo | Expiration time in days for Whisper/Mongo S3 database backups | string | `"7"` | no |
-| glacier\_storage\_time | Storage time in days for Glacier Objects | string | `"90"` | no |
-| integration\_only | Only apply these policies to integration | string | `"false"` | no |
-| remote\_state\_bucket | S3 bucket we store our terraform state in | string | n/a | yes |
-| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | string | `""` | no |
-| replication\_setting | Whether replication is Enabled or Disabled | string | `"Enabled"` | no |
-| stackname | Stackname | string | n/a | yes |
-| standard\_s3\_storage\_time | Storage time in days for Standard S3 Bucket Objects | string | `"30"` | no |
-| training\_only | Only apply these policies to training | string | `"false"` | no |
+|------|-------------|------|---------|:-----:|
+| aws\_backup\_region | AWS region | `string` | `"eu-west-2"` | no |
+| aws\_environment | AWS Environment | `string` | n/a | yes |
+| aws\_region | AWS region | `string` | `"eu-west-1"` | no |
+| expiration\_time | Expiration time in days of S3 Objects | `string` | `"120"` | no |
+| expiration\_time\_whisper\_mongo | Expiration time in days for Whisper/Mongo S3 database backups | `string` | `"7"` | no |
+| glacier\_storage\_time | Storage time in days for Glacier Objects | `string` | `"90"` | no |
+| integration\_only | Only apply these policies to integration | `string` | `"false"` | no |
+| remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
+| remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
+| replication\_setting | Whether replication is Enabled or Disabled | `string` | `"Enabled"` | no |
+| stackname | Stackname | `string` | n/a | yes |
+| standard\_s3\_storage\_time | Storage time in days for Standard S3 Bucket Objects | `string` | `"30"` | no |
+| training\_only | Only apply these policies to training | `string` | `"false"` | no |
 
 ## Outputs
 
