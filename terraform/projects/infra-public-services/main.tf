@@ -2302,7 +2302,7 @@ resource "aws_autoscaling_attachment" "whitehall_backend_asg_attachment_alb" {
 # this LB should be decommissioned.
 module "whitehall_frontend_public_lb" {
   source                                     = "../../modules/aws/lb"
-  name                                       = "${var.stackname}-whitehall-public"
+  name                                       = "${var.stackname}-whitehall-frontend-public"
   internal                                   = false
   vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
