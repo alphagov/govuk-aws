@@ -1,14 +1,14 @@
-## Modules: aws/network/public_subnet
+## Modules: aws/network/public\_subnet
 
-This module creates all resources necessary for an AWS public
+This module creates all resources necessary for an AWS public  
 subnet.
 
-Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and
-`subnet_availability_zones`, where the key is the name of the
+Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and  
+`subnet_availability_zones`, where the key is the name of the  
 subnet and must be the same in both maps.
 
-For instance, to create two public subnets named "my_subnet_a"
-and "my_subnet_b" on eu-west-1a and eu-west-1b, you can do:
+For instance, to create two public subnets named "my\_subnet\_a"  
+and "my\_subnet\_b" on eu-west-1a and eu-west-1b, you can do:
 
 ```
 subnet_cidrs = {
@@ -22,15 +22,21 @@ subnet_availability_zones = {
 }
 ```
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| aws | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| default\_tags | Additional resource tags | map | `<map>` | no |
-| route\_table\_public\_id | The ID of the route table in the VPC | string | n/a | yes |
-| subnet\_availability\_zones | A map of which AZs the subnets should be created in. | map | n/a | yes |
-| subnet\_cidrs | A map of the CIDRs for the subnets being created. | map | n/a | yes |
-| vpc\_id | The ID of the VPC in which the public subnet is created. | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| default\_tags | Additional resource tags | `map` | `{}` | no |
+| route\_table\_public\_id | The ID of the route table in the VPC | `string` | n/a | yes |
+| subnet\_availability\_zones | A map of which AZs the subnets should be created in. | `map` | n/a | yes |
+| subnet\_cidrs | A map of the CIDRs for the subnets being created. | `map` | n/a | yes |
+| vpc\_id | The ID of the VPC in which the public subnet is created. | `string` | n/a | yes |
 
 ## Outputs
 
