@@ -2,11 +2,9 @@
 
 ## Installation
 
-- [Terraform](https://www.terraform.io/): we use remote state files, which means you can't plan/apply changes if the
-version of your local Terraform doesn't match the version that generated the remote state. Currently we assume 0.10.8
+- [Terraform](https://www.terraform.io/): we use remote state files, which means you can't plan/apply changes if the version of your local Terraform doesn't match the version that generated the remote state. The version is specified in [.terraform-version](../.terraform-version).
 
-- [Terraform docs](https://github.com/segmentio/terraform-docs/releases/tag/v0.3.0): In order to generate terraform docs and successfully pass the CI process you need to have this binary installed on your local system.
-Currently we assume 0.3.0
+- We use a tool called [terraform-docs](https://github.com/segmentio/terraform-docs) to create documentation for our Terraform modules and projects as README files. This runs on CI with the latest version from Homebrew. You can install this locally with `brew install terraform-docs` and update the docs for the files you've changed using `./tools/update-docs.sh`.
 
 ## Manage resources
 
