@@ -86,6 +86,18 @@ variable "cloudfront_assets_certificate_domain" {
   default     = ""
 }
 
+variable "lifecycle_main" {
+  type        = "string"
+  description = "Number of days for the lifecycle rule for the mirror"
+  default     = "5"
+}
+
+variable "lifecycle_government_uploads" {
+  type        = "string"
+  description = "Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/"
+  default     = "8"
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -158,7 +170,7 @@ resource "aws_s3_bucket" "govuk-mirror" {
     prefix = ""
 
     noncurrent_version_expiration {
-      days = 5
+      days = "${var.lifecycle_main}"
     }
   }
 
@@ -169,7 +181,7 @@ resource "aws_s3_bucket" "govuk-mirror" {
     prefix = "www.gov.uk/government/uploads/"
 
     noncurrent_version_expiration {
-      days = 8
+      days = "${var.lifecycle_government_uploads}"
     }
   }
 
@@ -213,6 +225,28 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
 
   versioning {
     enabled = true
+  }
+
+  lifecycle_rule {
+    id      = "main"
+    enabled = true
+
+    prefix = ""
+
+    noncurrent_version_expiration {
+      days = "${var.lifecycle_main}"
+    }
+  }
+
+  lifecycle_rule {
+    id      = "government_uploads"
+    enabled = true
+
+    prefix = "www.gov.uk/government/uploads/"
+
+    noncurrent_version_expiration {
+      days = "${var.lifecycle_government_uploads}"
+    }
   }
 }
 

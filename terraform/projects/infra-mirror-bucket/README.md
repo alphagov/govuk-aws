@@ -31,6 +31,8 @@ The primary bucket should be in London and the backup in Ireland.
 | cloudfront\_enable | Enable Cloudfront distributions. | `bool` | `false` | no |
 | cloudfront\_www\_certificate\_domain | The domain of the WWW CloudFront certificate to look up. | `string` | `""` | no |
 | cloudfront\_www\_distribution\_aliases | Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution. | `list` | `[]` | no |
+| lifecycle\_government\_uploads | Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/ | `string` | `"8"` | no |
+| lifecycle\_main | Number of days for the lifecycle rule for the mirror | `string` | `"5"` | no |
 | office\_ips | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | remote\_state\_app\_mirrorer\_key\_stack | stackname path to app\_mirrorer remote state | `string` | `""` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
