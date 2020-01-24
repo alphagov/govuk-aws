@@ -11,17 +11,19 @@ stack, project, environment, command, *rest= ARGV
 abort("too many arguments: #{rest}") unless rest.empty?
 
 # Valid values for each field
-valid_commands = %w(plan apply plan-destroy destroy).freeze
-valid_environments = %w(integration staging production test tools training).freeze
 valid_stacks = %w(blue green govuk).freeze
+valid_projects = Dir.chdir("#{Dir.home}/govuk/govuk-aws/terraform/projects") { Dir.glob('*').select { |f| File.directory? f } }.freeze
+valid_environments = %w(integration staging production test tools training).freeze
+valid_commands = %w(plan apply plan-destroy destroy).freeze
 
 usage = 'Usage: GITHUB_USERNAME=... GITHUB_TOKEN=... ruby deploy.rb <stack> <project> <environment> <command>'
 
 abort("GITHUB_USERNAME environment variable must be set\n#{usage}") unless ENV.has_key?('GITHUB_USERNAME')
 abort("GITHUB_TOKEN environment variable must be set\n#{usage}") unless ENV.has_key?('GITHUB_TOKEN')
-abort("command must be one of #{valid_commands.join(', ')}\n#{usage}") unless valid_commands.include?(command)
-abort("environment must be one of #{valid_environments.join(', ')}\n#{usage}") unless valid_environments.include?(environment)
 abort("stack must be one of #{valid_stacks.join(', ')}\n#{usage}") unless valid_stacks.include?(stack)
+abort("project must be one of #{valid_projects.join(', ')}\n#{usage}") unless valid_projects.include?(project)
+abort("environment must be one of #{valid_environments.join(', ')}\n#{usage}") unless valid_environments.include?(environment)
+abort("command must be one of #{valid_commands.join(', ')}\n#{usage}") unless valid_commands.include?(command)
 
 # Make sure the user is happy to go ahead
 puts "You're about to #{command} the #{stack}/#{project} project in #{environment}"
