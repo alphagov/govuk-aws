@@ -147,27 +147,6 @@ resource "aws_route53_record" "service_record" {
   records = ["${module.content-data-api-postgresql-primary_rds_instance.rds_instance_address}"]
 }
 
-module "content-data-api-postgresql-standby_rds_instance" {
-  source                     = "../../modules/aws/rds_instance"
-  name                       = "${var.stackname}-content-data-api-postgresql-standby"
-  default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_standby")}"
-  instance_class             = "db.m4.large"
-  instance_name              = "${var.stackname}-content-data-api-postgresql-standby"
-  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-postgresql-primary_id}"]
-  create_replicate_source_db = "1"
-  replicate_source_db        = "${module.content-data-api-postgresql-primary_rds_instance.rds_instance_id}"
-  event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
-  skip_final_snapshot        = "${var.skip_final_snapshot}"
-}
-
-resource "aws_route53_record" "replica_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "content-data-api-postgresql-standby.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["${module.content-data-api-postgresql-standby_rds_instance.rds_replica_address}"]
-}
-
 module "alarms-rds-content-data-api-postgresql-primary" {
   source                     = "../../modules/aws/alarms/rds"
   name_prefix                = "${var.stackname}-content-data-api-postgresql-primary"
@@ -176,27 +155,9 @@ module "alarms-rds-content-data-api-postgresql-primary" {
   freestoragespace_threshold = "536870912000"
 }
 
-module "alarms-rds-postgresql-standby" {
-  source                     = "../../modules/aws/alarms/rds"
-  name_prefix                = "${var.stackname}-content-data-api-postgresql-standby"
-  alarm_actions              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  db_instance_id             = "${module.content-data-api-postgresql-standby_rds_instance.rds_replica_id}"
-  replicalag_threshold       = "300"
-  freestoragespace_threshold = "536870912000"
-}
-
 module "content-data-api-postgresql-primary_log_exporter" {
   source                       = "../../modules/aws/rds_log_exporter"
   rds_instance_id              = "${module.content-data-api-postgresql-primary_rds_instance.rds_instance_id}"
-  s3_logging_bucket_name       = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  lambda_filename              = "../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
-  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_rds_logs_to_s3_role_arn}"
-  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
-}
-
-module "postgresql-standby_log_exporter" {
-  source                       = "../../modules/aws/rds_log_exporter"
-  rds_instance_id              = "${module.content-data-api-postgresql-standby_rds_instance.rds_replica_id}"
   s3_logging_bucket_name       = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   lambda_filename              = "../../lambda/RDSLogsToS3/RDSLogsToS3.zip"
   lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_rds_logs_to_s3_role_arn}"
@@ -224,14 +185,4 @@ output "content-data-api-postgresql-primary_endpoint" {
 output "content-data-api-postgresql-primary_address" {
   value       = "${module.content-data-api-postgresql-primary_rds_instance.rds_instance_address}"
   description = "postgresql instance address"
-}
-
-output "postgresql-standby_endpoint" {
-  value       = "${module.content-data-api-postgresql-standby_rds_instance.rds_replica_endpoint}"
-  description = "postgresql replica instance endpoint"
-}
-
-output "postgresql-standby_address" {
-  value       = "${module.content-data-api-postgresql-standby_rds_instance.rds_replica_address}"
-  description = "postgresql replica instance address"
 }

@@ -39,6 +39,4 @@ RDS PostgreSQL instance for the Content Data API
 | content-data-api-postgresql-primary\_endpoint | postgresql instance endpoint |
 | content-data-api-postgresql-primary\_id | postgresql instance ID |
 | content-data-api-postgresql-primary\_resource\_id | postgresql instance resource ID |
-| postgresql-standby\_address | postgresql replica instance address |
-| postgresql-standby\_endpoint | postgresql replica instance endpoint |
 
