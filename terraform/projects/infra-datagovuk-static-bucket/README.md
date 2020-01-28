@@ -8,7 +8,7 @@ datagovuk-static-bucket: A bucket to hold legacy CKAN static data and assets
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | fastly | n/a |
 | terraform | n/a |
 

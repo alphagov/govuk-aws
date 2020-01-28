@@ -7,7 +7,7 @@ and resources to export these logs to S3
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | terraform | n/a |
 
 ## Inputs

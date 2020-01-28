@@ -9,9 +9,9 @@ The primary bucket should be in London and the backup in Ireland.
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 2.33.0 2.33.0 |
-| aws.aws\_cloudfront\_certificate | 2.33.0 2.33.0 2.33.0 |
-| aws.aws\_replica | 2.33.0 2.33.0 2.33.0 |
+| aws | 2.46.0 2.46.0 2.46.0 |
+| aws.aws\_cloudfront\_certificate | 2.46.0 2.46.0 2.46.0 |
+| aws.aws\_replica | 2.46.0 2.46.0 2.46.0 |
 | external | n/a |
 | fastly | n/a |
 | template | n/a |

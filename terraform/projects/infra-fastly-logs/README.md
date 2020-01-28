@@ -6,7 +6,7 @@ Manages the Fastly logging data which is sent from Fastly to S3.
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | template | n/a |
 | terraform | n/a |
 

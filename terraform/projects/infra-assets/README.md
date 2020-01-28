@@ -6,8 +6,8 @@ Stores ActiveStorage blobs uploaded via Content Publisher.
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
-| aws.backup\_provider | 2.33.0 |
+| aws | 2.46.0 |
+| aws.backup\_provider | 2.46.0 |
 | template | n/a |
 | terraform | n/a |
 

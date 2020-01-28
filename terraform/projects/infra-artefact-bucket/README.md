@@ -24,9 +24,9 @@ This module creates the following.
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 2.33.0 2.33.0 |
-| aws.secondary | 2.33.0 2.33.0 2.33.0 |
-| aws.subscription | 2.33.0 2.33.0 2.33.0 |
+| aws | 2.46.0 2.46.0 2.46.0 |
+| aws.secondary | 2.46.0 2.46.0 2.46.0 |
+| aws.subscription | 2.46.0 2.46.0 2.46.0 |
 | template | n/a |
 | terraform | n/a |
 

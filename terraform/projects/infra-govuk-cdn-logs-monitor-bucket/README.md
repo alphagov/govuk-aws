@@ -10,7 +10,7 @@ to delete.
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | terraform | n/a |
 
 ## Inputs
