@@ -8,7 +8,7 @@ Run resource intensive scripts for data science purposes.
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | null | n/a |
 | terraform | n/a |
 

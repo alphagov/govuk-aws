@@ -8,8 +8,8 @@ database-backups: The bucket that will hold database backups
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 2.33.0 |
-| aws.eu-london | 2.33.0 2.33.0 |
+| aws | 2.46.0 2.46.0 |
+| aws.eu-london | 2.46.0 2.46.0 |
 | template | n/a |
 | terraform | n/a |
 

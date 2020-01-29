@@ -9,7 +9,7 @@ This project adds global resources for app components:
 | Name | Version |
 |------|---------|
 | archive | n/a |
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | terraform | n/a |
 
 ## Inputs

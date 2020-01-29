@@ -8,7 +8,7 @@ datagovuk-organogram-bucket: A bucket to hold data.gov.uk organogram files
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | fastly | n/a |
 | terraform | n/a |
 

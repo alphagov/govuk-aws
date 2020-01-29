@@ -6,7 +6,7 @@ Resources for syncing between environments
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | template | n/a |
 | terraform | n/a |
 

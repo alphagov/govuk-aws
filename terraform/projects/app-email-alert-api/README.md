@@ -6,7 +6,7 @@ email-alert-api node
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | null | n/a |
 | terraform | n/a |
 

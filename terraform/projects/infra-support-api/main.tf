@@ -29,7 +29,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.33.0"
+  version = "2.46.0"
 }
 
 resource "aws_s3_bucket" "support_api_csvs" {

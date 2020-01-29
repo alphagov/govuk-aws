@@ -6,7 +6,7 @@ Manage the security groups for the entire infrastructure
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | fastly | 0.1.2 |
 | terraform | n/a |
 

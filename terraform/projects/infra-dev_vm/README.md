@@ -10,7 +10,7 @@ https://github.com/alphagov/govuk-terraform-provisioning/tree/master/old-project
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 
 ## Inputs
 

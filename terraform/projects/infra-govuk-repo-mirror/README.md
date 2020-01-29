@@ -8,7 +8,7 @@ Deploy\_App job and the role is used by the Concourse mirroring job)
 
 | Name | Version |
 |------|---------|
-| aws | 2.33.0 |
+| aws | 2.46.0 |
 | terraform | n/a |
 
 ## Inputs
