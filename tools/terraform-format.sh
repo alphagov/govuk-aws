@@ -5,7 +5,7 @@ for file in "$@"; do
   lint=$(terraform fmt -write=false -diff=true -list=true "${file}")
   failed=""
 
-  if [ -n "${lint}" ]; then
+  if [ ! -z "${lint}" ]; then
     failed="yes"
     echo -e "Your code is not in a canonical format:\n"
     echo "${lint}"

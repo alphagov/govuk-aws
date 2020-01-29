@@ -4,7 +4,7 @@
 #
 set -e
 
-if [[ ! $(command -v sops) ]]; then
+if [[ ! $(which sops) ]]; then
   echo "sops not installed, exiting"
   exit 1
 fi
@@ -35,7 +35,7 @@ if [[ $TERRAFORM_VERSION != '' ]]; then
   PATH=$(pwd)/$BIN:$PATH
   echo $PATH
 
-  echo "Terraform binary: $(command -v terraform)"
+  echo "Terraform binary: $(which terraform)"
 fi
 
 rm -rf govuk-aws-data
