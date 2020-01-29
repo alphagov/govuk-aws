@@ -15,6 +15,15 @@ node ("terraform") {
       govuk.bundleApp()
     }
 
+    stage("Shellcheck") {
+      govuk.shellcheck([
+        "tools/*.sh",
+        "tools/govukcli",
+        "terraform/userdata/*",
+        "jenkins.sh",
+      ])
+    }
+
     stage("ADR check") {
       sh "tools/adr-check.sh"
     }

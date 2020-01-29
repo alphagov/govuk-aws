@@ -2,7 +2,7 @@
 #
 # Update docs across all projects and modules
 #
-if [[ ! $(command -v terraform-docs) ]]; then
+if [[ ! $(which terraform-docs) ]]; then
   echo "Must install terraform-docs: https://github.com/segmentio/terraform-docs"
   exit 1
 fi

@@ -1,5 +1,5 @@
 # This is a snippet so should not have a shebang
-# shellcheck shell=bash
+# shellcheck disable=SC2148
 #
 # Snippet: db-admin
 #

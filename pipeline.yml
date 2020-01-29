@@ -27,13 +27,13 @@ jobs:
           path: govuk-aws-pr
       - task: check-terraform-docs-updatedness
         timeout: 15m
-        config: &brew
+        config:
           platform: linux
           image_resource:
             type: docker-image
             source:
               repository: homebrew/brew
-              tag: 2.2.4
+              tag: 2.2.2
           inputs:
             - name: govuk-aws-pr
               path: repo
@@ -43,7 +43,6 @@ jobs:
             args:
             - -c
             - |
-              brew update-reset
               brew install terraform-docs
 
               echo "Checking the updatedness of README files..."
@@ -53,24 +52,6 @@ jobs:
                 echo "The documentation isn't up to date. You should run ./tools/update-docs.sh and commit the results."
                 exit 1
               fi
-      - task: shellcheck
-        timeout: 15m
-        config:
-          <<: *brew
-          inputs:
-            - name: govuk-aws-pr
-              path: repo
-          run:
-            path: bash
-            dir: repo
-            args:
-            - -c
-            - |
-              brew update-reset
-              brew install shellcheck
-
-              echo "Running shellcheck..."
-              shellcheck -e SC2086,SC1117 jenkins.sh tools/govukcli tools/*.sh terraform/userdata/*
     on_success:
       put: govuk-aws-pr
       params:
@@ -81,3 +62,4 @@ jobs:
       params:
         path: govuk-aws-pr
         status: failure
+
