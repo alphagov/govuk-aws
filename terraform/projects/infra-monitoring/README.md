@@ -12,8 +12,8 @@ Create resources to manage infrastructure and app monitoring:
 
 | Name | Version |
 |------|---------|
-| aws | 2.46.0 2.33.0 |
-| aws.aws\_secondary | 2.46.0 2.33.0 |
+| aws | 2.46.0 2.46.0 |
+| aws.aws\_secondary | 2.46.0 2.46.0 |
 | template | n/a |
 
 ## Inputs
