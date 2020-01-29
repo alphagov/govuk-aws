@@ -44,7 +44,7 @@ variable "app_service_records" {
 variable "asg_size" {
   type        = "string"
   description = "The autoscaling groups desired/max/min capacity"
-  default     = "3"
+  default     = "6"
 }
 
 variable "external_zone_name" {

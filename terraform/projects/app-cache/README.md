@@ -15,7 +15,7 @@ Cache application servers
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | app\_service\_records | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
-| asg\_size | The autoscaling groups desired/max/min capacity | `string` | `"3"` | no |
+| asg\_size | The autoscaling groups desired/max/min capacity | `string` | `"6"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | create\_external\_elb | Create the external ELB | `bool` | `true` | no |
