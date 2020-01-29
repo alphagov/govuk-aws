@@ -74,7 +74,7 @@ SECRET_COMMON_PROJECT_DATA="${PROJECT_DATA_DIR}/common.secret.tfvars"
 STACK_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}.tfvars"
 SECRET_PROJECT_DATA="${PROJECT_DATA_DIR}/${STACKNAME}.secret.tfvars"
 
-if [[ -z $(which terraform) ]]; then
+if [[ -z $(command -v terraform) ]]; then
   log_error 'Terraform not found, please make sure it is installed.'
 fi
 
@@ -151,10 +151,10 @@ for TFVAR_FILE in "$COMMON_DATA" \
                   "$SECRET_PROJECT_DATA"
 do
   if [[ -f $TFVAR_FILE ]] &&
-     (
+     {
       [[ "$TFVAR_FILE" == "$SECRET_PROJECT_DATA" ]] ||
       [[ "$TFVAR_FILE" == "$SECRET_COMMON_PROJECT_DATA" ]]
-     ) ; then
+     } ; then
     TO_RUN="$TO_RUN -var-file <(sops -d $TFVAR_FILE)"
   elif [[ -f $TFVAR_FILE ]]; then
     TO_RUN="$TO_RUN -var-file $TFVAR_FILE"
