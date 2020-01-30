@@ -48,6 +48,18 @@ variable "tls" {
   default     = "disabled"
 }
 
+variable "profiler" {
+  type        = "string"
+  description = "Whether to log slow queries to CloudWatch. Must be either 'enabled' or 'disabled'."
+  default     = "enabled"
+}
+
+variable "profiler_threshold_ms" {
+  type        = "string"
+  description = "Queries which take longer than this number of milliseconds are logged to CloudWatch if profiler is enabled. Minimum is 50."
+  default     = "300"
+}
+
 variable "backup_retention_period" {
   type        = "string"
   description = "Retention period in days for DocumentDB automatic snapshots"
@@ -88,6 +100,16 @@ resource "aws_docdb_cluster_parameter_group" "parameter_group" {
     name  = "tls"
     value = "${var.tls}"
   }
+
+  parameter {
+    name  = "profiler"
+    value = "${var.profiler}"
+  }
+
+  parameter {
+    name  = "profiler_threshold_ms"
+    value = "${var.profiler_threshold_ms}"
+  }
 }
 
 resource "aws_docdb_cluster" "cluster" {
@@ -101,6 +123,9 @@ resource "aws_docdb_cluster" "cluster" {
   db_cluster_parameter_group_name = "${aws_docdb_cluster_parameter_group.parameter_group.name}"
   kms_key_id                      = "${data.terraform_remote_state.infra_security.shared_documentdb_kms_key_arn}"
   vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_shared_documentdb_id}"]
+
+  # enabled_cloudwatch_logs_exports is ["profiler"] if profiling is enabled, otherwise [].
+  enabled_cloudwatch_logs_exports = ["${slice("${list("profiler")}", 0, var.profiler == "enabled" ? 1 : 0)}"]
 
   tags = {
     Service  = "shared documentdb"

@@ -20,6 +20,8 @@ DocumentDB cluster for Licensify
 | instance\_type | Instance type used for Licensify DocumentDB resources | `string` | `"db.r5.large"` | no |
 | master\_password | Password of master user on Licensify DocumentDB cluster | `string` | n/a | yes |
 | master\_username | Username of master user on Licensify DocumentDB cluster | `string` | n/a | yes |
+| profiler | Whether to log slow queries to CloudWatch. Must be either 'enabled' or 'disabled'. | `string` | `"enabled"` | no |
+| profiler\_threshold\_ms | Queries which take longer than this number of milliseconds are logged to CloudWatch if profiler is enabled. Minimum is 50. | `string` | `"300"` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | `string` | `""` | no |
 | remote\_state\_infra\_security\_groups\_key\_stack | Override infra\_security\_groups stackname path to infra\_vpc remote state | `string` | `""` | no |
