@@ -291,6 +291,7 @@ data "aws_iam_policy_document" "dbadmin_database_backups_writer" {
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo-licensing*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mysql*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*postgres*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo-normal*",
     ]
   }
 }
