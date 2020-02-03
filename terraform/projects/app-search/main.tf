@@ -251,22 +251,23 @@ data "aws_iam_policy_document" "sitemaps_bucket_policy" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "invoke_sagemaker" {
+resource "aws_iam_role_policy_attachment" "use_sagemaker" {
   role       = "${module.search.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.invoke_sagemaker.arn}"
+  policy_arn = "${aws_iam_policy.use_sagemaker.arn}"
 }
 
-resource "aws_iam_policy" "invoke_sagemaker" {
-  name        = "govuk-${var.aws_environment}-search-invoke-sagemaker-policy"
-  policy      = "${data.aws_iam_policy_document.invoke_sagemaker.json}"
-  description = "Allows invoking SageMaker endpoints"
+resource "aws_iam_policy" "use_sagemaker" {
+  name        = "govuk-${var.aws_environment}-search-use-sagemaker-policy"
+  policy      = "${data.aws_iam_policy_document.use_sagemaker.json}"
+  description = "Allows invoking and describing SageMaker endpoints"
 }
 
-data "aws_iam_policy_document" "invoke_sagemaker" {
+data "aws_iam_policy_document" "use_sagemaker" {
   statement {
     sid = "InvokeSagemaker"
 
     actions = [
+      "sagemaker:DescribeEndpoint",
       "sagemaker:InvokeEndpoint",
     ]
 
