@@ -53,28 +53,6 @@ resource "aws_s3_bucket" "fastly_logs" {
   }
 }
 
-resource "aws_s3_bucket" "transition_fastly_logs" {
-  bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
-
-  tags {
-    Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
-    aws_environment = "${var.aws_environment}"
-  }
-
-  logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
-  }
-
-  lifecycle_rule {
-    enabled = true
-
-    expiration {
-      days = 30
-    }
-  }
-}
-
 # We require a user for Fastly to write to S3 buckets
 resource "aws_iam_user" "logs_writer" {
   name = "govuk-${var.aws_environment}-fastly-logs-writer"
@@ -98,30 +76,6 @@ data "template_file" "logs_writer_policy_template" {
   vars {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.fastly_logs.id}"
-  }
-}
-
-# We require a user for transition to read from S3 buckets
-resource "aws_iam_user" "transition_downloader" {
-  name = "govuk-${var.aws_environment}-transition-downloader"
-}
-
-resource "aws_iam_policy" "transition_downloader" {
-  name   = "fastly-logs-${var.aws_environment}-transition-downloader-policy"
-  policy = "${data.template_file.transition_downloader_policy_template.rendered}"
-}
-
-resource "aws_iam_policy_attachment" "transition_downloader" {
-  name       = "transition-downloader-policy-attachment"
-  users      = ["${aws_iam_user.transition_downloader.name}"]
-  policy_arn = "${aws_iam_policy.transition_downloader.arn}"
-}
-
-data "template_file" "transition_downloader_policy_template" {
-  template = "${file("${path.module}/../../policies/transition_downloader_policy.tpl")}"
-
-  vars {
-    bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
   }
 }
 
@@ -722,6 +676,55 @@ resource "aws_glue_catalog_table" "bouncer" {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
+  }
+}
+
+# Configuration for transition lambda function that loads data from fastly logs
+# Athena databases and saves it back into S3
+
+resource "aws_s3_bucket" "transition_fastly_logs" {
+  bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
+  }
+
+  lifecycle_rule {
+    enabled = true
+
+    expiration {
+      days = 30
+    }
+  }
+}
+
+# We require a user for transition to read from S3 buckets
+resource "aws_iam_user" "transition_downloader" {
+  name = "govuk-${var.aws_environment}-transition-downloader"
+}
+
+resource "aws_iam_policy" "transition_downloader" {
+  name   = "fastly-logs-${var.aws_environment}-transition-downloader-policy"
+  policy = "${data.template_file.transition_downloader_policy_template.rendered}"
+}
+
+resource "aws_iam_policy_attachment" "transition_downloader" {
+  name       = "transition-downloader-policy-attachment"
+  users      = ["${aws_iam_user.transition_downloader.name}"]
+  policy_arn = "${aws_iam_policy.transition_downloader.arn}"
+}
+
+data "template_file" "transition_downloader_policy_template" {
+  template = "${file("${path.module}/../../policies/transition_downloader_policy.tpl")}"
+
+  vars {
+    bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
   }
 }
 
