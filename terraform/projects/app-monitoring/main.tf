@@ -261,6 +261,32 @@ resource "aws_iam_role_policy_attachment" "monitoring_iam_role_policy_attachment
   policy_arn = "${aws_iam_policy.monitoring-iam_policy.arn}"
 }
 
+resource "aws_iam_policy" "list_fastly_logs" {
+  name        = "fastly-logs-${var.aws_environment}-logs-lister-policy"
+  description = "Allows listing (but not reading) the fastly-logs buckets. For use by monitoring."
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": [
+                "arn:aws:s3:::govuk-${var.aws_environment}-fastly-logs",
+                "arn:aws:s3:::govuk-${var.aws_environment}-transition-fastly-logs"
+            ]
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "monitoring_can_list_fastly_logs" {
+  role       = "${module.monitoring.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.list_fastly_logs.arn}"
+}
+
 resource "aws_route53_record" "external_service_record" {
   zone_id = "${data.aws_route53_zone.external.zone_id}"
   name    = "alert.${var.external_domain_name}"
