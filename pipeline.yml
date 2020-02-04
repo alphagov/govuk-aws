@@ -33,7 +33,7 @@ jobs:
             type: docker-image
             source:
               repository: homebrew/brew
-              tag: 2.2.4
+              tag: 2.2.5
           inputs:
             - name: govuk-aws-pr
               path: repo
