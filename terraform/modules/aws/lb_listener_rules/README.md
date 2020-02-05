@@ -6,11 +6,11 @@ an existing listener resource.
 If the parameter `autoscaling_group_name` is non empty, the module also creates an attachment  
 from each target group to the ASG with the specified name.
 
-Limitations:  
+Limitations:
  - The target group deregistration\_delay, health\_check\_interval and health\_check\_timeout  
-values can be configured with variables, but will be the same for all the target groups  
+values can be configured with variables, but will be the same for all the target groups
  - With Terraform we can't provide a 'count' or list for listener\_rule condition blocks,  
-so at the moment only one condition can be specified per rule  
+so at the moment only one condition can be specified per rule
  - At the moment this module only implements Host Header based rules
 
 ## Providers

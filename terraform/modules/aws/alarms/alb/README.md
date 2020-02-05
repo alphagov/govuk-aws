@@ -3,9 +3,9 @@
 This module creates the following CloudWatch alarms in the  
 AWS/ApplicationELB namespace:
 
-  - HTTPCode\_Target\_4XX\_Count greater than or equal to threshold  
-  - HTTPCode\_Target\_5XX\_Count greater than or equal to threshold  
-  - HTTPCode\_ELB\_4XX\_Count greater than or equal to threshold  
+  - HTTPCode\_Target\_4XX\_Count greater than or equal to threshold
+  - HTTPCode\_Target\_5XX\_Count greater than or equal to threshold
+  - HTTPCode\_ELB\_4XX\_Count greater than or equal to threshold
   - HTTPCode\_ELB\_5XX\_Count greater than or equal to threshold
 
 All metrics are measured during a period of 60 seconds and evaluated  

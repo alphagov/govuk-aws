@@ -1,10 +1,10 @@
 ## Module: projects/infra-security
 
-Infrastructure security settings:  
- - Create admin role for trusted users from GDS proxy account  
- - Create users role for trusted users from GDS proxy account  
- - Default IAM password policy  
- - Default SSH key  
+Infrastructure security settings:
+ - Create admin role for trusted users from GDS proxy account
+ - Create users role for trusted users from GDS proxy account
+ - Default IAM password policy
+ - Default SSH key
  - SOPS KMS key
 
 ## Providers

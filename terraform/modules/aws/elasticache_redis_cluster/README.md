@@ -13,7 +13,7 @@ Create a redis replication cluster and elasticache subnet group
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
 | default\_tags | Additional resource tags | `map` | `{}` | no |
-| elasticache\_node\_type | The node type to use. Must not be t.\* in order to use failover. | `string` | `"cache.m3.medium"` | no |
+| elasticache\_node\_type | The node type to use. Must not be t.* in order to use failover. | `string` | `"cache.m3.medium"` | no |
 | enable\_clustering | Set to true to enable clustering mode | `string` | `true` | no |
 | name | The common name for all the resources created by this module | `string` | n/a | yes |
 | security\_group\_ids | Security group IDs to apply to this cluster | `list` | n/a | yes |

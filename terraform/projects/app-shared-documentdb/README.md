@@ -1,6 +1,6 @@
 ## Project: app-shared-documentdb
 
-Shared DocumentDB to support the following apps:  
+Shared DocumentDB to support the following apps:
   1. asset-manager
 
 ## Providers

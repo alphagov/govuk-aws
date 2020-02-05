@@ -1,11 +1,11 @@
 ## Module: projects/infra-monitoring
 
-Create resources to manage infrastructure and app monitoring:  
-  - Create an S3 bucket which allows AWS infrastructure to send logs to, for  
-    instance, ELB logs  
-  - Create resources to export CloudWatch log groups to S3 via Lambda-Kinesis\_Firehose  
-  - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to  
-    the topic  
+Create resources to manage infrastructure and app monitoring:
+  - Create an S3 bucket which allows AWS infrastructure to send logs to, for
+    instance, ELB logs
+  - Create resources to export CloudWatch log groups to S3 via Lambda-Kinesis\_Firehose
+  - Create SNS topic to send infrastructure alerts, and a SQS queue that subscribes to
+    the topic
   - Create an IAM user which allows Terraboard to read Terraform state files from S3
 
 ## Providers

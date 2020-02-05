@@ -12,12 +12,12 @@ to write to "deployed-to-environment" branches
 
 artefact\_reader: used by instances to fetch artefacts
 
-This module creates the following.  
-     - AWS SNS topic  
-     - AWS S3 Bucket event  
-     - AWS S3 Bucket policy.  
-     - AWS Lambda function.  
-     - AWS SNS subscription  
+This module creates the following.
+     - AWS SNS topic
+     - AWS S3 Bucket event
+     - AWS S3 Bucket policy.
+     - AWS Lambda function.
+     - AWS SNS subscription
      - AWS IAM roles and polisis for SNS and Lambda.
 
 ## Providers

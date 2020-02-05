@@ -3,9 +3,9 @@
 This module creates the following CloudWatch alarms in the  
 AWS/RDS namespace:
 
-  - CPUUtilization greater than or equal to threshold  
-  - FreeableMemory less than threshold  
-  - FreeStorageSpace less than threshold  
+  - CPUUtilization greater than or equal to threshold
+  - FreeableMemory less than threshold
+  - FreeStorageSpace less than threshold
   - ReplicaLag greater than or equal to threshold
 
 All metrics are measured during a period of 60 seconds and evaluated  

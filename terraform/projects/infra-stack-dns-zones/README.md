@@ -5,7 +5,7 @@ This module creates the internal and external DNS zones used by our stacks.
 When we select to create a DNS zone, the domain name and ID of the zone that  
 manages the root domain needs to be provided to register the DNS delegation  
 and NS servers of the created zone. The domain name of the new zone is created  
-from the variables provided as <stackname>.<root\_domain\_internal\|external\_name>
+from the variables provided as <stackname>.<root\_domain\_internal|external\_name>
 
 We can't create a internal DNS zone per stack because on AWS we can't overlap  
 internal domain names. Instead we use the same internal zone for all the sacks  

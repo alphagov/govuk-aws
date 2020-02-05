@@ -32,7 +32,7 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 | asg\_max\_size | The autoscaling groups max\_size | `string` | `"1"` | no |
 | asg\_min\_size | The autoscaling groups max\_size | `string` | `"1"` | no |
 | asg\_notification\_topic\_arn | The Topic ARN for Autoscaling Group notifications to be sent to | `string` | `""` | no |
-| asg\_notification\_types | A list of Notification Types that trigger Autoscaling Group notifications. Acceptable values are documented in https://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_NotificationConfiguration.html | `list` | <pre>[<br>  "autoscaling:EC2_INSTANCE_LAUNCH",<br>  "autoscaling:EC2_INSTANCE_TERMINATE",<br>  "autoscaling:EC2_INSTANCE_LAUNCH_ERROR"<br>]<br></pre> | no |
+| asg\_notification\_types | A list of Notification Types that trigger Autoscaling Group notifications. Acceptable values are documented in https://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_NotificationConfiguration.html | `list` | <pre>[<br>  "autoscaling:EC2_INSTANCE_LAUNCH",<br>  "autoscaling:EC2_INSTANCE_TERMINATE",<br>  "autoscaling:EC2_INSTANCE_LAUNCH_ERROR"<br>]</pre> | no |
 | create\_asg\_notifications | Enable Autoscaling Group notifications | `string` | `true` | no |
 | create\_instance\_key | Whether to create a key pair for the instance launch configuration | `string` | `false` | no |
 | default\_tags | Additional resource tags | `map` | `{}` | no |

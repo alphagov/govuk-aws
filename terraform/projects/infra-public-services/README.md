@@ -1,7 +1,7 @@
 ## Project: infra-public-services
 
-This project adds global resources for app components:  
-  - public facing LBs and DNS entries  
+This project adds global resources for app components:
+  - public facing LBs and DNS entries
   - internal DNS entries
 
 ## Providers
