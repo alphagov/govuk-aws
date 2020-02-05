@@ -1,5 +1,5 @@
 /**
-*  ## Project: artefact-bucket
+* ## Project: artefact-bucket
 *
 * This creates 3 S3 buckets:
 *
