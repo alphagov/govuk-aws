@@ -10,7 +10,7 @@ subnet and must be the same in both maps.
 For instance, to create two public subnets named "my\_subnet\_a"  
 and "my\_subnet\_b" on eu-west-1a and eu-west-1b, you can do:
 
-\*```
+```
 subnet_cidrs = {
   "my_subnet_a" = "10.0.0.0/24"
   "my_subnet_b" = "10.0.1.0/24"
@@ -20,7 +20,6 @@ subnet_availability_zones = {
   "my_subnet_a" = "eu-west-1a"
   "my_subnet_b" = "eu-west-1b"
 }
-*
 ```
 
 ## Providers

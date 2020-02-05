@@ -7,12 +7,11 @@ The listeners and default actions are configured in the `listener_action`
 map. The keys are the listeners PROTOCOL:PORT parameters, and the values  
 are the PROTOCOL:PORT parameters of the default target group of that listener.
 
-\*```
+```
 listener_action = {
   "HTTP:80"   = "HTTP:8080"
   "HTTPS:443" = "HTTP:8080"
 }
-*
 ```
 
 This module creates the following CloudWatch alarms in the  

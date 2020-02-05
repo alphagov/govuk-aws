@@ -11,7 +11,7 @@
 * For instance, to create two public subnets named "my_subnet_a"
 * and "my_subnet_b" on eu-west-1a and eu-west-1b, you can do:
 *
-*```
+* ```
 * subnet_cidrs = {
 *   "my_subnet_a" = "10.0.0.0/24"
 *   "my_subnet_b" = "10.0.1.0/24"
@@ -21,7 +21,7 @@
 *   "my_subnet_a" = "eu-west-1a"
 *   "my_subnet_b" = "eu-west-1b"
 * }
-*```
+* ```
 */
 
 variable "default_tags" {
