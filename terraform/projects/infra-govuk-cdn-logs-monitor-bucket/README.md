@@ -1,6 +1,6 @@
 ## Project: infra-govuk-cdn-logs-monitor-bucket
 
-Stores data that is being archived due to the retirement of  
+Stores data that is being archived due to the retirement of
 [govuk-cdn-logs-monitor](https://github.com/alphagov/govuk-cdn-logs-monitor).  
 The intention is for this to be temporary and data won't be added to this  
 after archiving. So if you're reading this in June 2019 this is pretty safe  

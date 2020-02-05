@@ -9,7 +9,7 @@
 * from the account ID 123456789000 to use the AWS Security Token Service
 * AssumeRole API action to gain AdministratorAccess permissions on our account:
 *
-*```
+* ```
 * "role_name" = "myadmins"
 *
 * "role_policy_arns" = [
@@ -20,7 +20,7 @@
 *   "arn:aws:iam::123456789000:user/user1",
 *   "arn:aws:iam::123456789000:user/user2",
 * ]
-*```
+* ```
 */
 variable "role_name" {
   type        = "string"

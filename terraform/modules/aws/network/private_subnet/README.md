@@ -3,7 +3,7 @@
 This module creates AWS private subnets on a given VPC, each one  
 with a route table and route table association.
 
-Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and  
+Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and
 `subnet_availability_zones`, where the key is the name of the  
 subnet and must be the same in both maps.
 
@@ -20,7 +20,9 @@ subnet_availability_zones = {
   "my_subnet_a" = "eu-west-1a"
   "my_subnet_b" = "eu-west-1b"
 }
-```You can optionally provide a subnet\_nat\_gateways variable, indicating  
+```
+
+You can optionally provide a subnet\_nat\_gateways variable, indicating  
 the NAT Gateway ID that a subnet can use. If specified, then a  
 route will also be added by this module, enabling Internet access. The  
 keys in subnet\_nat\_gateways that identify the subnet name must match the  
@@ -28,7 +30,7 @@ keys provided in subnet\_cidrs and subnet\_availability\_zones.
 
 If you provide subnet\_nat\_gateways, then subnet\_nat\_gateways\_length  
 must also be provided with the number of elements in the subnet\_nat\_gateways  
-map. This is necessary to get around a Terraform issue that prevents a  
+map. This is necessary to get around a Terraform issue that prevents a
 "count" from evaluating computed values. Probably referenced here:  
 https://github.com/hashicorp/terraform/issues/10857
 

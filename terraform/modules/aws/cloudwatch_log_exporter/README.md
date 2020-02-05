@@ -6,10 +6,10 @@ function and Kinesis Firehose.
 The lambda function filename needs to be provided and the  
 module will create a permission to listen to Log events and  
 a subscription to the specified log group. This function  
-should:  
-  - decompress the Cloudwatch log  
+should:
+  - decompress the Cloudwatch log
   - format the data, if needed, so the log entry can later be  
-parsed by a Logstash filter  
+parsed by a Logstash filter
   - send the log event to a Kinesis Firehose stream, that will  
 be configured to store the events in a S3 bucket
 

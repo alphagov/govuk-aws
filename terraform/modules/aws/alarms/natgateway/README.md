@@ -3,7 +3,7 @@
 This module creates the following CloudWatch alarms in the  
 AWS/NATGateway namespace:
 
-  - ErrorPortAllocation greater than or equal to threshold  
+  - ErrorPortAllocation greater than or equal to threshold
   - PacketsDropCount greater than or equal to threshold
 
 All metrics are measured during a period of 60 seconds and evaluated  

@@ -3,7 +3,7 @@
 This module creates all resources necessary for an AWS public  
 subnet.
 
-Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and  
+Subnet CIDR and AZ are specified in the maps `subnet_cidrs` and
 `subnet_availability_zones`, where the key is the name of the  
 subnet and must be the same in both maps.
 

@@ -21,7 +21,7 @@ Create an RDS instance
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | engine\_name | RDS engine (eg mysql, postgresql) | `string` | `""` | no |
 | engine\_version | Which version of MySQL to use (eg 5.5.46) | `string` | `""` | no |
-| event\_categories | A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html | `list` | <pre>[<br>  "availability",<br>  "deletion",<br>  "failure",<br>  "low storage"<br>]<br></pre> | no |
+| event\_categories | A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html | `list` | <pre>[<br>  "availability",<br>  "deletion",<br>  "failure",<br>  "low storage"<br>]</pre> | no |
 | event\_sns\_topic\_arn | The SNS topic to send events to. | `string` | `""` | no |
 | instance\_class | The instance type of the RDS instance. | `string` | `"db.t1.micro"` | no |
 | instance\_name | The RDS Instance Name. | `string` | `""` | no |
