@@ -71,6 +71,12 @@ variable "instance_type" {
   default     = "t2.medium"
 }
 
+variable "ebs_volume_size" {
+  type        = "string"
+  description = "EBS volume size"
+  default     = "40"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -182,7 +188,7 @@ module "apt" {
 resource "aws_ebs_volume" "apt" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.apt_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = 40
+  size              = "${var.ebs_volume_size}"
   type              = "gp2"
 
   tags {
