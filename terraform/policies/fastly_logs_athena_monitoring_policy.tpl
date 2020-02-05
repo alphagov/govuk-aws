@@ -1,0 +1,50 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+       "Effect":"Allow",
+       "Action":[
+          "athena:*"
+       ],
+       "Resource":[
+          "*"
+       ]
+    },
+    {
+       "Effect":"Allow",
+       "Action":[
+          "glue:GetTable",
+          "glue:GetPartition",
+          "glue:GetPartitions"
+       ],
+       "Resource":[
+          "*"
+       ]
+    },
+    {
+       "Effect":"Allow",
+       "Action":[
+          "s3:GetObject",
+          "s3:ListBucket"
+       ],
+       "Resource":[
+          "${in_bucket_arn}*"
+       ]
+    },
+    {
+       "Effect":"Allow",
+       "Action":[
+          "s3:GetBucketLocation",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListMultipartUploadParts",
+          "s3:AbortMultipartUpload",
+          "s3:PutObject"
+       ],
+       "Resource":[
+          "${out_bucket_arn}*"
+       ]
+    }
+  ]
+}
