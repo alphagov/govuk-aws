@@ -164,7 +164,7 @@ EOF
 
 resource "aws_glue_catalog_table" "govuk_www" {
   name          = "govuk_www"
-  description   = "Maps the tab-seperated value log file to columns"
+  description   = "Allows access to JSON data exported from Fastly"
   database_name = "${aws_glue_catalog_database.fastly_logs.name}"
   table_type    = "EXTERNAL_TABLE"
 
@@ -351,7 +351,7 @@ EOF
 
 resource "aws_glue_catalog_table" "govuk_assets" {
   name          = "govuk_assets"
-  description   = "Maps the tab-seperated value log file to columns"
+  description   = "Allows access to JSON data exported from Fastly"
   database_name = "${aws_glue_catalog_database.fastly_logs.name}"
   table_type    = "EXTERNAL_TABLE"
 
@@ -538,7 +538,7 @@ EOF
 
 resource "aws_glue_catalog_table" "bouncer" {
   name          = "bouncer"
-  description   = "Maps the tab-seperated value log file to columns"
+  description   = "Allows access to JSON data exported from Fastly"
   database_name = "${aws_glue_catalog_database.fastly_logs.name}"
   table_type    = "EXTERNAL_TABLE"
 
