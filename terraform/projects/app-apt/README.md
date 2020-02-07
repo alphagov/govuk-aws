@@ -18,6 +18,7 @@ Apt node
 | aws\_environment | AWS environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | ebs\_encrypted | Whether or not the EBS volume is encrypted | `string` | n/a | yes |
+| ebs\_volume\_size | EBS volume size | `string` | `"40"` | no |
 | elb\_external\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | external\_domain\_name | The domain name of the external DNS records, it could be different from the zone name | `string` | n/a | yes |
