@@ -293,35 +293,6 @@ resource "aws_sqs_queue_policy" "notifications_sqs_queue_policy" {
   policy    = "${data.template_file.notifications_sqs_queue_policy_template.rendered}"
 }
 
-#
-# Create an IAM user which allows Terraboard to read Terraform state files from S3
-#
-
-data "template_file" "terraboard_policy_template" {
-  template = "${file("${path.module}/../../policies/terraboard_policy.tpl")}"
-
-  vars {
-    aws_environment = "${var.aws_environment}"
-  }
-}
-
-resource "aws_iam_policy" "terraboard_policy" {
-  name        = "${var.aws_environment}-terraboard-policy"
-  path        = "/"
-  description = "Allow read access to S3 govuk-terraform-steppingstone bucket for the environment"
-  policy      = "${data.template_file.terraboard_policy_template.rendered}"
-}
-
-resource "aws_iam_user" "terraboard_user" {
-  name = "govuk-terraboard"
-}
-
-resource "aws_iam_policy_attachment" "terraboard_user_policy_attachment" {
-  name       = "terraboard_user_policy_attachment"
-  users      = ["${aws_iam_user.terraboard_user.name}"]
-  policy_arn = "${aws_iam_policy.terraboard_policy.arn}"
-}
-
 # Outputs
 # --------------------------------------------------------------
 
