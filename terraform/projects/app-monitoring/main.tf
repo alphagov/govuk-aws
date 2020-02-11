@@ -324,18 +324,6 @@ resource "aws_route53_record" "internal_service_record" {
   }
 }
 
-resource "aws_route53_record" "terraboard_external_service_record" {
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
-  name    = "terraboard.${var.external_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.monitoring_internal_elb.dns_name}"
-    zone_id                = "${aws_elb.monitoring_internal_elb.zone_id}"
-    evaluate_target_health = true
-  }
-}
-
 module "alarms-elb-monitoring-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-monitoring-internal"
