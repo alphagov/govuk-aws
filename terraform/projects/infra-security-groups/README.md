@@ -64,6 +64,7 @@ Manage the security groups for the entire infrastructure
 | sg\_content-store\_external\_elb\_id | n/a |
 | sg\_content-store\_id | n/a |
 | sg\_content-store\_internal\_elb\_id | n/a |
+| sg\_data-science-data\_id | n/a |
 | sg\_db-admin\_elb\_id | n/a |
 | sg\_db-admin\_id | n/a |
 | sg\_deploy\_elb\_id | n/a |

@@ -421,3 +421,7 @@ output "sg_knowledge-graph_id" {
 output "sg_knowledge-graph_elb_external_id" {
   value = "${aws_security_group.knowledge-graph_elb_external.id}"
 }
+
+output "sg_data-science-data_id" {
+  value = "${aws_security_group.data-science-data.id}"
+}
