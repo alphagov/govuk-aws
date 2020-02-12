@@ -34,5 +34,8 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| data-infrastructure-bucket\_name | Bucket to store data for data platform |
+| read\_write\_data\_infrastructure\_bucket\_policy\_arn | Policy ARN to read and write to the data-infrastructure-data bucket |
 

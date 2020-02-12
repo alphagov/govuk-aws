@@ -27,6 +27,7 @@ pip install awscli
 sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
 sudo apt-get install -y python3.6
 sudo apt install -y python3-pip
+sudo apt install -y libpq-dev
 
 # Install zip and unzip utilities
 sudo apt install -y zip unzip
@@ -40,6 +41,8 @@ cd envs
 sudo apt install -y virtualenv
 virtualenv -p python3.6 python36
 source python36/bin/activate
+sudo chown -R ubuntu:ubuntu /var/envs/python36
+
 pip install csvkit
 
 # Create data dir
@@ -69,7 +72,7 @@ cd govuk-knowledge-graph
 chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
-./provision_knowledge_graph -i $instance_id -b ${database_backups_bucket_name} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name}
+./provision_knowledge_graph -i $instance_id -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name}
 
 # Set correct permissions for user journey visualisation viewer script
 cd /var/data/github/govuk-knowledge-graph/src/visualization
