@@ -1,0 +1,26 @@
+name: govuk-aws-linting
+on:
+  pull_request: []
+jobs:
+  terraform-docs-and-shellcheck:
+    runs-on: macos-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+      - name: Check docs
+        run: |
+          brew install terraform-docs
+          echo "Checking the updatedness of README files..."
+          ./tools/update-docs.sh
+
+          if ! git diff --exit-code; then
+            echo "The documentation isn't up to date. You should run ./tools/update-docs.sh and commit the results."
+            exit 1
+          fi
+      - name: Shellcheck
+        run: |
+          brew install shellcheck
+
+          echo "Running shellcheck..."
+          shellcheck -e SC2086,SC1117 jenkins.sh tools/govukcli tools/*.sh terraform/userdata/*
+          
