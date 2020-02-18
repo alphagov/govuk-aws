@@ -28,6 +28,9 @@ sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
 sudo apt-get install -y python3.6
 sudo apt install -y python3-pip
 
+# Install zip and unzip utilities
+sudo apt install -y zip unzip
+
 sudo su - ubuntu
 
 # Create Python 3.6 virtual environment
