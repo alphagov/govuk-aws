@@ -140,6 +140,7 @@ module "transition-postgresql-standby_rds_instance" {
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot        = "${var.skip_final_snapshot}"
+  parameter_group_name       = "${aws_db_parameter_group.parameter_group.name}"
 }
 
 resource "aws_route53_record" "replica_service_record" {
