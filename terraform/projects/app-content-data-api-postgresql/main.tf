@@ -114,6 +114,18 @@ resource "aws_db_parameter_group" "content_data_api" {
     value = 10000
   }
 
+  # Enable queries slower than 10000ms to be logged
+  parameter {
+    name  = "log_min_duration_statement"
+    value = "10000"
+  }
+
+  # Log all types of logs
+  parameter {
+    name  = "log_statement"
+    value = "all"
+  }
+
   tags {
     aws_stackname = "${var.stackname}"
   }
@@ -137,22 +149,6 @@ module "content-data-api-postgresql-primary_rds_instance" {
   event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot  = "${var.skip_final_snapshot}"
   snapshot_identifier  = "${var.snapshot_identifier}"
-  parameter_group_name = "${aws_db_parameter_group.parameter_group.name}"
-}
-
-resource "aws_db_parameter_group" "parameter_group" {
-  name   = "rds-pg"
-  family = "postgres9.6"
-
-  parameter {
-    name  = "log_min_duration_statement"
-    value = "10000"
-  }
-
-  parameter {
-    name  = "log_statement"
-    value = "all"
-  }
 }
 
 resource "aws_route53_record" "service_record" {
