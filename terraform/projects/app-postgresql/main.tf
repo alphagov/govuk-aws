@@ -96,6 +96,21 @@ data "aws_route53_zone" "internal" {
   private_zone = true
 }
 
+resource "aws_db_parameter_group" "postgresql_pg" {
+  name_prefix = "postgresql-pg-"
+  family      = "postgres9.6"
+
+  parameter {
+    name  = "log_min_duration_statement"
+    value = "10000"
+  }
+
+  parameter {
+    name  = "log_statement"
+    value = "all"
+  }
+}
+
 module "postgresql-primary_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
@@ -115,22 +130,7 @@ module "postgresql-primary_rds_instance" {
   event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot   = "${var.skip_final_snapshot}"
   snapshot_identifier   = "${var.snapshot_identifier}"
-  parameter_group_name  = "${aws_db_parameter_group.parameter_group.name}"
-}
-
-resource "aws_db_parameter_group" "parameter_group" {
-  name   = "rds-pg"
-  family = "postgres9.6"
-
-  parameter {
-    name  = "log_min_duration_statement"
-    value = "10000"
-  }
-
-  parameter {
-    name  = "log_statement"
-    value = "all"
-  }
+  parameter_group_name  = "${aws_db_parameter_group.postgresql_pg.name}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -155,7 +155,7 @@ module "postgresql-standby_rds_instance" {
   replicate_source_db        = "${module.postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot        = "${var.skip_final_snapshot}"
-  parameter_group_name       = "${aws_db_parameter_group.parameter_group.name}"
+  parameter_group_name       = "${aws_db_parameter_group.postgresql_pg.name}"
 }
 
 resource "aws_route53_record" "replica_service_record" {
