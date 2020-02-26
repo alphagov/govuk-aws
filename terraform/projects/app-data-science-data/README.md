@@ -1,8 +1,8 @@
-## Project: app-knowledge-graph
+## Project: app-data-science-data
 
-Knowledge graph
+Data science data
 
-The central knowledge graph which can be used to ask questions of GOV.UK content.
+A central place where data is generated on a daily basis to be used by multiple data science projects, including related links and the knowledge graph.
 
 ## Providers
 
@@ -18,9 +18,7 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 |------|-------------|------|---------|:-----:|
 | aws\_environment | AWS environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
-| elb\_external\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
-| external\_domain\_name | The domain name of the external DNS records, it could be different from the zone name | `string` | n/a | yes |
-| external\_zone\_name | The name of the Route53 zone that contains external records | `string` | n/a | yes |
+| remote\_state\_app\_knowledge\_graph\_key\_stack | Override app\_knowledge\_graph remote state path | `string` | `""` | no |
 | remote\_state\_app\_related\_links\_key\_stack | Override stackname path to app\_related\_links remote state | `string` | `""` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_database\_backups\_bucket\_key\_stack | Override stackname path to infra\_database\_backups\_bucket remote state | `string` | `""` | no |
@@ -34,8 +32,5 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| data-infrastructure-bucket\_name | Bucket to store data for data platform |
-| read\_write\_data\_infrastructure\_bucket\_policy\_arn | Policy ARN to read and write to the data-infrastructure-data bucket |
+No output.
 

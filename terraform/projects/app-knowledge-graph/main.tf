@@ -215,7 +215,7 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
   image_id = "${data.aws_ami.neo4j_community_ami.id}"
 
-  instance_type = "r4.2xlarge"
+  instance_type = "m4.large"
 
   vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}"]
 
@@ -233,7 +233,7 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
     device_name = "/dev/sda1"
 
     ebs {
-      volume_size = 64
+      volume_size = 32
     }
   }
 
@@ -263,7 +263,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-up"
-  recurrence             = "0 9 * * MON-SUN"
+  recurrence             = "0 9 * * MON-FRI"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 1
@@ -273,15 +273,6 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-down"
   recurrence             = "55 17 * * MON-FRI"
-  min_size               = -1
-  max_size               = -1
-  desired_capacity       = 0
-}
-
-resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down-weekend" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
-  scheduled_action_name  = "knowledge-graph_schedule-spin-down-weekend"
-  recurrence             = "55 9 * * SAT-SUN"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
@@ -353,4 +344,17 @@ resource "aws_elb" "knowledge-graph_elb_external" {
   tags {
     Name = "${var.stackname}-knowledge-graph-external"
   }
+}
+
+# Outputs
+# --------------------------------------------------------------
+
+output "data-infrastructure-bucket_name" {
+  value       = "${aws_s3_bucket.data_infrastructure_bucket.id}"
+  description = "Bucket to store data for data platform"
+}
+
+output "read_write_data_infrastructure_bucket_policy_arn" {
+  value       = "${aws_iam_policy.read_write_data_infrastructure_bucket_policy.arn}"
+  description = "Policy ARN to read and write to the data-infrastructure-data bucket"
 }

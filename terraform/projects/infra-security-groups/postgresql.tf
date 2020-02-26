@@ -83,7 +83,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_db-admin_postgres
   source_security_group_id = "${aws_security_group.db-admin.id}"
 }
 
-resource "aws_security_group_rule" "postgresql-primary_ingress_knowledge-graph_postgres" {
+resource "aws_security_group_rule" "postgresql-primary_ingress_data-science-data_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
@@ -93,5 +93,5 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_knowledge-graph_p
   security_group_id = "${aws_security_group.postgresql-primary.id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.knowledge-graph.id}"
+  source_security_group_id = "${aws_security_group.data-science-data.id}"
 }
