@@ -53,7 +53,7 @@ variable "allocated_storage" {
 variable "max_allocated_storage" {
   type        = "string"
   description = "current maximum storage in GB that AWS can autoscale the RDS storage to, 0 means disabled autoscaling"
-  default     = "0"
+  default     = "100"
 }
 
 variable "storage_type" {
