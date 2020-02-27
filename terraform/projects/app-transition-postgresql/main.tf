@@ -110,7 +110,7 @@ module "transition-postgresql-primary_rds_instance" {
   username              = "${var.username}"
   password              = "${var.password}"
   allocated_storage     = "120"
-  max_allocated_storage = "150"
+  max_allocated_storage = "500"
   instance_class        = "${var.instance_type}"
   instance_name         = "${var.stackname}-transition-postgresql-primary"
   multi_az              = "${var.multi_az}"
