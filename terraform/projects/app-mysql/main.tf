@@ -45,7 +45,7 @@ variable "snapshot_identifier" {
   default     = ""
 }
 
-variable "storage_size" {
+variable "allocated_storage" {
   type        = "string"
   description = "Defines the AWS RDS storage capacity, in gigabytes."
   default     = "100"
@@ -101,7 +101,7 @@ module "mysql_primary_rds_instance" {
   subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username              = "${var.username}"
   password              = "${var.password}"
-  allocated_storage     = "${var.storage_size}"
+  allocated_storage     = "${var.allocated_storage}"
   max_allocated_storage = "${var.max_allocated_storage}"
   instance_class        = "${var.instance_type}"
   security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_mysql-primary_id}"]
@@ -161,7 +161,7 @@ module "mysql_replica_rds_instance" {
   source                     = "../../modules/aws/rds_instance"
   name                       = "${var.stackname}-mysql-replica"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mysql-replica")}"
-  allocated_storage          = "${var.storage_size}"
+  allocated_storage          = "${var.allocated_storage}"
   max_allocated_storage      = "${var.max_allocated_storage}"
   instance_class             = "${var.instance_type}"
   instance_name              = "${var.stackname}-mysql-replica"

@@ -102,22 +102,23 @@ resource "aws_db_parameter_group" "app_transition_pg" {
 module "transition-postgresql-primary_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
-  name                 = "${var.stackname}-transition-postgresql-primary"
-  engine_name          = "postgres"
-  engine_version       = "9.6"
-  default_tags         = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
-  subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
-  username             = "${var.username}"
-  password             = "${var.password}"
-  allocated_storage    = "120"
-  instance_class       = "${var.instance_type}"
-  instance_name        = "${var.stackname}-transition-postgresql-primary"
-  multi_az             = "${var.multi_az}"
-  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
-  event_sns_topic_arn  = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
-  skip_final_snapshot  = "${var.skip_final_snapshot}"
-  snapshot_identifier  = "${var.snapshot_identifier}"
-  parameter_group_name = "${aws_db_parameter_group.app_transition_pg.name}"
+  name                  = "${var.stackname}-transition-postgresql-primary"
+  engine_name           = "postgres"
+  engine_version        = "9.6"
+  default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
+  subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  username              = "${var.username}"
+  password              = "${var.password}"
+  allocated_storage     = "120"
+  max_allocated_storage = "150"
+  instance_class        = "${var.instance_type}"
+  instance_name         = "${var.stackname}-transition-postgresql-primary"
+  multi_az              = "${var.multi_az}"
+  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
+  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  skip_final_snapshot   = "${var.skip_final_snapshot}"
+  snapshot_identifier   = "${var.snapshot_identifier}"
+  parameter_group_name  = "${aws_db_parameter_group.app_transition_pg.name}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -137,6 +138,8 @@ module "transition-postgresql-standby_rds_instance" {
   instance_name              = "${var.stackname}-transition-postgresql-standby"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
   create_replicate_source_db = "1"
+  allocated_storage          = "120"
+  max_allocated_storage      = "150"
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot        = "${var.skip_final_snapshot}"
