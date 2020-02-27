@@ -13,6 +13,7 @@ RDS Mysql Primary instance
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
+| allocated\_storage | Defines the AWS RDS storage capacity, in gigabytes. | `string` | `"100"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | cloudwatch\_log\_retention | Number of days to retain Cloudwatch logs for | `string` | n/a | yes |
@@ -31,7 +32,6 @@ RDS Mysql Primary instance
 | skip\_final\_snapshot | Set to true to NOT create a final snapshot when the cluster is deleted. | `string` | n/a | yes |
 | snapshot\_identifier | Specifies whether or not to create the database from this snapshot | `string` | `""` | no |
 | stackname | Stackname | `string` | n/a | yes |
-| storage\_size | Defines the AWS RDS storage capacity, in gigabytes. | `string` | `"100"` | no |
 | username | Mysql username | `string` | n/a | yes |
 
 ## Outputs
