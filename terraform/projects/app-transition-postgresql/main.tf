@@ -139,7 +139,7 @@ module "transition-postgresql-standby_rds_instance" {
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
   create_replicate_source_db = "1"
   allocated_storage          = "120"
-  max_allocated_storage      = "150"
+  max_allocated_storage      = "500"
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
   skip_final_snapshot        = "${var.skip_final_snapshot}"
