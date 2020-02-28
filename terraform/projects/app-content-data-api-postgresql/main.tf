@@ -142,7 +142,7 @@ module "content-data-api-postgresql-primary_rds_instance" {
   username              = "${var.username}"
   password              = "${var.password}"
   allocated_storage     = "1024"
-  max_allocated_storage = "1100"
+  max_allocated_storage = "1300"
   instance_class        = "${var.instance_type}"
   instance_name         = "${var.stackname}-content-data-api-postgresql-primary"
   multi_az              = "${var.multi_az}"
