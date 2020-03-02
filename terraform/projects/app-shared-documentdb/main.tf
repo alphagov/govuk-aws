@@ -9,6 +9,21 @@ variable "aws_environment" {
   description = "AWS environment"
 }
 
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 variable "aws_region" {
   type        = "string"
   description = "AWS region"
@@ -133,6 +148,14 @@ resource "aws_docdb_cluster" "cluster" {
     Name     = "shared-documentdb"
     Source   = "app-shared-documentdb"
   }
+}
+
+resource "aws_route53_record" "share-documentdb_internal_service_cname" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "shared-documentdb.${var.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${aws_docdb_cluster.cluster.endpoint}"]
 }
 
 # Outputs

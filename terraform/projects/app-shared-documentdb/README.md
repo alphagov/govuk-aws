@@ -19,6 +19,8 @@ Shared DocumentDB to support the following apps:
 | backup\_retention\_period | Retention period in days for DocumentDB automatic snapshots | `string` | `"1"` | no |
 | instance\_count | Instance count used for DocumentDB resources | `string` | `"3"` | no |
 | instance\_type | Instance type used for DocumentDB resources | `string` | `"db.r5.large"` | no |
+| internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
+| internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | master\_password | Password of master user on DocumentDB cluster | `string` | n/a | yes |
 | master\_username | Username of master user on DocumentDB cluster | `string` | n/a | yes |
 | profiler | Whether to log slow queries to CloudWatch. Must be either 'enabled' or 'disabled'. | `string` | `"enabled"` | no |
