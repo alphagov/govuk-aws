@@ -220,6 +220,23 @@ resource "aws_iam_role_policy_attachment" "db-admin_elasticache_iam_role_policy_
   policy_arn = "${aws_iam_policy.db-admin_elasticache_iam_policy.arn}"
 }
 
+resource "aws_iam_policy" "assets_env_sync_s3_writer" {
+  count       = "${var.aws_environment == "production" ? 1 : 0}"
+  name        = "govuk-${var.aws_environment}-asset-manager-env-sync-s3-writer-policy"
+  description = "Read prod assets buckets, read/write integration/staging assets buckets. Should exist in Prod only."
+  policy      = "${data.template_file.assets_env_sync_s3_writer_policy_template.rendered}"
+}
+
+resource "aws_iam_role_policy_attachment" "assets_env_sync_s3_writer" {
+  count      = "${var.aws_environment == "production" ? 1 : 0}"
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.assets_env_sync_s3_writer.arn}"
+}
+
+data "template_file" "assets_env_sync_s3_writer_policy_template" {
+  template = "${file("s3_assets_sync_policy.tpl")}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

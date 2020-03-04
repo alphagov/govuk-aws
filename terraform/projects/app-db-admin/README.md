@@ -10,6 +10,7 @@ These nodes connect to RDS instances and administer them.
 |------|---------|
 | aws | 2.46.0 |
 | null | n/a |
+| template | n/a |
 | terraform | n/a |
 
 ## Inputs
