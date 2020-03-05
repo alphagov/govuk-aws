@@ -173,3 +173,17 @@ resource "aws_security_group_rule" "ithc_ingress_cache_ssh" {
   cidr_blocks       = "${var.ithc_access_ips}"
   security_group_id = "${aws_security_group.cache_ithc_access.id}"
 }
+
+# Allow the prometheus instances to scrape router's metrics
+resource "aws_security_group_rule" "cache_ingress_prometheus_router" {
+  type      = "ingress"
+  from_port = 3055
+  to_port   = 3055
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.cache.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.prometheus.id}"
+}
