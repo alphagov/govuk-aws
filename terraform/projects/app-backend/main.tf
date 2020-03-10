@@ -172,6 +172,46 @@ resource "aws_route53_record" "app_service_records_external" {
   ttl     = "300"
 }
 
+module "internal_lb" {
+  source                           = "../../modules/aws/lb"
+  name                             = "govuk-backend-internal"
+  internal                         = true
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix        = "elb/govuk-backend-internal-elb"
+  listener_certificate_domain_name = "${var.elb_internal_certname}"
+
+  listener_action = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_internal_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+
+  default_tags = {
+    Project         = "${var.stackname}"
+    aws_migration   = "backend"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+module "internal_lb_rules" {
+  source                 = "../../modules/aws/lb_listener_rules"
+  name                   = "backend-i"
+  autoscaling_group_name = "${module.backend.autoscaling_group_name}"
+  rules_host_domain      = "*"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn           = "${module.internal_lb.load_balancer_ssl_listeners[0]}"
+  rules_host             = ["${var.app_service_records}"]
+
+  default_tags = {
+    Project         = "${var.stackname}"
+    aws_migration   = "backend"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
 resource "aws_elb" "backend_elb_internal" {
   name            = "${var.stackname}-backend-internal"
   subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
