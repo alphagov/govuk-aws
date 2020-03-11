@@ -255,8 +255,8 @@ resource "aws_route53_record" "service_record_internal" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.backend_elb_internal.dns_name}"
-    zone_id                = "${aws_elb.backend_elb_internal.zone_id}"
+    name                   = "${module.internal_lb.lb_dns_name}"
+    zone_id                = "${module.internal_lb.lb_zone_id}"
     evaluate_target_health = true
   }
 }
@@ -329,7 +329,7 @@ module "alarms-elb-backend-external" {
 # --------------------------------------------------------------
 
 output "backend_elb_internal_address" {
-  value       = "${aws_elb.backend_elb_internal.dns_name}"
+  value       = "${module.internal_lb.lb_dns_name}"
   description = "AWS' internal DNS name for the backend ELB"
 }
 
