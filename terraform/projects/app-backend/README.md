@@ -18,11 +18,7 @@ Backend node
 | asg\_size | The autoscaling groups desired/max/min capacity | `string` | `"2"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
-| create\_external\_elb | Create the external ELB | `bool` | `true` | no |
-| elb\_external\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
-| external\_domain\_name | The domain name of the external DNS records, it could be different from the zone name | `string` | n/a | yes |
-| external\_zone\_name | The name of the Route53 zone that contains external records | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |
 | instance\_type | Instance type used for EC2 resources | `string` | `"m5.2xlarge"` | no |
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
@@ -41,10 +37,7 @@ Backend node
 
 | Name | Description |
 |------|-------------|
-| app\_service\_records\_external\_dns\_name | DNS name to access the app service records |
 | app\_service\_records\_internal\_dns\_name | DNS name to access the app service records |
-| backend\_elb\_external\_address | AWS' external DNS name for the backend ELB |
 | backend\_elb\_internal\_address | AWS' internal DNS name for the backend ELB |
-| service\_dns\_name\_external | DNS name to access the node service |
 | service\_dns\_name\_internal | DNS name to access the node service |
 
