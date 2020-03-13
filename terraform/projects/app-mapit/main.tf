@@ -125,7 +125,7 @@ resource "aws_elb" "mapit_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:80"
+    target   = "HTTP:80/postcode/W54XA"
     interval = 30
   }
 
