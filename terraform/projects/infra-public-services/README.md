@@ -117,5 +117,7 @@ This project adds global resources for app components:
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| default\_waf\_acl | GOV.UK default regional WAF ACL |
 
