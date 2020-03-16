@@ -205,3 +205,8 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
     }
   }
 }
+
+output "default_waf_acl" {
+  value       = "${aws_wafregional_web_acl.default.id}"
+  description = "GOV.UK default regional WAF ACL"
+}
