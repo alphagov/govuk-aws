@@ -17,7 +17,7 @@ RDS PostgreSQL instances
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | cloudwatch\_log\_retention | Number of days to retain Cloudwatch logs for | `string` | n/a | yes |
-| instance\_type | Instance type used for RDS resources | `string` | `"db.m5.8xlarge"` | no |
+| instance\_type | Instance type used for RDS resources | `string` | `"db.m5.12xlarge"` | no |
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | max\_allocated\_storage | current maximum storage in GB that AWS can autoscale the RDS storage to | `string` | `"500"` | no |
