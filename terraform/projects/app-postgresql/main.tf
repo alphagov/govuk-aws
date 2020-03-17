@@ -131,6 +131,8 @@ module "postgresql-primary_rds_instance" {
   skip_final_snapshot   = "${var.skip_final_snapshot}"
   snapshot_identifier   = "${var.snapshot_identifier}"
   parameter_group_name  = "${aws_db_parameter_group.postgresql_pg.name}"
+  monitoring_interval   = "60"
+  monitoring_role_arn   = "${data.terraform_remote_state.infra_monitoring.rds_enhanced_monitoring_role_arn}"
 }
 
 resource "aws_route53_record" "service_record" {
