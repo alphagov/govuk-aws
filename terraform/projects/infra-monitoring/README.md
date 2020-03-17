@@ -25,6 +25,7 @@ Create resources to manage infrastructure and app monitoring:
 | aws\_secondary\_region | Secondary AWS region | `string` | `"eu-west-2"` | no |
 | cyber\_slunk\_aws\_account\_id | AWS account ID of the Cyber S3 bucket where aws logging will be replicated | `string` | `"na"` | no |
 | cyber\_slunk\_s3\_bucket\_name | Name of the Cyber S3 bucket where aws logging will be replicated | `string` | `"na"` | no |
+| rds\_enhanced\_monitoring\_role\_name | Name of the IAM role to create for RDS Enhanced Monitoring. | `string` | `"rds-monitoring-role"` | no |
 | stackname | Stackname | `string` | `""` | no |
 
 ## Outputs
@@ -37,6 +38,7 @@ Create resources to manage infrastructure and app monitoring:
 | firehose\_logs\_role\_arn | ARN of the Kinesis Firehose stream AWS credentials |
 | lambda\_logs\_role\_arn | ARN of the IAM role attached to the Lambda logs Function |
 | lambda\_rds\_logs\_to\_s3\_role\_arn | ARN of the IAM role attached to the Lambda RDS logs to S3 Function |
+| rds\_enhanced\_monitoring\_role\_arn | The ARN of the IAM role for RDS Enhanced Monitoring |
 | sns\_topic\_autoscaling\_group\_events\_arn | ARN of the SNS topic for ASG events |
 | sns\_topic\_cloudwatch\_alarms\_arn | ARN of the SNS topic for CloudWatch alarms |
 | sns\_topic\_rds\_events\_arn | ARN of the SNS topic for RDS events |
