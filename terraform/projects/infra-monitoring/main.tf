@@ -33,6 +33,12 @@ variable "cyber_slunk_aws_account_id" {
   default     = "na"
 }
 
+variable "rds_enhanced_monitoring_role_name" {
+  description = "Name of the IAM role to create for RDS Enhanced Monitoring."
+  type        = "string"
+  default     = "rds-monitoring-role"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -293,6 +299,36 @@ resource "aws_sqs_queue_policy" "notifications_sqs_queue_policy" {
   policy    = "${data.template_file.notifications_sqs_queue_policy_template.rendered}"
 }
 
+# IAM role and policy for RDS Enhanced Monitoring
+
+data "aws_iam_policy_document" "rds_enhanced_monitoring" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  name               = "${var.rds_enhanced_monitoring_role_name}"
+  assume_role_policy = "${data.aws_iam_policy_document.rds_enhanced_monitoring.json}"
+
+  tags = {
+    "Name"        = "${var.rds_enhanced_monitoring_role_name}"
+    "Environment" = "${var.aws_environment}"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
+  role       = "${aws_iam_role.rds_enhanced_monitoring.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -334,4 +370,9 @@ output "sns_topic_autoscaling_group_events_arn" {
 output "sns_topic_rds_events_arn" {
   value       = "${aws_sns_topic.notifications.arn}"
   description = "ARN of the SNS topic for RDS events"
+}
+
+output "rds_enhanced_monitoring_role_arn" {
+  description = "The ARN of the IAM role for RDS Enhanced Monitoring"
+  value       = "${aws_iam_role.rds_enhanced_monitoring.arn}"
 }
