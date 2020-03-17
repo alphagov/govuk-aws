@@ -27,6 +27,8 @@ Create an RDS instance
 | instance\_name | The RDS Instance Name. | `string` | `""` | no |
 | maintenance\_window | The window to perform maintenance in. | `string` | `"Mon:04:00-Mon:06:00"` | no |
 | max\_allocated\_storage | current maximum storage in GB that AWS can autoscale the RDS storage to, 0 means disabled autoscaling | `string` | `"100"` | no |
+| monitoring\_interval | Collection interval in seconds for Enhanced Monitoring metrics. Default is 0, which disables Enhanced Monitoring. Valid values are 0, 1, 5, 10, 15, 30, 60. | `string` | `"0"` | no |
+| monitoring\_role\_arn | ARN of the IAM role which lets RDS send Enhanced Monitoring logs to CloudWatch. Must be specified if monitoring\_interval is non-zero. | `string` | `""` | no |
 | multi\_az | Specifies if the RDS instance is multi-AZ | `string` | `true` | no |
 | name | The common name for all the resources created by this module | `string` | n/a | yes |
 | parameter\_group\_name | Name of the parameter group to make the instance a member of. | `string` | `""` | no |

@@ -33,6 +33,7 @@ RDS PostgreSQL instances
 | skip\_final\_snapshot | Set to true to NOT create a final snapshot when the cluster is deleted. | `string` | n/a | yes |
 | snapshot\_identifier | Specifies whether or not to create the database from this snapshot | `string` | `""` | no |
 | stackname | Stackname | `string` | n/a | yes |
+| standby\_instance\_type | Instance type used for standby RDS | `string` | `"db.m5.4xlarge"` | no |
 | username | PostgreSQL username | `string` | n/a | yes |
 
 ## Outputs
