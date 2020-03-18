@@ -67,6 +67,13 @@ variable "instance_type" {
   default     = "db.m5.12xlarge"
 }
 
+# TODO: confirm that the standby instance is unused and if so, decommission it.
+variable "standby_instance_type" {
+  type        = "string"
+  description = "Instance type used for standby RDS"
+  default     = "db.m5.4xlarge"
+}
+
 variable "allocated_storage" {
   type        = "string"
   description = "current set minimum storage in GB for the RDS"
@@ -131,6 +138,8 @@ module "postgresql-primary_rds_instance" {
   skip_final_snapshot   = "${var.skip_final_snapshot}"
   snapshot_identifier   = "${var.snapshot_identifier}"
   parameter_group_name  = "${aws_db_parameter_group.postgresql_pg.name}"
+  monitoring_interval   = "60"
+  monitoring_role_arn   = "${data.terraform_remote_state.infra_monitoring.rds_enhanced_monitoring_role_arn}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -146,7 +155,7 @@ module "postgresql-standby_rds_instance" {
 
   name                       = "${var.stackname}-postgresql-standby"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "postgresql_standby")}"
-  instance_class             = "${var.instance_type}"
+  instance_class             = "${var.standby_instance_type}"
   instance_name              = "${var.stackname}-postgresql-standby"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_postgresql-primary_id}"]
   create_replicate_source_db = "1"

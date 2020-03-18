@@ -181,6 +181,18 @@ variable "terraform_delete_rds_timeout" {
   default     = "2h"
 }
 
+variable "monitoring_interval" {
+  type        = "string"
+  description = "Collection interval in seconds for Enhanced Monitoring metrics. Default is 0, which disables Enhanced Monitoring. Valid values are 0, 1, 5, 10, 15, 30, 60."
+  default     = "0"
+}
+
+variable "monitoring_role_arn" {
+  type        = "string"
+  description = "ARN of the IAM role which lets RDS send Enhanced Monitoring logs to CloudWatch. Must be specified if monitoring_interval is non-zero."
+  default     = ""
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -205,6 +217,8 @@ resource "aws_db_instance" "db_instance_replica" {
   vpc_security_group_ids = ["${var.security_group_ids}"]
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"
+  monitoring_interval    = "${var.monitoring_interval}"
+  monitoring_role_arn    = "${var.monitoring_role_arn}"
 
   timeouts {
     create = "${var.terraform_create_rds_timeout}"
@@ -238,6 +252,8 @@ resource "aws_db_instance" "db_instance" {
   backup_window           = "${var.backup_window}"
   copy_tags_to_snapshot   = "${var.copy_tags_to_snapshot}"
   snapshot_identifier     = "${var.snapshot_identifier}"
+  monitoring_interval     = "${var.monitoring_interval}"
+  monitoring_role_arn     = "${var.monitoring_role_arn}"
 
   timeouts {
     create = "${var.terraform_create_rds_timeout}"
