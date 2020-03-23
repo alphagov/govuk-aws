@@ -354,6 +354,10 @@ output "sg_search_id" {
   value = "${aws_security_group.search.id}"
 }
 
+output "sg_search-ltr-generation_id" {
+  value = "${aws_security_group.search-ltr-generation.id}"
+}
+
 output "sg_static_carrenza_alb_id" {
   value = "${aws_security_group.static_carrenza_alb.id}"
 }
