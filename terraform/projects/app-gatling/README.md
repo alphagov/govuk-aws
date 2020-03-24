@@ -14,9 +14,9 @@ Gatling node
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| asg\_desired\_capacity | The autoscaling groups desired capacity | `string` | `"0"` | no |
-| asg\_max\_size | The autoscaling groups max\_size | `string` | `"0"` | no |
-| asg\_min\_size | The autoscaling groups max\_size | `string` | `"0"` | no |
+| asg\_desired\_capacity | The autoscaling groups desired capacity | `string` | `"1"` | no |
+| asg\_max\_size | The autoscaling groups max\_size | `string` | `"1"` | no |
+| asg\_min\_size | The autoscaling groups min\_size | `string` | `"1"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | ebs\_encrypted | Whether or not the EBS volume is encrypted | `string` | n/a | yes |
