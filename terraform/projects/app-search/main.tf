@@ -450,6 +450,112 @@ data "aws_iam_policy_document" "ecr-usage" {
   }
 }
 
+resource "aws_iam_instance_profile" "learntorank-generation" {
+  name = "govuk-${var.aws_environment}-search-ltr-generation"
+  role = "${module.search.instance_iam_role_name}"
+}
+
+resource "aws_key_pair" "learntorank-generation-key" {
+  key_name   = "govuk-${var.aws_environment}-search-ltr-generation-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDGNF9QVcjq9LUioccV8Fw161BrM3EHPRtwzp+2IRaYrgpwgBoIxgK2q1LLrLSwcoLfbDyU3dW0cMN0wpbxFzHTFuDqzm5fdAzhijZJCKMyPtMSPOhUev+/JfHVZj7JGXHV2SOMM1Q1XkEBwgenPmR2Hz6fMs3+R/LdeNkMTU1H/fOXl6WU9DY1XAUdYzfufRXiDt2aCGCOknAWqOAdT+22FZcmgc657tt9xbOJYzVoEAqBArCxixpf5N7Tha0QUac8QGQQxw01LENHRN1S4NLtvUEBqI3m99f8NleOlO4eD7XBkcwPXMrFP7/4IqAPq+JgoD2OrDSX3HiE8HNtJTLr0vmP5plBiwH3Bd+32oILQiw4HqXt8JpTfr/fAJXlsHCmYkxlEzhhZ46H1VZsgU9BM69C/bWTvGWCFAYrWbu2vt9Gbo1nbZVTQjLBfKgY3vxk5Tmj4b43AGI1tprPdBh43IdQvvYu9oiTodzxetaQoK8fUMKPVoQruPJNfKcu3Yukm8DvVmwQqoAgik5iYk7up9gX1L//L0dJIpjWSlU5ytpmG+M5k+Abbg+kkIjnCXXkS2Icwnh3BEIvxLIt9MaMf89Lxi4Jin1uNu727Z9cXGRp8Fyz5GdDEKz37P5k7jFEV70KYLwl3r7qxp66RafXgRx/fRRVHdTNf43O6UqDUQ== concourse-worker"
+}
+
+data "aws_ami" "ubuntu_bionic" {
+  most_recent = true
+
+  # canonical
+  owners = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+}
+
+resource "aws_launch_template" "learntorank-generation" {
+  name          = "govuk-${var.aws_environment}-search-ltr-generation"
+  image_id      = "${data.aws_ami.ubuntu_bionic.id}"
+  instance_type = "c5.large"
+
+  vpc_security_group_ids = [
+    "${data.terraform_remote_state.infra_security_groups.sg_search-ltr-generation_id}",
+  ]
+
+  key_name = "${aws_key_pair.learntorank-generation-key.key_name}"
+
+  iam_instance_profile {
+    name = "${aws_iam_instance_profile.learntorank-generation.name}"
+  }
+
+  instance_initiated_shutdown_behavior = "terminate"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size = 32
+    }
+  }
+}
+
+resource "aws_autoscaling_group" "learntorank-generation" {
+  name             = "govuk-${var.aws_environment}-search-ltr-generation"
+  min_size         = 0
+  max_size         = 1
+  desired_capacity = 0
+
+  launch_template {
+    id      = "${aws_launch_template.learntorank-generation.id}"
+    version = "$Latest"
+  }
+
+  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+
+  tag {
+    key                 = "Name"
+    value               = "govuk-${var.aws_environment}-search-ltr-generation"
+    propagate_at_launch = true
+  }
+}
+
+data "aws_iam_policy_document" "scale-learntorank-generation-asg" {
+  statement {
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "ec2:DescribeInstances",
+      "ec2:DescribeInstanceStatus",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "autoscaling:SetDesiredCapacity",
+    ]
+
+    resources = [
+      "${aws_autoscaling_group.learntorank-generation.arn}",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "scale-learntorank-generation-asg-policy" {
+  name   = "govuk-${var.aws_environment}-scale-search-ltr-generation-asg"
+  policy = "${data.aws_iam_policy_document.scale-learntorank-generation-asg.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "scale-learntorank-generation" {
+  role       = "${aws_iam_role.learntorank.name}"
+  policy_arn = "${aws_iam_policy.scale-learntorank-generation-asg-policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

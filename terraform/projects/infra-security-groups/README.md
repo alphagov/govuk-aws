@@ -128,6 +128,7 @@ Manage the security groups for the entire infrastructure
 | sg\_router-api\_elb\_id | n/a |
 | sg\_router-backend\_id | n/a |
 | sg\_search-api\_external\_elb\_id | n/a |
+| sg\_search-ltr-generation\_id | n/a |
 | sg\_search\_elb\_id | n/a |
 | sg\_search\_id | n/a |
 | sg\_shared\_documentdb\_id | n/a |
