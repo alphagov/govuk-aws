@@ -97,4 +97,10 @@ cd govuk-knowledge-graph
 chmod +x ./build_knowledge_graph_data
 
 # Run knowledge graph build script
-./build_knowledge_graph_data -d ${data_infrastructure_bucket_name}
+touch /var/tmp/data_generation_process.log
+./build_knowledge_graph_data -d ${data_infrastructure_bucket_name} > /var/tmp/data_generation_process.log
+
+# Copy logs across to S3
+date_today=$(date '+%F')
+aws s3 cp /var/tmp/data_generation_process.log s3://${data_infrastructure_bucket_name}/knowledge-graph/$date_today/data_generation_process.log
+aws s3 cp /var/log/cloud-init-output.log s3://${data_infrastructure_bucket_name}/knowledge-graph/$date_today/cloud-init-output.log
