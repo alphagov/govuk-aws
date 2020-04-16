@@ -27,8 +27,6 @@ function usage {
   get-context              Get the current context.
   list-contexts            Show the available contexts.
 
-  ssh [options]            Run "$0 ssh help" for details.
-
   help                     Show this help.
 
   Set the GOVUKCLI_OUTPUT environment variable to
@@ -43,22 +41,15 @@ EOF
 
 function ssh_usage {
   cat << EOF
-  Usage: govukcli ssh [options]
+  DEPRECATED: Use the "gds govuk connect" command instead
 
-  By default it will expect a Puppet node class (eg backend, frontend), and
-  will attempt to SSH to a random instance within that class. If only a single
-  instance exists, then it will SSH to that instance (eg puppetmaster,
-  jenkins).
+    - Run "brew tap alphagov/gds; brew install gds-cli govuk-connect"
 
-  Options:
-
-  set-user <username>  Set a different username to SSH with than the default
-                       shell user ($(whoami)).
-
-  node-types           List the types of instances available to connect to.
-
-  node-list <machine>  List the machines for a particular node. Try node-list whitehall_backend.
-
+    - To SSH to a GOV.UK Integration backend machine:
+        gds govuk connect -e integration ssh backend
+    - To SSH into a GOV.UK Carrenza Production monitoring machine:
+        gds govuk connect -e production ssh carrenza/monitoring
+    - Read the "gds govuk connect --help" output for more command examples!
 EOF
 }
 
