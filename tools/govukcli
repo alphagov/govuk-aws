@@ -62,25 +62,6 @@ function ssh_usage {
 EOF
 }
 
-function aws_usage {
-  cat << EOF
-    DEPRECATED: Use the gds-cli instead.
-
-    - Run "brew install alphagov/gds/gds-cli"
-    - Read the setup and usage instructions at https://docs.publishing.service.gov.uk/manual/gds-cli.html.
-
-    Examples:
-
-    - To assume-role into GOV.UK Integration as a PowerUser and get an AWS Console:
-        gds aws govuk-integration-poweruser -l
-
-    - To assume-role into GOV.UK Production as a PlatformHealthPowerUser and export some access keys for Terraform:
-        gds aws govuk-production-platformhealth-poweruser -e
-
-    - Read the README or play around for more command examples!
-EOF
-}
-
 # Set regex for allowed things
 ALLOWED_CONTEXTS=$(echo "^(${CONTEXTS})$" | sed 's/ /\|/g')
 
@@ -287,7 +268,6 @@ case ${COMMAND} in
   'list-contexts') list_contexts;;
   'set-context') set_context $1;;
   'ssh') run_ssh "$@";;
-  'aws') run_aws "$@";;
   'help') usage ;;
   *) usage ;;
 esac
