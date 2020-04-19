@@ -1,13 +1,15 @@
 name: govuk-aws-linting
-on:
-  pull_request: []
+on: [push, pull_request]
 jobs:
-  terraform-docs-and-shellcheck:
+  lint:
     runs-on: macos-latest
     steps:
-      - name: Clone repo
-        uses: actions/checkout@v2
-      - name: Check docs
+      - uses: actions/checkout@v2
+
+      - name: bundle install
+        run: bundle install
+
+      - name: Docs Check
         run: |
           brew install terraform-docs
           echo "Checking the updatedness of README files..."
@@ -17,10 +19,28 @@ jobs:
             echo "The documentation isn't up to date. You should run ./tools/update-docs.sh and commit the results."
             exit 1
           fi
+
       - name: Shellcheck
         run: |
           brew install shellcheck
 
           echo "Running shellcheck..."
           shellcheck -e SC2086,SC1117 jenkins.sh tools/govukcli tools/*.sh terraform/userdata/*
-          
+
+      - name: terraform fmt
+        run: |
+          brew install tfenv
+          tfenv install
+          find . -name '*.tf' | xargs tools/terraform-format.sh
+
+      - name: RSpec
+        run: bundle exec rspec spec/validate_resources_spec.rb   
+
+      - name: Lint Resource Names
+        run: bundle exec lib/resource_name_lint.rb
+
+      - name: JSON Check
+        run: find . -name '*.json' | xargs tools/json-check.sh
+
+      - name: ADR Check
+        run: tools/adr-check.sh
