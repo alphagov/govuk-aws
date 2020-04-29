@@ -73,6 +73,12 @@ variable "listener_secondary_certificate_domain_name" {
   default     = ""
 }
 
+variable "listener_internal_certificate_domain_name" {
+  type        = "string"
+  description = "HTTPS Listener internal certificate domain name."
+  default     = ""
+}
+
 variable "listener_ssl_policy" {
   type        = "string"
   description = "The name of the SSL Policy for HTTPS listeners."
@@ -181,6 +187,12 @@ data "aws_acm_certificate" "secondary_cert" {
   statuses = ["ISSUED"]
 }
 
+data "aws_acm_certificate" "internal_cert" {
+  count    = "${var.listener_internal_certificate_domain_name == "" ? 0 : 1}"
+  domain   = "${var.listener_internal_certificate_domain_name}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_lb" "lb" {
   name               = "${var.name}"
   internal           = "${var.internal}"
@@ -241,6 +253,12 @@ resource "aws_lb_listener_certificate" "secondary" {
   count           = "${var.listener_secondary_certificate_domain_name == ""? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
   listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
   certificate_arn = "${data.aws_acm_certificate.secondary_cert.0.arn}"
+}
+
+resource "aws_lb_listener_certificate" "internal" {
+  count           = "${var.listener_internal_certificate_domain_name == ""? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
+  listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
+  certificate_arn = "${data.aws_acm_certificate.internal_cert.0.arn}"
 }
 
 locals {

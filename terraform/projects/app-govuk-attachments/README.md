@@ -2,6 +2,12 @@
 
 Creates S3 bucket for asset master attachments storage
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+
 ## Providers
 
 | Name | Version |
@@ -11,7 +17,7 @@ Creates S3 bucket for asset master attachments storage
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | additional\_policy\_attachment\_roles | Additional roles to attach to the readwrite policy, for legacy compatibility. | `list` | `[]` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |

@@ -2,6 +2,13 @@
 
 Router backend hosts both Mongo and router-api
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +20,7 @@ Router backend hosts both Mongo and router-api
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |

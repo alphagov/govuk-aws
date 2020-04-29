@@ -2,6 +2,13 @@
 
 RDS Mysql Primary instance
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ RDS Mysql Primary instance
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | allocated\_storage | Defines the AWS RDS storage capacity, in gigabytes. | `string` | `"100"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |

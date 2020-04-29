@@ -5,6 +5,12 @@ Creates S3 bucket for mysql xtrabackups
 Migrated from:  
 https://github.com/alphagov/govuk-terraform-provisioning/tree/master/old-projects/mysql_xtrabackups
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+
 ## Providers
 
 | Name | Version |
@@ -14,7 +20,7 @@ https://github.com/alphagov/govuk-terraform-provisioning/tree/master/old-project
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | bucket\_name | n/a | `string` | `"govuk-mysql-xtrabackups"` | no |

@@ -2,6 +2,14 @@
 
 Stores ActiveStorage blobs uploaded via Content Publisher.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -14,7 +22,7 @@ Stores ActiveStorage blobs uploaded via Content Publisher.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | aws\_replica\_region | AWS region | `string` | `"eu-west-2"` | no |

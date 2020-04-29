@@ -2,6 +2,13 @@
 
 Search application servers
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +20,7 @@ Search application servers
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | app\_service\_records | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
 | asg\_desired\_capacity | The desired capacity of the autoscaling group | `string` | `"2"` | no |
 | asg\_max\_size | The maximum size of the autoscaling group | `string` | `"2"` | no |

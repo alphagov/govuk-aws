@@ -20,6 +20,15 @@ This module creates the following.
      - AWS SNS subscription
      - AWS IAM roles and polisis for SNS and Lambda.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+| aws | 2.46.0 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -33,7 +42,7 @@ This module creates the following.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | artefact\_source | Identifies the source artefact environment | `string` | n/a | yes |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |

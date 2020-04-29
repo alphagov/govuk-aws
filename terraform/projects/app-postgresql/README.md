@@ -2,6 +2,13 @@
 
 RDS PostgreSQL instances
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ RDS PostgreSQL instances
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | allocated\_storage | current set minimum storage in GB for the RDS | `string` | `"300"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |

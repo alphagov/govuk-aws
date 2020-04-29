@@ -2,6 +2,13 @@
 
 RDS PostgreSQL instance for the Content Data API
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ RDS PostgreSQL instance for the Content Data API
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | cloudwatch\_log\_retention | Number of days to retain Cloudwatch logs for | `string` | n/a | yes |

@@ -2,6 +2,13 @@
 
 Licensify Backend nodes
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +20,7 @@ Licensify Backend nodes
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | app\_service\_records | List of application service names that get traffic via the internal LB | `list` | `[]` | no |
 | asg\_size | The autoscaling group's desired/max/min capacity. licensify-feed can only have one master instance and mastership is manually configured. | `string` | `"1"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |

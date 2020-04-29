@@ -3,6 +3,13 @@
 Creates the base VPC layer for an AWS stack, with VPC flow logs  
 and resources to export these logs to S3
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +20,7 @@ and resources to export these logs to S3
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | cloudwatch\_log\_retention | Number of days to retain Cloudwatch logs for | `string` | n/a | yes |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |

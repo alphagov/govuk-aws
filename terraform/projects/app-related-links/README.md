@@ -4,6 +4,13 @@ Related Links
 
 Run resource intensive scripts for data science purposes.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 1.40.0 |
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +22,7 @@ Run resource intensive scripts for data science purposes.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | concourse\_aws\_account\_id | AWS account ID which contains the Concourse role | `string` | n/a | yes |

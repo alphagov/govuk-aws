@@ -2,6 +2,13 @@
 
 This module creates the environment certificates
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ This module creates the environment certificates
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | n/a | yes |
 | certificate\_external\_domain\_name | Domain name for which the external certificate should be issued | `string` | n/a | yes |
 | certificate\_external\_subject\_alternative\_names | List of domains that should be SANs in the external issued certificate | `list` | `[]` | no |

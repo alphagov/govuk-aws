@@ -31,6 +31,10 @@ AWS/ApplicationELB metrics reference:
 
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html#load-balancer-metric-dimensions-alb
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -41,7 +45,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollect
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | access\_logs\_bucket\_name | The S3 bucket name to store the logs in. | `string` | n/a | yes |
 | access\_logs\_bucket\_prefix | The S3 prefix name to store the logs in. | `string` | `""` | no |
 | alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | `[]` | no |
@@ -53,6 +57,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollect
 | internal | If true, the LB will be internal. | `string` | `true` | no |
 | listener\_action | A map of Load Balancer Listener and default target group action, both specified as PROTOCOL:PORT. | `map` | n/a | yes |
 | listener\_certificate\_domain\_name | HTTPS Listener certificate domain name. | `string` | `""` | no |
+| listener\_internal\_certificate\_domain\_name | HTTPS Listener internal certificate domain name. | `string` | `""` | no |
 | listener\_secondary\_certificate\_domain\_name | HTTPS Listener secondary certificate domain name. | `string` | `""` | no |
 | listener\_ssl\_policy | The name of the SSL Policy for HTTPS listeners. | `string` | `"ELBSecurityPolicy-2016-08"` | no |
 | load\_balancer\_type | The type of load balancer to create. Possible values are application or network. The default value is application. | `string` | `"application"` | no |

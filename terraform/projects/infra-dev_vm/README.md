@@ -6,6 +6,12 @@ Vagrantfile
 Mifrated from:  
 https://github.com/alphagov/govuk-terraform-provisioning/tree/master/old-projects/dev_vm
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +21,7 @@ https://github.com/alphagov/govuk-terraform-provisioning/tree/master/old-project
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | bucket\_name | n/a | `string` | `"govuk-dev-boxes"` | no |

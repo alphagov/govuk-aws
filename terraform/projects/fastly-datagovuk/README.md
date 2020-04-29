@@ -2,6 +2,12 @@
 
 Manages the Fastly service for data.gov.uk
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +19,7 @@ Manages the Fastly service for data.gov.uk
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | backend\_domain | The domain of the data.gov.uk PaaS instance to forward requests to | `string` | n/a | yes |

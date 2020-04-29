@@ -22,6 +22,10 @@ subnet_availability_zones = {
 }
 ```
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -31,7 +35,7 @@ subnet_availability_zones = {
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | route\_table\_public\_id | The ID of the route table in the VPC | `string` | n/a | yes |
 | subnet\_availability\_zones | A map of which AZs the subnets should be created in. | `map` | n/a | yes |

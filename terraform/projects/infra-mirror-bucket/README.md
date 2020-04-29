@@ -5,6 +5,15 @@ mirror files and a replica s3 bucket which tracks the primary s3 bucket.
 
 The primary bucket should be in London and the backup in Ireland.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+| aws | 2.46.0 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -20,7 +29,7 @@ The primary bucket should be in London and the backup in Ireland.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | app\_mirrorer\_stackname | Stackname of the app mirrorer | `string` | n/a | yes |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region where primary s3 bucket is located | `string` | `"eu-west-2"` | no |

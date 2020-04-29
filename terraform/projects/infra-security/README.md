@@ -7,6 +7,13 @@ Infrastructure security settings:
  - Default SSH key
  - SOPS KMS key
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -16,7 +23,7 @@ Infrastructure security settings:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | role\_admin\_policy\_arns | List of ARNs of policies to attach to the role | `list` | `[]` | no |

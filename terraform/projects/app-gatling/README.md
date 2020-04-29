@@ -2,6 +2,13 @@
 
 Gatling node
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +20,7 @@ Gatling node
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | asg\_desired\_capacity | The autoscaling groups desired capacity | `string` | `"0"` | no |
 | asg\_max\_size | The autoscaling groups max\_size | `string` | `"0"` | no |
 | asg\_min\_size | The autoscaling groups min\_size | `string` | `"0"` | no |

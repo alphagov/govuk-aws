@@ -2,6 +2,13 @@
 
 This module governs the creation of full network stacks.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ This module governs the creation of full network stacks.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | private\_subnet\_availability\_zones | Map containing private subnet names and availability zones associated | `map` | n/a | yes |
 | private\_subnet\_cidrs | Map containing private subnet names and CIDR associated | `map` | n/a | yes |

@@ -14,6 +14,13 @@ and we use the name schema `<service>.<stackname>.<root_domain>`
 The outputs of this project should be used by the stacks to create the right  
 service records on the internal and external DNS zones.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -24,7 +31,7 @@ service records on the internal and external DNS zones.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | create\_external\_zone | Create an external DNS zone (default true) | `string` | `true` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |

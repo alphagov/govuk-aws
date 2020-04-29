@@ -4,6 +4,13 @@ This creates an s3 bucket
 
 datagovuk-organogram-bucket: A bucket to hold data.gov.uk organogram files
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +22,7 @@ datagovuk-organogram-bucket: A bucket to hold data.gov.uk organogram files
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | domain | The domain of the data.gov.uk service to manage | `string` | n/a | yes |

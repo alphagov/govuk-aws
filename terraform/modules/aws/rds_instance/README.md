@@ -2,6 +2,10 @@
 
 Create an RDS instance
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -11,7 +15,7 @@ Create an RDS instance
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | allocated\_storage | The allocated storage in gigabytes. | `string` | `"10"` | no |
 | backup\_retention\_period | The days to retain backups for. | `string` | `"7"` | no |
 | backup\_window | The daily time range during which automated backups are created if automated backups are enabled. | `string` | `"01:00-03:00"` | no |

@@ -13,6 +13,10 @@ values can be configured with variables, but will be the same for all the target
 so at the moment only one condition can be specified per rule
  - At the moment this module only implements Host Header based rules
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -22,12 +26,13 @@ so at the moment only one condition can be specified per rule
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | autoscaling\_group\_name | Name of ASG to associate with the target group. An empty value does not create any attachment to the LB target group. | `string` | `""` | no |
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | listener\_arn | ARN of the listener. | `string` | n/a | yes |
 | name | Prefix of the target group names. The final name is name-rulename. | `string` | n/a | yes |
 | priority\_offset | first priority number assigned to the rules managed by the module. | `string` | `1` | no |
+| rules\_for\_existing\_target\_groups | create an additional rule for a target group already created via rules\_host | `map` | `{}` | no |
 | rules\_host | A list with the values to create Host-header based listener rules and target groups. | `list` | `[]` | no |
 | rules\_host\_domain | Host header domain to append to the hosts in rules\_host. | `string` | `"*"` | no |
 | target\_group\_deregistration\_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused. | `string` | `300` | no |

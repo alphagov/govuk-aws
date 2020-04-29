@@ -13,6 +13,10 @@ parsed by a Logstash filter
   - send the log event to a Kinesis Firehose stream, that will  
 be configured to store the events in a S3 bucket
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -22,7 +26,7 @@ be configured to store the events in a S3 bucket
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | firehose\_bucket\_arn | The ARN of the Kinesis Firehose stream S3 bucket | `string` | n/a | yes |
 | firehose\_bucket\_prefix | The extra prefix to be added in front of the default time format prefix to the Kinesis Firehose stream S3 bucket | `string` | n/a | yes |
 | firehose\_role\_arn | The ARN of the Kinesis Firehose stream AWS credentials | `string` | n/a | yes |

@@ -16,6 +16,10 @@ You can specify a list of Classic ELB ids to attach to the Autoscaling Group
 with the `instance_elb_ids` variable, or alternatively a list of Target Group ARNs  
 to use with Application Load Balancers with the `instance_target_group_arns` variable.
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -26,7 +30,7 @@ to use with Application Load Balancers with the `instance_target_group_arns` var
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | asg\_desired\_capacity | The autoscaling groups desired capacity | `string` | `"1"` | no |
 | asg\_health\_check\_grace\_period | The time to wait after creation before checking the status of the instance | `string` | `"60"` | no |
 | asg\_max\_size | The autoscaling groups max\_size | `string` | `"1"` | no |
