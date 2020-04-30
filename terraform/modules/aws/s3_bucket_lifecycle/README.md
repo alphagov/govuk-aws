@@ -2,6 +2,10 @@
 
 This module creates s3 buckets with predefined lifecycle rules
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -11,7 +15,7 @@ This module creates s3 buckets with predefined lifecycle rules
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | bucket\_name | Name of bucket to create | `string` | n/a | yes |
 | current\_expiration\_days | Number of days to keep current versions | `string` | `"5"` | no |

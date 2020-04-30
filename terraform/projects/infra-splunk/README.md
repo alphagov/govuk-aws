@@ -2,6 +2,13 @@
 
 Role and policy for Splunk Discovery delegated by the Cyber Security Team
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -11,7 +18,7 @@ Role and policy for Splunk Discovery delegated by the Cyber Security Team
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 
 ## Outputs

@@ -4,6 +4,13 @@ This project adds global resources for app components:
   - public facing LBs and DNS entries
   - internal DNS entries
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +22,7 @@ This project adds global resources for app components:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | app\_stackname | Stackname of the app projects in this environment | `string` | `"blue"` | no |
 | apt\_internal\_service\_names | n/a | `list` | `[]` | no |
 | apt\_public\_service\_cnames | n/a | `list` | `[]` | no |

@@ -17,6 +17,10 @@ AWS/ApplicationELB metrics reference:
 
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html#load-balancer-metric-dimensions-alb
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -26,7 +30,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollect
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | `[]` | no |
 | alb\_arn\_suffix | The ALB ARN suffix for use with CloudWatch Metrics. | `string` | n/a | yes |
 | httpcode\_elb\_4xx\_count\_threshold | The value against which the HTTPCode\_ELB\_4XX\_Count metric is compared. | `string` | `"0"` | no |

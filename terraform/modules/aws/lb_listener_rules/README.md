@@ -13,6 +13,10 @@ values can be configured with variables, but will be the same for all the target
 so at the moment only one condition can be specified per rule
  - At the moment this module only implements Host Header based rules
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -22,7 +26,7 @@ so at the moment only one condition can be specified per rule
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | autoscaling\_group\_name | Name of ASG to associate with the target group. An empty value does not create any attachment to the LB target group. | `string` | `""` | no |
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | listener\_arn | ARN of the listener. | `string` | n/a | yes |

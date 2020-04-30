@@ -2,6 +2,14 @@
 
 Manage the security groups for the entire infrastructure
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+| fastly | 0.1.2 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +21,7 @@ Manage the security groups for the entire infrastructure
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | carrenza\_draft\_frontend\_ips | An array of CIDR blocks for the current environment that will allow access to draft-content-store from Carrenza. | `list` | `[]` | no |

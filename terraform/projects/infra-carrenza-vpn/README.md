@@ -2,6 +2,13 @@
 
 Creates a VPN for AWS to connect to Carrenza
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ Creates a VPN for AWS to connect to Carrenza
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | aws\_tunnel1\_psk | Explicit PSK in format required by Carrenza | `string` | n/a | yes |
 | aws\_tunnel2\_psk | Explicit PSK in format required by Carrenza | `string` | n/a | yes |

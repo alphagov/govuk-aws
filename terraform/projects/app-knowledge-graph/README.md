@@ -4,6 +4,13 @@ Knowledge graph
 
 The central knowledge graph which can be used to ask questions of GOV.UK content.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 1.40.0 |
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +22,7 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | elb\_external\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
