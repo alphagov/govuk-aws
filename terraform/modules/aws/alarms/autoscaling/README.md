@@ -12,6 +12,10 @@ AWS/Autoscaling metrics reference:
 
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/as-metricscollected.html
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -21,7 +25,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/as-metricscollecte
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | n/a | yes |
 | autoscaling\_group\_name | The name of the AutoScalingGroup that we want to monitor. | `string` | n/a | yes |
 | groupinserviceinstances\_threshold | The value against which the Autoscaling GroupInServiceInstaces metric is compared. | `string` | `"1"` | no |

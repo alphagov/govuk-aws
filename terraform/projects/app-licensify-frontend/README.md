@@ -2,6 +2,13 @@
 
 Licensify Frontend nodes
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -13,7 +20,7 @@ Licensify Frontend nodes
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | app\_service\_records | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
 | asg\_size | The autoscaling groups desired/max/min capacity | `string` | `"2"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |

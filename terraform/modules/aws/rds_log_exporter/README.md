@@ -6,6 +6,10 @@ and scheduled event.
 The Lambda function filename needs to be provided. The module creates  
 a scheduled Cloudwatch event to trigger the Lambda function.
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +19,7 @@ a scheduled Cloudwatch event to trigger the Lambda function.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | lambda\_event\_schedule\_expression | Cloudwatch event schedule expression that triggers the Lambda function | `string` | `"rate(5 minutes)"` | no |
 | lambda\_filename | The path to the Lambda function's deployment package within the local filesystem | `string` | n/a | yes |
 | lambda\_log\_retention\_in\_days | Specifies the number of days you want to retain log events in the Lambda function log group | `string` | `"1"` | no |

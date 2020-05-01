@@ -5,18 +5,25 @@ Managed Elasticsearch 6 cluster
 This project has two gotchas, where we work around things terraform  
 doesn't support:
 
-- Deploying the cluster across 3 availability zones: terraform has
-  some built-in validation which rejects using 3 master nodes and 3
-  data nodes across 3 availability zones.  To provision a new
-  cluster, only use two of everything, then bump the numbers in the
-  AWS console and in the terraform variables - it won't complain
+- Deploying the cluster across 3 availability zones: terraform has  
+  some built-in validation which rejects using 3 master nodes and 3  
+  data nodes across 3 availability zones.  To provision a new  
+  cluster, only use two of everything, then bump the numbers in the  
+  AWS console and in the terraform variables - it won't complain  
   when you next plan.
 
   https://github.com/terraform-providers/terraform-provider-aws/issues/7504
 
-- Configuring a snapshot repository: terraform doesn't support this,
-  and as far as I can tell doesn't have any plans to.  There's a
+- Configuring a snapshot repository: terraform doesn't support this,  
+  and as far as I can tell doesn't have any plans to.  There's a  
   Python script in this directory which sets those up.
+
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
 
 ## Providers
 
@@ -28,7 +35,7 @@ doesn't support:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | cloudwatch\_log\_retention | Number of days to retain Cloudwatch logs for | `string` | `90` | no |

@@ -2,6 +2,10 @@
 
 This module creates a VPC, Internet Gateway and route associated
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -11,7 +15,7 @@ This module creates a VPC, Internet Gateway and route associated
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | cidr | The cidr block of the desired VPC | `string` | n/a | yes |
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | name | A name tag for the VPC | `string` | n/a | yes |

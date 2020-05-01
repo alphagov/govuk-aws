@@ -2,6 +2,13 @@
 
 This module creates the internal and external root DNS zones.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +19,7 @@ This module creates the internal and external root DNS zones.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | create\_external\_zone | Create an external DNS zone (default true) | `string` | `true` | no |
 | create\_internal\_zone | Create an internal DNS zone (default true) | `string` | `true` | no |

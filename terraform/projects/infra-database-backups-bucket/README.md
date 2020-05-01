@@ -4,6 +4,14 @@ This creates an s3 bucket
 
 database-backups: The bucket that will hold database backups
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -16,7 +24,7 @@ database-backups: The bucket that will hold database backups
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_backup\_region | AWS region | `string` | `"eu-west-2"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |

@@ -34,6 +34,10 @@ map. This is necessary to get around a Terraform issue that prevents a
 "count" from evaluating computed values. Probably referenced here:  
 https://github.com/hashicorp/terraform/issues/10857
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -43,7 +47,7 @@ https://github.com/hashicorp/terraform/issues/10857
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | subnet\_availability\_zones | A map of which AZs the subnets should be created in. | `map` | n/a | yes |
 | subnet\_cidrs | A map of the CIDRs for the subnets being created. | `map` | n/a | yes |

@@ -4,6 +4,13 @@ Configures a user and role to allow the govuk-repo-mirror Concourse pipeline
 to push to AWS CodeCommit (the user is used by the Jenkins  
 Deploy\_App job and the role is used by the Concourse mirroring job)
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 2.46.0 |
+
 ## Providers
 
 | Name | Version |
@@ -14,7 +21,7 @@ Deploy\_App job and the role is used by the Concourse mirroring job)
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | concourse\_role\_arn | The role ARN of the role that Concourse uses to assume the govuk\_concourse\_codecommit\_role role | `string` | n/a | yes |

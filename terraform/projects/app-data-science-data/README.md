@@ -4,6 +4,13 @@ Data science data
 
 A central place where data is generated on a daily basis to be used by multiple data science projects, including related links and the knowledge graph.
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | = 0.11.14 |
+| aws | 1.40.0 |
+
 ## Providers
 
 | Name | Version |
@@ -15,7 +22,7 @@ A central place where data is generated on a daily basis to be used by multiple 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | aws\_environment | AWS environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | remote\_state\_app\_knowledge\_graph\_key\_stack | Override app\_knowledge\_graph remote state path | `string` | `""` | no |

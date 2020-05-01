@@ -12,6 +12,10 @@ during 2 consecutive periods.
 AWS/ElastiCache metrics reference:  
 http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elasticache-metricscollected.html
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -21,7 +25,7 @@ http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elasticache-metric
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | n/a | yes |
 | cache\_cluster\_id | The ID of the cache cluster that we want to monitor. | `string` | n/a | yes |
 | cpuutilization\_threshold | The value against which the CPUUtilization metric is compared, in percent. | `string` | `"80"` | no |

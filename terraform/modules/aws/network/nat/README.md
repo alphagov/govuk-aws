@@ -3,6 +3,10 @@
 Create a NAT gateway and associated EIP on each one of the public  
 subnets provided.
 
+## Requirements
+
+No requirements.
+
 ## Providers
 
 | Name | Version |
@@ -12,7 +16,7 @@ subnets provided.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | subnet\_ids | List of public subnet IDs where you want to create a NAT Gateway | `list` | n/a | yes |
 | subnet\_ids\_length | Length of subnet\_ids variable | `string` | n/a | yes |
 
