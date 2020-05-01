@@ -158,7 +158,7 @@ resource "aws_lb_listener_rule" "routing" {
 resource "aws_lb_listener_rule" "existing_target_groups" {
   count        = "${length(keys(var.rules_for_existing_target_groups))}"
   listener_arn = "${var.listener_arn}"
-  priority     = "${count.index + var.priority_offset + length(var.rules_host) + 1}"
+  priority     = "${count.index + var.priority_offset + length(var.rules_host)}"
 
   action {
     type             = "forward"
