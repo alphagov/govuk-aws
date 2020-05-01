@@ -33,6 +33,12 @@
 * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html#load-balancer-metric-dimensions-alb
 */
 
+variable "allow_routing_for_absent_host_header_rules" {
+  type        = "string"
+  description = "If true, the ALB will route to backend hosts. Otherwise, a 400 error will be returned"
+  default     = "true"
+}
+
 variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"
@@ -230,8 +236,14 @@ resource "aws_lb_listener" "listener_non_ssl" {
   protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))), 0)}"
 
   default_action {
-    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))}")}"
-    type             = "forward"
+    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true"? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))}"):""}"
+    type             = "${var.allow_routing_for_absent_host_header_rules == "true"? "forward" : "fixed-response"}"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "host header is invalid for this endpoint"
+      status_code  = "400"
+    }
   }
 }
 
@@ -244,8 +256,14 @@ resource "aws_lb_listener" "listener" {
   certificate_arn   = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
 
   default_action {
-    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}")}"
-    type             = "forward"
+    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true"? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}"):""}"
+    type             = "${var.allow_routing_for_absent_host_header_rules == "true"? "forward" : "fixed-response"}"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "host header is invalid for this endpoint"
+      status_code  = "400"
+    }
   }
 }
 

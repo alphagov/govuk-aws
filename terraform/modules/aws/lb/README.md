@@ -49,6 +49,7 @@ No requirements.
 | access\_logs\_bucket\_name | The S3 bucket name to store the logs in. | `string` | n/a | yes |
 | access\_logs\_bucket\_prefix | The S3 prefix name to store the logs in. | `string` | `""` | no |
 | alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | `[]` | no |
+| allow\_routing\_for\_absent\_host\_header\_rules | If true, the ALB will route to backend hosts. Otherwise, a 400 error will be returned | `string` | `"true"` | no |
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | httpcode\_elb\_4xx\_count\_threshold | The value against which the HTTPCode\_ELB\_4XX\_Count metric is compared. | `string` | `"0"` | no |
 | httpcode\_elb\_5xx\_count\_threshold | The value against which the HTTPCode\_ELB\_5XX\_Count metric is compared. | `string` | `"80"` | no |
