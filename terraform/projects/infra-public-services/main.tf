@@ -64,6 +64,11 @@ variable "backend_alb_blocked_host_headers" {
   default = []
 }
 
+variable "backend_allow_routing_for_absent_host_header_rules" {
+  type    = "string"
+  default = "true"
+}
+
 variable "backend_public_service_names" {
   type    = "list"
   default = []
@@ -545,7 +550,7 @@ module "backend_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-backend-public"
   internal                                   = false
-  allow_routing_for_absent_host_header_rules = "false"
+  allow_routing_for_absent_host_header_rules = "${var.backend_allow_routing_for_absent_host_header_rules}"
   vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-backend-public-elb"

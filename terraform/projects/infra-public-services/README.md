@@ -31,6 +31,7 @@ This project adds global resources for app components:
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | backend\_alb\_blocked\_host\_headers | n/a | `list` | `[]` | no |
+| backend\_allow\_routing\_for\_absent\_host\_header\_rules | n/a | `string` | `"true"` | no |
 | backend\_internal\_service\_cnames | n/a | `list` | `[]` | no |
 | backend\_internal\_service\_names | n/a | `list` | `[]` | no |
 | backend\_internal\_service\_redirected\_via\_public\_cnames | n/a | `list` | `[]` | no |
