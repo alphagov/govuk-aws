@@ -63,7 +63,6 @@ Manage the security groups for the entire infrastructure
 | sg\_cache\_id | n/a |
 | sg\_calculators-frontend\_elb\_id | n/a |
 | sg\_calculators-frontend\_id | n/a |
-| sg\_calendars\_carrenza\_alb\_id | n/a |
 | sg\_ckan\_elb\_external\_id | n/a |
 | sg\_ckan\_elb\_internal\_id | n/a |
 | sg\_ckan\_id | n/a |

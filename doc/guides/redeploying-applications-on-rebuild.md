@@ -72,7 +72,6 @@ static
 
 ```
 calculators
-calendars
 finder-frontend
 licencefinder
 smartanswers
