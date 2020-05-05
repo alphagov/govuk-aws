@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "static_ingress_static-carrenza-alb_http" {
   source_security_group_id = "${aws_security_group.static_carrenza_alb.id}"
 }
 
-# Security resources for ALB set up for Carrenza access to AWS calendars
+# Security resources for ALB set up for Carrenza access to AWS
 
 resource "aws_security_group" "static_carrenza_alb" {
   name        = "${var.stackname}_static_carrenza_alb"
