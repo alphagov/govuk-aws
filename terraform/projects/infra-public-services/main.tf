@@ -32,6 +32,11 @@ variable "elb_public_secondary_certname" {
   description = "The ACM secondary cert domain name to find the ARN of"
 }
 
+variable "elb_public_internal_certname" {
+  type        = "string"
+  description = "The ACM secondary cert domain name to find the ARN of"
+}
+
 variable "app_stackname" {
   type        = "string"
   description = "Stackname of the app projects in this environment"
@@ -59,6 +64,11 @@ variable "backend_alb_blocked_host_headers" {
   default = []
 }
 
+variable "backend_allow_routing_for_absent_host_header_rules" {
+  type    = "string"
+  default = "true"
+}
+
 variable "backend_public_service_names" {
   type    = "list"
   default = []
@@ -67,6 +77,17 @@ variable "backend_public_service_names" {
 variable "backend_public_service_cnames" {
   type    = "list"
   default = []
+}
+
+variable "backend_renamed_public_service_cnames" {
+  type    = "list"
+  default = []
+}
+
+variable "backend_rules_for_existing_target_groups" {
+  type        = "map"
+  description = "create an additional rule for a target group already created via rules_host"
+  default     = {}
 }
 
 variable "bouncer_public_service_names" {
@@ -235,6 +256,11 @@ variable "backend_internal_service_names" {
 }
 
 variable "backend_internal_service_cnames" {
+  type    = "list"
+  default = []
+}
+
+variable "backend_internal_service_redirected_via_public_cnames" {
   type    = "list"
   default = []
 }
@@ -519,11 +545,13 @@ module "backend_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-backend-public"
   internal                                   = false
+  allow_routing_for_absent_host_header_rules = "${var.backend_allow_routing_for_absent_host_header_rules}"
   vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-backend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  listener_internal_certificate_domain_name  = "${var.elb_public_internal_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_external_id}"]
@@ -558,15 +586,16 @@ resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
 }
 
 module "backend_public_lb_rules" {
-  source                 = "../../modules/aws/lb_listener_rules"
-  name                   = "backend"
-  autoscaling_group_name = "${data.aws_autoscaling_group.backend.name}"
-  rules_host_domain      = "*"
-  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  listener_arn           = "${module.backend_public_lb.load_balancer_ssl_listeners[0]}"
-  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.backend_public_service_cnames) : ""))}"]
-  priority_offset        = "${length(var.backend_alb_blocked_host_headers) + 1}"
-  default_tags           = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
+  source                           = "../../modules/aws/lb_listener_rules"
+  name                             = "backend"
+  autoscaling_group_name           = "${data.aws_autoscaling_group.backend.name}"
+  rules_host_domain                = "*"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn                     = "${module.backend_public_lb.load_balancer_ssl_listeners[0]}"
+  rules_host                       = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.backend_public_service_cnames) : ""))}"]
+  rules_for_existing_target_groups = "${var.backend_rules_for_existing_target_groups}"
+  priority_offset                  = "${length(var.backend_alb_blocked_host_headers) + 1}"
+  default_tags                     = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
 }
 
 resource "aws_route53_record" "backend_public_service_names" {
@@ -583,9 +612,9 @@ resource "aws_route53_record" "backend_public_service_names" {
 }
 
 resource "aws_route53_record" "backend_public_service_cnames" {
-  count   = "${length(var.backend_public_service_cnames)}"
+  count   = "${length(concat(var.backend_public_service_cnames, var.backend_renamed_public_service_cnames))}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.backend_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  name    = "${element(concat(var.backend_public_service_cnames, var.backend_renamed_public_service_cnames), count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.backend_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
@@ -616,6 +645,15 @@ resource "aws_route53_record" "backend_internal_service_cnames" {
   name    = "${element(var.backend_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.backend_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+resource "aws_route53_record" "backend_internal_service_redirected_via_public_cnames" {
+  count   = "${length(var.backend_internal_service_redirected_via_public_cnames)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.backend_internal_service_redirected_via_public_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.backend_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
 }
 

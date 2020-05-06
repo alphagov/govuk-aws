@@ -32,6 +32,7 @@ No requirements.
 | listener\_arn | ARN of the listener. | `string` | n/a | yes |
 | name | Prefix of the target group names. The final name is name-rulename. | `string` | n/a | yes |
 | priority\_offset | first priority number assigned to the rules managed by the module. | `string` | `1` | no |
+| rules\_for\_existing\_target\_groups | create an additional rule for a target group already created via rules\_host | `map` | `{}` | no |
 | rules\_host | A list with the values to create Host-header based listener rules and target groups. | `list` | `[]` | no |
 | rules\_host\_domain | Host header domain to append to the hosts in rules\_host. | `string` | `"*"` | no |
 | target\_group\_deregistration\_delay | The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused. | `string` | `300` | no |

@@ -33,6 +33,12 @@
 * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/elb-metricscollected.html#load-balancer-metric-dimensions-alb
 */
 
+variable "allow_routing_for_absent_host_header_rules" {
+  type        = "string"
+  description = "If true, the ALB will route to backend hosts. Otherwise, a 400 error will be returned"
+  default     = "true"
+}
+
 variable "default_tags" {
   type        = "map"
   description = "Additional resource tags"
@@ -70,6 +76,12 @@ variable "listener_certificate_domain_name" {
 variable "listener_secondary_certificate_domain_name" {
   type        = "string"
   description = "HTTPS Listener secondary certificate domain name."
+  default     = ""
+}
+
+variable "listener_internal_certificate_domain_name" {
+  type        = "string"
+  description = "HTTPS Listener internal certificate domain name."
   default     = ""
 }
 
@@ -181,6 +193,12 @@ data "aws_acm_certificate" "secondary_cert" {
   statuses = ["ISSUED"]
 }
 
+data "aws_acm_certificate" "internal_cert" {
+  count    = "${var.listener_internal_certificate_domain_name == "" ? 0 : 1}"
+  domain   = "${var.listener_internal_certificate_domain_name}"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_lb" "lb" {
   name               = "${var.name}"
   internal           = "${var.internal}"
@@ -218,8 +236,14 @@ resource "aws_lb_listener" "listener_non_ssl" {
   protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))), 0)}"
 
   default_action {
-    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))}")}"
-    type             = "forward"
+    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true"? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))}"):""}"
+    type             = "${var.allow_routing_for_absent_host_header_rules == "true"? "forward" : "fixed-response"}"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "host header is invalid for this endpoint"
+      status_code  = "400"
+    }
   }
 }
 
@@ -232,8 +256,14 @@ resource "aws_lb_listener" "listener" {
   certificate_arn   = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
 
   default_action {
-    target_group_arn = "${lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}")}"
-    type             = "forward"
+    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true"? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}"):""}"
+    type             = "${var.allow_routing_for_absent_host_header_rules == "true"? "forward" : "fixed-response"}"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "host header is invalid for this endpoint"
+      status_code  = "400"
+    }
   }
 }
 
@@ -241,6 +271,12 @@ resource "aws_lb_listener_certificate" "secondary" {
   count           = "${var.listener_secondary_certificate_domain_name == ""? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
   listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
   certificate_arn = "${data.aws_acm_certificate.secondary_cert.0.arn}"
+}
+
+resource "aws_lb_listener_certificate" "internal" {
+  count           = "${var.listener_internal_certificate_domain_name == ""? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
+  listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
+  certificate_arn = "${data.aws_acm_certificate.internal_cert.0.arn}"
 }
 
 locals {

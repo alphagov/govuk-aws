@@ -102,6 +102,12 @@ variable "target_group_health_check_matcher" {
   default     = "200-399"
 }
 
+variable "rules_for_existing_target_groups" {
+  type        = "map"
+  description = "create an additional rule for a target group already created via rules_host"
+  default     = {}
+}
+
 # Resources
 #--------------------------------------------------------------
 
@@ -146,6 +152,22 @@ resource "aws_lb_listener_rule" "routing" {
   condition {
     field  = "host-header"
     values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
+  }
+}
+
+resource "aws_lb_listener_rule" "existing_target_groups" {
+  count        = "${length(keys(var.rules_for_existing_target_groups))}"
+  listener_arn = "${var.listener_arn}"
+  priority     = "${count.index + var.priority_offset + length(var.rules_host)}"
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.tg.*.arn[index(var.rules_host,var.rules_for_existing_target_groups[element(keys(var.rules_for_existing_target_groups),count.index)])]}"
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["${element(keys(var.rules_for_existing_target_groups),count.index)}.${var.rules_host_domain}"]
   }
 }
 

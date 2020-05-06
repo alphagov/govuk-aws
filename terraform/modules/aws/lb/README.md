@@ -49,6 +49,7 @@ No requirements.
 | access\_logs\_bucket\_name | The S3 bucket name to store the logs in. | `string` | n/a | yes |
 | access\_logs\_bucket\_prefix | The S3 prefix name to store the logs in. | `string` | `""` | no |
 | alarm\_actions | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | `[]` | no |
+| allow\_routing\_for\_absent\_host\_header\_rules | If true, the ALB will route to backend hosts. Otherwise, a 400 error will be returned | `string` | `"true"` | no |
 | default\_tags | Additional resource tags | `map` | `{}` | no |
 | httpcode\_elb\_4xx\_count\_threshold | The value against which the HTTPCode\_ELB\_4XX\_Count metric is compared. | `string` | `"0"` | no |
 | httpcode\_elb\_5xx\_count\_threshold | The value against which the HTTPCode\_ELB\_5XX\_Count metric is compared. | `string` | `"80"` | no |
@@ -57,6 +58,7 @@ No requirements.
 | internal | If true, the LB will be internal. | `string` | `true` | no |
 | listener\_action | A map of Load Balancer Listener and default target group action, both specified as PROTOCOL:PORT. | `map` | n/a | yes |
 | listener\_certificate\_domain\_name | HTTPS Listener certificate domain name. | `string` | `""` | no |
+| listener\_internal\_certificate\_domain\_name | HTTPS Listener internal certificate domain name. | `string` | `""` | no |
 | listener\_secondary\_certificate\_domain\_name | HTTPS Listener secondary certificate domain name. | `string` | `""` | no |
 | listener\_ssl\_policy | The name of the SSL Policy for HTTPS listeners. | `string` | `"ELBSecurityPolicy-2016-08"` | no |
 | load\_balancer\_type | The type of load balancer to create. Possible values are application or network. The default value is application. | `string` | `"application"` | no |

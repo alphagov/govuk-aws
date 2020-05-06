@@ -31,11 +31,15 @@ This project adds global resources for app components:
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | backend\_alb\_blocked\_host\_headers | n/a | `list` | `[]` | no |
+| backend\_allow\_routing\_for\_absent\_host\_header\_rules | n/a | `string` | `"true"` | no |
 | backend\_internal\_service\_cnames | n/a | `list` | `[]` | no |
 | backend\_internal\_service\_names | n/a | `list` | `[]` | no |
+| backend\_internal\_service\_redirected\_via\_public\_cnames | n/a | `list` | `[]` | no |
 | backend\_public\_service\_cnames | n/a | `list` | `[]` | no |
 | backend\_public\_service\_names | n/a | `list` | `[]` | no |
 | backend\_redis\_internal\_service\_names | n/a | `list` | `[]` | no |
+| backend\_renamed\_public\_service\_cnames | n/a | `list` | `[]` | no |
+| backend\_rules\_for\_existing\_target\_groups | create an additional rule for a target group already created via rules\_host | `map` | `{}` | no |
 | bouncer\_internal\_service\_names | n/a | `list` | `[]` | no |
 | bouncer\_public\_service\_names | n/a | `list` | `[]` | no |
 | cache\_internal\_service\_cnames | n/a | `list` | `[]` | no |
@@ -67,6 +71,7 @@ This project adds global resources for app components:
 | draft\_whitehall\_frontend\_internal\_service\_names | n/a | `list` | `[]` | no |
 | elasticsearch6\_internal\_service\_names | n/a | `list` | `[]` | no |
 | elb\_public\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
+| elb\_public\_internal\_certname | The ACM secondary cert domain name to find the ARN of | `string` | n/a | yes |
 | elb\_public\_secondary\_certname | The ACM secondary cert domain name to find the ARN of | `string` | n/a | yes |
 | email\_alert\_api\_internal\_service\_names | n/a | `list` | `[]` | no |
 | email\_alert\_api\_public\_service\_names | n/a | `list` | `[]` | no |
