@@ -130,6 +130,10 @@ resource "aws_lb_target_group" "tg" {
     timeout             = "${var.target_group_health_check_timeout}"
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = "${var.default_tags}"
 }
 
@@ -152,6 +156,10 @@ resource "aws_lb_listener_rule" "routing" {
   condition {
     field  = "host-header"
     values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   depends_on = [
