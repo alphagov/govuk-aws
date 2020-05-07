@@ -153,6 +153,10 @@ resource "aws_lb_listener_rule" "routing" {
     field  = "host-header"
     values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
   }
+
+  depends_on = [
+    "aws_lb_target_group.tg",
+  ]
 }
 
 resource "aws_lb_listener_rule" "existing_target_groups" {
