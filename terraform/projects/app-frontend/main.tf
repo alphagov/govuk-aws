@@ -198,29 +198,9 @@ module "frontend" {
   root_block_device_volume_size     = "${var.root_block_device_volume_size}"
 }
 
-resource "aws_iam_policy" "ec2_access_cloudwatch_policy" {
-  name        = "cloudwatch-ec2-access-${var.aws_environment}-policy"
-  description = "Allows Cloudwatch to send data from an ec2 instance. Used to collect logs."
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-              "Service": "ec2.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        }
-    ]
-}
-EOF
-}
-
 resource "aws_iam_role_policy_attachment" "ec2_access_cloudwatch_policy_iam_role_policy_attachment" {
   role       = "${module.frontend.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.ec2_access_cloudwatch_policy.arn}"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 module "alarms-elb-frontend-internal" {
