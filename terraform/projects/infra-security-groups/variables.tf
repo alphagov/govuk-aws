@@ -88,3 +88,15 @@ variable "ithc_access_ips" {
   description = "An array of CIDR blocks that will be allowed temporary access for ITHC purposes."
   default     = []
 }
+
+variable "aws_integration_external_nat_gateway_ips" {
+  type        = "list"
+  description = "An array of public IPs of the AWS integration external NAT gateways."
+  default     = []
+}
+
+variable "aws_staging_external_nat_gateway_ips" {
+  type        = "list"
+  description = "An array of public IPs of the AWS staging external NAT gateways."
+  default     = []
+}
