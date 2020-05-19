@@ -23,7 +23,9 @@ Manage the security groups for the entire infrastructure
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
+| aws\_integration\_external\_nat\_gateway\_ips | An array of public IPs of the AWS integration external NAT gateways. | `list` | `[]` | no |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
+| aws\_staging\_external\_nat\_gateway\_ips | An array of public IPs of the AWS staging external NAT gateways. | `list` | `[]` | no |
 | carrenza\_draft\_frontend\_ips | An array of CIDR blocks for the current environment that will allow access to draft-content-store from Carrenza. | `list` | `[]` | no |
 | carrenza\_env\_ips | An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox. | `list` | `[]` | no |
 | carrenza\_integration\_ips | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | `list` | n/a | yes |

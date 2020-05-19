@@ -78,6 +78,28 @@ resource "aws_security_group_rule" "deploy-elb_ingress_carrenza_https" {
   cidr_blocks       = ["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"]
 }
 
+resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_https" {
+  count     = "${var.aws_environment == "staging" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.deploy_elb.id}"
+  cidr_blocks       = ["${var.aws_integration_external_nat_gateway_ips}"]
+}
+
+resource "aws_security_group_rule" "deploy-elb_ingress_aws_staging_access_https" {
+  count     = "${var.aws_environment == "production" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.deploy_elb.id}"
+  cidr_blocks       = ["${var.aws_staging_external_nat_gateway_ips}"]
+}
+
 resource "aws_security_group_rule" "deploy-elb_egress_any_any" {
   type              = "egress"
   from_port         = 0
