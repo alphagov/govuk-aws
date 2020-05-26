@@ -25,7 +25,7 @@ jobs:
           brew install shellcheck
 
           echo "Running shellcheck..."
-          shellcheck -e SC2086,SC1117 jenkins.sh tools/govukcli tools/*.sh terraform/userdata/*
+          shellcheck -e SC2086,SC1117 jenkins.sh tools/*.sh terraform/userdata/*
 
       - name: terraform fmt
         run: |
