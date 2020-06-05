@@ -236,13 +236,14 @@ resource "aws_iam_policy" "data-science-access-glue" {
 data "aws_iam_policy_document" "data-science-access-sagemaker" {
   statement {
     actions = [
-      "sagemaker:ListNotebookInstances",
-      "sagemaker:DescribeNotebookInstance",
       "sagemaker:CreateNotebookInstance",
-      "sagemaker:UpdateNotebookInstance",
+      "sagemaker:CreatePresignedNotebookInstanceUrl",
+      "sagemaker:DescribeNotebookInstance",
       "sagemaker:DeleteNotebookInstance",
+      "sagemaker:ListNotebookInstances",
       "sagemaker:StartNotebookInstance",
       "sagemaker:StopNotebookInstance",
+      "sagemaker:UpdateNotebookInstance",
     ]
 
     effect    = "Allow"
