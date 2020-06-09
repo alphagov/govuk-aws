@@ -49,7 +49,7 @@ variable "internal_domain_name" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "m5.xlarge"
+  default     = "c5.xlarge"
 }
 
 # Resources

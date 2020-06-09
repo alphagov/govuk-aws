@@ -26,7 +26,7 @@ email-alert-api node
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |
-| instance\_type | Instance type used for EC2 resources | `string` | `"m5.xlarge"` | no |
+| instance\_type | Instance type used for EC2 resources | `string` | `"c5.xlarge"` | no |
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
