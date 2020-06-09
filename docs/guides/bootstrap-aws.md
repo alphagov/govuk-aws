@@ -64,7 +64,7 @@ Now run the source command on the file to make the credentials available for Ter
 
 ## Setting up Terraform work environment
 
-Follow the instructions in govuk-aws [Getting Started](https://github.com/alphagov/govuk-aws/blob/master/doc/guides/getting-started.md) guide to start configuring and deploying resources in the AWS environment.
+Follow the instructions in govuk-aws [Getting Started](https://github.com/alphagov/govuk-aws/blob/master/docs/guides/getting-started.md) guide to start configuring and deploying resources in the AWS environment.
 
 ## Populate initial data for the new environment
 
@@ -72,5 +72,5 @@ In order to run the Terraform projects we will need valid data in the [govuk-aws
 
 ## Provision the new environment
 
-Follow the instructions in govuk-aws [Environment Provisioning](https://github.com/alphagov/govuk-aws/blob/master/doc/guides/environment-provisioning.md) to provision all the components of the environment.
+Follow the instructions in govuk-aws [Environment Provisioning](https://github.com/alphagov/govuk-aws/blob/master/docs/guides/environment-provisioning.md) to provision all the components of the environment.
 

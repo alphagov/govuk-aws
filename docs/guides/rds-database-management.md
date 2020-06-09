@@ -2,7 +2,7 @@
 
 We're using [Amazon Relational Database Service (RDS)](https://aws.amazon.com/rds/) to manage shared MySQL and PostgreSQL backend databases.
 
-Please see the [related ADR](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0018-use-rds-instead-of-provisioned-ec2-databases.md) for context on this decision.
+Please see the [related ADR](https://github.com/alphagov/govuk-aws/blob/master/docs/architecture/decisions/0018-use-rds-instead-of-provisioned-ec2-databases.md) for context on this decision.
 
 There are two exceptions to this:
 
