@@ -15,7 +15,7 @@ tfenv install
 
 ### Data
 
-We split data out from the Terraform manifests. Please see [this ADR for context](https://github.com/alphagov/govuk-aws/blob/master/doc/architecture/decisions/0017-terraform-data-structure.md).
+We split data out from the Terraform manifests. Please see [this ADR for context](https://github.com/alphagov/govuk-aws/blob/master/docs/architecture/decisions/0017-terraform-data-structure.md).
 
 Data used to configure terraform is stored in the [govuk-aws-data](https://github.com/alphagov/govuk-aws-data) repo. Follow the instructions in that repository for up-to-date information on how to work with data.
 
