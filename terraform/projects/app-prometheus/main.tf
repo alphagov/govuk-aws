@@ -35,7 +35,7 @@ variable "prometheus_1_subnet" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "t3.small"
+  default     = "t3.medium"
 }
 
 # Resources
