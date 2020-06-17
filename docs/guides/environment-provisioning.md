@@ -1,6 +1,6 @@
 # Environment Provisioning
 
-This document discusses how to create a new environment in AWS. Discussion as to the decisions taken can be found in the [architecture/decisions](architecture/decisions) directory, of particular note is [the environment bootstrapping process](architecture/decisions/0009-environment-bootstrapping-process.md).
+This document discusses how to create a new environment in AWS. Discussion as to the decisions taken can be found in the [docs/architecture/decisions](/docs/architecture/decisions) directory, of particular note is [the environment bootstrapping process](/docs/architecture/decisions/0009-environment-bootstrapping-process.md).
 
 To clarify terms used here there is a [glossary](#glossary). Throughout this document `<foo>` indicates a value you supply (e.g. a stack name) and:
 ```
