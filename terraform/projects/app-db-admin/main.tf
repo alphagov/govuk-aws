@@ -27,6 +27,12 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
+variable "remote_state_infra_content_publisher_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_content_publisher remote state"
+  default     = ""
+}
+
 variable "remote_state_infra_database_backups_bucket_key_stack" {
   type        = "string"
   description = "Override stackname path to infra_database_backups_bucket remote state"
@@ -165,6 +171,16 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   }
 }
 
+data "terraform_remote_state" "infra_content_publisher_active_storage_buckets" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_content_publisher_key_stack, var.stackname)}/infra-content-publisher.tfstate"
+    region = "${var.aws_region}"
+  }
+}
+
 # All environments should be able to write to the backups bucket for
 # their respective environment.
 resource "aws_iam_role_policy_attachment" "write_db-admin_database_backups_iam_role_policy_attachment" {
@@ -235,6 +251,30 @@ resource "aws_iam_role_policy_attachment" "assets_env_sync_s3_writer" {
 
 data "template_file" "assets_env_sync_s3_writer_policy_template" {
   template = "${file("s3_assets_sync_policy.tpl")}"
+}
+
+resource "aws_iam_role_policy_attachment" "read_from_staging_content_publisher_active_storage_from_integration_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 1 : 0}"
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.staging_content_publisher_active_storage_bucket_reader_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "read_write_from_integration_content_publisher_active_storage_from_integration_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "integration" ? 1 : 0}"
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.integration_content_publisher_active_storage_bucket_reader_writer_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "read_write_from_staging_content_publisher_active_storage_from_staging_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 1 : 0}"
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.staging_content_publisher_active_storage_bucket_reader_writer_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "read_from_production_content_publisher_active_storage_from_staging_iam_role_policy_attachment" {
+  count      = "${var.aws_environment == "staging" ? 1 : 0}"
+  role       = "${module.db-admin.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.production_content_publisher_active_storage_bucket_reader_policy_arn}"
 }
 
 # Outputs
