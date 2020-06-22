@@ -26,6 +26,7 @@ Stores ActiveStorage blobs uploaded via Content Publisher.
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | aws\_replica\_region | AWS region | `string` | `"eu-west-2"` | no |
+| aws\_staging\_account\_root\_arn | root arn of the aws staging account of govuk | `string` | `""` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | `string` | `""` | no |
@@ -39,5 +40,10 @@ Stores ActiveStorage blobs uploaded via Content Publisher.
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| integration\_content\_publisher\_active\_storage\_bucket\_reader\_writer\_policy\_arn | ARN of the staging content publisher storage bucket reader writer policy |
+| production\_content\_publisher\_active\_storage\_bucket\_reader\_policy\_arn | ARN of the production content publisher storage bucket reader policy |
+| staging\_content\_publisher\_active\_storage\_bucket\_reader\_policy\_arn | ARN of the staging content publisher storage bucket reader policy |
+| staging\_content\_publisher\_active\_storage\_bucket\_reader\_writer\_policy\_arn | ARN of the staging content publisher storage bucket reader writer policy |
 
