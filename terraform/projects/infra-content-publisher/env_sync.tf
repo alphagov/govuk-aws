@@ -1,19 +1,30 @@
+variable "aws_test_account_root_arn" {
+  type        = "string"
+  description = "root arn of the aws test account of govuk"
+  default     = ""
+}
+
 variable "aws_staging_account_root_arn" {
   type        = "string"
   description = "root arn of the aws staging account of govuk"
   default     = ""
 }
 
-# Resources
-# --------------------------------------------------------------
-
-resource "aws_s3_bucket_policy" "cross_account_access" {
-  count  = "${var.aws_environment != "production" ? 1 : 0}"
-  bucket = "${aws_s3_bucket.activestorage.id}"
-  policy = "${data.aws_iam_policy_document.cross_account_access.json}"
+variable "aws_integration_account_root_arn" {
+  type        = "string"
+  description = "root arn of the aws integration account of govuk"
+  default     = ""
 }
 
-data "aws_iam_policy_document" "cross_account_access" {
+# Resources
+# --------------------------------------------------------------
+resource "aws_s3_bucket_policy" "test_cross_account_access_to_integration" {
+  count  = "${var.aws_environment == "integration" ? 1 : 0}"
+  bucket = "${aws_s3_bucket.activestorage.id}"
+  policy = "${data.aws_iam_policy_document.test_cross_account_access_to_integration.json}"
+}
+
+data "aws_iam_policy_document" "test_cross_account_access_to_integration" {
   statement {
     effect = "Allow"
 
@@ -21,22 +32,29 @@ data "aws_iam_policy_document" "cross_account_access" {
       type = "AWS"
 
       identifiers = [
-        "arn:aws:iam::210287912431:root", # govuk-infrastructure-integration
-        "arn:aws:iam::696911096973:root", # govuk-infrastructure-staging
-        "arn:aws:iam::172025368201:root", # govuk-infrastructure-production
-        "arn:aws:iam::430354129336:root", # govuk-infrastructure-test
+        "${var.aws_test_account_root_arn}", # govuk-infrastructure-test
       ]
     }
 
     actions = [
-      "s3:ListBucket",
+      "s3:List*",
+      "s3:Get*",
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.activestorage.id}",
+      "arn:aws:s3:::govuk-integration-content-publisher-activestorage",
+      "arn:aws:s3:::govuk-integration-content-publisher-activestorage/*",
     ]
   }
+}
 
+resource "aws_s3_bucket_policy" "integration_cross_account_access_to_staging" {
+  count  = "${var.aws_environment == "staging" ? 1 : 0}"
+  bucket = "${aws_s3_bucket.activestorage.id}"
+  policy = "${data.aws_iam_policy_document.integration_cross_account_access_to_staging.json}"
+}
+
+data "aws_iam_policy_document" "integration_cross_account_access_to_staging" {
   statement {
     effect = "Allow"
 
@@ -44,22 +62,18 @@ data "aws_iam_policy_document" "cross_account_access" {
       type = "AWS"
 
       identifiers = [
-        "arn:aws:iam::210287912431:root", # govuk-infrastructure-integration
-        "arn:aws:iam::696911096973:root", # govuk-infrastructure-staging
-        "arn:aws:iam::172025368201:root", # govuk-infrastructure-production
-        "arn:aws:iam::430354129336:root", # govuk-infrastructure-test
+        "${var.aws_integration_account_root_arn}", # govuk-infrastructure-integration
       ]
     }
 
     actions = [
-      "s3:PutObject",
-      "s3:PutObjectAcl",
-      "s3:GetObject",
-      "s3:DeleteObject",
+      "s3:List*",
+      "s3:Get*",
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.activestorage.id}/*",
+      "arn:aws:s3:::govuk-staging-content-publisher-activestorage",
+      "arn:aws:s3:::govuk-staging-content-publisher-activestorage/*",
     ]
   }
 }
@@ -107,7 +121,7 @@ data "aws_iam_policy_document" "integration_content_publisher_active_storage_rea
     actions = [
       "s3:Get*",
       "s3:List*",
-      "s3:PutObject",
+      "s3:Put*",
       "s3:DeleteObject",
     ]
 
@@ -155,7 +169,7 @@ data "aws_iam_policy_document" "staging_content_publisher_active_storage_reader_
     actions = [
       "s3:Get*",
       "s3:List*",
-      "s3:PutObject",
+      "s3:Put*",
       "s3:DeleteObject",
     ]
 
