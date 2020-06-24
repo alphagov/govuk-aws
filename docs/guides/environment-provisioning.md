@@ -189,7 +189,7 @@ TF_VAR_enable_bootstrap=1 ./tools/build-terraform-project.sh -c apply -p app-pup
 
 If you need to verify the Puppetmaster provisioning, you can access the Puppetmaster using the bootstrap ELB DNS record.
 
-If Puppet master is rebuild (i.e. clients to already have certificates in place) it is then required to cycle the Puppet certificates by deleting the directory /etc/puppet/ssl and run `sudo puppet agent -t` on all nodes before issuing `puppet cert sign --all` on the Puppet master.  
+If the puppetmaster is rebuilt (i.e. clients already have certificates in place) it is then required to cycle the Puppet certificates by deleting the directory /etc/puppet/ssl and run `sudo puppet agent -t` on all nodes before issuing `sudo puppet cert sign --all` on the Puppet master.  
 
 After building a Jumpbox, you should run again Terraform without `enable_bootstrap` to destroy the initial boostrap ELB:
 
