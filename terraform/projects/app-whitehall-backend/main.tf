@@ -174,7 +174,7 @@ resource "aws_iam_role_policy" "whitehall_csvs_policy" {
 
 resource "aws_iam_role_policy_attachment" "whitehall_csvs_attach" {
   role       = "${module.whitehall-backend.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.s3_writer.policy.arn}"
+  policy_arn = "${aws_iam_policy.s3_writer.arn}"
 }
 
 # Outputs
