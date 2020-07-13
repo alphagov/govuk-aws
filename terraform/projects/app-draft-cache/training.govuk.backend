@@ -1,4 +1,0 @@
-bucket  = "govuk-training-terraform-state"
-key     = "govuk/app-draft-cache.tfstate"
-encrypt = true
-region  = "eu-west-2"

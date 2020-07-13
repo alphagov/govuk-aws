@@ -1,4 +1,0 @@
-bucket  = "govuk-training-terraform-state"
-key     = "govuk/app-transition-db-admin.tfstate"
-encrypt = true
-region  = "eu-west-2"
