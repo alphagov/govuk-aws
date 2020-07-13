@@ -63,10 +63,6 @@ function create_backend(){
     exit 1
   fi
 
-  if [[ $ENVIRONMENT == "training" ]]; then
-    BUCKET_NAME="govuk-${ENVIRONMENT}-terraform-state"
-  fi
-
   local BACKEND_FILE="${BACKEND_DIR}/${BACKEND_FILENAME}"
   cat <<EOF > "$BACKEND_FILE"
 bucket  = "${BUCKET_NAME}"
