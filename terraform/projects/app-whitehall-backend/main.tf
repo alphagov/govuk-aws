@@ -136,6 +136,47 @@ module "whitehall-backend" {
   root_block_device_volume_size     = "50"
 }
 
+resource "aws_s3_bucket" "whitehall_csvs" {
+  bucket = "govuk-${var.aws_environment}-whitehall-csvs"
+
+  tags {
+    name            = "govuk-${var.aws_environment}-whitehall-csvs"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-whitehall-csvs/"
+  }
+}
+
+resource "aws_iam_policy" "s3_writer" {
+  name        = "govuk-${var.aws_environment}-whitehall-app-s3-writer-policy"
+  policy      = "${data.template_file.s3_writer_policy_template.rendered}"
+  description = "Allows writing to the govuk-${var.aws_environment}-whitehall-csvs S3 bucket"
+}
+
+data "template_file" "s3_writer_policy_template" {
+  template = "${file("${path.module}/../../policies/whitehall_s3_writer_policy.tpl")}"
+
+  vars {
+    aws_environment = "${var.aws_environment}"
+    bucket          = "${aws_s3_bucket.whitehall_csvs.id}"
+  }
+}
+
+resource "aws_iam_role_policy" "whitehall_csvs_policy" {
+  name = "govuk-${var.aws_environment}-whitehall-csvs-policy"
+  role = "${aws_iam_role.whitehall_csvs_bucket_access_role.id}"
+
+  policy_arn = "${aws_iam_policy.s3_writer.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "whitehall_csvs_attach" {
+  role       = "${module.whitehall-backend.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.whitehall_csvs_bucket_access_role.policy.arn}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 

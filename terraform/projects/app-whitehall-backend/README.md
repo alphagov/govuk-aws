@@ -15,6 +15,7 @@ Whitehall Backend nodes
 |------|---------|
 | aws | 2.46.0 |
 | null | n/a |
+| template | n/a |
 | terraform | n/a |
 
 ## Inputs
