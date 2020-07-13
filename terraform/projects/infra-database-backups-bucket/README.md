@@ -37,7 +37,6 @@ database-backups: The bucket that will hold database backups
 | replication\_setting | Whether replication is Enabled or Disabled | `string` | `"Enabled"` | no |
 | stackname | Stackname | `string` | n/a | yes |
 | standard\_s3\_storage\_time | Storage time in days for Standard S3 Bucket Objects | `string` | `"30"` | no |
-| training\_only | Only apply these policies to training | `string` | `"false"` | no |
 
 ## Outputs
 

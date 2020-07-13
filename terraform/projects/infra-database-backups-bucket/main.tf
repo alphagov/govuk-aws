@@ -40,12 +40,6 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
-variable "training_only" {
-  type        = "string"
-  description = "Only apply these policies to training "
-  default     = "false"
-}
-
 variable "integration_only" {
   type        = "string"
   description = "Only apply these policies to integration "
