@@ -169,7 +169,7 @@ resource "aws_iam_role_policy" "whitehall_csvs_policy" {
   name = "govuk-${var.aws_environment}-whitehall-csvs-policy"
   role = "${module.whitehall-backend.instance_iam_role_name}"
 
-  policy_arn = "${aws_iam_policy.s3_writer.arn}"
+  policy = "${data.template_file.s3_writer_policy_template.rendered}"
 }
 
 resource "aws_iam_role_policy_attachment" "whitehall_csvs_attach" {
