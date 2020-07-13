@@ -167,14 +167,14 @@ data "template_file" "s3_writer_policy_template" {
 
 resource "aws_iam_role_policy" "whitehall_csvs_policy" {
   name = "govuk-${var.aws_environment}-whitehall-csvs-policy"
-  role = "${aws_iam_role.whitehall_csvs_bucket_access_role.id}"
+  role = "${module.whitehall-backend.instance_iam_role_name}"
 
   policy_arn = "${aws_iam_policy.s3_writer.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "whitehall_csvs_attach" {
   role       = "${module.whitehall-backend.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.whitehall_csvs_bucket_access_role.policy.arn}"
+  policy_arn = "${aws_iam_policy.s3_writer.policy.arn}"
 }
 
 # Outputs
