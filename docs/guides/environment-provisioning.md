@@ -3,6 +3,7 @@
 This document discusses how to create a new environment in AWS. Discussion as to the decisions taken can be found in the [docs/architecture/decisions](/docs/architecture/decisions) directory, of particular note is [the environment bootstrapping process](/docs/architecture/decisions/0009-environment-bootstrapping-process.md).
 
 To clarify terms used here there is a [glossary](#glossary). Throughout this document `<foo>` indicates a value you supply (e.g. a stack name) and:
+
 ```
 bar
 ```
@@ -23,30 +24,21 @@ The general steps for provisioning a new environment are:
 
 ## Requirements
 
-* [Git](https://git-scm.com/) installed via [Xcode cli tools](http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/)/[brew](https://brew.sh/)
-* [Terraform = 0.11.14](https://www.terraform.io/downloads.html) installed via that link
-* [ssh-copy-id](https://www.ssh.com/ssh/copy-id) installed via `brew install ssh-copy-id`
-* [aws-cli](https://aws.amazon.com/cli) installed via `brew install awscli` or `pip install awscli`
+* Install [Homebrew](https://brew.sh) on macOS or Linux.
+* Install necessary packages:
 
-If you've not used the aws-cli before run
+```shell
+brew install git tfenv ssh-copy-id awscli
 ```
-aws configure
-```
-to set your access id, secret and the region to use.
 
-## Cloning the repositories
+* Install the version of Terraform specified in `.terraform-version` with `tfenv install`.
 
-You will need to have cloned the following repositories to your local machine
+* Clone the following repositories to your local machine
 
-* [govuk-puppet](https://github.com/alphagov/govuk-puppet)
-* [govuk-secrets](https://github.com/alphagov/govuk-secrets)
-* [govuk-aws-data](https://github.com/alphagov/govuk-aws-data)
-* [govuk-aws (this one)](https://github.com/alphagov/govuk-aws)
-
-e.g.
-```
-git clone git@github.com:alphagov/govuk-secrets.git
-```
+      * [govuk-puppet](https://github.com/alphagov/govuk-puppet)
+      * [govuk-secrets](https://github.com/alphagov/govuk-secrets)
+      * [govuk-aws-data](https://github.com/alphagov/govuk-aws-data)
+      * [govuk-aws (this one)](https://github.com/alphagov/govuk-aws)
 
 > **NOTE: Ensure Puppet has all dependencies installed**
 >
@@ -67,10 +59,13 @@ aws s3 ls $TERRAFORM_BUCKET
 ```
 
 If the bucket is missing you'll see an error:
+
 ```
 An error occurred (NoSuchBucket) when calling the ListObjects operation: The specified bucket does not exist
 ```
+
 otherwise you'll see the bucket's contents, one directory per existing stack:
+
 ```
 PRE blue/
 PRE green/
@@ -78,7 +73,8 @@ PRE govuk/
 ...
 ```
 
-To create an S3 bucket run the following in order to create a bucket and enable versioning on it:
+Create an S3 bucket and enable versioning on it:
+
 ```
 aws s3 mb "s3://${TERRAFORM_BUCKET}"
 aws s3api put-bucket-versioning  \

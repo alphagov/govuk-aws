@@ -8,7 +8,7 @@ The new account has a bootstrap role that you should be able to assume to start 
 
 There are several ways to do this
 
-###### AWS-CLI
+###### AWS CLI
 
 Make sure your laptop is configured with credentials to access the gds-users account. If you can login in gds-users from the command line, you should be able to get the credentials of an assumed role with the following command:
 
@@ -23,13 +23,13 @@ aws sts assume-role \
 
 ###### AWS-VAULT
 
-Download and install a copy of AWS Vault from the official repo:
-https://github.com/99designs/aws-vault
+`brew cask install aws-vault` on macOS, or `brew install aws-vault` on Linux.
 
 Follow the instructions to set up your initial profile. A good tutorial that explains this step by step can be found here:
 https://medium.com/devopslinks/step-by-step-aws-iam-assumerole-with-aws-vault-configuration-9d5986373c33
 
-After following the tutorial you should have a ``` ~/.aws/config ``` file similar to the example below. You may have more or less profile entries depending on how many environments you have access to:
+After following the tutorial you should have an `~/.aws/config` file similar to the example below.
+
 ```
 [profile readonly]
 region=eu-west-1
@@ -42,14 +42,12 @@ mfa_serial = arn:aws:iam::11111111111:mfa/your.name@email.provider
 ```
 
 After setting up aws-vault you can generate a token by running the following:
+
 ```
 aws-vault exec environmentname -- env
 ```
-For Example:
-```
-aws-vault exec staging -- env
-```  
-Some temporary credentials will be outputted to screen, copy the AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and the AWS_SESSION_TOKEN
+
+Some temporary credentials will be shown in the terminal - copy the AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and the AWS_SESSION_TOKEN.
 
 Create a new file (e.g. aws_temp_cred) somewhere on your local machine and paste the credentials into it, so it looks similar to the example below
 
@@ -58,9 +56,8 @@ export AWS_ACCESS_KEY_ID=YOURACCESSKEY
 export AWS_SECRET_ACCESS_KEY=YOURSECRETKEY
 export AWS_SESSION_TOKEN=YOURLONGSESSIONTOKEN
 ```
-Now run the source command on the file to make the credentials available for Terraform, for example:
 
-``` source ./aws_temp_cred ```
+Then, `source ./aws_temp_cred`.
 
 ## Setting up Terraform work environment
 
