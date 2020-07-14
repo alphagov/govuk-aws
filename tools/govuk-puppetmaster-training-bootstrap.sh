@@ -71,7 +71,7 @@ set -x
 git clone ${GOVUK_GIT_URL}/${GOVUK_PUPPET_REPO}
 
 # Clone secrets repo
-git clone ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
+git clone --depth=1 ${GOVUK_GIT_URL}/${GOVUK_SECRETS_REPO}
 
 # Add secrets to puppet repository
 cp -r ${GOVUK_WORKDIR}/${GOVUK_SECRETS_REPO}/puppet_aws/hieradata/* ${GOVUK_WORKDIR}/${GOVUK_PUPPET_REPO}/hieradata_aws/
