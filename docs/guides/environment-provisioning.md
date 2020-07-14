@@ -300,7 +300,7 @@ especially with the puppetmaster instance. You may see errors like
 if you try to use too small an instance.
 
 > **Warning:** The puppet hostname (https://puppet) is used to communicate with
-puppet. This relies on /etc/hosts files on instances having a
+puppet. This relies on /etc/resolv.conf files on instances having a
 `search <env>.govuk-internal.digital` entry and there being a DNS record in
 the <env>.govuk-internal.digital private hosted zone in AWS Route53 for puppet.
 If this isn't present, puppet can't run on any machines. Try `dig puppet` to debug.
