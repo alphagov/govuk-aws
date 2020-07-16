@@ -1,4 +1,0 @@
-bucket  = "govuk-training-terraform-state"
-key     = "govuk/app-calculators-frontend.tfstate"
-encrypt = true
-region  = "eu-west-2"

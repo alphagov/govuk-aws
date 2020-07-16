@@ -15,8 +15,6 @@ fi
 
 rsync -avz \
       --exclude='.git/' \
-      --exclude='development-vm/' \
-      --exclude='training-vm/' \
       "${PUPPET_REPO%/}" "$PUPPETMASTER_ELB":
 
 cat << EOF

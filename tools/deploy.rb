@@ -13,7 +13,7 @@ abort("too many arguments: #{rest}") unless rest.empty?
 # Valid values for each field
 valid_stacks = %w(blue green govuk).freeze
 valid_projects = Dir.chdir("#{Dir.home}/govuk/govuk-aws/terraform/projects") { Dir.glob('*').select { |f| File.directory? f } }.freeze
-valid_environments = %w(integration staging production test tools training).freeze
+valid_environments = %w(integration staging production test tools).freeze
 valid_commands = %w(plan apply plan-destroy destroy).freeze
 
 usage = 'Usage: GITHUB_USERNAME=... GITHUB_TOKEN=... ruby deploy.rb <stack> <project> <environment> <command>'

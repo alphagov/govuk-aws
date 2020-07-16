@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-training"
-key     = "blue/app-shared-documentdb.tfstate"
-encrypt = true
-region  = "eu-west-1"
