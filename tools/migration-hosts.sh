@@ -13,7 +13,6 @@ content-data-api
 content-tagger
 deploy
 draft-origin
-docs
 grafana
 graphite
 hmrc-manuals-api
