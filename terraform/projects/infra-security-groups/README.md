@@ -65,6 +65,8 @@ Manage the security groups for the entire infrastructure
 | sg\_cache\_id | n/a |
 | sg\_calculators-frontend\_elb\_id | n/a |
 | sg\_calculators-frontend\_id | n/a |
+| sg\_ci-agent-1\_elb\_id | n/a |
+| sg\_ci-agent-1\_id | n/a |
 | sg\_ci-master\_elb\_id | n/a |
 | sg\_ci-master\_id | n/a |
 | sg\_ci-master\_internal\_elb\_id | n/a |
