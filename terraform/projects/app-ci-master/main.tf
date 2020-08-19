@@ -248,7 +248,7 @@ resource "aws_ebs_volume" "ci-master" {
     Project         = "${var.stackname}"
     Device          = "xvdf"
     aws_hostname    = "ci-master-1"
-    aws_migration   = "ci-master"
+    aws_migration   = "ci_master"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
