@@ -96,7 +96,7 @@ data "aws_acm_certificate" "elb_cert" {
 
 resource "aws_elb" "ci-agent-1_elb" {
   name            = "${var.stackname}-ci-agent-1"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-1_elb_id}"]
   internal        = "true"
 
@@ -107,12 +107,10 @@ resource "aws_elb" "ci-agent-1_elb" {
   }
 
   listener {
-    instance_port     = 80
-    instance_protocol = "http"
-    lb_port           = 443
-    lb_protocol       = "https"
-
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_cert.arn}"
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
   }
 
   health_check {
@@ -120,7 +118,7 @@ resource "aws_elb" "ci-agent-1_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "TCP:80"
+    target   = "TCP:22"
     interval = 30
   }
 
@@ -149,7 +147,7 @@ module "ci-agent-1" {
   name                          = "${var.stackname}-ci-agent-1"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-1")}"
   instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-1_elb_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-1_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"

@@ -21,10 +21,10 @@ resource "aws_security_group" "ci-agent-1" {
   }
 }
 
-resource "aws_security_group_rule" "ci-agent-1_ingress_ci-agent-1-elb_http" {
+resource "aws_security_group_rule" "ci-agent-1_ingress_ci-agent-1-elb_ssh_tcp" {
   type      = "ingress"
-  from_port = 80
-  to_port   = 80
+  from_port = 22
+  to_port   = 22
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
@@ -32,6 +32,19 @@ resource "aws_security_group_rule" "ci-agent-1_ingress_ci-agent-1-elb_http" {
 
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.ci-agent-1_elb.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-1_ingress_ci-agent-1-ci_master_ssh_tcp" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-1.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-master.id}"
 }
 
 resource "aws_security_group" "ci-agent-1_elb" {
@@ -52,6 +65,16 @@ resource "aws_security_group_rule" "ci-agent-1-elb_ingress_management_https" {
 
   security_group_id        = "${aws_security_group.ci-agent-1_elb.id}"
   source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-1-elb_ingress_ci-master_ssh_tcp" {
+  type      = "ingress"
+  from_port = 0
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-1_elb.id}"
+  source_security_group_id = "${aws_security_group.ci-master.id}"
 }
 
 resource "aws_security_group_rule" "ci-agent-1-elb_egress_any_any" {
