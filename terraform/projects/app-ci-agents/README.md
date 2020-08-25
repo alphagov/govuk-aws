@@ -27,7 +27,7 @@ CI agents
 | ebs\_encrypted | whether or not the EBS volume is encrypted | `string` | `"true"` | no |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |
-| instance\_type | Instance type used for EC2 resources | `string` | `"t3a.2xlarge"` | no |
+| instance\_type | Instance type used for EC2 resources | `string` | `"m5.2xlarge"` | no |
 | internal\_app\_service\_records | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
