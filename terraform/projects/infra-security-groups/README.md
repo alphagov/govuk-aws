@@ -48,6 +48,7 @@ Manage the security groups for the entire infrastructure
 
 | Name | Description |
 |------|-------------|
+| sg\_accessibility-reports\_id | n/a |
 | sg\_apt\_external\_elb\_id | n/a |
 | sg\_apt\_id | n/a |
 | sg\_apt\_internal\_elb\_id | n/a |
