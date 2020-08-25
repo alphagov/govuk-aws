@@ -39,7 +39,7 @@ variable "internal_app_service_records" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "t3a.2xlarge"
+  default     = "m5.2xlarge"
 }
 
 variable "internal_zone_name" {
