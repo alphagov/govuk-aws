@@ -32,7 +32,7 @@ continue = STDIN.gets.chomp
 abort('Build aborted') unless continue.downcase == 'y'
 
 # Jenkins details
-jenkins_url = 'https://ci-deploy.integration.publishing.service.gov.uk'.freeze
+jenkins_url = 'https://deploy.integration.publishing.service.gov.uk'.freeze
 jenkins_crumb_issuer_path = '/crumbIssuer/api/json'.freeze
 jenkins_job_path = '/job/Deploy_Terraform_GOVUK_AWS/buildWithParameters'.freeze
 jenkins_crumb_issuer_uri = URI.parse("#{jenkins_url}#{jenkins_crumb_issuer_path}")
@@ -75,4 +75,4 @@ jenkins_job_response = jenkins_job_http.request(jenkins_job_request)
 
 abort('Could not queue Jenkins job') unless jenkins_job_response.code == '201'
 
-puts 'Jenkins job queued. View it at https://ci-deploy.integration.publishing.service.gov.uk/job/Deploy_Terraform_GOVUK_AWS/'
+puts 'Jenkins job queued. View it at https://deploy.integration.publishing.service.gov.uk/job/Deploy_Terraform_GOVUK_AWS/'
