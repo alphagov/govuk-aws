@@ -24,6 +24,13 @@ CI agents
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | ci\_agent\_1\_subnet | subnet to deploy EC2 and EBS of CI agent 1 | `string` | `"govuk_private_a"` | no |
+| ci\_agent\_2\_subnet | subnet to deploy EC2 and EBS of CI agent 2 | `string` | `"govuk_private_b"` | no |
+| ci\_agent\_3\_subnet | subnet to deploy EC2 and EBS of CI agent 3 | `string` | `"govuk_private_c"` | no |
+| ci\_agent\_4\_subnet | subnet to deploy EC2 and EBS of CI agent 4 | `string` | `"govuk_private_a"` | no |
+| ci\_agent\_5\_subnet | subnet to deploy EC2 and EBS of CI agent 5 | `string` | `"govuk_private_b"` | no |
+| ci\_agent\_6\_subnet | subnet to deploy EC2 and EBS of CI agent 6 | `string` | `"govuk_private_c"` | no |
+| ci\_agent\_7\_subnet | subnet to deploy EC2 and EBS of CI agent 7 | `string` | `"govuk_private_a"` | no |
+| ci\_agent\_8\_subnet | subnet to deploy EC2 and EBS of CI agent 8 | `string` | `"govuk_private_b"` | no |
 | ebs\_encrypted | whether or not the EBS volume is encrypted | `string` | `"true"` | no |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |
@@ -48,4 +55,18 @@ CI agents
 |------|-------------|
 | ci-agent-1\_elb\_dns\_name | DNS name to access the CI agent 1 service |
 | ci-agent-1\_service\_dns\_name | DNS name to access the CI agent 1 service |
+| ci-agent-2\_elb\_dns\_name | DNS name to access the CI agent 2 service |
+| ci-agent-2\_service\_dns\_name | DNS name to access the CI agent 2 service |
+| ci-agent-3\_elb\_dns\_name | DNS name to access the CI agent 3 service |
+| ci-agent-3\_service\_dns\_name | DNS name to access the CI agent 3 service |
+| ci-agent-4\_elb\_dns\_name | DNS name to access the CI agent 4 service |
+| ci-agent-4\_service\_dns\_name | DNS name to access the CI agent 4 service |
+| ci-agent-5\_elb\_dns\_name | DNS name to access the CI agent 5 service |
+| ci-agent-5\_service\_dns\_name | DNS name to access the CI agent 5 service |
+| ci-agent-6\_elb\_dns\_name | DNS name to access the CI agent 6 service |
+| ci-agent-6\_service\_dns\_name | DNS name to access the CI agent 6 service |
+| ci-agent-7\_elb\_dns\_name | DNS name to access the CI agent 7 service |
+| ci-agent-7\_service\_dns\_name | DNS name to access the CI agent 7 service |
+| ci-agent-8\_elb\_dns\_name | DNS name to access the CI agent 8 service |
+| ci-agent-8\_service\_dns\_name | DNS name to access the CI agent 8 service |
 
