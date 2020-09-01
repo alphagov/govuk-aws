@@ -23,9 +23,9 @@ pip install --upgrade pip
 sudo apt install -y python-pip
 pip install awscli
 
-# Install Python 3.6
+# Install Python 3.7
 sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
-sudo apt-get install -y python3.6
+sudo apt-get install -y python3.7
 sudo apt install -y python3-pip
 sudo apt install -y libpq-dev
 
@@ -34,14 +34,14 @@ sudo apt install -y zip unzip
 
 sudo su - ubuntu
 
-# Create Python 3.6 virtual environment
+# Create Python 3.7 virtual environment
 cd /var
 mkdir envs
 cd envs
 sudo apt install -y virtualenv
-virtualenv -p python3.6 python36
-source python36/bin/activate
-sudo chown -R ubuntu:ubuntu /var/envs/python36
+virtualenv -p python3.7 python37
+source python37/bin/activate
+sudo chown -R ubuntu:ubuntu /var/envs/python37
 
 pip install csvkit
 

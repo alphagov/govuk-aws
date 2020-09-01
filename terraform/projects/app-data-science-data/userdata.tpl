@@ -22,9 +22,10 @@ pip install --upgrade pip
 # Install dependencies
 pip install awscli
 
-# Install Python 3.6
+# Install Python 3.7
 sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
-sudo apt-get install -y python3.6
+sudo apt-get install -y python3.7
+sudo apt install -y python3.7-dev
 sudo apt install -y python3-pip
 sudo apt install -y libpq-dev
 
@@ -37,13 +38,13 @@ big_query_key_file=$(/usr/local/bin/aws ssm get-parameter --name govuk_big_query
 echo $big_query_key_file > /var/tmp/bigquery.json
 chmod 400 /var/tmp/bigquery.json
 
-# Create Python 3.6 virtual environment
+# Create Python 3.7 virtual environment
 cd /var
 mkdir envs
 cd envs
 sudo apt install -y virtualenv
-virtualenv -p python3.6 python36
-source python36/bin/activate
+virtualenv -p python3.7 python37
+source python37/bin/activate
 pip install csvkit
 
 # Create data dir
