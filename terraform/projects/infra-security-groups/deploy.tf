@@ -79,7 +79,7 @@ resource "aws_security_group_rule" "deploy-elb_ingress_carrenza_https" {
 }
 
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_https" {
-  count     = "${var.aws_environment == "staging" ? 1 : 0}"
+  count     = "${(var.aws_environment == "integration") || (var.aws_environment == "staging") ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443
