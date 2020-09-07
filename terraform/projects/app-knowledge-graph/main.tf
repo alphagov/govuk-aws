@@ -67,14 +67,11 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
 }
 
 data "aws_ami" "neo4j_community_ami" {
-  most_recent = true
-
-  # canonical
   owners = ["679593333241"]
 
   filter {
-    name   = "name"
-    values = ["neo4j-community-*"]
+    name   = "image-id"
+    values = ["ami-094ccb4dbb8650bdf"]
   }
 }
 
