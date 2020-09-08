@@ -170,6 +170,20 @@ resource "aws_route53_record" "gemstash_internal_service_record" {
   }
 }
 
+# used to allow carrenza production to use this aws production gemstash
+resource "aws_route53_record" "gemstash_external_service_record" {
+  count   = "${var.aws_environment == "production" ? 1 : 0}"
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "gemstash.${var.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.apt_external_lb.lb_dns_name}"
+    zone_id                = "${module.apt_external_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 module "apt" {
   source                            = "../../modules/aws/node_group"
   name                              = "${var.stackname}-apt"

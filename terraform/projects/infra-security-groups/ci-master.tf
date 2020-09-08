@@ -12,6 +12,7 @@
 # sg_ci-master_elb_id
 
 resource "aws_security_group" "ci-master" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
   name        = "${var.stackname}_ci-master_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to the ci-master host from its ELB"
@@ -22,6 +23,7 @@ resource "aws_security_group" "ci-master" {
 }
 
 resource "aws_security_group_rule" "ci-master_ingress_ci-master-elb_http" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -35,6 +37,7 @@ resource "aws_security_group_rule" "ci-master_ingress_ci-master-elb_http" {
 }
 
 resource "aws_security_group_rule" "ci-master_ingress_ci-master-internal-elb_http" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -58,6 +61,7 @@ resource "aws_security_group" "ci-master_elb" {
 }
 
 resource "aws_security_group_rule" "ci-master-elb_ingress_office_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -69,6 +73,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_office_https" {
 
 # Allow Carrenza Integration and Production access to trigger automated ci-masterments
 resource "aws_security_group_rule" "ci-master-elb_ingress_carrenza_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -78,29 +83,8 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_carrenza_https" {
   cidr_blocks       = ["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"]
 }
 
-resource "aws_security_group_rule" "ci-master-elb_ingress_aws_integration_access_https" {
-  count     = "${var.aws_environment == "staging" ? 1 : 0}"
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-
-  security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${var.aws_integration_external_nat_gateway_ips}"]
-}
-
-resource "aws_security_group_rule" "ci-master-elb_ingress_aws_staging_access_https" {
-  count     = "${var.aws_environment == "production" ? 1 : 0}"
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-
-  security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${var.aws_staging_external_nat_gateway_ips}"]
-}
-
 resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {
+  count             = "${var.aws_environment == "integration" ? 1 : 0}"
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -110,6 +94,7 @@ resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {
 }
 
 resource "aws_security_group_rule" "ci-master-internal-elb_egress_any_any" {
+  count             = "${var.aws_environment == "integration" ? 1 : 0}"
   type              = "egress"
   from_port         = 0
   to_port           = 0
@@ -119,6 +104,7 @@ resource "aws_security_group_rule" "ci-master-internal-elb_egress_any_any" {
 }
 
 resource "aws_security_group" "ci-master_internal_elb" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
   name        = "${var.stackname}_ci-master_internal_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the ci-master Internal ELB"
@@ -129,6 +115,7 @@ resource "aws_security_group" "ci-master_internal_elb" {
 }
 
 resource "aws_security_group_rule" "ci-master-internal-elb_ingress_management_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443

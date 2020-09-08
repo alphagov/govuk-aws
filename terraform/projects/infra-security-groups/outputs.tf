@@ -75,79 +75,79 @@ output "sg_calculators-frontend_id" {
 }
 
 output "sg_ci-agent-1_elb_id" {
-  value = "${aws_security_group.ci-agent-1_elb.id}"
+  value = ["${aws_security_group.ci-agent-1_elb.*.id}"]
 }
 
 output "sg_ci-agent-1_id" {
-  value = "${aws_security_group.ci-agent-1.id}"
+  value = ["${aws_security_group.ci-agent-1.*.id}"]
 }
 
 output "sg_ci-agent-2_elb_id" {
-  value = "${aws_security_group.ci-agent-2_elb.id}"
+  value = ["${aws_security_group.ci-agent-2_elb.*.id}"]
 }
 
 output "sg_ci-agent-2_id" {
-  value = "${aws_security_group.ci-agent-2.id}"
+  value = ["${aws_security_group.ci-agent-2.*.id}"]
 }
 
 output "sg_ci-agent-3_elb_id" {
-  value = "${aws_security_group.ci-agent-3_elb.id}"
+  value = ["${aws_security_group.ci-agent-3_elb.*.id}"]
 }
 
 output "sg_ci-agent-3_id" {
-  value = "${aws_security_group.ci-agent-3.id}"
+  value = ["${aws_security_group.ci-agent-3.*.id}"]
 }
 
 output "sg_ci-agent-4_elb_id" {
-  value = "${aws_security_group.ci-agent-4_elb.id}"
+  value = ["${aws_security_group.ci-agent-4_elb.*.id}"]
 }
 
 output "sg_ci-agent-4_id" {
-  value = "${aws_security_group.ci-agent-4.id}"
+  value = ["${aws_security_group.ci-agent-4.*.id}"]
 }
 
 output "sg_ci-agent-5_elb_id" {
-  value = "${aws_security_group.ci-agent-5_elb.id}"
+  value = ["${aws_security_group.ci-agent-5_elb.*.id}"]
 }
 
 output "sg_ci-agent-5_id" {
-  value = "${aws_security_group.ci-agent-5.id}"
+  value = ["${aws_security_group.ci-agent-5.*.id}"]
 }
 
 output "sg_ci-agent-6_elb_id" {
-  value = "${aws_security_group.ci-agent-6_elb.id}"
+  value = ["${aws_security_group.ci-agent-6_elb.*.id}"]
 }
 
 output "sg_ci-agent-6_id" {
-  value = "${aws_security_group.ci-agent-6.id}"
+  value = ["${aws_security_group.ci-agent-6.*.id}"]
 }
 
 output "sg_ci-agent-7_elb_id" {
-  value = "${aws_security_group.ci-agent-7_elb.id}"
+  value = ["${aws_security_group.ci-agent-7_elb.*.id}"]
 }
 
 output "sg_ci-agent-7_id" {
-  value = "${aws_security_group.ci-agent-7.id}"
+  value = ["${aws_security_group.ci-agent-7.*.id}"]
 }
 
 output "sg_ci-agent-8_elb_id" {
-  value = "${aws_security_group.ci-agent-8_elb.id}"
+  value = ["${aws_security_group.ci-agent-8_elb.*.id}"]
 }
 
 output "sg_ci-agent-8_id" {
-  value = "${aws_security_group.ci-agent-8.id}"
+  value = ["${aws_security_group.ci-agent-8.*.id}"]
 }
 
 output "sg_ci-master_elb_id" {
-  value = "${aws_security_group.ci-master_elb.id}"
+  value = ["${aws_security_group.ci-master_elb.*.id}"]
 }
 
 output "sg_ci-master_internal_elb_id" {
-  value = "${aws_security_group.ci-master_internal_elb.id}"
+  value = ["${aws_security_group.ci-master_internal_elb.*.id}"]
 }
 
 output "sg_ci-master_id" {
-  value = "${aws_security_group.ci-master.id}"
+  value = ["${aws_security_group.ci-master.*.id}"]
 }
 
 output "sg_ckan_elb_internal_id" {
