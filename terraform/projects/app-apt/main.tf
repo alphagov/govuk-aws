@@ -40,6 +40,11 @@ variable "elb_external_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
+variable "elb_public_secondary_certname" {
+  type        = "string"
+  description = "The ACM secondary cert domain name to find the ARN of"
+}
+
 variable "apt_1_subnet" {
   type        = "string"
   description = "Name of the subnet to place the apt instance 1 and EBS volume"
@@ -118,7 +123,7 @@ module "apt_external_lb" {
   access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-apt-external-elb"
   listener_certificate_domain_name           = "${var.elb_external_certname}"
-  listener_secondary_certificate_domain_name = ""
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${local.external_lb_map}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_apt_external_elb_id}"]

@@ -28,6 +28,7 @@ Apt node
 | ebs\_volume\_size | EBS volume size | `string` | `"40"` | no |
 | elb\_external\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
+| elb\_public\_secondary\_certname | The ACM secondary cert domain name to find the ARN of | `string` | n/a | yes |
 | external\_domain\_name | The domain name of the external DNS records, it could be different from the zone name | `string` | n/a | yes |
 | external\_zone\_name | The name of the Route53 zone that contains external records | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |

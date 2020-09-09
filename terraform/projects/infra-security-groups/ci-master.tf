@@ -51,6 +51,7 @@ resource "aws_security_group_rule" "ci-master_ingress_ci-master-internal-elb_htt
 }
 
 resource "aws_security_group" "ci-master_elb" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
   name        = "${var.stackname}_ci-master_elb_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access the ci-master ELB"
