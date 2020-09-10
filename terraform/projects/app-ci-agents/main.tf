@@ -211,7 +211,7 @@ module "ci-agent-1" {
 resource "aws_ebs_volume" "ci-agent-1-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -228,7 +228,7 @@ resource "aws_ebs_volume" "ci-agent-1-data" {
 resource "aws_ebs_volume" "ci-agent-1-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -331,7 +331,7 @@ module "ci-agent-2" {
 resource "aws_ebs_volume" "ci-agent-2-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_2_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -348,7 +348,7 @@ resource "aws_ebs_volume" "ci-agent-2-data" {
 resource "aws_ebs_volume" "ci-agent-2-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_2_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -457,7 +457,7 @@ module "ci-agent-3" {
 resource "aws_ebs_volume" "ci-agent-3-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_3_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -474,7 +474,7 @@ resource "aws_ebs_volume" "ci-agent-3-data" {
 resource "aws_ebs_volume" "ci-agent-3-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_3_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -577,7 +577,7 @@ module "ci-agent-4" {
 resource "aws_ebs_volume" "ci-agent-4-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_4_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -594,7 +594,7 @@ resource "aws_ebs_volume" "ci-agent-4-data" {
 resource "aws_ebs_volume" "ci-agent-4-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_4_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -697,7 +697,7 @@ module "ci-agent-5" {
 resource "aws_ebs_volume" "ci-agent-5-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_5_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -714,7 +714,7 @@ resource "aws_ebs_volume" "ci-agent-5-data" {
 resource "aws_ebs_volume" "ci-agent-5-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_5_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -817,7 +817,7 @@ module "ci-agent-6" {
 resource "aws_ebs_volume" "ci-agent-6-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_6_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -834,7 +834,7 @@ resource "aws_ebs_volume" "ci-agent-6-data" {
 resource "aws_ebs_volume" "ci-agent-6-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_6_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -937,7 +937,7 @@ module "ci-agent-7" {
 resource "aws_ebs_volume" "ci-agent-7-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_7_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -954,7 +954,7 @@ resource "aws_ebs_volume" "ci-agent-7-data" {
 resource "aws_ebs_volume" "ci-agent-7-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_7_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -1057,7 +1057,7 @@ module "ci-agent-8" {
 resource "aws_ebs_volume" "ci-agent-8-data" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_8_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
@@ -1074,7 +1074,7 @@ resource "aws_ebs_volume" "ci-agent-8-data" {
 resource "aws_ebs_volume" "ci-agent-8-docker" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_8_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
-  size              = "13"
+  size              = "130"
   type              = "gp2"
 
   tags {
