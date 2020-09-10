@@ -84,6 +84,17 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_carrenza_https" {
   cidr_blocks       = ["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"]
 }
 
+resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.ci-master_elb.id}"
+  cidr_blocks       = ["${data.github_ip_ranges.github.hooks}"]
+}
+
 resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {
   count             = "${var.aws_environment == "integration" ? 1 : 0}"
   type              = "egress"
