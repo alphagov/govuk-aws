@@ -16,6 +16,7 @@ Manage the security groups for the entire infrastructure
 |------|---------|
 | aws | 2.46.0 |
 | fastly | 0.1.2 |
+| github | n/a |
 | terraform | n/a |
 
 ## Inputs

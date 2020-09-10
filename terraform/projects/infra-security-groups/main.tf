@@ -29,7 +29,11 @@ provider "fastly" {
   version = "0.1.2"
 }
 
+provider "github" {}
+
 data "fastly_ip_ranges" "fastly" {}
+
+data "github_ip_ranges" "github" {}
 
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
