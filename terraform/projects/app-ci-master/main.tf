@@ -32,12 +32,22 @@ variable "instance_ami_filter_name" {
 
 variable "elb_external_certname" {
   type        = "string"
-  description = "The ACM cert domain name to find the ARN of"
+  description = "The ACM cert domain name to find the ARN of, will be attached to external classic ELB"
 }
 
 variable "elb_internal_certname" {
   type        = "string"
-  description = "The ACM cert domain name to find the ARN of"
+  description = "The ACM cert domain name to find the ARN of, will be attached to internal classic ELB"
+}
+
+variable "elb_public_certname" {
+  type        = "string"
+  description = "The ACM cert domain name to find the ARN of, will be attached to external ALB"
+}
+
+variable "elb_public_secondary_certname" {
+  type        = "string"
+  description = "The ACM secondary cert domain name to find the ARN of, will be attached to external ALB"
 }
 
 variable "deploy_subnet" {
@@ -80,6 +90,18 @@ variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
   default     = "t2.medium"
+}
+
+variable "public_service_names" {
+  type        = "list"
+  description = "list of public names for ci-master, used for DNS domain"
+  default     = ["ci"]
+}
+
+variable "internal_service_names" {
+  type        = "list"
+  description = "list of internal names for ci-master, used for DNS domain"
+  default     = ["ci"]
 }
 
 # Resources
@@ -281,6 +303,64 @@ module "alarms-elb-ci-master-external" {
   httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
   surgequeuelength_threshold     = "0"
   healthyhostcount_threshold     = "0"
+}
+
+//Public ALB and configs: we do not put it in infra-public-services as this project should
+//ideally only be deployed in integration
+module "ci_master_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "govuk-ci-master-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/govuk-ci-master-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
+  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_ci-master_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                               = "${map("Project", "govuk", "aws_migration", "ci_master", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_route53_record" "ci_master_public_service_names" {
+  count   = "${length(var.public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.ci_master_public_lb.lb_dns_name}"
+    zone_id                = "${module.ci_master_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+data "aws_autoscaling_groups" "ci_master" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["${var.stackname}-ci-master"]
+  }
+}
+
+resource "aws_autoscaling_attachment" "ci_master_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.ci_master.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.ci_master.names, 0)}"
+  alb_target_group_arn   = "${element(module.ci_master_public_lb.target_group_arns, 0)}"
+}
+
+resource "aws_route53_record" "ci_master_internal_service_names" {
+  count   = "${length(var.internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
 }
 
 # Outputs
