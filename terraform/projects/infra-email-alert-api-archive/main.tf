@@ -169,7 +169,7 @@ resource "aws_glue_catalog_table" "email_archive" {
       name = "ser_de_name"
 
       parameters {
-        paths = "archived_at_utc,content_change,message,created_at_utc,finished_sending_at_utc,id,sent,subject,subscriber_id"
+        paths = "archived_at_utc,content_change,message,created_at_utc,id,subject,subscriber_id"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -180,16 +180,6 @@ resource "aws_glue_catalog_table" "email_archive" {
         name    = "id"
         type    = "string"
         comment = "UUID that corresponds with the entry in the email table"
-      },
-      {
-        name    = "finished_sending_at_utc"
-        type    = "timestamp"
-        comment = "Time the email was sent or when we aborted trying to send the email"
-      },
-      {
-        name    = "sent"
-        type    = "boolean"
-        comment = "Whether the email was sent or not"
       },
       {
         name    = "subscriber_id"
