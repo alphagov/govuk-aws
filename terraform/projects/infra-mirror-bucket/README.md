@@ -32,6 +32,7 @@ The primary bucket should be in London and the backup in Ireland.
 |------|-------------|------|---------|:--------:|
 | app\_mirrorer\_stackname | Stackname of the app mirrorer | `string` | n/a | yes |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
+| aws\_integration\_account\_root\_arn | AWS account root ARN for the Integration account | `string` | n/a | yes |
 | aws\_region | AWS region where primary s3 bucket is located | `string` | `"eu-west-2"` | no |
 | aws\_replica\_region | AWS region where replica s3 bucket is located | `string` | `"eu-west-1"` | no |
 | cloudfront\_assets\_certificate\_domain | The domain of the Assets CloudFront certificate to look up. | `string` | `""` | no |

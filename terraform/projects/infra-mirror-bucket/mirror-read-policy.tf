@@ -3,6 +3,11 @@ provider "fastly" {
   api_key = "test"
 }
 
+variable "aws_integration_account_root_arn" {
+  type        = "string"
+  description = "AWS account root ARN for the Integration account"
+}
+
 data "fastly_ip_ranges" "fastly" {}
 
 data "external" "pingdom" {
@@ -113,6 +118,26 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
       identifiers = ["${aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn}"]
     }
   }
+
+  statement {
+    sid    = "CrossAccountAccess"
+    effect = "Allow"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.govuk-mirror.id}",
+      "arn:aws:s3:::${aws_s3_bucket.govuk-mirror.id}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["${var.aws_integration_account_root_arn}"]
+    }
+  }
 }
 
 data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
@@ -197,6 +222,26 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     principals {
       type        = "AWS"
       identifiers = ["*"]
+    }
+  }
+
+  statement {
+    sid    = "CrossAccountAccess"
+    effect = "Allow"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.govuk-mirror-replica.id}",
+      "arn:aws:s3:::${aws_s3_bucket.govuk-mirror-replica.id}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["${var.aws_integration_account_root_arn}"]
     }
   }
 }
