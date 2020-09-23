@@ -124,3 +124,24 @@ resource "aws_security_group_rule" "publishing-api-elb-external_egress_any_any" 
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.publishing-api_elb_external.id}"
 }
+
+resource "aws_security_group" "publishing-api_ithc_access" {
+  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  name        = "${var.stackname}_publishing-api_ithc_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Control access to ITHC SSH"
+
+  tags {
+    Name = "${var.stackname}_publishing-api_ithc_access"
+  }
+}
+
+resource "aws_security_group_rule" "ithc_ingress_publishing-api_ssh" {
+  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  type              = "ingress"
+  to_port           = 22
+  from_port         = 22
+  protocol          = "tcp"
+  cidr_blocks       = "${var.ithc_access_ips}"
+  security_group_id = "${aws_security_group.publishing-api_ithc_access.id}"
+}
