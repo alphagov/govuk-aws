@@ -140,6 +140,17 @@ resource "aws_security_group_rule" "licensify-frontend-internal-lb_egress_any_an
   security_group_id = "${aws_security_group.licensify-frontend_internal_lb.id}"
 }
 
+resource "aws_security_group_rule" "licensify-frontend-elb_ingress_ithc_https" {
+  count     = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
+  cidr_blocks       = ["${var.ithc_access_ips}"]
+}
+
 resource "aws_security_group" "licensify_frontend_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_licensify_frontend_ithc_access"
