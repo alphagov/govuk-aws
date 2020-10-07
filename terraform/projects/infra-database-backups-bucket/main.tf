@@ -229,7 +229,9 @@ resource "aws_s3_bucket" "database_backups" {
       days = "${var.expiration_time}"
     }
   }
+
   # Integration Rules for whole bucket
+
   lifecycle_rule {
     id      = "whole_bucket_lifecycle_rule_integration"
     prefix  = ""
@@ -241,6 +243,18 @@ resource "aws_s3_bucket" "database_backups" {
 
     noncurrent_version_expiration {
       days = "1"
+    }
+  }
+
+  # Lifecycle rule for coronavirus find support backup
+
+  lifecycle_rule {
+    id      = "coronavirus_find_support_lifecycle_rule"
+    prefix  = "coronavirus-find-support/production.sql.gzip"
+    enabled = true
+
+    expiration {
+      days = 365
     }
   }
 
