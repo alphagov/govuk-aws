@@ -17,7 +17,7 @@ resource "aws_wafregional_web_acl" "default" {
 
   rule {
     action {
-      type = "ALLOW" # FIXME: Change this to BLOCK after 25th July 2019
+      type = "BLOCK"
     }
 
     priority = 3
@@ -26,7 +26,7 @@ resource "aws_wafregional_web_acl" "default" {
 
   rule {
     action {
-      type = "ALLOW" # FIXME: Change this to BLOCK after 25th July 2019
+      type = "BLOCK"
     }
 
     priority = 4
