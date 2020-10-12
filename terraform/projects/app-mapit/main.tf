@@ -37,7 +37,37 @@ variable "mapit_1_subnet" {
 
 variable "mapit_2_subnet" {
   type        = "string"
-  description = "Name of the subnet to place the mapit instance 1 and EBS volume"
+  description = "Name of the subnet to place the mapit instance 2 and EBS volume"
+}
+
+variable "mapit_3_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 3 and EBS volume"
+}
+
+variable "mapit_4_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 4 and EBS volume"
+}
+
+variable "mapit_5_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 5 and EBS volume"
+}
+
+variable "mapit_6_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 6 and EBS volume"
+}
+
+variable "mapit_7_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 7 and EBS volume"
+}
+
+variable "mapit_8_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 8 and EBS volume"
 }
 
 variable "elb_internal_certname" {
