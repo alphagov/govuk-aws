@@ -67,7 +67,7 @@ variable "internal_domain_name" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "c5.large"
+  default     = "c5.xlarge"
 }
 
 variable "concourse_aws_account_id" {
