@@ -125,7 +125,7 @@ resource "aws_security_group" "email-alert-api_paas_access" {
 }
 
 resource "aws_security_group_rule" "paas_ingress_email-alert-api_ssh" {
-  count             = "${length(var.paas_access_ips) > 0 ? 1 : 0}"
+  count             = "${length(var.paas_egress_ips) > 0 ? 1 : 0}"
   type              = "ingress"
   to_port           = 443
   from_port         = 443
