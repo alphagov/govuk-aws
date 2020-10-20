@@ -113,6 +113,27 @@ resource "aws_security_group_rule" "email-alert-api-elb-external_egress_any_any"
   security_group_id = "${aws_security_group.email-alert-api_elb_external.id}"
 }
 
+resource "aws_security_group" "email-alert-api_paas_access" {
+  count       = "${length(var.paas_egress_ips) > 0 ? 1 : 0}"
+  name        = "${var.stackname}_email-alert-api_paas_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Control access from the GOV.UK PaaS"
+
+  tags {
+    Name = "${var.stackname}_email-alert-api_paas_access"
+  }
+}
+
+resource "aws_security_group_rule" "paas_ingress_email-alert-api_ssh" {
+  count             = "${length(var.paas_access_ips) > 0 ? 1 : 0}"
+  type              = "ingress"
+  to_port           = 443
+  from_port         = 443
+  protocol          = "tcp"
+  cidr_blocks       = "${var.paas_egress_ips}"
+  security_group_id = "${aws_security_group.email-alert-api_paas_access.id}"
+}
+
 resource "aws_security_group" "email-alert-api_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_email-alert-api_ithc_access"
