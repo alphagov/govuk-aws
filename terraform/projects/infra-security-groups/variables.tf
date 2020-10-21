@@ -83,12 +83,6 @@ variable "carrenza_vpn_subnet_cidr" {
   default     = []
 }
 
-variable "paas_egress_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks that are used for egress from the GOV.UK PaaS"
-  default     = []
-}
-
 variable "ithc_access_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will be allowed temporary access for ITHC purposes."
