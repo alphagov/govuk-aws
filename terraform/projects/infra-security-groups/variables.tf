@@ -83,9 +83,15 @@ variable "carrenza_vpn_subnet_cidr" {
   default     = []
 }
 
-variable "paas_egress_ips" {
+variable "paas_ireland_egress_ips" {
   type        = "list"
-  description = "An array of CIDR blocks that are used for egress from the GOV.UK PaaS"
+  description = "An array of CIDR blocks that are used for egress from the GOV.UK PaaS Ireland region"
+  default     = []
+}
+
+variable "paas_london_egress_ips" {
+  type        = "list"
+  description = "An array of CIDR blocks that are used for egress from the GOV.UK PaaS London region"
   default     = []
 }
 

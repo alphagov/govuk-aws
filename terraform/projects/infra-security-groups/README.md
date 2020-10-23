@@ -38,7 +38,8 @@ Manage the security groups for the entire infrastructure
 | concourse\_ips | An array of CIDR blocks that represent ingress Concourse | `list` | n/a | yes |
 | ithc\_access\_ips | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | `list` | `[]` | no |
 | office\_ips | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
-| paas\_egress\_ips | An array of CIDR blocks that are used for egress from the GOV.UK PaaS | `list` | `[]` | no |
+| paas\_ireland\_egress\_ips | An array of CIDR blocks that are used for egress from the GOV.UK PaaS Ireland region | `list` | `[]` | no |
+| paas\_london\_egress\_ips | An array of CIDR blocks that are used for egress from the GOV.UK PaaS London region | `list` | `[]` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | `string` | `""` | no |
 | remote\_state\_infra\_vpc\_key\_stack | Override infra\_vpc remote state path | `string` | `""` | no |

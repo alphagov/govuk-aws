@@ -117,7 +117,7 @@ resource "aws_security_group_rule" "knowledge-graph-elb-external_ingress_paas_bo
   protocol    = "tcp"
   from_port   = 7687
   to_port     = 7687
-  cidr_blocks = ["${var.paas_egress_ips}"]
+  cidr_blocks = ["${var.paas_ireland_egress_ips}"]
 
   security_group_id = "${aws_security_group.knowledge-graph_elb_external.id}"
 }
