@@ -112,11 +112,11 @@ resource "aws_security_group_rule" "knowledge-graph-elb-external_ingress_office_
   security_group_id = "${aws_security_group.knowledge-graph_elb_external.id}"
 }
 
-resource "aws_security_group_rule" "knowledge-graph-elb-external_ingress_paas_bolt" {
+resource "aws_security_group_rule" "knowledge-graph-elb-external_ingress_paas_https" {
   type        = "ingress"
   protocol    = "tcp"
-  from_port   = 7687
-  to_port     = 7687
+  from_port   = 7473
+  to_port     = 7473
   cidr_blocks = ["${var.paas_ireland_egress_ips}"]
 
   security_group_id = "${aws_security_group.knowledge-graph_elb_external.id}"
