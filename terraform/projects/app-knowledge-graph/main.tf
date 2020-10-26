@@ -241,7 +241,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
   name             = "${var.stackname}_knowledge-graph"
   min_size         = 0
   max_size         = 1
-  desired_capacity = 1
+  desired_capacity = 0
 
   launch_template {
     id      = "${aws_launch_template.knowledge-graph_launch_template.id}"
@@ -260,7 +260,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-up"
-  recurrence             = "0 8 * * MON-FRI"
+  recurrence             = "0 9 * * MON-FRI"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 1
@@ -269,7 +269,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-down"
-  recurrence             = "55 16 * * MON-FRI"
+  recurrence             = "55 17 * * MON-FRI"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
