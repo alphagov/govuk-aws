@@ -241,7 +241,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
   name             = "${var.stackname}_knowledge-graph"
   min_size         = 0
   max_size         = 1
-  desired_capacity = 1
+  desired_capacity = 0
 
   launch_template {
     id      = "${aws_launch_template.knowledge-graph_launch_template.id}"
