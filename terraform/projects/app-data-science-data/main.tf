@@ -150,7 +150,7 @@ resource "aws_autoscaling_group" "data-science-data_asg" {
   name             = "${var.stackname}_data-science-data"
   min_size         = 0
   max_size         = 1
-  desired_capacity = 1
+  desired_capacity = 0
 
   launch_template {
     id      = "${aws_launch_template.data-science-data_launch_template.id}"
