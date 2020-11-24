@@ -40,12 +40,6 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
-variable "integration_only" {
-  type        = "string"
-  description = "Only apply these policies to integration "
-  default     = "false"
-}
-
 variable "standard_s3_storage_time" {
   type        = "string"
   description = "Storage time in days for Standard S3 Bucket Objects"
@@ -117,12 +111,15 @@ resource "aws_s3_bucket" "database_backups" {
     target_prefix = "s3/govuk-${var.aws_environment}-database-backups/"
   }
 
-  # The backup should only be stored for a long time in staging and production
-  # They are not needed in Integration
+  # Production/Staging lifecycle rules.
+  #
+  # TODO: make staging use the same rules as integration. We don't need to
+  # retain backups of staging for very long.
+
   lifecycle_rule {
     id      = "mysql_lifecycle_rule"
     prefix  = "mysql/"
-    enabled = "${var.integration_only == "false" ? true : false }"
+    enabled = "${var.aws_environment != "integration"}"
 
     transition {
       storage_class = "STANDARD_IA"
@@ -138,11 +135,10 @@ resource "aws_s3_bucket" "database_backups" {
       days = 120
     }
   }
-
   lifecycle_rule {
     id      = "postgres_lifecycle_rule"
     prefix  = "postgres/"
-    enabled = "${var.integration_only == "false" ? true : false }"
+    enabled = "${var.aws_environment != "integration"}"
 
     transition {
       storage_class = "STANDARD_IA"
@@ -158,11 +154,10 @@ resource "aws_s3_bucket" "database_backups" {
       days = 120
     }
   }
-
   lifecycle_rule {
     id      = "mongo_daily_lifecycle_rule"
     prefix  = "mongodb/daily"
-    enabled = "${var.integration_only == "false" ? true : false }"
+    enabled = "${var.aws_environment != "integration"}"
 
     transition {
       storage_class = "STANDARD_IA"
@@ -178,7 +173,6 @@ resource "aws_s3_bucket" "database_backups" {
       days = 120
     }
   }
-
   lifecycle_rule {
     id      = "mongo_regular_lifecycle_rule"
     prefix  = "mongodb/regular"
@@ -188,7 +182,6 @@ resource "aws_s3_bucket" "database_backups" {
       days = "${var.expiration_time_whisper_mongo}"
     }
   }
-
   lifecycle_rule {
     id      = "whisper_lifecycle_rule"
     prefix  = "whisper/"
@@ -199,13 +192,19 @@ resource "aws_s3_bucket" "database_backups" {
     }
   }
 
-  # Integration specific lifecycle rules START. These rules are created in all
+  # Integration-specific lifecycle rules. These rules are created in all
   # environments but are only enabled in Integration.
+  #
+  # TODO: create these only in environments where they're needed, instead of
+  # creating them everywhere and leaving them disabled.
+  #
+  # TODO: these are all set to the same var.expiration_time so just replace
+  # them with one rule. Similarly for the prod ones above.
 
   lifecycle_rule {
     id      = "mysql_lifecycle_rule_integration"
     prefix  = "mysql/"
-    enabled = "${var.integration_only}"
+    enabled = "${var.aws_environment == "integration"}"
 
     expiration {
       days = "${var.expiration_time}"
@@ -214,7 +213,7 @@ resource "aws_s3_bucket" "database_backups" {
   lifecycle_rule {
     id      = "postgres_lifecycle_rule_integration"
     prefix  = "postgres/"
-    enabled = "${var.integration_only}"
+    enabled = "${var.aws_environment == "integration"}"
 
     expiration {
       days = "${var.expiration_time}"
@@ -223,19 +222,16 @@ resource "aws_s3_bucket" "database_backups" {
   lifecycle_rule {
     id      = "mongo_daily_lifecycle_rule_integration"
     prefix  = "mongodb/daily"
-    enabled = "${var.integration_only}"
+    enabled = "${var.aws_environment == "integration"}"
 
     expiration {
       days = "${var.expiration_time}"
     }
   }
-
-  # Integration Rules for whole bucket
-
   lifecycle_rule {
     id      = "whole_bucket_lifecycle_rule_integration"
     prefix  = ""
-    enabled = "${var.integration_only}"
+    enabled = "${var.aws_environment == "integration"}"
 
     expiration {
       days = "${var.expiration_time}"
@@ -245,6 +241,9 @@ resource "aws_s3_bucket" "database_backups" {
       days = "1"
     }
   }
+
+  # End of Integration-specific lifecycle rules.
+
 
   # Lifecycle rule for coronavirus find support backup
 
@@ -269,9 +268,6 @@ resource "aws_s3_bucket" "database_backups" {
       days = 365
     }
   }
-
-  # Integration lifecycle specific rules END
-
   versioning {
     enabled = true
   }
