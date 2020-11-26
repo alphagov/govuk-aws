@@ -31,7 +31,6 @@ database-backups: The bucket that will hold database backups
 | expiration\_time | Expiration time in days of S3 Objects | `string` | `"120"` | no |
 | expiration\_time\_whisper\_mongo | Expiration time in days for Whisper/Mongo S3 database backups | `string` | `"7"` | no |
 | glacier\_storage\_time | Storage time in days for Glacier Objects | `string` | `"90"` | no |
-| integration\_only | Only apply these policies to integration | `string` | `"false"` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | replication\_setting | Whether replication is Enabled or Disabled | `string` | `"Enabled"` | no |
