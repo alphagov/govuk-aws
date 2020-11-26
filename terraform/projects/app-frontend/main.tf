@@ -39,7 +39,7 @@ variable "app_service_records" {
 variable "asg_size" {
   type        = "string"
   description = "The autoscaling groups desired/max/min capacity"
-  default     = "3"
+  default     = "12"
 }
 
 variable "root_block_device_volume_size" {
