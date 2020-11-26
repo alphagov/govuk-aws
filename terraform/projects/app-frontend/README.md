@@ -22,7 +22,7 @@ Frontend application servers
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | app\_service\_records | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
-| asg\_size | The autoscaling groups desired/max/min capacity | `string` | `"3"` | no |
+| asg\_size | The autoscaling groups desired/max/min capacity | `string` | `"12"` | no |
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
