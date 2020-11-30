@@ -15,7 +15,6 @@ purposes.
 | Name | Version |
 |------|---------|
 | aws | 2.46.0 |
-| template | n/a |
 | terraform | n/a |
 
 ## Inputs
@@ -35,7 +34,5 @@ purposes.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| s3\_writer\_bucket\_policy\_arn | ARN of the S3 writer bucket policy |
+No output.
 
