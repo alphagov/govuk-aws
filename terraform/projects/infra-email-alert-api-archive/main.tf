@@ -32,18 +32,3 @@ provider "aws" {
   region  = "${var.aws_region}"
   version = "2.46.0"
 }
-
-resource "aws_s3_bucket" "email_alert_api_archive" {
-  bucket        = "govuk-${var.aws_environment}-email-alert-api-archive"
-  force_destroy = true
-
-  tags {
-    Name            = "govuk-${var.aws_environment}-email-alert-api-archive"
-    aws_environment = "${var.aws_environment}"
-  }
-
-  logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    target_prefix = "s3/govuk-${var.aws_environment}-email-alert-api-archive/"
-  }
-}
