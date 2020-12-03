@@ -15,32 +15,12 @@ resource "aws_wafregional_web_acl" "default" {
     rule_id  = "${aws_wafregional_rule.x_always_block.id}"
   }
 
-  rule {
-    action {
-      type = "ALLOW" # FIXME: Change this to BLOCK after 25th July 2019
-    }
-
-    priority = 3
-    rule_id  = "${aws_wafregional_rule.sqli.id}"
-  }
-
-  rule {
-    action {
-      type = "ALLOW" # FIXME: Change this to BLOCK after 25th July 2019
-    }
-
-    priority = 4
-    rule_id  = "${aws_wafregional_rule.xss.id}"
-  }
-
   logging_configuration {
     log_destination = "${aws_kinesis_firehose_delivery_stream.splunk.arn}"
   }
 
   depends_on = [
     "aws_wafregional_rule.x_always_block",
-    "aws_wafregional_rule.sqli",
-    "aws_wafregional_rule.xss",
   ]
 }
 
