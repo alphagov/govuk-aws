@@ -256,18 +256,6 @@ resource "aws_s3_bucket" "database_backups" {
       days = 365
     }
   }
-
-  # Lifecycle rule for coronavirus business volunteer form backup
-
-  lifecycle_rule {
-    id      = "coronavirus_business_volunteer_form_lifecycle_rule"
-    prefix  = "coronavirus-business-volunteer-form/production.sql.gzip"
-    enabled = true
-
-    expiration {
-      days = 365
-    }
-  }
   versioning {
     enabled = true
   }
