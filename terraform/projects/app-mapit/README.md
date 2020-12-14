@@ -32,6 +32,9 @@ Mapit node
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | lc\_create\_ebs\_volume | Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1 | `string` | n/a | yes |
+| mapit\_10\_subnet | Name of the subnet to place the mapit instance 10 and EBS volume | `string` | n/a | yes |
+| mapit\_11\_subnet | Name of the subnet to place the mapit instance 11 and EBS volume | `string` | n/a | yes |
+| mapit\_12\_subnet | Name of the subnet to place the mapit instance 12 and EBS volume | `string` | n/a | yes |
 | mapit\_1\_subnet | Name of the subnet to place the mapit instance 1 and EBS volume | `string` | n/a | yes |
 | mapit\_2\_subnet | Name of the subnet to place the mapit instance 2 and EBS volume | `string` | n/a | yes |
 | mapit\_3\_subnet | Name of the subnet to place the mapit instance 3 and EBS volume | `string` | n/a | yes |
@@ -41,9 +44,6 @@ Mapit node
 | mapit\_7\_subnet | Name of the subnet to place the mapit instance 7 and EBS volume | `string` | n/a | yes |
 | mapit\_8\_subnet | Name of the subnet to place the mapit instance 8 and EBS volume | `string` | n/a | yes |
 | mapit\_9\_subnet | Name of the subnet to place the mapit instance 9 and EBS volume | `string` | n/a | yes |
-| mapit\_10\_subnet | Name of the subnet to place the mapit instance 10 and EBS volume | `string` | n/a | yes |
-| mapit\_11\_subnet | Name of the subnet to place the mapit instance 11 and EBS volume | `string` | n/a | yes |
-| mapit\_12\_subnet | Name of the subnet to place the mapit instance 12 and EBS volume | `string` | n/a | yes |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | `string` | `""` | no |
@@ -59,3 +59,4 @@ Mapit node
 | Name | Description |
 |------|-------------|
 | mapit\_service\_dns\_name | DNS name to access the mapit internal service |
+
