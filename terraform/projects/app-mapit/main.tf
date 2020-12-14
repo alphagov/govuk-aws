@@ -70,6 +70,26 @@ variable "mapit_8_subnet" {
   description = "Name of the subnet to place the mapit instance 8 and EBS volume"
 }
 
+variable "mapit_9_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 9 and EBS volume"
+}
+
+variable "mapit_10_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 10 and EBS volume"
+}
+
+variable "mapit_11_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 11 and EBS volume"
+}
+
+variable "mapit_12_subnet" {
+  type        = "string"
+  description = "Name of the subnet to place the mapit instance 12 and EBS volume"
+}
+
 variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
@@ -467,6 +487,150 @@ resource "aws_ebs_volume" "mapit-8" {
   }
 }
 
+module "mapit-9" {
+  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mapit-9"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-9")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_9_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "20"
+  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
+  ebs_encrypted                 = "${var.ebs_encrypted}"
+  ebs_device_name               = "${var.ebs_device_name}"
+}
+
+resource "aws_ebs_volume" "mapit-9" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_9_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = 20
+  type              = "gp2"
+
+  tags {
+    Name            = "${var.stackname}-mapit"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "mapit-9"
+    aws_migration   = "mapit"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+module "mapit-10" {
+  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mapit-10"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-10")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_10_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "20"
+  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
+  ebs_encrypted                 = "${var.ebs_encrypted}"
+  ebs_device_name               = "${var.ebs_device_name}"
+}
+
+resource "aws_ebs_volume" "mapit-10" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_10_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = 20
+  type              = "gp2"
+
+  tags {
+    Name            = "${var.stackname}-mapit"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "mapit-10"
+    aws_migration   = "mapit"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+module "mapit-11" {
+  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mapit-11"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-11")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_11_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "20"
+  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
+  ebs_encrypted                 = "${var.ebs_encrypted}"
+  ebs_device_name               = "${var.ebs_device_name}"
+}
+
+resource "aws_ebs_volume" "mapit-11" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_11_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = 20
+  type              = "gp2"
+
+  tags {
+    Name            = "${var.stackname}-mapit"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "mapit-11"
+    aws_migration   = "mapit"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+module "mapit-12" {
+  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-mapit-12"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-12")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_12_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "20"
+  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
+  ebs_encrypted                 = "${var.ebs_encrypted}"
+  ebs_device_name               = "${var.ebs_device_name}"
+}
+
+resource "aws_ebs_volume" "mapit-12" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_12_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = 20
+  type              = "gp2"
+
+  tags {
+    Name            = "${var.stackname}-mapit"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "mapit-12"
+    aws_migration   = "mapit"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
 resource "aws_iam_policy" "mapit_iam_policy" {
   name   = "${var.stackname}-mapit-additional"
   path   = "/"
@@ -510,6 +674,26 @@ resource "aws_iam_role_policy_attachment" "mapit_7_iam_role_policy_attachment" {
 
 resource "aws_iam_role_policy_attachment" "mapit_8_iam_role_policy_attachment" {
   role       = "${module.mapit-8.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mapit_9_iam_role_policy_attachment" {
+  role       = "${module.mapit-9.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mapit_10_iam_role_policy_attachment" {
+  role       = "${module.mapit-10.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mapit_11_iam_role_policy_attachment" {
+  role       = "${module.mapit-11.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "mapit_12_iam_role_policy_attachment" {
+  role       = "${module.mapit-12.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
 }
 
