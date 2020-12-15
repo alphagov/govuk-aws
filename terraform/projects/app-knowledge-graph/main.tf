@@ -212,7 +212,7 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
   image_id = "${data.aws_ami.neo4j_community_ami.id}"
 
-  instance_type = "m4.large"
+  instance_type = "r4.2xlarge"
 
   vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}"]
 
