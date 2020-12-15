@@ -10,6 +10,7 @@ jobs:
         with:
           path: vendor/bundle
           key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: bundle
       - run: bundle install --deployment
 
       - name: Docs Check
