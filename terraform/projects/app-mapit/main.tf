@@ -30,64 +30,19 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
-variable "mapit_1_subnet" {
+variable "mapit_subnet_a" {
   type        = "string"
-  description = "Name of the subnet to place the mapit instance 1 and EBS volume"
+  description = "Name of the subnet to place the first third of mapit instances and EBS volumes"
 }
 
-variable "mapit_2_subnet" {
+variable "mapit_subnet_b" {
   type        = "string"
-  description = "Name of the subnet to place the mapit instance 2 and EBS volume"
+  description = "Name of the subnet to place the second third of mapit instances and EBS volumes"
 }
 
-variable "mapit_3_subnet" {
+variable "mapit_subnet_c" {
   type        = "string"
-  description = "Name of the subnet to place the mapit instance 3 and EBS volume"
-}
-
-variable "mapit_4_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 4 and EBS volume"
-}
-
-variable "mapit_5_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 5 and EBS volume"
-}
-
-variable "mapit_6_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 6 and EBS volume"
-}
-
-variable "mapit_7_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 7 and EBS volume"
-}
-
-variable "mapit_8_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 8 and EBS volume"
-}
-
-variable "mapit_9_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 9 and EBS volume"
-}
-
-variable "mapit_10_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 10 and EBS volume"
-}
-
-variable "mapit_11_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 11 and EBS volume"
-}
-
-variable "mapit_12_subnet" {
-  type        = "string"
-  description = "Name of the subnet to place the mapit instance 12 and EBS volume"
+  description = "Name of the subnet to place the last third of mapit instances and EBS volumes"
 }
 
 variable "elb_internal_certname" {
@@ -204,7 +159,7 @@ module "mapit-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-1"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_1_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -219,7 +174,7 @@ module "mapit-1" {
 }
 
 resource "aws_ebs_volume" "mapit-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -240,7 +195,7 @@ module "mapit-2" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-2"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-2")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_2_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_b))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -255,7 +210,7 @@ module "mapit-2" {
 }
 
 resource "aws_ebs_volume" "mapit-2" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_2_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_b)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -276,7 +231,7 @@ module "mapit-3" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-3"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-3")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_3_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_c))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -291,7 +246,7 @@ module "mapit-3" {
 }
 
 resource "aws_ebs_volume" "mapit-3" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_3_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -312,7 +267,7 @@ module "mapit-4" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-4"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-4")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_4_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -327,7 +282,7 @@ module "mapit-4" {
 }
 
 resource "aws_ebs_volume" "mapit-4" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_4_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -348,7 +303,7 @@ module "mapit-5" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-5"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-5")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_5_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_b))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -363,7 +318,7 @@ module "mapit-5" {
 }
 
 resource "aws_ebs_volume" "mapit-5" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_5_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_b)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -384,7 +339,7 @@ module "mapit-6" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-6"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-6")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_6_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_c))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -399,7 +354,7 @@ module "mapit-6" {
 }
 
 resource "aws_ebs_volume" "mapit-6" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_6_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -420,7 +375,7 @@ module "mapit-7" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-7"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-7")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_7_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -435,7 +390,7 @@ module "mapit-7" {
 }
 
 resource "aws_ebs_volume" "mapit-7" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_7_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -456,7 +411,7 @@ module "mapit-8" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-8"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-8")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_8_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_b))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -471,7 +426,7 @@ module "mapit-8" {
 }
 
 resource "aws_ebs_volume" "mapit-8" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_8_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_b)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -492,7 +447,7 @@ module "mapit-9" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-9"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-9")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_9_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_c))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -507,7 +462,7 @@ module "mapit-9" {
 }
 
 resource "aws_ebs_volume" "mapit-9" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_9_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -528,7 +483,7 @@ module "mapit-10" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-10"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-10")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_10_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -543,7 +498,7 @@ module "mapit-10" {
 }
 
 resource "aws_ebs_volume" "mapit-10" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_10_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -564,7 +519,7 @@ module "mapit-11" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-11"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-11")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_11_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_b))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -579,7 +534,7 @@ module "mapit-11" {
 }
 
 resource "aws_ebs_volume" "mapit-11" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_11_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_b)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
@@ -600,7 +555,7 @@ module "mapit-12" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-12"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-12")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_12_subnet))}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_c))}"
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -615,7 +570,7 @@ module "mapit-12" {
 }
 
 resource "aws_ebs_volume" "mapit-12" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_12_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
   type              = "gp2"
