@@ -315,3 +315,8 @@ output "policy_read_write_related_links_bucket_policy_arn" {
   value       = "${aws_iam_policy.read_write_related_links_bucket_policy.arn}"
   description = "ARN of the policy used to read/write data from/to the related links bucket"
 }
+
+output "concourse_role_name" {
+  value       = "${aws_iam_role.concourse_role.name}"
+  description = "Name of the role assumed by Concourse"
+}

@@ -40,6 +40,7 @@ Run resource intensive scripts for data science purposes.
 
 | Name | Description |
 |------|-------------|
+| concourse\_role\_name | Name of the role assumed by Concourse |
 | policy\_read\_content\_store\_backups\_bucket\_policy\_arn | ARN of the policy used to read content store backups from the database backups bucket |
 | policy\_read\_write\_related\_links\_bucket\_policy\_arn | ARN of the policy used to read/write data from/to the related links bucket |
 
