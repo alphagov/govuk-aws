@@ -74,14 +74,36 @@ data "aws_iam_policy_document" "data-science-data_read_ssm_policy_document" {
   }
 }
 
+data "aws_iam_policy_document" "invoke_sagemaker_govner_endpoint_policy_document" {
+  statement {
+    actions = [
+      "sagemaker:InvokeEndpoint",
+    ]
+
+    resources = [
+      "arn:aws:sagemaker:eu-west-1:${data.aws_caller_identity.current.account_id}:endpoint/govner-endpoint",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "data-science-data_read_ssm_policy" {
   name   = "data-science-data_read_ssm_policy"
   policy = "${data.aws_iam_policy_document.data-science-data_read_ssm_policy_document.json}"
 }
 
+resource "aws_iam_policy" "invoke_sagemaker_govner_endpoint_policy" {
+  name   = "invoke_sagemaker_govner_endpoint_policy"
+  policy = "${data.aws_iam_policy_document.invoke_sagemaker_govner_endpoint_policy_document.json}"
+}
+
 resource "aws_iam_role_policy_attachment" "data-science-data_read_ssm_role_attachment" {
   role       = "${aws_iam_role.data-science-data_role.name}"
   policy_arn = "${aws_iam_policy.data-science-data_read_ssm_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "invoke_sagemaker_govner_endpoint_role_attachment" {
+  role       = "${aws_iam_role.data-science-data_role.name}"
+  policy_arn = "${aws_iam_policy.invoke_sagemaker_govner_endpoint_policy.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "read_write_data_infrastructure_bucket_role_attachment" {
