@@ -91,6 +91,8 @@ Manage the security groups for the entire infrastructure
 | sg\_ckan\_elb\_external\_id | n/a |
 | sg\_ckan\_elb\_internal\_id | n/a |
 | sg\_ckan\_id | n/a |
+| sg\_collections\_elb\_id | n/a |
+| sg\_collections\_id | n/a |
 | sg\_content-data-api-db-admin\_id | n/a |
 | sg\_content-data-api-postgresql-primary\_id | n/a |
 | sg\_content-store\_external\_elb\_id | n/a |

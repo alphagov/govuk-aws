@@ -162,6 +162,14 @@ output "sg_ckan_id" {
   value = "${aws_security_group.ckan.id}"
 }
 
+output "sg_collections_elb_id" {
+  value = "${aws_security_group.collections_elb.id}"
+}
+
+output "sg_collections_id" {
+  value = "${aws_security_group.collections.id}"
+}
+
 output "sg_content-data-api-db-admin_id" {
   value = "${aws_security_group.content-data-api-db-admin.id}"
 }
