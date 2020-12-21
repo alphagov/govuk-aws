@@ -300,6 +300,11 @@ variable "ckan_internal_service_cnames" {
   default = []
 }
 
+variable "collections_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "content_store_internal_service_names" {
   type    = "list"
   default = []
@@ -909,6 +914,19 @@ resource "aws_route53_record" "ckan_internal_service_cnames" {
   name    = "${element(var.ckan_internal_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.ckan_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# collections
+#
+
+resource "aws_route53_record" "collections_internal_service_names" {
+  count   = "${length(var.collections_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.collections_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.collections_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

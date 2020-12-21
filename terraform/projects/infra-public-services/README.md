@@ -52,6 +52,7 @@ This project adds global resources for app components:
 | ckan\_internal\_service\_names | n/a | `list` | `[]` | no |
 | ckan\_public\_service\_cnames | n/a | `list` | `[]` | no |
 | ckan\_public\_service\_names | n/a | `list` | `[]` | no |
+| collections\_internal\_service\_names | n/a | `list` | `[]` | no |
 | content\_data\_api\_db\_admin\_internal\_service\_names | n/a | `list` | `[]` | no |
 | content\_data\_api\_postgresql\_internal\_service\_names | n/a | `list` | `[]` | no |
 | content\_store\_internal\_service\_names | n/a | `list` | `[]` | no |
