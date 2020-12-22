@@ -100,6 +100,29 @@ resource "aws_security_group_rule" "static_ingress_static-carrenza-alb_http" {
   source_security_group_id = "${aws_security_group.static_carrenza_alb.id}"
 }
 
+resource "aws_security_group" "frontend_cache" {
+  name        = "${var.stackname}_frontend_cache_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to the frontend cache from frontend"
+
+  tags {
+    Name = "${var.stackname}_frontend_cache_access"
+  }
+}
+
+resource "aws_security_group_rule" "frontend_ingress_frontend_cache_memcached" {
+  type      = "ingress"
+  from_port = 11211
+  to_port   = 11211
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.frontend_cache.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.frontend.id}"
+}
+
 # Security resources for ALB set up for Carrenza access to AWS
 
 resource "aws_security_group" "static_carrenza_alb" {

@@ -54,6 +54,13 @@ variable "instance_type" {
   default     = "m5.xlarge"
 }
 
+variable "memcached_instance_type" {
+  type    = "string"
+  default = "cache.r6g.large" # Memory optimized Graviton2 ($0.206/hour as of 2020)
+
+  description = "Instance type used for the shared Elasticache Memcached instances"
+}
+
 variable "enable_alb" {
   type        = "string"
   description = "Use application specific target groups and healthchecks based on the list of services in the cname variable."
@@ -176,6 +183,33 @@ module "internal_lb_rules" {
   listener_arn           = "${module.internal_lb.load_balancer_ssl_listeners[0]}"
   rules_host             = ["${concat(list("frontend"), var.app_service_records)}"]
   default_tags           = "${map("Project", var.stackname, "aws_migration", "frontend", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_elasticache_subnet_group" "memcached" {
+  name       = "${var.stackname}-frontend-memcached"
+  subnet_ids = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+}
+
+resource "aws_elasticache_cluster" "memcached" {
+  cluster_id = "${var.stackname}-frontend-memcached"
+
+  engine          = "memcached"
+  engine_version  = "1.6.6"
+  port            = 11211
+  node_type       = "${var.memcached_instance_type}"
+  num_cache_nodes = 1
+
+  parameter_group_name = "default.memcached1.6"
+  subnet_group_name    = "${aws_elasticache_subnet_group.memcached.name}"
+  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_cache_id}"]
+}
+
+resource "aws_route53_record" "memcached_cname" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "frontend-memcached.${var.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${aws_elasticache_cluster.memcached.cluster_address}"]
 }
 
 module "frontend" {

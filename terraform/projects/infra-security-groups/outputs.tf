@@ -274,6 +274,10 @@ output "sg_frontend_id" {
   value = "${aws_security_group.frontend.id}"
 }
 
+output "sg_frontend_cache_id" {
+  value = "${aws_security_group.frontend_cache.id}"
+}
+
 output "sg_gatling_id" {
   value = "${aws_security_group.gatling.id}"
 }
