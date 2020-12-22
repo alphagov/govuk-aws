@@ -185,13 +185,13 @@ module "internal_lb_rules" {
   default_tags           = "${map("Project", var.stackname, "aws_migration", "frontend", "aws_environment", var.aws_environment)}"
 }
 
-resource "aws_elasticache_subnet_group" "cache" {
-  name       = "${var.stackname}-frontend-cache"
+resource "aws_elasticache_subnet_group" "memcached" {
+  name       = "${var.stackname}-frontend-memcached"
   subnet_ids = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
 }
 
 resource "aws_elasticache_cluster" "memcached" {
-  cluster_id = "${var.stackname}-frontend-cache"
+  cluster_id = "${var.stackname}-frontend-memcached"
 
   engine          = "memcached"
   engine_version  = "1.6.6"
@@ -200,11 +200,11 @@ resource "aws_elasticache_cluster" "memcached" {
   num_cache_nodes = 1
 
   parameter_group_name = "default.memcached1.6"
-  subnet_group_name    = "${aws_elasticache_subnet_group.cache.name}"
+  subnet_group_name    = "${aws_elasticache_subnet_group.memcached.name}"
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_cache_id}"]
 }
 
-resource "aws_route53_record" "cache_cname" {
+resource "aws_route53_record" "memcached_cname" {
   zone_id = "${data.aws_route53_zone.internal.zone_id}"
   name    = "frontend-memcached.${var.internal_domain_name}"
   type    = "CNAME"
