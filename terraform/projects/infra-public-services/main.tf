@@ -1347,6 +1347,14 @@ resource "aws_route53_record" "frontend_internal_service_cnames" {
   ttl     = "300"
 }
 
+resource "aws_route53_record" "frontend_cache_name" {
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "frontend-memcached.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["frontend-memcached.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
 #
 # Graphite
 #
