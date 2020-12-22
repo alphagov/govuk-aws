@@ -197,6 +197,14 @@ resource "aws_elasticache_cluster" "memcached" {
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_frontend_cache_id}"]
 }
 
+resource "aws_route53_record" "cache_cname" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "frontend-memcached.${var.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${aws_elasticache_cluster.memcached.cluster_address}"]
+}
+
 module "frontend" {
   source                            = "../../modules/aws/node_group"
   name                              = "${var.stackname}-frontend"
