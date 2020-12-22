@@ -117,6 +117,7 @@ Manage the security groups for the entire infrastructure
 | sg\_email-alert-api\_elb\_internal\_id | n/a |
 | sg\_email-alert-api\_id | n/a |
 | sg\_feedback\_elb\_id | n/a |
+| sg\_frontend\_cache\_id | n/a |
 | sg\_frontend\_elb\_id | n/a |
 | sg\_frontend\_id | n/a |
 | sg\_gatling\_external\_elb\_id | n/a |
