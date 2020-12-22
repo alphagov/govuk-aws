@@ -54,6 +54,13 @@ variable "instance_type" {
   default     = "m5.xlarge"
 }
 
+variable "memcached_instance_type" {
+  type    = "string"
+  default = "cache.r6g.large" # Memory optimized Graviton2 ($0.206/hour as of 2020)
+
+  description = "Instance type used for the shared Elasticache Memcached instances"
+}
+
 variable "enable_alb" {
   type        = "string"
   description = "Use application specific target groups and healthchecks based on the list of services in the cname variable."
@@ -189,7 +196,7 @@ resource "aws_elasticache_cluster" "memcached" {
   engine          = "memcached"
   engine_version  = "1.6.6"
   port            = 11211
-  node_type       = "cache.r6g.large" # Memory optimized Graviton2 ($0.206/hour as of 2020)
+  node_type       = "${var.memcached_instance_type}"
   num_cache_nodes = 1
 
   parameter_group_name = "default.memcached1.6"
