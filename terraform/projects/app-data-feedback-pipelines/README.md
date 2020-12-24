@@ -1,22 +1,21 @@
-## Project: app-related-links
+## Project: app-data-feedback-pipelines
 
-Related Links
+Data feedback pipelines
 
-Run resource intensive scripts for data science purposes.
+Smart Survey and Zendesk feedback pipelines, which extract user feedback, cleanse it and push to Google BigQuery.
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | terraform | = 0.11.14 |
-| aws | 1.40.0 |
+| aws | 2.46.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 1.40.0 |
-| template | n/a |
+| aws | 2.46.0 |
 | terraform | n/a |
 
 ## Inputs
@@ -25,9 +24,9 @@ Run resource intensive scripts for data science purposes.
 |------|-------------|------|---------|:--------:|
 | aws\_environment | AWS environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
-| concourse\_aws\_account\_id | AWS account ID which contains the Concourse role | `string` | n/a | yes |
+| remote\_state\_app\_knowledge\_graph\_key\_stack | Override app\_knowledge\_graph remote state path | `string` | `""` | no |
+| remote\_state\_app\_related\_links\_key\_stack | Override stackname path to app\_related\_links remote state | `string` | `""` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
-| remote\_state\_infra\_database\_backups\_bucket\_key\_stack | Override stackname path to infra\_database\_backups\_bucket remote state | `string` | `""` | no |
 | remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | `string` | `""` | no |
 | remote\_state\_infra\_root\_dns\_zones\_key\_stack | Override stackname path to infra\_root\_dns\_zones remote state | `string` | `""` | no |
@@ -38,9 +37,5 @@ Run resource intensive scripts for data science purposes.
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| concourse\_role\_name | Name of the role assumed by Concourse |
-| policy\_read\_content\_store\_backups\_bucket\_policy\_arn | ARN of the policy used to read content store backups from the database backups bucket |
-| policy\_read\_write\_related\_links\_bucket\_policy\_arn | ARN of the policy used to read/write data from/to the related links bucket |
+No output.
 
