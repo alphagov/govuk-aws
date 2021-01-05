@@ -58,6 +58,19 @@ resource "aws_security_group_rule" "prometheus-elb_ingress_officeips_https" {
   cidr_blocks = ["${var.office_ips}"]
 }
 
+resource "aws_security_group_rule" "prometheus-elb_ingress_grafana_https" {
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.prometheus_external_elb.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.graphite.id}" # Note: Grafana runs on the graphite VM
+}
+
 resource "aws_security_group_rule" "prometheus-elb_egress_prometheus_http" {
   type      = "egress"
   from_port = 80
