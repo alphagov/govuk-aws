@@ -118,6 +118,11 @@ resource "aws_db_parameter_group" "postgresql_pg" {
   }
 
   parameter {
+    name  = "deadlock_timeout"
+    value = 2500
+  }
+
+  parameter {
     name  = "log_lock_waits"
     value = true
   }

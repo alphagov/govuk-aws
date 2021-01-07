@@ -127,6 +127,11 @@ resource "aws_db_parameter_group" "content_data_api" {
   }
 
   parameter {
+    name  = "deadlock_timeout"
+    value = 2500
+  }
+
+  parameter {
     name  = "log_lock_waits"
     value = true
   }
