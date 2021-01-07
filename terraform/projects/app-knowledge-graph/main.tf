@@ -64,6 +64,39 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
     aws_environment = "${var.aws_environment}"
     Name            = "${local.data_infrastructure_bucket_name}"
   }
+
+  lifecycle_rule {
+    id      = "functional-network-lifecycle-rule"
+    enabled = true
+    prefix  = "functional-network/"
+
+    expiration {
+      days                         = 30
+      expired_object_delete_marker = true
+    }
+  }
+
+  lifecycle_rule {
+    id      = "knowledge-graph-lifecycle-rule"
+    enabled = true
+    prefix  = "knowledge-graph/"
+
+    expiration {
+      days                         = 30
+      expired_object_delete_marker = true
+    }
+  }
+
+  lifecycle_rule {
+    id      = "structural-network-lifecycle-rule"
+    enabled = true
+    prefix  = "structural-network/"
+
+    expiration {
+      days                         = 30
+      expired_object_delete_marker = true
+    }
+  }
 }
 
 data "aws_ami" "neo4j_community_ami" {
