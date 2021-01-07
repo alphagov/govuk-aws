@@ -97,6 +97,11 @@ resource "aws_db_parameter_group" "app_transition_pg" {
     name  = "log_statement"
     value = "all"
   }
+
+  parameter {
+    name  = "log_lock_waits"
+    value = true
+  }
 }
 
 module "transition-postgresql-primary_rds_instance" {

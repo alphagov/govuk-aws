@@ -116,6 +116,11 @@ resource "aws_db_parameter_group" "postgresql_pg" {
     name  = "log_statement"
     value = "all"
   }
+
+  parameter {
+    name  = "log_lock_waits"
+    value = true
+  }
 }
 
 module "postgresql-primary_rds_instance" {
