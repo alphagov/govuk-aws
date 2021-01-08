@@ -380,19 +380,19 @@ resource "aws_elb" "knowledge-graph_elb_external" {
 # SANDBOX Knowledge Graph
 # --------------------------------------------------------------
 
-data "template_file" "knowledge-graph-sandbox_userdata" {
+data "template_file" "knowledge-graph-lab_userdata" {
   template = "${file("${path.module}/userdata-sandbox.tpl")}"
 
   vars {
-    elb_name                        = "${aws_elb.knowledge-graph-sandbox_elb_external.name}"
+    elb_name                        = "${aws_elb.knowledge-graph-lab_external.name}"
     database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
     data_infrastructure_bucket_name = "${aws_s3_bucket.data_infrastructure_bucket.id}"
     related_links_bucket_name       = "govuk-related-links-${var.aws_environment}"
   }
 }
 
-resource "aws_launch_template" "knowledge-graph-sandbox_launch_template" {
-  name     = "knowledge-graph-sandbox_launch-template"
+resource "aws_launch_template" "knowledge-graph-lab_launch_template" {
+  name     = "knowledge-graph-lab_launch-template"
   image_id = "${data.aws_ami.neo4j_community_ami.id}"
 
   instance_type = "r4.2xlarge"
@@ -417,17 +417,17 @@ resource "aws_launch_template" "knowledge-graph-sandbox_launch_template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.knowledge-graph-sandbox_userdata.rendered)}"
+  user_data = "${base64encode(data.template_file.knowledge-graph-lab_userdata.rendered)}"
 }
 
-resource "aws_autoscaling_group" "knowledge-graph-sandbox_asg" {
-  name             = "${var.stackname}_knowledge-graph-sandbox"
+resource "aws_autoscaling_group" "knowledge-graph-lab_asg" {
+  name             = "${var.stackname}_knowledge-graph-lab"
   min_size         = 0
   max_size         = 1
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.knowledge-graph-sandbox_launch_template.id}"
+    id      = "${aws_launch_template.knowledge-graph-lab_launch_template.id}"
     version = "$Latest"
   }
 
@@ -435,23 +435,23 @@ resource "aws_autoscaling_group" "knowledge-graph-sandbox_asg" {
 
   tag {
     key                 = "Name"
-    value               = "${var.stackname}_knowledge-graph-sandbox"
+    value               = "${var.stackname}_knowledge-graph-lab"
     propagate_at_launch = true
   }
 }
 
-resource "aws_autoscaling_schedule" "knowledge-graph-sandbox_schedule-spin-up" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-sandbox_asg.name}"
-  scheduled_action_name  = "knowledge-graph-sandbox_schedule-spin-up"
+resource "aws_autoscaling_schedule" "knowledge-graph-lab_schedule-spin-up" {
+  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-lab_asg.name}"
+  scheduled_action_name  = "knowledge-graph-lab_schedule-spin-up"
   recurrence             = "30 9 * * MON-FRI"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 1
 }
 
-resource "aws_autoscaling_schedule" "knowledge-graph-sandbox_schedule-spin-down" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-sandbox_asg.name}"
-  scheduled_action_name  = "knowledge-graph-sandbox_schedule-spin-down"
+resource "aws_autoscaling_schedule" "knowledge-graph-lab_schedule-spin-down" {
+  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-lab_asg.name}"
+  scheduled_action_name  = "knowledge-graph-lab_schedule-spin-down"
   recurrence             = "29 18 * * MON-FRI"
   min_size               = -1
   max_size               = -1
@@ -464,8 +464,8 @@ resource "aws_route53_record" "knowledge_graph_lab_service_record_external" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.knowledge-graph-sandbox_elb_external.dns_name}"
-    zone_id                = "${aws_elb.knowledge-graph-sandbox_elb_external.zone_id}"
+    name                   = "${aws_elb.knowledge-graph-lab_external.dns_name}"
+    zone_id                = "${aws_elb.knowledge-graph-lab_external.zone_id}"
     evaluate_target_health = true
   }
 }
