@@ -150,6 +150,7 @@ Manage the security groups for the entire infrastructure
 | sg\_postgresql-primary\_id | n/a |
 | sg\_prometheus\_external\_elb\_id | n/a |
 | sg\_prometheus\_id | n/a |
+| sg\_prometheus\_internal\_elb\_id | n/a |
 | sg\_publishing-api\_elb\_external\_id | n/a |
 | sg\_publishing-api\_elb\_internal\_id | n/a |
 | sg\_publishing-api\_id | n/a |

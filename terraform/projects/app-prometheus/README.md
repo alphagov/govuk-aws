@@ -23,8 +23,11 @@ Prometheus node
 |------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
+| elb\_internal\_certname | The ACM cert domain name (e.g. \*.production.govuk-internal.digital) to find the ARN of | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `"ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"` | no |
 | instance\_type | Instance type used for EC2 resources | `string` | `"t3.medium"` | no |
+| internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
+| internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | prometheus\_1\_subnet | Name of the subnet to place the Prometheus instance and EBS volume | `string` | n/a | yes |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
