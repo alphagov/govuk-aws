@@ -298,6 +298,10 @@ output "sg_graphite_external_elb_id" {
   value = "${aws_security_group.graphite_external_elb.id}"
 }
 
+output "sg_prometheus_internal_elb_id" {
+  value = "${aws_security_group.prometheus_internal_elb.id}"
+}
+
 output "sg_prometheus_external_elb_id" {
   value = "${aws_security_group.prometheus_external_elb.id}"
 }
