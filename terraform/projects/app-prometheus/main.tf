@@ -38,6 +38,21 @@ variable "instance_type" {
   default     = "t3.medium"
 }
 
+variable "elb_internal_certname" {
+  type        = "string"
+  description = "The ACM cert domain name (e.g. *.production.govuk-internal.digital) to find the ARN of"
+}
+
+variable "internal_zone_name" {
+  type        = "string"
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = "string"
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -79,6 +94,64 @@ resource "aws_ebs_volume" "prometheus-1" {
     aws_environment = "${var.aws_environment}"
     aws_migration   = "prometheus"
     aws_hostname    = "prometheus-1"
+  }
+}
+
+data "aws_route53_zone" "internal" {
+  name         = "${var.internal_zone_name}"
+  private_zone = true
+}
+
+data "aws_acm_certificate" "elb_internal_cert" {
+  domain   = "${var.elb_internal_certname}"
+  statuses = ["ISSUED"]
+}
+
+module "prometheus_internal_alb" {
+  source                           = "../../modules/aws/lb"
+  name                             = "${var.stackname}-prometheus-internal"
+  internal                         = true
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix        = "elb/${var.stackname}-prometheus-internal-alb"
+  listener_certificate_domain_name = "${var.elb_internal_certname}"
+  listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
+  subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  target_group_health_check_path   = "/-/ready"                                                              # See https://prometheus.io/docs/prometheus/latest/management_api/
+
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_internal_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags    = "${map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_autoscaling_attachment" "internal_lb" {
+  autoscaling_group_name = "${module.prometheus-1.autoscaling_group_name}"
+  alb_target_group_arn   = "${module.prometheus_internal_alb.target_group_arns[0]}"
+}
+
+resource "aws_lb_listener_rule" "internal_lb" {
+  listener_arn = "${module.prometheus_internal_alb.load_balancer_ssl_listeners[0]}"
+
+  action {
+    type             = "forward"
+    target_group_arn = "${module.prometheus_internal_alb.target_group_arns[0]}"
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["prometheus.${var.internal_domain_name}"]
+  }
+}
+
+resource "aws_route53_record" "service_record_internal" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "prometheus.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.prometheus_internal_alb.lb_dns_name}"
+    zone_id                = "${module.prometheus_internal_alb.lb_zone_id}"
+    evaluate_target_health = true
   }
 }
 
