@@ -263,7 +263,7 @@ resource "aws_ebs_volume" "ci-master" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.deploy_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 40
-  type              = "gp2"
+  type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-ci"
