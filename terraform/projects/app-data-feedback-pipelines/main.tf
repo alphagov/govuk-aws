@@ -49,6 +49,19 @@ data "aws_iam_policy_document" "invoke_feedback_pipelines_lambda_policy_document
   }
 }
 
+data "aws_iam_policy_document" "update_feedback_pipelines_lambda_policy_document" {
+  statement {
+    actions = [
+      "lambda:UpdateFunctionCode",
+    ]
+
+    resources = [
+      "arn:aws:lambda:eu-west-1:${data.aws_caller_identity.current.account_id}:function:smart-survey-data-pipeline",
+      "arn:aws:lambda:eu-west-1:${data.aws_caller_identity.current.account_id}:function:zendesk-data-pipeline",
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "smart_survey_data_pipeline_read_ssm_policy_document" {
   statement {
     actions = [
@@ -106,6 +119,11 @@ resource "aws_iam_policy" "invoke_feedback_pipelines_lambda_policy" {
   policy = "${data.aws_iam_policy_document.invoke_feedback_pipelines_lambda_policy_document.json}"
 }
 
+resource "aws_iam_policy" "update_feedback_pipelines_lambda_policy" {
+  name   = "update_feedback_pipelines_lambda_policy"
+  policy = "${data.aws_iam_policy_document.update_feedback_pipelines_lambda_policy_document.json}"
+}
+
 resource "aws_iam_policy" "smart_survey_data_pipeline_read_ssm_policy" {
   name   = "smart_survey_data_pipeline_read_ssm_policy"
   policy = "${data.aws_iam_policy_document.smart_survey_data_pipeline_read_ssm_policy_document.json}"
@@ -126,6 +144,11 @@ resource "aws_iam_role_policy_attachment" "invoke_feedback_pipelines_lambda_role
   policy_arn = "${aws_iam_policy.invoke_feedback_pipelines_lambda_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "update_feedback_pipelines_lambda_role_attachment" {
+  role       = "${data.terraform_remote_state.app_related_links.concourse_role_name}"
+  policy_arn = "${aws_iam_policy.update_feedback_pipelines_lambda_policy.arn}"
+}
+
 resource "aws_iam_role_policy_attachment" "smart_survey_data_pipeline_read_ssm_role_attachment" {
   role       = "${aws_iam_role.feedback_pipelines_lambda_execution_role.name}"
   policy_arn = "${aws_iam_policy.smart_survey_data_pipeline_read_ssm_policy.arn}"
@@ -141,13 +164,18 @@ resource "aws_iam_role_policy_attachment" "lambda_write_to_cloudwatch_logs_role_
   policy_arn = "${aws_iam_policy.lambda_write_to_cloudwatch_logs_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "read_write_data_infrastructure_bucket_role_attachment" {
+  role       = "${data.terraform_remote_state.app_related_links.concourse_role_name}"
+  policy_arn = "${data.terraform_remote_state.app_knowledge_graph.read_write_data_infrastructure_bucket_policy_arn}"
+}
+
 resource "aws_lambda_function" "smart_suvey_data_pipeline" {
   function_name = "smart-survey-data-pipeline"
   role          = "${aws_iam_role.feedback_pipelines_lambda_execution_role.arn}"
   handler       = "smart_survey_lambda_handler.lambda_handler"
 
   s3_bucket = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
-  s3_key    = "lambdas/feedback-pipeline.zip"
+  s3_key    = "lambdas/feedback-data-pipelines.zip"
 
   memory_size = 1024
   runtime     = "python3.7"
@@ -160,7 +188,7 @@ resource "aws_lambda_function" "zendesk_data_pipeline" {
   handler       = "zendesk_lambda_handler.lambda_handler"
 
   s3_bucket = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
-  s3_key    = "lambdas/feedback-pipeline.zip"
+  s3_key    = "lambdas/feedback-data-pipelines.zip"
 
   memory_size = 1024
   runtime     = "python3.7"
