@@ -97,6 +97,16 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
       expired_object_delete_marker = true
     }
   }
+
+  lifecycle_rule {
+    id      = "lambdas-lifecycle-rule"
+    enabled = true
+    prefix  = "lambdas/"
+
+    noncurrent_version_expiration {
+      days = 30
+    }
+  }
 }
 
 data "aws_ami" "neo4j_community_ami" {
