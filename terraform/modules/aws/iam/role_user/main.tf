@@ -23,17 +23,17 @@
 * ```
 */
 variable "role_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Role"
 }
 
 variable "role_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
 }
 
 variable "role_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "assume_policy_document" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${var.role_user_arns}"]
+      identifiers = var.role_user_arns
     }
 
     condition {
@@ -70,24 +70,24 @@ locals {
 }
 
 resource "aws_iam_role" "user_role" {
-  count                = "${local.create_role}"
-  name                 = "${var.role_name}"
+  count                = local.create_role
+  name                 = var.role_name
   path                 = "/"
   description          = "Role to Delegate Permissions to an IAM User: ${var.role_name}"
-  assume_role_policy   = "${data.aws_iam_policy_document.assume_policy_document.json}"
+  assume_role_policy   = data.aws_iam_policy_document.assume_policy_document.json
   max_session_duration = 28800
 }
 
 resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
-  count      = "${length(var.role_policy_arns) * local.create_role}"
-  role       = "${aws_iam_role.user_role.name}"
-  policy_arn = "${element(var.role_policy_arns, count.index)}"
+  count      = length(var.role_policy_arns) * local.create_role
+  role       = aws_iam_role.user_role[0].name
+  policy_arn = element(var.role_policy_arns, count.index)
 }
 
 # Outputs
 #--------------------------------------------------------------
 
 output "role_arn" {
-  value       = "${join("",aws_iam_role.user_role.*.arn)}"
+  value       = join("",aws_iam_role.user_role.*.arn)
   description = "The ARN specifying the role."
 }
