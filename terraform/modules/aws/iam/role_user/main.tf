@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "assume_policy_document" {
 }
 
 locals {
-  create_role = "${length(var.role_user_arns) > 0 ? 1 : 0}"
+  create_role = length(var.role_user_arns) > 0 ? 1 : 0
 }
 
 resource "aws_iam_role" "user_role" {

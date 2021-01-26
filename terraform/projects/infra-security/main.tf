@@ -108,12 +108,18 @@ variable "ssh_public_key" {
 
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "= 0.13.6"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.25.0"
+    }
+  }
 }
 
 provider "aws" {
-  region  = var.aws_region
-  version = "2.46.0"
+  region = var.aws_region
 }
 
 data "aws_caller_identity" "current" {}
@@ -299,7 +305,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
+      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
     }
   }
 
@@ -318,7 +324,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
+      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
     }
   }
 
@@ -335,7 +341,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
+      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
     }
   }
 }

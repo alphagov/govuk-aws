@@ -11,14 +11,14 @@ Infrastructure security settings:
 
 | Name | Version |
 |------|---------|
-| terraform | = 0.11.14 |
-| aws | 2.46.0 |
+| terraform | = 0.13.6 |
+| aws | ~> 3.25.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 2.46.0 |
+| aws | ~> 3.25.0 |
 
 ## Inputs
 
