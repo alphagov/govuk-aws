@@ -103,6 +103,11 @@ variable "ssh_public_key" {
   description = "The public part of an SSH keypair"
 }
 
+variable "office_ips" {
+  type        = list
+  description = "An array of CIDR blocks that will be allowed offsite access."
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -131,6 +136,14 @@ module "role_admin" {
   role_policy_arns = var.role_admin_policy_arns
 }
 
+module "gds_role_admin" {
+  source           = "../../modules/aws/iam/gds_user_role"
+  role_suffix      = "admin"
+  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_platformhealth_poweruser_user_arns))
+  role_policy_arns = var.role_admin_policy_arns
+  office_ips       = var.office_ips
+}
+
 module "role_internal_admin" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-internal-administrators"
@@ -143,6 +156,14 @@ module "role_platformhealth_poweruser" {
   role_name        = "govuk-platformhealth-powerusers"
   role_user_arns   = var.role_platformhealth_poweruser_user_arns
   role_policy_arns = var.role_platformhealth_poweruser_policy_arns
+}
+
+module "gds_role_poweruser" {
+  source           = "../../modules/aws/iam/gds_user_role"
+  role_suffix      = "poweruser"
+  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_platformhealth_poweruser_user_arns))
+  role_policy_arns = var.role_poweruser_policy_arns
+  office_ips       = var.office_ips
 }
 
 module "role_poweruser" {
@@ -164,6 +185,14 @@ module "role_user" {
   role_name        = "govuk-users"
   role_user_arns   = var.role_user_user_arns
   role_policy_arns = var.role_user_policy_arns
+}
+
+module "gds_role_user" {
+  source           = "../../modules/aws/iam/gds_user_role"
+  role_suffix      = "user"
+  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_user_user_arns))
+  role_policy_arns = var.role_user_policy_arns
+  office_ips       = var.office_ips
 }
 
 resource "aws_iam_account_password_policy" "tighten_passwords" {
