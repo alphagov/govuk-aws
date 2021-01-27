@@ -32,11 +32,29 @@ jobs:
           echo "Running shellcheck..."
           shellcheck -e SC2086,SC1117 jenkins.sh tools/*.sh terraform/userdata/*
 
-      - name: terraform fmt
+      - name: terraform install
         run: |
           brew install tfenv
+
+          # Install default terraform version
           tfenv install
-          find . -name '*.tf' | xargs tools/terraform-format.sh
+          tfenv use
+
+          # Install additional terraform versions
+          for version in $(find . -type f -name '.terraform-version' | xargs cat | sort -u); do
+            tfenv install $version
+          done
+
+      - name: terraform fmt
+        run: |
+          formatter_path="$(pwd)/tools/terraform-format.sh"
+
+          # Loop over each directory containing tf files and ensure correct format
+          for dir in $(find ~+ -type f -name '*.tf' -not -path '$(pwd)/.terraform/*' | sed -E 's|/[^/]+$||' | sort -u); do
+            cd $dir
+            echo "$dir"
+            find . -name '*.tf' | xargs $formatter_path
+          done
 
       - name: RSpec
         run: bundle exec rspec spec/validate_resources_spec.rb   

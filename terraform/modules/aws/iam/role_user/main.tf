@@ -88,6 +88,6 @@ resource "aws_iam_role_policy_attachment" "user_policy_attachment" {
 #--------------------------------------------------------------
 
 output "role_arn" {
-  value       = join("",aws_iam_role.user_role.*.arn)
+  value       = join("", aws_iam_role.user_role.*.arn)
   description = "The ARN specifying the role."
 }
