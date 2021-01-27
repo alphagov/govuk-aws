@@ -10,96 +10,96 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
   default     = ""
 }
 
 variable "role_admin_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_admin_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_internal_admin_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_internal_admin_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_platformhealth_poweruser_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_platformhealth_poweruser_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_poweruser_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_poweruser_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_datascienceuser_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_datascienceuser_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_user_user_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_user_policy_arns" {
-  type        = "list"
+  type        = list
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "ssh_public_key" {
-  type        = "string"
+  type        = string
   description = "The public part of an SSH keypair"
 }
 
@@ -107,13 +107,19 @@ variable "ssh_public_key" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
-  required_version = "= 0.11.14"
+  backend "s3" {}
+  required_version = "= 0.13.6"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.25.0"
+    }
+  }
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "2.46.0"
+  region = var.aws_region
 }
 
 data "aws_caller_identity" "current" {}
@@ -121,43 +127,43 @@ data "aws_caller_identity" "current" {}
 module "role_admin" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-administrators"
-  role_user_arns   = ["${var.role_admin_user_arns}"]
-  role_policy_arns = ["${var.role_admin_policy_arns}"]
+  role_user_arns   = var.role_admin_user_arns
+  role_policy_arns = var.role_admin_policy_arns
 }
 
 module "role_internal_admin" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-internal-administrators"
-  role_user_arns   = ["${var.role_internal_admin_user_arns}"]
-  role_policy_arns = ["${var.role_internal_admin_policy_arns}"]
+  role_user_arns   = var.role_internal_admin_user_arns
+  role_policy_arns = var.role_internal_admin_policy_arns
 }
 
 module "role_platformhealth_poweruser" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-platformhealth-powerusers"
-  role_user_arns   = ["${var.role_platformhealth_poweruser_user_arns}"]
-  role_policy_arns = ["${var.role_platformhealth_poweruser_policy_arns}"]
+  role_user_arns   = var.role_platformhealth_poweruser_user_arns
+  role_policy_arns = var.role_platformhealth_poweruser_policy_arns
 }
 
 module "role_poweruser" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-powerusers"
-  role_user_arns   = ["${var.role_poweruser_user_arns}"]
-  role_policy_arns = ["${var.role_poweruser_policy_arns}"]
+  role_user_arns   = var.role_poweruser_user_arns
+  role_policy_arns = var.role_poweruser_policy_arns
 }
 
 module "role_datascienceuser" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-datascienceusers"
-  role_user_arns   = ["${var.role_datascienceuser_user_arns}"]
-  role_policy_arns = ["${var.role_datascienceuser_policy_arns}"]
+  role_user_arns   = var.role_datascienceuser_user_arns
+  role_policy_arns = var.role_datascienceuser_policy_arns
 }
 
 module "role_user" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-users"
-  role_user_arns   = ["${var.role_user_user_arns}"]
-  role_policy_arns = ["${var.role_user_policy_arns}"]
+  role_user_arns   = var.role_user_user_arns
+  role_policy_arns = var.role_user_policy_arns
 }
 
 resource "aws_iam_account_password_policy" "tighten_passwords" {
@@ -172,7 +178,7 @@ resource "aws_iam_account_password_policy" "tighten_passwords" {
 # default key pair for all ssh instances. All other keys are puppet managed
 resource "aws_key_pair" "govuk-infra-key" {
   key_name   = "govuk-infra"
-  public_key = "${var.ssh_public_key}"
+  public_key = var.ssh_public_key
 }
 
 # Deny EIP Releasing for all users
@@ -187,7 +193,7 @@ data "aws_iam_policy_document" "deny-eip-release" {
 resource "aws_iam_policy" "deny-eip-release" {
   name        = "DenyEipRelease"
   description = "Deny users the ability to release allocated Elastic IPs"
-  policy      = "${data.aws_iam_policy_document.deny-eip-release.json}"
+  policy      = data.aws_iam_policy_document.deny-eip-release.json
 }
 
 # Allow IAM Key Rotation
@@ -209,7 +215,7 @@ data "aws_iam_policy_document" "allow-iam-key-rotation" {
 resource "aws_iam_policy" "allow-iam-key-rotation" {
   name        = "AllowIamKeyRotation"
   description = "Allow users the ability to rotate AWS IAM Access Keys"
-  policy      = "${data.aws_iam_policy_document.allow-iam-key-rotation.json}"
+  policy      = data.aws_iam_policy_document.allow-iam-key-rotation.json
 }
 
 # Data science access policy
@@ -230,7 +236,7 @@ data "aws_iam_policy_document" "data-science-access-glue" {
 resource "aws_iam_policy" "data-science-access-glue" {
   name        = "DataScienceAccessGlue"
   description = "Allows users access to Glue resources for data science on GOV.UK"
-  policy      = "${data.aws_iam_policy_document.data-science-access-glue.json}"
+  policy      = data.aws_iam_policy_document.data-science-access-glue.json
 }
 
 data "aws_iam_policy_document" "data-science-access-sagemaker" {
@@ -254,7 +260,7 @@ data "aws_iam_policy_document" "data-science-access-sagemaker" {
 resource "aws_iam_policy" "data-science-access-sagemaker" {
   name        = "DataScienceAccessSageMaker"
   description = "Allows users access to SageMaker resources for data science on GOV.UK"
-  policy      = "${data.aws_iam_policy_document.data-science-access-sagemaker.json}"
+  policy      = data.aws_iam_policy_document.data-science-access-sagemaker.json
 }
 
 # SOPS KMS key
@@ -299,7 +305,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
+      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
     }
   }
 
@@ -318,7 +324,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
+      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
     }
   }
 
@@ -335,45 +341,45 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${module.role_admin.role_arn}", "${module.role_internal_admin.role_arn}"]
+      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
     }
   }
 }
 
 resource "aws_kms_key" "sops" {
   description = "Encryption key for govuk-aws-data"
-  policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
+  policy      = data.aws_iam_policy_document.kms_sops_policy.json
 }
 
 resource "aws_kms_alias" "sops" {
   name          = "alias/govuk-terraform-data"
-  target_key_id = "${aws_kms_key.sops.key_id}"
+  target_key_id = aws_kms_key.sops.key_id
 }
 
 resource "aws_kms_key" "licensify_documentdb" {
   description = "Encryption key for Licensify DocumentDB"
-  policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
+  policy      = data.aws_iam_policy_document.kms_sops_policy.json
 }
 
 resource "aws_kms_key" "shared_documentdb" {
   description = "Encryption key for Shared DocumentDB"
-  policy      = "${data.aws_iam_policy_document.kms_sops_policy.json}"
+  policy      = data.aws_iam_policy_document.kms_sops_policy.json
 }
 
 # Outputs
 # --------------------------------------------------------------
 
 output "sops_kms_key_arn" {
-  value       = "${aws_kms_key.sops.arn}"
+  value       = aws_kms_key.sops.arn
   description = "The ARN of the Sops KMS key"
 }
 
 output "licensify_documentdb_kms_key_arn" {
-  value       = "${aws_kms_key.licensify_documentdb.arn}"
+  value       = aws_kms_key.licensify_documentdb.arn
   description = "The ARN of the Licensify DocumentDB KMS key"
 }
 
 output "shared_documentdb_kms_key_arn" {
-  value       = "${aws_kms_key.shared_documentdb.arn}"
+  value       = aws_kms_key.shared_documentdb.arn
   description = "The ARN of the Shared DocumentDB KMS key"
 }
