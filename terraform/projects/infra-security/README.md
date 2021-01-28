@@ -26,6 +26,7 @@ Infrastructure security settings:
 |------|-------------|------|---------|:--------:|
 | aws\_environment | AWS Environment | `string` | n/a | yes |
 | aws\_region | AWS region | `string` | `"eu-west-1"` | no |
+| office\_ips | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | role\_admin\_policy\_arns | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | role\_admin\_user\_arns | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | role\_datascienceuser\_policy\_arns | List of ARNs of policies to attach to the role | `list` | `[]` | no |
