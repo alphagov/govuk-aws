@@ -1773,7 +1773,7 @@ module "mapit_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/postcode/W54XA"
+  target_group_health_check_path = "/postcode/W54XA?nocache=true"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_carrenza_alb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
