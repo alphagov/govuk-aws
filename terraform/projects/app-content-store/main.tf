@@ -69,7 +69,7 @@ variable "create_external_elb" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "m5.large"
+  default     = "m5.2xlarge"
 }
 
 # Resources

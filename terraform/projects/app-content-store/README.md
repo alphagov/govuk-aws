@@ -30,7 +30,7 @@ content-store node
 | external\_domain\_name | The domain name of the external DNS records, it could be different from the zone name | `string` | n/a | yes |
 | external\_zone\_name | The name of the Route53 zone that contains external records | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |
-| instance\_type | Instance type used for EC2 resources | `string` | `"m5.large"` | no |
+| instance\_type | Instance type used for EC2 resources | `string` | `"m5.2xlarge"` | no |
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
