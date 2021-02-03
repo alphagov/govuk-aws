@@ -139,7 +139,7 @@ module "role_admin" {
 module "gds_role_admin" {
   source           = "../../modules/aws/iam/gds_user_role"
   role_suffix      = "admin"
-  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_platformhealth_poweruser_user_arns))
+  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_poweruser_user_arns))
   role_policy_arns = var.role_admin_policy_arns
   office_ips       = var.office_ips
 }
@@ -161,7 +161,7 @@ module "role_platformhealth_poweruser" {
 module "gds_role_poweruser" {
   source           = "../../modules/aws/iam/gds_user_role"
   role_suffix      = "poweruser"
-  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_platformhealth_poweruser_user_arns))
+  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_poweruser_user_arns))
   role_policy_arns = var.role_poweruser_policy_arns
   office_ips       = var.office_ips
 }
@@ -190,7 +190,7 @@ module "role_user" {
 module "gds_role_user" {
   source           = "../../modules/aws/iam/gds_user_role"
   role_suffix      = "user"
-  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_user_user_arns))
+  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_poweruser_user_arns, var.role_user_user_arns))
   role_policy_arns = var.role_user_policy_arns
   office_ips       = var.office_ips
 }
