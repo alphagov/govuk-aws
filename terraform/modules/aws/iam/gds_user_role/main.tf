@@ -62,8 +62,9 @@ resource "aws_iam_role" "gds_user_role" {
     for user in var.role_user_arns : "${regex("^.*/(.+)@.*$", user)[0]}-${var.role_suffix}" => user
   }
 
-  name               = each.key
-  assume_role_policy = <<-EOF
+  name                 = each.key
+  max_session_duration = 28800
+  assume_role_policy   = <<-EOF
   {
     "Version": "2012-10-17",
     "Statement": [
