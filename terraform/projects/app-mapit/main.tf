@@ -324,46 +324,6 @@ resource "aws_iam_role_policy_attachment" "mapit_4_iam_role_policy_attachment" {
   policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "mapit_5_iam_role_policy_attachment" {
-  role       = "${module.mapit-5.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_6_iam_role_policy_attachment" {
-  role       = "${module.mapit-6.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_7_iam_role_policy_attachment" {
-  role       = "${module.mapit-7.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_8_iam_role_policy_attachment" {
-  role       = "${module.mapit-8.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_9_iam_role_policy_attachment" {
-  role       = "${module.mapit-9.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_10_iam_role_policy_attachment" {
-  role       = "${module.mapit-10.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_11_iam_role_policy_attachment" {
-  role       = "${module.mapit-11.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_12_iam_role_policy_attachment" {
-  role       = "${module.mapit-12.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
 module "alarms-elb-mapit-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-mapit-internal"
