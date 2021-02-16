@@ -157,7 +157,7 @@ resource "google_storage_transfer_job" "s3-bucket-daily-sync" {
     }
 
     start_time_of_day {
-      hours   = 11
+      hours   = 18
       minutes = 00
       seconds = 0
       nanos   = 0
