@@ -12,6 +12,18 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_internet_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) |
+| [aws_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) |
+| [aws_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -28,4 +40,3 @@ No requirements.
 | route\_table\_public\_id | The ID of the public routing table associated with the Internet Gateway. |
 | vpc\_cidr | The CIDR block of the VPC. |
 | vpc\_id | The ID of the VPC. |
-

@@ -16,6 +16,26 @@ RDS Mysql Primary instance
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-rds-mysql-primary | ../../modules/aws/alarms/rds |  |
+| alarms-rds-mysql-replica | ../../modules/aws/alarms/rds |  |
+| mysql_primary_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| mysql_primary_rds_instance | ../../modules/aws/rds_instance |  |
+| mysql_replica_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| mysql_replica_rds_instance | ../../modules/aws/rds_instance |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/db_parameter_group) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -51,4 +71,3 @@ RDS Mysql Primary instance
 | mysql\_primary\_resource\_id | Mysql instance resource ID |
 | mysql\_replica\_address | Mysql instance address |
 | mysql\_replica\_endpoint | Mysql instance endpoint |
-

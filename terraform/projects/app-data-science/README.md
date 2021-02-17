@@ -19,6 +19,24 @@ Run resource intensive scripts for data science purposes.
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-data-science-internal | ../../modules/aws/alarms/elb |  |
+| data-science-1 | ../../modules/aws/node_group |  |
+| data-science-2 | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) |
+| [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -44,4 +62,3 @@ Run resource intensive scripts for data science purposes.
 | Name | Description |
 |------|-------------|
 | data-science\_elb\_address | AWS' internal DNS name for the data-science ELB |
-

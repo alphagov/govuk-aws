@@ -15,6 +15,17 @@ This project creates a multi-region EU bucket in google cloud, i.e. gcs.
 |------|---------|
 | google | = 2.4.1 |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [google_storage_bucket](https://registry.terraform.io/providers/hashicorp/google/2.4.1/docs/resources/storage_bucket) |
+| [google_storage_bucket_acl](https://registry.terraform.io/providers/hashicorp/google/2.4.1/docs/resources/storage_bucket_acl) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -30,4 +41,3 @@ This project creates a multi-region EU bucket in google cloud, i.e. gcs.
 | Name | Description |
 |------|-------------|
 | google\_logging\_bucket\_id | Name of the Google logging bucket |
-

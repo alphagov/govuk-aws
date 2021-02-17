@@ -17,6 +17,29 @@ Router backend hosts both Mongo and router-api
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-router-api-internal | ../../modules/aws/alarms/elb |  |
+| router-backend-1 | ../../modules/aws/node_group |  |
+| router-backend-2 | ../../modules/aws/node_group |  |
+| router-backend-3 | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [aws_network_interface](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/network_interface) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -56,4 +79,3 @@ Router backend hosts both Mongo and router-api
 | router\_backend\_1\_service\_dns\_name | DNS name to access the Router Mongo 1 internal service |
 | router\_backend\_2\_service\_dns\_name | DNS name to access the Router Mongo 2 internal service |
 | router\_backend\_3\_service\_dns\_name | DNS name to access the Router Mongo 3 internal service |
-

@@ -17,6 +17,24 @@ Backend node
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| backend | ../../modules/aws/node_group |  |
+| backend_internal_alb | ../../modules/aws/lb |  |
+| backend_internal_alb_rules | ../../modules/aws/lb_listener_rules |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -50,4 +68,3 @@ Backend node
 | app\_service\_records\_internal\_dns\_name | DNS name to access the app service records |
 | backend\_alb\_internal\_address | AWS' internal DNS name for the backend ELB |
 | service\_dns\_name\_internal | DNS name to access the node service |
-

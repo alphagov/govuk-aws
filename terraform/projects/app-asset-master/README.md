@@ -17,6 +17,25 @@ Asset Master node.
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-autoscaling-asset-master | ../../modules/aws/alarms/autoscaling |  |
+| alarms-ec2-asset-master | ../../modules/aws/alarms/ec2 |  |
+| asset-master | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_efs_file_system](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/efs_file_system) |
+| [aws_efs_mount_target](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/efs_mount_target) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -43,4 +62,3 @@ Asset Master node.
 |------|-------------|
 | assets\_service\_record | DNS service name for assets |
 | efs\_mount\_target\_dns\_names | DNS name for the mount targets |
-

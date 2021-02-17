@@ -22,6 +22,16 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_cloudwatch_metric_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -38,4 +48,3 @@ No requirements.
 |------|-------------|
 | alarm\_elasticache\_cpuutilization\_id | The ID of the ElastiCache CPUUtilization health check. |
 | alarm\_elasticache\_freeablememory\_id | The ID of the ElastiCache FreeableMemory health check. |
-

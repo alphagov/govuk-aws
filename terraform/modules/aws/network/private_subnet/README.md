@@ -44,6 +44,19 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_route](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) |
+| [aws_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) |
+| [aws_route_table_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) |
+| [aws_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -63,4 +76,3 @@ No requirements.
 | subnet\_names\_ids\_map | Map containing the name of each subnet created and ID associated |
 | subnet\_names\_route\_tables\_map | Map containing the name of each subnet and route\_table ID associated |
 | subnet\_route\_table\_ids | List of route\_table IDs |
-

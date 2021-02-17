@@ -16,6 +16,22 @@ RDS PostgreSQL instance for the Content Data API
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-rds-content-data-api-postgresql-primary | ../../modules/aws/alarms/rds |  |
+| content-data-api-postgresql-primary_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| content-data-api-postgresql-primary_rds_instance | ../../modules/aws/rds_instance |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/db_parameter_group) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -46,4 +62,3 @@ RDS PostgreSQL instance for the Content Data API
 | content-data-api-postgresql-primary\_endpoint | postgresql instance endpoint |
 | content-data-api-postgresql-primary\_id | postgresql instance ID |
 | content-data-api-postgresql-primary\_resource\_id | postgresql instance resource ID |
-

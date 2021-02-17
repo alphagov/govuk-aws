@@ -16,6 +16,19 @@ This module creates the environment certificates
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/acm_certificate) |
+| [aws_acm_certificate_validation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/acm_certificate_validation) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -35,4 +48,3 @@ This module creates the environment certificates
 |------|-------------|
 | external\_certificate\_arn | ARN of the external certificate |
 | internal\_certificate\_arn | ARN of the internal certificate |
-

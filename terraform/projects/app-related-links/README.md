@@ -19,6 +19,27 @@ Run resource intensive scripts for data science purposes.
 | template | n/a |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_ami](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/ami) |
+| [aws_autoscaling_group](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_group) |
+| [aws_iam_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_instance_profile) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) |
+| [aws_key_pair](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/key_pair) |
+| [aws_launch_template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) |
+| [aws_s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/s3_bucket) |
+| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -43,4 +64,3 @@ Run resource intensive scripts for data science purposes.
 | concourse\_role\_name | Name of the role assumed by Concourse |
 | policy\_read\_content\_store\_backups\_bucket\_policy\_arn | ARN of the policy used to read content store backups from the database backups bucket |
 | policy\_read\_write\_related\_links\_bucket\_policy\_arn | ARN of the policy used to read/write data from/to the related links bucket |
-

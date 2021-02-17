@@ -17,6 +17,24 @@ and resources to export these logs to S3
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| vpc | ../../modules/aws/network/vpc |  |
+| vpc_flow_log_exporter | ../../modules/aws/cloudwatch_log_exporter |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_cloudwatch_log_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_log_group) |
+| [aws_flow_log](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/flow_log) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -38,4 +56,3 @@ and resources to export these logs to S3
 | route\_table\_public\_id | The ID of the public routing table |
 | vpc\_cidr | The CIDR block of the VPC |
 | vpc\_id | The ID of the VPC |
-

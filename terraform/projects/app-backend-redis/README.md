@@ -16,6 +16,21 @@ Backend VDC Redis Elasticache cluster
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elasticache-backend-redis | ../../modules/aws/alarms/elasticache |  |
+| backend_redis_cluster | ../../modules/aws/elasticache_redis_cluster |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -40,4 +55,3 @@ Backend VDC Redis Elasticache cluster
 |------|-------------|
 | backend\_redis\_configuration\_endpoint\_address | Backend VDC redis configuration endpoint address |
 | service\_dns\_name | DNS name to access the node service |
-

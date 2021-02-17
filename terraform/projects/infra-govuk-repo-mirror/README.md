@@ -18,6 +18,21 @@ Deploy\_App job and the role is used by the Concourse mirroring job)
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [aws_iam_user](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) |
+| [aws_iam_user_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_policy_attachment) |
+| [aws_iam_user_ssh_key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_ssh_key) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -39,4 +54,3 @@ Deploy\_App job and the role is used by the Concourse mirroring job)
 ## Outputs
 
 No output.
-

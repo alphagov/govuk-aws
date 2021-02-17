@@ -17,6 +17,23 @@ Docker management node, used to run run adhoc containers.
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-docker-management-internal | ../../modules/aws/alarms/elb |  |
+| docker_management | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -43,4 +60,3 @@ Docker management node, used to run run adhoc containers.
 |------|-------------|
 | docker\_management\_etcd\_elb\_dns\_name | DNS name to access the docker\_management service |
 | etcd\_service\_dns\_name | DNS name to access the node service |
-

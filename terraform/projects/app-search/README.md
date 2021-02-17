@@ -17,6 +17,36 @@ Search application servers
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-search-internal | ../../modules/aws/alarms/elb |  |
+| search | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_ami](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/ami) |
+| [aws_autoscaling_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_group) |
+| [aws_ecr_repository](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ecr_repository) |
+| [aws_ecr_repository_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ecr_repository_policy) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_iam_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_instance_profile) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [aws_key_pair](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/key_pair) |
+| [aws_launch_template](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/launch_template) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [aws_s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -51,4 +81,3 @@ Search application servers
 | ltr\_role\_arn | LTR role ARN |
 | search\_elb\_dns\_name | DNS name to access the search service |
 | service\_dns\_name | DNS name to access the node service |
-

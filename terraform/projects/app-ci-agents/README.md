@@ -17,6 +17,41 @@ CI agents
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-ci-agent-1-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-2-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-3-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-4-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-5-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-6-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-7-internal | ../../modules/aws/alarms/elb |  |
+| alarms-elb-ci-agent-8-internal | ../../modules/aws/alarms/elb |  |
+| ci-agent-1 | ../../modules/aws/node_group |  |
+| ci-agent-2 | ../../modules/aws/node_group |  |
+| ci-agent-3 | ../../modules/aws/node_group |  |
+| ci-agent-4 | ../../modules/aws/node_group |  |
+| ci-agent-5 | ../../modules/aws/node_group |  |
+| ci-agent-6 | ../../modules/aws/node_group |  |
+| ci-agent-7 | ../../modules/aws/node_group |  |
+| ci-agent-8 | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -69,4 +104,3 @@ CI agents
 | ci-agent-7\_service\_dns\_name | DNS name to access the CI agent 7 service |
 | ci-agent-8\_elb\_dns\_name | DNS name to access the CI agent 8 service |
 | ci-agent-8\_service\_dns\_name | DNS name to access the CI agent 8 service |
-

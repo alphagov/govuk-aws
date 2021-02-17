@@ -17,6 +17,24 @@ Mirrorer node
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-autoscaling-mirrorer | ../../modules/aws/alarms/autoscaling |  |
+| alarms-ec2-mirrorer | ../../modules/aws/alarms/ec2 |  |
+| mirrorer | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -43,4 +61,3 @@ Mirrorer node
 | Name | Description |
 |------|-------------|
 | instance\_iam\_role\_name | name of the instance iam role |
-

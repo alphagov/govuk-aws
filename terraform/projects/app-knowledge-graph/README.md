@@ -19,6 +19,32 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 | template | n/a |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/acm_certificate) |
+| [aws_ami](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/ami) |
+| [aws_autoscaling_group](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_group) |
+| [aws_autoscaling_schedule](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_schedule) |
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/caller_identity) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/elb) |
+| [aws_iam_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_instance_profile) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) |
+| [aws_launch_template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/route53_zone) |
+| [aws_s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/s3_bucket) |
+| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -45,4 +71,3 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 |------|-------------|
 | data-infrastructure-bucket\_name | Bucket to store data for data platform |
 | read\_write\_data\_infrastructure\_bucket\_policy\_arn | Policy ARN to read and write to the data-infrastructure-data bucket |
-

@@ -16,6 +16,21 @@ Creates a VPN for AWS to connect to Carrenza
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_customer_gateway](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/customer_gateway) |
+| [aws_vpn_connection](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/vpn_connection) |
+| [aws_vpn_connection_route](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/vpn_connection_route) |
+| [aws_vpn_gateway](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/vpn_gateway) |
+| [aws_vpn_gateway_route_propagation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/vpn_gateway_route_propagation) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -35,4 +50,3 @@ Creates a VPN for AWS to connect to Carrenza
 | Name | Description |
 |------|-------------|
 | aws\_vpn\_connection\_id | The ID of the AWS to Carrenza VPN |
-

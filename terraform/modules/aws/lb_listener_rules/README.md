@@ -23,6 +23,18 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_autoscaling_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/autoscaling_attachment) |
+| [aws_lb_listener_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -49,4 +61,3 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | target\_group\_arns | List of the target group ARNs. |
-

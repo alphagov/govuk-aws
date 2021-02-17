@@ -16,6 +16,26 @@ RDS PostgreSQL instances
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-rds-postgresql-primary | ../../modules/aws/alarms/rds |  |
+| alarms-rds-postgresql-standby | ../../modules/aws/alarms/rds |  |
+| postgresql-primary_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| postgresql-primary_rds_instance | ../../modules/aws/rds_instance |  |
+| postgresql-standby_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| postgresql-standby_rds_instance | ../../modules/aws/rds_instance |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/db_parameter_group) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -53,4 +73,3 @@ RDS PostgreSQL instances
 | postgresql-primary\_resource\_id | postgresql instance resource ID |
 | postgresql-standby\_address | postgresql replica instance address |
 | postgresql-standby\_endpoint | postgresql replica instance endpoint |
-

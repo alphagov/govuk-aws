@@ -19,6 +19,27 @@ A central place where data is generated on a daily basis to be used by multiple 
 | template | n/a |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_ami](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/ami) |
+| [aws_autoscaling_group](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_group) |
+| [aws_autoscaling_schedule](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_schedule) |
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/caller_identity) |
+| [aws_iam_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_instance_profile) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) |
+| [aws_launch_template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) |
+| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -40,4 +61,3 @@ A central place where data is generated on a daily basis to be used by multiple 
 ## Outputs
 
 No output.
-

@@ -42,6 +42,22 @@ No requirements.
 | aws | n/a |
 | null | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) |
+| [aws_cloudwatch_metric_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) |
+| [aws_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) |
+| [aws_lb_listener](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) |
+| [aws_lb_listener_certificate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_certificate) |
+| [aws_lb_target_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) |
+| [null_data_source](https://registry.terraform.io/providers/hashicorp/null/latest/docs/data-sources/data_source) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -82,4 +98,3 @@ No requirements.
 | lb\_zone\_id | The canonical hosted zone ID of the load balancer (to be used in a Route 53 Alias record). |
 | load\_balancer\_ssl\_listeners | List of https listeners on the Load Balancer. |
 | target\_group\_arns | List of the default target group ARNs. |
-

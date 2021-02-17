@@ -13,6 +13,23 @@
 | template | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| govuk-mongodb-backup-s3 | ../../modules/aws/s3_bucket_lifecycle |  |
+| govuk-mongodb-backup-s3-daily | ../../modules/aws/s3_bucket_lifecycle |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) |
+| [aws_iam_user](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) |
+| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/resources/file) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -33,4 +50,3 @@
 ## Outputs
 
 No output.
-

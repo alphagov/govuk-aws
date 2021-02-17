@@ -16,6 +16,20 @@ This project creates a multi-region EU bucket in google cloud, i.e. gcs.
 | google | = 2.4.1 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [google_storage_bucket](https://registry.terraform.io/providers/hashicorp/google/2.4.1/docs/resources/storage_bucket) |
+| [google_storage_bucket_iam_member](https://registry.terraform.io/providers/hashicorp/google/2.4.1/docs/resources/storage_bucket_iam_member) |
+| [google_storage_transfer_job](https://registry.terraform.io/providers/hashicorp/google/2.4.1/docs/resources/storage_transfer_job) |
+| [google_storage_transfer_project_service_account](https://registry.terraform.io/providers/hashicorp/google/2.4.1/docs/data-sources/storage_transfer_project_service_account) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -33,4 +47,3 @@ This project creates a multi-region EU bucket in google cloud, i.e. gcs.
 ## Outputs
 
 No output.
-
