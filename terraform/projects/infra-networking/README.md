@@ -16,6 +16,26 @@ This module governs the creation of full network stacks.
 | template | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| infra_alarms_natgateway | ../../modules/aws/alarms/natgateway |  |
+| infra_nat | ../../modules/aws/network/nat |  |
+| infra_private_subnet | ../../modules/aws/network/private_subnet |  |
+| infra_private_subnet_elasticache | ../../modules/aws/network/private_subnet |  |
+| infra_private_subnet_elasticsearch | ../../modules/aws/network/private_subnet |  |
+| infra_private_subnet_rds | ../../modules/aws/network/private_subnet |  |
+| infra_private_subnet_reserved_ips | ../../modules/aws/network/private_subnet |  |
+| infra_public_subnet | ../../modules/aws/network/public_subnet |  |
+
+## Resources
+
+| Name |
+|------|
+| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -69,4 +89,3 @@ This module governs the creation of full network stacks.
 | public\_subnet\_names\_azs\_map | n/a |
 | public\_subnet\_names\_ids\_map | Map containing the pair name-id for each public subnet created |
 | vpc\_id | VPC ID where the stack resources are created |
-

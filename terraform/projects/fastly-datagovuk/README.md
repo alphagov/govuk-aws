@@ -16,6 +16,18 @@ Manages the Fastly service for data.gov.uk
 | fastly | n/a |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [external_external](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) |
+| [fastly_service_v1](https://registry.terraform.io/providers/hashicorp/fastly/latest/docs/resources/service_v1) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -39,4 +51,3 @@ Manages the Fastly service for data.gov.uk
 ## Outputs
 
 No output.
-

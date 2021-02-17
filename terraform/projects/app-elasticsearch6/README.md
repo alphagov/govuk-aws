@@ -32,6 +32,34 @@ doesn't support:
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| elasticsearch6_application_log_exporter | ../../modules/aws/cloudwatch_log_exporter |  |
+| elasticsearch6_index_log_exporter | ../../modules/aws/cloudwatch_log_exporter |  |
+| elasticsearch6_search_log_exporter | ../../modules/aws/cloudwatch_log_exporter |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/caller_identity) |
+| [aws_cloudwatch_log_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_log_group) |
+| [aws_cloudwatch_log_resource_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_log_resource_policy) |
+| [aws_elasticsearch_domain](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elasticsearch_domain) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) |
+| [aws_iam_service_linked_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_service_linked_role) |
+| [aws_region](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/region) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [aws_s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) |
+| [aws_s3_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -69,4 +97,3 @@ doesn't support:
 | manual\_snapshots\_bucket\_arn | ARN of the bucket to store manual snapshots |
 | service\_dns\_name | DNS name to access the Elasticsearch internal service |
 | service\_endpoint | Endpoint to submit index, search, and upload requests |
-

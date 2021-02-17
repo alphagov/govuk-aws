@@ -20,6 +20,32 @@ Infrastructure security settings:
 |------|---------|
 | aws | ~> 3.25.0 |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| gds_role_admin | ../../modules/aws/iam/gds_user_role |  |
+| gds_role_poweruser | ../../modules/aws/iam/gds_user_role |  |
+| gds_role_user | ../../modules/aws/iam/gds_user_role |  |
+| role_admin | ../../modules/aws/iam/role_user |  |
+| role_datascienceuser | ../../modules/aws/iam/role_user |  |
+| role_internal_admin | ../../modules/aws/iam/role_user |  |
+| role_platformhealth_poweruser | ../../modules/aws/iam/role_user |  |
+| role_poweruser | ../../modules/aws/iam/role_user |  |
+| role_user | ../../modules/aws/iam/role_user |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/data-sources/caller_identity) |
+| [aws_iam_account_password_policy](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/resources/iam_account_password_policy) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/resources/iam_policy) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/data-sources/iam_policy_document) |
+| [aws_key_pair](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/resources/key_pair) |
+| [aws_kms_alias](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/resources/kms_alias) |
+| [aws_kms_key](https://registry.terraform.io/providers/hashicorp/aws/3.25.0/docs/resources/kms_key) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -49,4 +75,3 @@ Infrastructure security settings:
 | licensify\_documentdb\_kms\_key\_arn | The ARN of the Licensify DocumentDB KMS key |
 | shared\_documentdb\_kms\_key\_arn | The ARN of the Shared DocumentDB KMS key |
 | sops\_kms\_key\_arn | The ARN of the Sops KMS key |
-

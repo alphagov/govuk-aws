@@ -12,6 +12,16 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -30,4 +40,3 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | bucket\_id | n/a |
-

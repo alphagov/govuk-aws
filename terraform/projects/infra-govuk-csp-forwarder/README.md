@@ -17,6 +17,24 @@ reports, filter them and forward them to Sentry.
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_api_gateway_deployment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/api_gateway_deployment) |
+| [aws_api_gateway_integration](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/api_gateway_integration) |
+| [aws_api_gateway_method](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/api_gateway_method) |
+| [aws_api_gateway_resource](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/api_gateway_resource) |
+| [aws_api_gateway_rest_api](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/api_gateway_rest_api) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) |
+| [aws_lambda_function](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) |
+| [aws_lambda_permission](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -36,4 +54,3 @@ reports, filter them and forward them to Sentry.
 | Name | Description |
 |------|-------------|
 | govuk\_csp\_forwarder\_report\_url | n/a |
-

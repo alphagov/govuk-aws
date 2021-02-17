@@ -16,6 +16,26 @@ RDS Transition PostgreSQL Primary instance
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-rds-transition-postgresql-primary | ../../modules/aws/alarms/rds |  |
+| alarms-rds-transition-postgresql-standby | ../../modules/aws/alarms/rds |  |
+| transition-postgresql-primary_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| transition-postgresql-primary_rds_instance | ../../modules/aws/rds_instance |  |
+| transition-postgresql-standby_log_exporter | ../../modules/aws/rds_log_exporter |  |
+| transition-postgresql-standby_rds_instance | ../../modules/aws/rds_instance |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_db_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/db_parameter_group) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -50,4 +70,3 @@ RDS Transition PostgreSQL Primary instance
 | transition-postgresql-primary\_resource\_id | transition-postgresql instance resource ID |
 | transition-postgresql-standby-address | transition-postgresql replica instance address |
 | transition-postgresql-standby-endpoint | transition-postgresql replica instance endpoint |
-

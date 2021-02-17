@@ -12,6 +12,18 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_db_event_subscription](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_event_subscription) |
+| [aws_db_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance) |
+| [aws_db_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -60,4 +72,3 @@ No requirements.
 | rds\_replica\_endpoint | n/a |
 | rds\_replica\_id | n/a |
 | rds\_replica\_resource\_id | n/a |
-

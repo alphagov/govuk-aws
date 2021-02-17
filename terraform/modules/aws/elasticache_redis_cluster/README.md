@@ -12,12 +12,23 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_elasticache_replication_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group) |
+| [aws_elasticache_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_subnet_group) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | default\_tags | Additional resource tags | `map` | `{}` | no |
-| elasticache\_node\_type | The node type to use. Must not be t.\* in order to use failover. | `string` | `"cache.m3.medium"` | no |
+| elasticache\_node\_type | The node type to use. Must not be t.* in order to use failover. | `string` | `"cache.m3.medium"` | no |
 | enable\_clustering | Set to true to enable clustering mode | `string` | `true` | no |
 | name | The common name for all the resources created by this module | `string` | n/a | yes |
 | security\_group\_ids | Security group IDs to apply to this cluster | `list` | n/a | yes |
@@ -29,4 +40,3 @@ No requirements.
 |------|-------------|
 | configuration\_endpoint\_address | Configuration endpoint address of the redis cluster. |
 | replication\_group\_id | The ID of the ElastiCache Replication Group. |
-

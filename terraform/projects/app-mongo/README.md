@@ -17,6 +17,33 @@ Mongo hosts
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-autoscaling-mongo-1 | ../../modules/aws/alarms/autoscaling |  |
+| alarms-autoscaling-mongo-2 | ../../modules/aws/alarms/autoscaling |  |
+| alarms-autoscaling-mongo-3 | ../../modules/aws/alarms/autoscaling |  |
+| alarms-ec2-mongo-1 | ../../modules/aws/alarms/ec2 |  |
+| alarms-ec2-mongo-2 | ../../modules/aws/alarms/ec2 |  |
+| alarms-ec2-mongo-3 | ../../modules/aws/alarms/ec2 |  |
+| mongo-1 | ../../modules/aws/node_group |  |
+| mongo-2 | ../../modules/aws/node_group |  |
+| mongo-3 | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [aws_network_interface](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/network_interface) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -55,4 +82,3 @@ Mongo hosts
 | mongo\_1\_service\_dns\_name | DNS name to access the Mongo 1 internal service |
 | mongo\_2\_service\_dns\_name | DNS name to access the Mongo 2 internal service |
 | mongo\_3\_service\_dns\_name | DNS name to access the Mongo 3 internal service |
-

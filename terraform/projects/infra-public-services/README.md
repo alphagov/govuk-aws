@@ -19,6 +19,60 @@ This project adds global resources for app components:
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-jumpbox-public | ../../modules/aws/alarms/elb |  |
+| backend_public_lb | ../../modules/aws/lb |  |
+| backend_public_lb_rules | ../../modules/aws/lb_listener_rules |  |
+| bouncer_public_lb | ../../modules/aws/lb |  |
+| cache_public_lb | ../../modules/aws/lb |  |
+| cache_public_lb_rules | ../../modules/aws/lb_listener_rules |  |
+| ckan_public_lb | ../../modules/aws/lb |  |
+| content-store_public_lb | ../../modules/aws/lb |  |
+| deploy_public_lb | ../../modules/aws/lb |  |
+| draft_cache_public_lb | ../../modules/aws/lb |  |
+| email_alert_api_public_lb | ../../modules/aws/lb |  |
+| feedback_public_lb | ../../modules/aws/lb |  |
+| graphite_public_lb | ../../modules/aws/lb |  |
+| licensify_backend_public_lb | ../../modules/aws/lb |  |
+| licensify_frontend_public_lb | ../../modules/aws/lb |  |
+| mapit_public_lb | ../../modules/aws/lb |  |
+| monitoring_public_lb | ../../modules/aws/lb |  |
+| prometheus_public_lb | ../../modules/aws/lb |  |
+| search_api_public_lb | ../../modules/aws/lb |  |
+| search_api_public_lb_rules | ../../modules/aws/lb_listener_rules |  |
+| static_public_lb | ../../modules/aws/lb |  |
+| support_api_public_lb | ../../modules/aws/lb |  |
+| whitehall_backend_public_lb | ../../modules/aws/lb |  |
+| whitehall_frontend_public_lb | ../../modules/aws/lb |  |
+
+## Resources
+
+| Name |
+|------|
+| [archive_file](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) |
+| [aws_autoscaling_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) |
+| [aws_autoscaling_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) |
+| [aws_autoscaling_groups](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) |
+| [aws_iam_role_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy) |
+| [aws_kinesis_firehose_delivery_stream](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/kinesis_firehose_delivery_stream) |
+| [aws_lambda_function](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) |
+| [aws_lb_listener](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lb_listener) |
+| [aws_lb_listener_rule](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lb_listener_rule) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) |
+| [aws_shield_protection](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) |
+| [aws_wafregional_regex_match_set](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_match_set) |
+| [aws_wafregional_regex_pattern_set](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_pattern_set) |
+| [aws_wafregional_rule](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_rule) |
+| [aws_wafregional_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl) |
+| [aws_wafregional_web_acl_association](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -131,4 +185,3 @@ This project adds global resources for app components:
 | Name | Description |
 |------|-------------|
 | default\_waf\_acl | GOV.UK default regional WAF ACL |
-

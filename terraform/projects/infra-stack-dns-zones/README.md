@@ -28,6 +28,19 @@ service records on the internal and external DNS zones.
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_zone) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -48,4 +61,3 @@ service records on the internal and external DNS zones.
 | external\_zone\_id | Route53 External Zone ID |
 | internal\_domain\_name | Route53 Internal Domain Name |
 | internal\_zone\_id | Route53 Internal Zone ID |
-

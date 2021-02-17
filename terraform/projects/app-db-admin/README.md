@@ -20,6 +20,27 @@ These nodes connect to RDS instances and administer them.
 | template | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-autoscaling-db-admin | ../../modules/aws/alarms/autoscaling |  |
+| alarms-ec2-db-admin | ../../modules/aws/alarms/ec2 |  |
+| db-admin | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [template_file](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -47,4 +68,3 @@ These nodes connect to RDS instances and administer them.
 | Name | Description |
 |------|-------------|
 | db-admin\_elb\_dns\_name | DNS name to access the db-admin service |
-

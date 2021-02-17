@@ -17,6 +17,25 @@ publishing-api node
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-publishing-api-external | ../../modules/aws/alarms/elb |  |
+| alarms-elb-publishing-api-internal | ../../modules/aws/alarms/elb |  |
+| publishing-api | ../../modules/aws/node_group |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -51,4 +70,3 @@ publishing-api node
 | publishing-api\_elb\_address\_internal | AWS' internal DNS name for the publishing-api ELB |
 | service\_dns\_name\_external | DNS name to access the external node service |
 | service\_dns\_name\_internal | DNS name to access the internal node service |
-

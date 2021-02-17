@@ -17,6 +17,24 @@ Bouncer node
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-bouncer-external | ../../modules/aws/alarms/elb |  |
+| bouncer | ../../modules/aws/node_group |  |
+| bouncer_internal_lb | ../../modules/aws/lb |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -44,4 +62,3 @@ Bouncer node
 |------|-------------|
 | bouncer\_elb\_address | AWS' internal DNS name for the bouncer ELB |
 | service\_dns\_name | DNS name to access the node service |
-

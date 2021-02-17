@@ -19,6 +19,20 @@ Manage the security groups for the entire infrastructure
 | github | n/a |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) |
+| [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) |
+| [fastly_ip_ranges](https://registry.terraform.io/providers/hashicorp/fastly/0.1.2/docs/data-sources/ip_ranges) |
+| [github_ip_ranges](https://registry.terraform.io/providers/hashicorp/github/latest/docs/data-sources/ip_ranges) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -178,4 +192,3 @@ Manage the security groups for the entire infrastructure
 | sg\_whitehall-frontend\_elb\_id | n/a |
 | sg\_whitehall-frontend\_external\_elb\_id | n/a |
 | sg\_whitehall-frontend\_id | n/a |
-

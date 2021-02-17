@@ -22,6 +22,16 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_cloudwatch_metric_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -36,4 +46,3 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | alarm\_ebs\_volumequeuelength\_id | The ID of the EBS VolumeQueueLength health check. |
-

@@ -13,14 +13,14 @@ AWS/ELB namespace:
 All metrics are measured during a period of 60 seconds and evaluated  
 during 5 consecutive periods.
 
-HTTPCode\_\* metrics are only reported for HTTP listeners. These metrics  
+HTTPCode\_* metrics are only reported for HTTP listeners. These metrics  
 should encapsulate errors caused by high SurgeQueueLength values and  
 lack of healthy backends.
 
 For HTTP listeners we can disable SurgeQueueLength and HealthyHostCount  
-alarms. For TCP listeners, we should disable HTTPCode\_\* alarms.
+alarms. For TCP listeners, we should disable HTTPCode\_* alarms.
 
-To disable HTTPCode\_\* alarms, set the `httpcode_*_threshold` parameters to 0.  
+To disable HTTPCode\_* alarms, set the `httpcode_*_threshold` parameters to 0.  
 To disable the SurgeQueueLength alarm, set the `surgequeuelength_threshold`  
 parameter to 0.  
 To disable the HealthyHostCount alarm, set the `healthyhostcount_threshold`  
@@ -39,6 +39,16 @@ No requirements.
 | Name | Version |
 |------|---------|
 | aws | n/a |
+
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_cloudwatch_metric_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) |
 
 ## Inputs
 
@@ -64,4 +74,3 @@ No requirements.
 | alarm\_elb\_httpcode\_elb\_4xx\_id | The ID of the ELB HTTPCode\_ELB\_4XX health check. |
 | alarm\_elb\_httpcode\_elb\_5xx\_id | The ID of the ELB HTTPCode\_ELB\_5XX health check. |
 | alarm\_elb\_surgequeuelength\_id | The ID of the ELB SurgeQueueLength health check. |
-

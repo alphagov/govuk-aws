@@ -13,6 +13,16 @@ Role and policy for CSW
 
 No provider.
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| csw_inspector_role | git::https://github.com/alphagov/csw-client-role.git |  |
+
+## Resources
+
+No resources.
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -24,4 +34,3 @@ No provider.
 ## Outputs
 
 No output.
-

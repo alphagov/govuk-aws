@@ -13,6 +13,17 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_eip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) |
+| [aws_nat_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -27,4 +38,3 @@ No requirements.
 | nat\_gateway\_elastic\_ips\_list | List containing the public IPs associated with the NAT gateways |
 | nat\_gateway\_ids | List containing the IDs of the NAT gateways |
 | nat\_gateway\_subnets\_ids\_map | Map containing the NAT gateway IDs and the public subnet ID where each one is located |
-

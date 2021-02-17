@@ -16,6 +16,20 @@ DocumentDB cluster for Licensify
 | aws | 2.46.0 |
 | terraform | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_docdb_cluster](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_cluster) |
+| [aws_docdb_cluster_instance](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_cluster_instance) |
+| [aws_docdb_cluster_parameter_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_cluster_parameter_group) |
+| [aws_docdb_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_subnet_group) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -41,4 +55,3 @@ DocumentDB cluster for Licensify
 | Name | Description |
 |------|-------------|
 | licensify\_documentdb\_endpoint | The endpoint of the Licensify DocumentDB |
-

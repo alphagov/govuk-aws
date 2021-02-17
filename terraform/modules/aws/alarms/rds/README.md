@@ -29,6 +29,16 @@ No requirements.
 |------|---------|
 | aws | n/a |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_cloudwatch_metric_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -49,4 +59,3 @@ No requirements.
 | alarm\_rds\_freeablememory\_id | The ID of the RDS FreeableMemory health check. |
 | alarm\_rds\_freestoragespace\_id | The ID of the RDS FreeStorageSpace health check. |
 | alarm\_rds\_replicalag\_id | The ID of the RDS ReplicaLag health check. |
-

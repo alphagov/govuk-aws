@@ -17,6 +17,26 @@ Draft Frontend application servers
 | null | n/a |
 | terraform | n/a |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| alarms-elb-draft-frontend-internal | ../../modules/aws/alarms/elb |  |
+| draft-frontend | ../../modules/aws/node_group |  |
+| internal_lb | ../../modules/aws/lb |  |
+| internal_lb_rules | ../../modules/aws/lb_listener_rules |  |
+
+## Resources
+
+| Name |
+|------|
+| [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
+| [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
+| [null_resource](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) |
+| [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -48,4 +68,3 @@ Draft Frontend application servers
 |------|-------------|
 | draft-frontend\_elb\_dns\_name | DNS name to access the draft-frontend service |
 | service\_dns\_name | DNS name to access the service |
-
