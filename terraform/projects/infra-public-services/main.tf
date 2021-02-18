@@ -1816,6 +1816,14 @@ resource "aws_autoscaling_attachment" "mapit-2_asg_attachment_alb" {
   alb_target_group_arn   = "${element(module.mapit_public_lb.target_group_arns, 0)}"
 }
 
+resource "aws_route53_record" "mapit_cache_name" {
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "mapit-memcached.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["mapit-memcached.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
 resource "aws_route53_record" "mapit_internal_service_names" {
   count   = "${length(var.mapit_internal_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"

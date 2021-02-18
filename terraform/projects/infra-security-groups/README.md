@@ -150,6 +150,7 @@ No Modules.
 | sg\_licensify-frontend\_internal\_lb\_id | n/a |
 | sg\_licensify\_documentdb\_id | n/a |
 | sg\_management\_id | n/a |
+| sg\_mapit\_cache\_id | n/a |
 | sg\_mapit\_carrenza\_alb\_id | n/a |
 | sg\_mapit\_elb\_id | n/a |
 | sg\_mapit\_id | n/a |
