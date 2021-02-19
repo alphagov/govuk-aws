@@ -56,6 +56,13 @@ variable "instance_type" {
   default     = "t2.medium"
 }
 
+variable "memcached_instance_type" {
+  type    = "string"
+  default = "cache.m6g.large" # Standard Graviton2 ($0.164/hour as of 2021)
+
+  description = "Instance type used for the shared Elasticache Memcached instances"
+}
+
 variable "internal_zone_name" {
   type        = "string"
   description = "The name of the Route53 zone that contains internal records"
@@ -152,6 +159,33 @@ resource "aws_route53_record" "mapit_service_record" {
     zone_id                = "${aws_elb.mapit_elb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_elasticache_subnet_group" "memcached" {
+  name       = "${var.stackname}-mapit-memcached"
+  subnet_ids = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+}
+
+resource "aws_elasticache_cluster" "memcached" {
+  cluster_id = "${var.stackname}-mapit-memcached"
+
+  engine          = "memcached"
+  engine_version  = "1.6.6"
+  port            = 11211
+  node_type       = "${var.memcached_instance_type}"
+  num_cache_nodes = 1
+
+  parameter_group_name = "default.memcached1.6"
+  subnet_group_name    = "${aws_elasticache_subnet_group.memcached.name}"
+  security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_cache_id}"]
+}
+
+resource "aws_route53_record" "memcached_cname" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "mapit-memcached.${var.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${aws_elasticache_cluster.memcached.cluster_address}"]
 }
 
 module "mapit-1" {

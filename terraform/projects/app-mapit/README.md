@@ -31,6 +31,8 @@ Mapit node
 |------|
 | [aws_acm_certificate](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) |
 | [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) |
+| [aws_elasticache_cluster](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elasticache_cluster) |
+| [aws_elasticache_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elasticache_subnet_group) |
 | [aws_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) |
 | [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) |
 | [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) |
@@ -57,6 +59,7 @@ Mapit node
 | mapit\_subnet\_a | Name of the subnet to place the first third of mapit instances and EBS volumes | `string` | n/a | yes |
 | mapit\_subnet\_b | Name of the subnet to place the second third of mapit instances and EBS volumes | `string` | n/a | yes |
 | mapit\_subnet\_c | Name of the subnet to place the last third of mapit instances and EBS volumes | `string` | n/a | yes |
+| memcached\_instance\_type | Instance type used for the shared Elasticache Memcached instances | `string` | `"cache.m6g.large"` | no |
 | remote\_state\_bucket | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | remote\_state\_infra\_monitoring\_key\_stack | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | remote\_state\_infra\_networking\_key\_stack | Override infra\_networking remote state path | `string` | `""` | no |

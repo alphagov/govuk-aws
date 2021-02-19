@@ -20,6 +20,29 @@ resource "aws_security_group" "mapit" {
   }
 }
 
+resource "aws_security_group" "mapit_cache" {
+  name        = "${var.stackname}_mapit_cache_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to the mapit cache from mapit"
+
+  tags {
+    Name = "${var.stackname}_mapit_cache_access"
+  }
+}
+
+resource "aws_security_group_rule" "mapit_ingress_mapit_cache_memcached" {
+  type      = "ingress"
+  from_port = 11211
+  to_port   = 11211
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.mapit_cache.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.mapit.id}"
+}
+
 resource "aws_security_group_rule" "mapit_ingress_mapit-elb_http" {
   type      = "ingress"
   from_port = 80
