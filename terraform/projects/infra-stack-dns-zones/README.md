@@ -37,8 +37,8 @@ No Modules.
 | Name |
 |------|
 | [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) |
-| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
 | [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_zone) |
+| [aws_route53_zone](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) |
 | [terraform_remote_state](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) |
 
 ## Inputs
