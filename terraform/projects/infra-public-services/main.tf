@@ -49,6 +49,11 @@ variable "enable_lb_app_healthchecks" {
   default     = false
 }
 
+variable "account_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "apt_public_service_names" {
   type    = "list"
   default = []
@@ -496,6 +501,19 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "2.46.0"
+}
+
+#
+# account
+#
+
+resource "aws_route53_record" "account_internal_service_names" {
+  count   = "${length(var.account_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.account_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.account_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
 }
 
 #
