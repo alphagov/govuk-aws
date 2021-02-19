@@ -2,6 +2,18 @@
 # Outputs of the security group project
 #
 
+output "sg_account_elb_internal_id" {
+  value = "${aws_security_group.account_elb_internal.id}"
+}
+
+output "sg_account_elb_external_id" {
+  value = "${aws_security_group.account_elb_external.id}"
+}
+
+output "sg_account_id" {
+  value = "${aws_security_group.account.id}"
+}
+
 output "sg_asset-master_id" {
   value = "${aws_security_group.asset-master.id}"
 }
