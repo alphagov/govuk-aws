@@ -24,6 +24,8 @@ Mapit node
 | alarms-elb-mapit-internal | ../../modules/aws/alarms/elb |  |
 | mapit-1 | ../../modules/aws/node_group |  |
 | mapit-2 | ../../modules/aws/node_group |  |
+| mapit-3 | ../../modules/aws/node_group |  |
+| mapit-4 | ../../modules/aws/node_group |  |
 
 ## Resources
 
