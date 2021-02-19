@@ -287,6 +287,7 @@ data "aws_iam_policy_document" "dbadmin_database_backups_writer" {
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*whitehall*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*email-alert-api*",
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*account*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*publishing-api*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mongo-licensing*",
       "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*mysql*",
@@ -527,6 +528,63 @@ data "aws_iam_policy_document" "email-alert-api_dbadmin_database_backups_writer"
   }
 }
 
+resource "aws_iam_policy" "account_dbadmin_database_backups_writer" {
+  name        = "govuk-${var.aws_environment}-account_dbadmin_database_backups-writer-policy"
+  policy      = "${data.aws_iam_policy_document.account_dbadmin_database_backups_writer.json}"
+  description = "Allows writing of the account DBAdmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "account_dbadmin_database_backups_writer" {
+  statement {
+    sid = "ReadListOfBuckets"
+
+    actions = [
+      "s3:ListAllMyBuckets",
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid = "AccountDBAdminReadBucketLists"
+
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    # The top level access is required.
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}",
+    ]
+
+    # We can now apply restictions on what can be accessed.
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+
+      values = [
+        "mysql",
+        "postgres",
+      ]
+    }
+  }
+
+  statement {
+    sid = "AccountDBAdminWriteGovukDatabaseBackups"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.database_backups.id}/*account*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "graphite_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-graphite_database_backups-writer-policy"
   policy      = "${data.aws_iam_policy_document.graphite_database_backups_writer.json}"
@@ -626,6 +684,11 @@ output "publishing-api_dbadmin_write_database_backups_bucket_policy_arn" {
 output "email-alert-api_dbadmin_write_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.email-alert-api_dbadmin_database_backups_writer.arn}"
   description = "ARN of the EmailAlertAPIDBAdmin write database_backups-bucket policy"
+}
+
+output "account_dbadmin_write_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.account_dbadmin_database_backups_writer.arn}"
+  description = "ARN of the AccountDBAdmin write database_backups-bucket policy"
 }
 
 output "graphite_write_database_backups_bucket_policy_arn" {

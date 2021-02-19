@@ -206,6 +206,29 @@ data "aws_iam_policy_document" "integration_email-alert-api_dbadmin_database_bac
   }
 }
 
+resource "aws_iam_policy" "integration_account_dbadmin_database_backups_reader" {
+  name        = "govuk-integration-account_dbadmin_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.integration_account_dbadmin_database_backups_reader.json}"
+  description = "Allows reading the account_dbadmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "integration_account_dbadmin_database_backups_reader" {
+  statement {
+    sid = "AccountDBAdminReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-integration-database-backups",
+      "arn:aws:s3:::govuk-integration-database-backups/*account*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "integration_graphite_database_backups_reader" {
   name        = "govuk-integration-graphite_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.integration_graphite_database_backups_reader.json}"
@@ -412,6 +435,29 @@ data "aws_iam_policy_document" "staging_email-alert-api_dbadmin_database_backups
     resources = [
       "arn:aws:s3:::govuk-staging-database-backups",
       "arn:aws:s3:::govuk-staging-database-backups/*email-alert-api*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "staging_account_dbadmin_database_backups_reader" {
+  name        = "govuk-staging-account_dbadmin_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.staging_account_dbadmin_database_backups_reader.json}"
+  description = "Allows reading the account_dbadmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "staging_account_dbadmin_database_backups_reader" {
+  statement {
+    sid = "AccountDBAdminReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-staging-database-backups",
+      "arn:aws:s3:::govuk-staging-database-backups/*account*",
     ]
   }
 }
@@ -660,6 +706,29 @@ data "aws_iam_policy_document" "production_email-alert-api_dbadmin_database_back
   }
 }
 
+resource "aws_iam_policy" "production_account_dbadmin_database_backups_reader" {
+  name        = "govuk-production-account_dbadmin_database_backups-reader-policy"
+  policy      = "${data.aws_iam_policy_document.production_account_dbadmin_database_backups_reader.json}"
+  description = "Allows reading the account_dbadmin database_backups bucket"
+}
+
+data "aws_iam_policy_document" "production_account_dbadmin_database_backups_reader" {
+  statement {
+    sid = "AccountDBAdminReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-production-database-backups",
+      "arn:aws:s3:::govuk-production-database-backups/*account*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "production_graphite_database_backups_reader" {
   name        = "govuk-production-graphite_database_backups-reader-policy"
   policy      = "${data.aws_iam_policy_document.production_graphite_database_backups_reader.json}"
@@ -723,6 +792,11 @@ output "integration_email-alert-api_dbadmin_read_database_backups_bucket_policy_
   description = "ARN of the integration read EmailAlertAPUDBAdmin database_backups-bucket policy"
 }
 
+output "integration_account_dbadmin_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.integration_account_dbadmin_database_backups_reader.arn}"
+  description = "ARN of the integration read AccountDBAdmin database_backups-bucket policy"
+}
+
 output "integration_graphite_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.integration_graphite_database_backups_reader.arn}"
   description = "ARN of the integration read Graphite database_backups-bucket policy"
@@ -766,6 +840,11 @@ output "staging_publishing-api_dbadmin_read_database_backups_bucket_policy_arn" 
 output "staging_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.staging_email-alert-api_dbadmin_database_backups_reader.arn}"
   description = "ARN of the staging read EmailAlertAPUDBAdmin database_backups-bucket policy"
+}
+
+output "staging_account_dbadmin_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.staging_account_dbadmin_database_backups_reader.arn}"
+  description = "ARN of the staging read AccountDBAdmin database_backups-bucket policy"
 }
 
 output "staging_graphite_read_database_backups_bucket_policy_arn" {
@@ -816,6 +895,11 @@ output "production_publishing-api_dbadmin_read_database_backups_bucket_policy_ar
 output "production_email-alert-api_dbadmin_read_database_backups_bucket_policy_arn" {
   value       = "${aws_iam_policy.production_email-alert-api_dbadmin_database_backups_reader.arn}"
   description = "ARN of the production read EmailAlertAPUDBAdmin database_backups-bucket policy"
+}
+
+output "production_account_dbadmin_read_database_backups_bucket_policy_arn" {
+  value       = "${aws_iam_policy.production_account_dbadmin_database_backups_reader.arn}"
+  description = "ARN of the production read AccountDBAdmin database_backups-bucket policy"
 }
 
 output "production_graphite_read_database_backups_bucket_policy_arn" {
