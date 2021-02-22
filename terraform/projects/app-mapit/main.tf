@@ -53,7 +53,7 @@ variable "elb_internal_certname" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for EC2 resources"
-  default     = "t3.2xlarge"
+  default     = "c5.2xlarge"
 }
 
 variable "memcached_instance_type" {
