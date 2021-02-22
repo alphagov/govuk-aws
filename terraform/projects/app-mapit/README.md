@@ -54,7 +54,7 @@ Mapit node
 | ebs\_encrypted | Whether or not the EBS volume is encrypted | `string` | n/a | yes |
 | elb\_internal\_certname | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | instance\_ami\_filter\_name | Name to use to find AMI images | `string` | `""` | no |
-| instance\_type | Instance type used for EC2 resources | `string` | `"t3.2xlarge"` | no |
+| instance\_type | Instance type used for EC2 resources | `string` | `"c5.2xlarge"` | no |
 | internal\_domain\_name | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | internal\_zone\_name | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | lc\_create\_ebs\_volume | Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1 | `string` | n/a | yes |
