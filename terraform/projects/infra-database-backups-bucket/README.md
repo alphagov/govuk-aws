@@ -58,11 +58,13 @@ No Modules.
 
 | Name | Description |
 |------|-------------|
+| account\_dbadmin\_write\_database\_backups\_bucket\_policy\_arn | ARN of the AccountDBAdmin write database\_backups-bucket policy |
 | content\_data\_api\_dbadmin\_write\_database\_backups\_bucket\_policy\_arn | ARN of the Content Data API DBAdmin database\_backups bucket writer policy |
 | dbadmin\_write\_database\_backups\_bucket\_policy\_arn | ARN of the DBAdmin write database\_backups-bucket policy |
 | elasticsearch\_write\_database\_backups\_bucket\_policy\_arn | ARN of the elasticsearch write database\_backups-bucket policy |
 | email-alert-api\_dbadmin\_write\_database\_backups\_bucket\_policy\_arn | ARN of the EmailAlertAPIDBAdmin write database\_backups-bucket policy |
 | graphite\_write\_database\_backups\_bucket\_policy\_arn | ARN of the Graphite write database\_backups-bucket policy |
+| integration\_account\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the integration read AccountDBAdmin database\_backups-bucket policy |
 | integration\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the integration read DBAdmin database\_backups-bucket policy |
 | integration\_elasticsearch\_read\_database\_backups\_bucket\_policy\_arn | ARN of the integration read elasticsearch database\_backups-bucket policy |
 | integration\_email-alert-api\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the integration read EmailAlertAPUDBAdmin database\_backups-bucket policy |
@@ -75,6 +77,7 @@ No Modules.
 | mongo\_api\_write\_database\_backups\_bucket\_policy\_arn | ARN of the mongo-api write database\_backups-bucket policy |
 | mongo\_router\_write\_database\_backups\_bucket\_policy\_arn | ARN of the router\_backend write database\_backups-bucket policy |
 | mongodb\_write\_database\_backups\_bucket\_policy\_arn | ARN of the mongodb write database\_backups-bucket policy |
+| production\_account\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the production read AccountDBAdmin database\_backups-bucket policy |
 | production\_content\_data\_api\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the production database\_backups bucket reader policy for the Content Data API |
 | production\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the production read DBAdmin database\_backups-bucket policy |
 | production\_elasticsearch\_read\_database\_backups\_bucket\_policy\_arn | ARN of the production read elasticsearch database\_backups-bucket policy |
@@ -87,6 +90,7 @@ No Modules.
 | production\_transition\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the production read TransitionDBAdmin database\_backups-bucket policy |
 | publishing-api\_dbadmin\_write\_database\_backups\_bucket\_policy\_arn | ARN of the publishing-apiDBAdmin write database\_backups-bucket policy |
 | s3\_database\_backups\_bucket\_name | The name of the database backups bucket |
+| staging\_account\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read AccountDBAdmin database\_backups-bucket policy |
 | staging\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read DBAdmin database\_backups-bucket policy |
 | staging\_elasticsearch\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read elasticsearch database\_backups-bucket policy |
 | staging\_email-alert-api\_dbadmin\_read\_database\_backups\_bucket\_policy\_arn | ARN of the staging read EmailAlertAPUDBAdmin database\_backups-bucket policy |

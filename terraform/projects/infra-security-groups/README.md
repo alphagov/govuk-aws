@@ -65,6 +65,9 @@ No Modules.
 | Name | Description |
 |------|-------------|
 | sg\_accessibility-reports\_id | n/a |
+| sg\_account\_elb\_external\_id | n/a |
+| sg\_account\_elb\_internal\_id | n/a |
+| sg\_account\_id | n/a |
 | sg\_apt\_external\_elb\_id | n/a |
 | sg\_apt\_id | n/a |
 | sg\_apt\_internal\_elb\_id | n/a |
