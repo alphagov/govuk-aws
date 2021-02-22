@@ -283,7 +283,7 @@ resource "aws_ebs_volume" "mapit-3" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
-  type              = "gp2"
+  type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-mapit"
@@ -319,7 +319,7 @@ resource "aws_ebs_volume" "mapit-4" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 20
-  type              = "gp2"
+  type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-mapit"
