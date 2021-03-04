@@ -191,7 +191,7 @@ resource "aws_autoscaling_group" "data-science-data_asg" {
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
   scheduled_action_name  = "data-science-data_schedule-spin-up"
-  recurrence             = "30 8 * * MON-SUN"
+  recurrence             = "00 7 * * MON-SUN"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 1
@@ -200,7 +200,7 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
   scheduled_action_name  = "data-science-data_schedule-spin-down"
-  recurrence             = "29 10 * * MON-SUN"
+  recurrence             = "29 09 * * MON-SUN"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
