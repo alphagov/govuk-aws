@@ -77,6 +77,7 @@ This project adds global resources for app components:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| account\_internal\_service\_cnames | n/a | `list` | `[]` | no |
 | account\_internal\_service\_names | n/a | `list` | `[]` | no |
 | app\_stackname | Stackname of the app projects in this environment | `string` | `"blue"` | no |
 | apt\_internal\_service\_names | n/a | `list` | `[]` | no |
