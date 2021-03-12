@@ -95,6 +95,14 @@ resource "aws_elb" "account_elb_internal" {
     ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
   }
 
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "HTTP:80/_healthcheck_account-api"
+    interval            = 30
+  }
+
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
