@@ -184,6 +184,7 @@ No Modules.
 | sg\_search\_elb\_id | n/a |
 | sg\_search\_id | n/a |
 | sg\_shared\_documentdb\_id | n/a |
+| sg\_sidekiq-monitoring\_external\_elb\_id | n/a |
 | sg\_static\_carrenza\_alb\_id | n/a |
 | sg\_support-api\_external\_elb\_id | n/a |
 | sg\_transition-db-admin\_elb\_id | n/a |
