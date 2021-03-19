@@ -43,6 +43,7 @@ This project adds global resources for app components:
 | prometheus_public_lb | ../../modules/aws/lb |  |
 | search_api_public_lb | ../../modules/aws/lb |  |
 | search_api_public_lb_rules | ../../modules/aws/lb_listener_rules |  |
+| sidekiq_monitoring_public_lb | ../../modules/aws/lb |  |
 | static_public_lb | ../../modules/aws/lb |  |
 | support_api_public_lb | ../../modules/aws/lb |  |
 | whitehall_backend_public_lb | ../../modules/aws/lb |  |
@@ -168,6 +169,7 @@ This project adds global resources for app components:
 | search\_api\_public\_service\_names | n/a | `list` | `[]` | no |
 | search\_internal\_service\_cnames | n/a | `list` | `[]` | no |
 | search\_internal\_service\_names | n/a | `list` | `[]` | no |
+| sidekiq\_monitoring\_public\_service\_names | n/a | `list` | `[]` | no |
 | stackname | Stackname | `string` | n/a | yes |
 | static\_public\_service\_names | n/a | `list` | `[]` | no |
 | support\_api\_public\_service\_names | n/a | `list` | `[]` | no |
