@@ -6,18 +6,18 @@ Role and policy for Cyber security audit, to eventually deprecate the CSW-specif
 
 | Name | Version |
 |------|---------|
-| terraform | = 0.11.14 |
-| aws | 2.46.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 
 ## Providers
 
-No provider.
+No providers.
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| cyber_security_audit_role | git::https://github.com/alphagov/tech-ops.git?ref=13f54e5//cyber-security/modules/gds_security_audit_role |  |
+| <a name="module_cyber_security_audit_role"></a> [cyber\_security\_audit\_role](#module\_cyber\_security\_audit\_role) | git::https://github.com/alphagov/tech-ops.git?ref=13f54e5//cyber-security/modules/gds_security_audit_role |  |
 
 ## Resources
 
@@ -27,9 +27,9 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| aws\_region | n/a | `string` | `"eu-west-1"` | no |
-| chain\_account\_id | n/a | `string` | `"988997429095"` | no |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | n/a | `string` | `"eu-west-1"` | no |
+| <a name="input_chain_account_id"></a> [chain\_account\_id](#input\_chain\_account\_id) | n/a | `string` | `"988997429095"` | no |
 
 ## Outputs
 
-No output.
+No outputs.

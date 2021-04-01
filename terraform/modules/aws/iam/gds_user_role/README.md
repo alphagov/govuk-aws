@@ -1,8 +1,8 @@
 ## Module: aws/iam/gds\_user\_role
 
-This module creates a set of IAM roles based on a list of user ARNs.  
-Each newly-created IAM role is then associated with a set of of IAM policies.  
-These new IAM role and policy associations form a category of users with the  
+This module creates a set of IAM roles based on a list of user ARNs.
+Each newly-created IAM role is then associated with a set of of IAM policies.
+These new IAM role and policy associations form a category of users with the
 same privileges.
 
 ## Requirements
@@ -13,29 +13,29 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
-No Modules.
+No modules.
 
 ## Resources
 
-| Name |
-|------|
-| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
-| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
+| Name | Type |
+|------|------|
+| [aws_iam_role.gds_user_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.gds_user_role_policy_attachments](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| office\_ips | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
-| restrict\_to\_gds\_ips | n/a | `bool` | `false` | no |
-| role\_policy\_arns | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| role\_suffix | Suffix of the role name | `string` | n/a | yes |
-| role\_user\_arns | List of ARNs of external users that can assume the role | `list` | n/a | yes |
+| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
+| <a name="input_restrict_to_gds_ips"></a> [restrict\_to\_gds\_ips](#input\_restrict\_to\_gds\_ips) | n/a | `bool` | `false` | no |
+| <a name="input_role_policy_arns"></a> [role\_policy\_arns](#input\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
+| <a name="input_role_suffix"></a> [role\_suffix](#input\_role\_suffix) | Suffix of the role name | `string` | n/a | yes |
+| <a name="input_role_user_arns"></a> [role\_user\_arns](#input\_role\_user\_arns) | List of ARNs of external users that can assume the role | `list` | n/a | yes |
 
 ## Outputs
 
-No output.
+No outputs.
