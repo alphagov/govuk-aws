@@ -101,6 +101,7 @@ variable "role_user_policy_arns" {
 variable "ssh_public_key" {
   type        = string
   description = "The public part of an SSH keypair"
+  default     = null
 }
 
 variable "office_ips" {
@@ -206,6 +207,7 @@ resource "aws_iam_account_password_policy" "tighten_passwords" {
 
 # default key pair for all ssh instances. All other keys are puppet managed
 resource "aws_key_pair" "govuk-infra-key" {
+  count      = var.ssh_public_key == null ? 0 : 1
   key_name   = "govuk-infra"
   public_key = var.ssh_public_key
 }
