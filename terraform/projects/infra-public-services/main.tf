@@ -2142,7 +2142,7 @@ module "static_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck"
+  target_group_health_check_path = "/_healthcheck-ready_static"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_static_carrenza_alb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
