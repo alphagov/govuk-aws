@@ -2310,7 +2310,7 @@ module "whitehall_backend_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck_whitehall-admin"
+  target_group_health_check_path = "/_healthcheck-ready_whitehall-admin"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
