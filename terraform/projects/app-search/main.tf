@@ -123,7 +123,7 @@ resource "aws_elb" "search_elb" {
     unhealthy_threshold = 2
     timeout             = 3
 
-    target   = "HTTP:80/_healthcheck_search-api"
+    target   = "HTTP:80/_healthcheck-live_search-api"
     interval = 30
   }
 
