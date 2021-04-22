@@ -21,7 +21,6 @@ RDS PostgreSQL instance for the Content Data API
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_alarms-rds-content-data-api-postgresql-primary"></a> [alarms-rds-content-data-api-postgresql-primary](#module\_alarms-rds-content-data-api-postgresql-primary) | ../../modules/aws/alarms/rds |  |
-| <a name="module_content-data-api-postgresql-primary_log_exporter"></a> [content-data-api-postgresql-primary\_log\_exporter](#module\_content-data-api-postgresql-primary\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_content-data-api-postgresql-primary_rds_instance"></a> [content-data-api-postgresql-primary\_rds\_instance](#module\_content-data-api-postgresql-primary\_rds\_instance) | ../../modules/aws/rds_instance |  |
 
 ## Resources

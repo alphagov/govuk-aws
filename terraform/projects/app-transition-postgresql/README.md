@@ -22,9 +22,7 @@ RDS Transition PostgreSQL Primary instance
 |------|--------|---------|
 | <a name="module_alarms-rds-transition-postgresql-primary"></a> [alarms-rds-transition-postgresql-primary](#module\_alarms-rds-transition-postgresql-primary) | ../../modules/aws/alarms/rds |  |
 | <a name="module_alarms-rds-transition-postgresql-standby"></a> [alarms-rds-transition-postgresql-standby](#module\_alarms-rds-transition-postgresql-standby) | ../../modules/aws/alarms/rds |  |
-| <a name="module_transition-postgresql-primary_log_exporter"></a> [transition-postgresql-primary\_log\_exporter](#module\_transition-postgresql-primary\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_transition-postgresql-primary_rds_instance"></a> [transition-postgresql-primary\_rds\_instance](#module\_transition-postgresql-primary\_rds\_instance) | ../../modules/aws/rds_instance |  |
-| <a name="module_transition-postgresql-standby_log_exporter"></a> [transition-postgresql-standby\_log\_exporter](#module\_transition-postgresql-standby\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_transition-postgresql-standby_rds_instance"></a> [transition-postgresql-standby\_rds\_instance](#module\_transition-postgresql-standby\_rds\_instance) | ../../modules/aws/rds_instance |  |
 
 ## Resources

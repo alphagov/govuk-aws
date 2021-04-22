@@ -22,9 +22,7 @@ RDS PostgreSQL instances
 |------|--------|---------|
 | <a name="module_alarms-rds-postgresql-primary"></a> [alarms-rds-postgresql-primary](#module\_alarms-rds-postgresql-primary) | ../../modules/aws/alarms/rds |  |
 | <a name="module_alarms-rds-postgresql-standby"></a> [alarms-rds-postgresql-standby](#module\_alarms-rds-postgresql-standby) | ../../modules/aws/alarms/rds |  |
-| <a name="module_postgresql-primary_log_exporter"></a> [postgresql-primary\_log\_exporter](#module\_postgresql-primary\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_postgresql-primary_rds_instance"></a> [postgresql-primary\_rds\_instance](#module\_postgresql-primary\_rds\_instance) | ../../modules/aws/rds_instance |  |
-| <a name="module_postgresql-standby_log_exporter"></a> [postgresql-standby\_log\_exporter](#module\_postgresql-standby\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_postgresql-standby_rds_instance"></a> [postgresql-standby\_rds\_instance](#module\_postgresql-standby\_rds\_instance) | ../../modules/aws/rds_instance |  |
 
 ## Resources
