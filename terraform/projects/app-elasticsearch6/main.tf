@@ -175,39 +175,6 @@ resource "aws_cloudwatch_log_resource_policy" "elasticsearch6_log_resource_polic
   policy_document = "${data.aws_iam_policy_document.elasticsearch6_log_publishing_policy.json}"
 }
 
-module "elasticsearch6_application_log_exporter" {
-  source                       = "../../modules/aws/cloudwatch_log_exporter"
-  log_group_name               = "${aws_cloudwatch_log_group.elasticsearch6_application_log_group.name}"
-  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
-  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
-  firehose_bucket_prefix       = "elasticsearch6/application-logs"
-  lambda_filename              = "../../lambda/ElasticsearchLogsToFirehose/ElasticsearchLogsToFirehose.zip"
-  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
-  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
-}
-
-module "elasticsearch6_search_log_exporter" {
-  source                       = "../../modules/aws/cloudwatch_log_exporter"
-  log_group_name               = "${aws_cloudwatch_log_group.elasticsearch6_search_log_group.name}"
-  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
-  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
-  firehose_bucket_prefix       = "elasticsearch6/search-logs"
-  lambda_filename              = "../../lambda/ElasticsearchLogsToFirehose/ElasticsearchLogsToFirehose.zip"
-  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
-  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
-}
-
-module "elasticsearch6_index_log_exporter" {
-  source                       = "../../modules/aws/cloudwatch_log_exporter"
-  log_group_name               = "${aws_cloudwatch_log_group.elasticsearch6_index_log_group.name}"
-  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
-  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
-  firehose_bucket_prefix       = "elasticsearch6/index-logs"
-  lambda_filename              = "../../lambda/ElasticsearchLogsToFirehose/ElasticsearchLogsToFirehose.zip"
-  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
-  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
-}
-
 resource "aws_iam_service_linked_role" "role" {
   aws_service_name = "es.amazonaws.com"
 }

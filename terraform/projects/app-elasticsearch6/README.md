@@ -34,11 +34,7 @@ doesn't support:
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_elasticsearch6_application_log_exporter"></a> [elasticsearch6\_application\_log\_exporter](#module\_elasticsearch6\_application\_log\_exporter) | ../../modules/aws/cloudwatch_log_exporter |  |
-| <a name="module_elasticsearch6_index_log_exporter"></a> [elasticsearch6\_index\_log\_exporter](#module\_elasticsearch6\_index\_log\_exporter) | ../../modules/aws/cloudwatch_log_exporter |  |
-| <a name="module_elasticsearch6_search_log_exporter"></a> [elasticsearch6\_search\_log\_exporter](#module\_elasticsearch6\_search\_log\_exporter) | ../../modules/aws/cloudwatch_log_exporter |  |
+No modules.
 
 ## Resources
 

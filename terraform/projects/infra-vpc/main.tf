@@ -112,17 +112,6 @@ resource "aws_iam_role_policy_attachment" "vpc_flow_logs_policy_attachment" {
   policy_arn = "${aws_iam_policy.vpc_flow_logs_policy.arn}"
 }
 
-module "vpc_flow_log_exporter" {
-  source                       = "../../modules/aws/cloudwatch_log_exporter"
-  log_group_name               = "${aws_cloudwatch_log_group.log.name}"
-  firehose_role_arn            = "${data.terraform_remote_state.infra_monitoring.firehose_logs_role_arn}"
-  firehose_bucket_arn          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_arn}"
-  firehose_bucket_prefix       = "${aws_cloudwatch_log_group.log.name}"
-  lambda_filename              = "../../lambda/VPCFlowLogsToFirehose/VPCFlowLogsToFirehose.zip"
-  lambda_role_arn              = "${data.terraform_remote_state.infra_monitoring.lambda_logs_role_arn}"
-  lambda_log_retention_in_days = "${var.cloudwatch_log_retention}"
-}
-
 # Outputs
 # --------------------------------------------------------------
 
