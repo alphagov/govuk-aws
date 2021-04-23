@@ -312,7 +312,7 @@ resource "aws_lambda_function" "artefact_lambda_function" {
   function_name = "govuk-${var.aws_environment}-artefact"
   role          = "${aws_iam_role.govuk_artefact_lambda_role.arn}"
   handler       = "main.lambda_handler"
-  runtime       = "python2.7"
+  runtime       = "python3.8"
 }
 
 # AWS Lambda Role
