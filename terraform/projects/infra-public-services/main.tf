@@ -713,7 +713,7 @@ module "bouncer_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/healthcheck"
+  target_group_health_check_path = "/healthcheck/ready"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -991,7 +991,7 @@ module "content-store_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck_content-store"
+  target_group_health_check_path = "/_healthcheck-ready_content-store"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -1259,7 +1259,7 @@ module "email_alert_api_public_lb" {
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
-  target_group_health_check_path             = "/_healthcheck_email-alert-api"
+  target_group_health_check_path             = "/_healthcheck-ready_email-alert-api"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_email-alert-api_elb_external_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -1324,7 +1324,7 @@ module "feedback_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/healthcheck"
+  target_group_health_check_path = "/_healthcheck-ready_feedback"
   subnets                        = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_feedback_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -2086,7 +2086,7 @@ module "search_api_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck"
+  target_group_health_check_path = "/_healthcheck-ready_search-api"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_search-api_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -2142,7 +2142,7 @@ module "static_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck"
+  target_group_health_check_path = "/_healthcheck-ready_static"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_static_carrenza_alb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -2196,7 +2196,7 @@ module "support_api_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck"
+  target_group_health_check_path = "/_healthcheck-ready_support-api"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_support-api_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -2240,7 +2240,7 @@ module "sidekiq_monitoring_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck"
+  target_group_health_check_path = "/_healthcheck-ready_sidekiq-monitoring"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_sidekiq-monitoring_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -2310,7 +2310,7 @@ module "whitehall_backend_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck_whitehall-admin"
+  target_group_health_check_path = "/_healthcheck-ready_whitehall-admin"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
@@ -2388,7 +2388,7 @@ module "whitehall_frontend_public_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  target_group_health_check_path = "/_healthcheck_whitehall-frontend"
+  target_group_health_check_path = "/_healthcheck-ready_whitehall-frontend"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
   security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_external_elb_id}"]
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]

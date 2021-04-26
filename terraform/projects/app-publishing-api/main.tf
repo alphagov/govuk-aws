@@ -134,7 +134,7 @@ resource "aws_elb" "publishing-api_elb_internal" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:80/_healthcheck_publishing-api"
+    target              = "HTTP:80/_healthcheck-live_publishing-api"
     interval            = 30
   }
 
@@ -185,7 +185,7 @@ resource "aws_elb" "publishing-api_elb_external" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:80/_healthcheck_publishing-api"
+    target              = "HTTP:80/_healthcheck-live_publishing-api"
     interval            = 30
   }
 

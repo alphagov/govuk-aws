@@ -99,7 +99,7 @@ resource "aws_elb" "account_elb_internal" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:80/_healthcheck_account-api"
+    target              = "HTTP:80/_healthcheck-live_account-api"
     interval            = 30
   }
 

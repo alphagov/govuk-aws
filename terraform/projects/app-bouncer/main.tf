@@ -137,7 +137,7 @@ module "bouncer_internal_lb" {
   listener_certificate_domain_name           = "${var.elb_internal_certname}"
   listener_secondary_certificate_domain_name = ""
   listener_action                            = "${local.internal_lb_map}"
-  target_group_health_check_path             = "/healthcheck"
+  target_group_health_check_path             = "/healthcheck/ready"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_internal_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]

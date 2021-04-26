@@ -131,7 +131,7 @@ resource "aws_elb" "content-store_external_elb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:80/_healthcheck_content-store"
+    target              = "HTTP:80/_healthcheck-live_content-store"
     interval            = 30
   }
 
@@ -182,7 +182,7 @@ resource "aws_elb" "content-store_internal_elb" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:80/_healthcheck_content-store"
+    target              = "HTTP:80/_healthcheck-live_content-store"
     interval            = 30
   }
 
