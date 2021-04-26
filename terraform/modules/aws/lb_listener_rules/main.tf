@@ -93,7 +93,7 @@ variable "target_group_protocol" {
 variable "target_group_health_check_path_prefix" {
   type        = "string"
   description = "The prefix destination for the health check request."
-  default     = "/_healthcheck_"
+  default     = "/_healthcheck-ready_"
 }
 
 variable "target_group_health_check_matcher" {
