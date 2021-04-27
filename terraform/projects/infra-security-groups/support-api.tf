@@ -40,17 +40,6 @@ resource "aws_security_group_rule" "support-api_egress_external_elb_any_any" {
   security_group_id = "${aws_security_group.support-api_external_elb.id}"
 }
 
-resource "aws_security_group" "support-api_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
-  name        = "${var.stackname}_support-api_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Control access to ITHC"
-
-  tags {
-    Name = "${var.stackname}_support-api_ithc_access"
-  }
-}
-
 resource "aws_security_group_rule" "ithc_ingress_support-api_https" {
   count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   type              = "ingress"
@@ -58,5 +47,5 @@ resource "aws_security_group_rule" "ithc_ingress_support-api_https" {
   from_port         = 443
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.support-api_ithc_access.id}"
+  security_group_id = "${aws_security_group.support-api_external_elb.id}"
 }

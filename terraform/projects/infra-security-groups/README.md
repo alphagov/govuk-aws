@@ -135,7 +135,6 @@ No modules.
 | [aws_security_group.mapit_cache](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mapit_carrenza_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mapit_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mapit_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mirrorer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mongo](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -171,7 +170,6 @@ No modules.
 | [aws_security_group.static](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.static_carrenza_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.support-api_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.support-api_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.transition-db-admin](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.transition-db-admin_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.transition-postgresql-primary](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
