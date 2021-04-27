@@ -154,3 +154,13 @@ resource "aws_security_group_rule" "ithc_ingress_backend_ssh" {
   cidr_blocks       = "${var.ithc_access_ips}"
   security_group_id = "${aws_security_group.backend_ithc_access.id}"
 }
+
+resource "aws_security_group_rule" "ithc_ingress_backend_https" {
+  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  type              = "ingress"
+  to_port           = 443
+  from_port         = 443
+  protocol          = "tcp"
+  cidr_blocks       = "${var.ithc_access_ips}"
+  security_group_id = "${aws_security_group.backend_ithc_access.id}"
+}
