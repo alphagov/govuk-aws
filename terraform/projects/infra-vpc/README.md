@@ -22,7 +22,6 @@ and resources to export these logs to S3
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/aws/network/vpc |  |
-| <a name="module_vpc_flow_log_exporter"></a> [vpc\_flow\_log\_exporter](#module\_vpc\_flow\_log\_exporter) | ../../modules/aws/cloudwatch_log_exporter |  |
 
 ## Resources
 

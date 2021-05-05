@@ -22,9 +22,7 @@ RDS Mysql Primary instance
 |------|--------|---------|
 | <a name="module_alarms-rds-mysql-primary"></a> [alarms-rds-mysql-primary](#module\_alarms-rds-mysql-primary) | ../../modules/aws/alarms/rds |  |
 | <a name="module_alarms-rds-mysql-replica"></a> [alarms-rds-mysql-replica](#module\_alarms-rds-mysql-replica) | ../../modules/aws/alarms/rds |  |
-| <a name="module_mysql_primary_log_exporter"></a> [mysql\_primary\_log\_exporter](#module\_mysql\_primary\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_mysql_primary_rds_instance"></a> [mysql\_primary\_rds\_instance](#module\_mysql\_primary\_rds\_instance) | ../../modules/aws/rds_instance |  |
-| <a name="module_mysql_replica_log_exporter"></a> [mysql\_replica\_log\_exporter](#module\_mysql\_replica\_log\_exporter) | ../../modules/aws/rds_log_exporter |  |
 | <a name="module_mysql_replica_rds_instance"></a> [mysql\_replica\_rds\_instance](#module\_mysql\_replica\_rds\_instance) | ../../modules/aws/rds_instance |  |
 
 ## Resources
