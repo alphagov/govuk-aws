@@ -513,6 +513,11 @@ provider "aws" {
   version = "2.46.0"
 }
 
+provider "archive" {
+  # Versions >= 2.0 don't work because TF 0.11 doesn't trust the signing cert.
+  version = "~> 1.3"
+}
+
 #
 # account
 #
