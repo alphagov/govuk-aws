@@ -31,6 +31,11 @@ provider "aws" {
   version = "2.46.0"
 }
 
+provider "archive" {
+  # Versions >= 2.0 don't work because TF 0.11 doesn't trust the signing cert.
+  version = "~> 1.3"
+}
+
 resource "aws_s3_bucket" "fastly_logs" {
   bucket = "govuk-${var.aws_environment}-fastly-logs"
 
@@ -784,8 +789,16 @@ resource "aws_athena_named_query" "transition_logs" {
   query    = "${file("${path.module}/../../queries/transition_logs_query.sql")}"
 }
 
+data "archive_file" "transition_executor" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/TransitionLogs/main.py"
+  output_path = "${path.module}/../../lambda/TransitionLogs/TransitionLogs.zip"
+}
+
 resource "aws_lambda_function" "transition_executor" {
-  filename      = "../../lambda/TransitionLogs/TransitionLogs.zip"
+  filename         = "${data.archive_file.transition_executor.output_path}"
+  source_code_hash = "${data.archive_file.transition_executor.output_base64sha256}"
+
   function_name = "govuk-${var.aws_environment}-transition"
   role          = "${aws_iam_role.transition_executor.arn}"
   handler       = "main.lambda_handler"
