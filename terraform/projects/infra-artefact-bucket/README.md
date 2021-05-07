@@ -25,6 +25,7 @@ This module creates the following.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
@@ -33,6 +34,7 @@ This module creates the following.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_aws.secondary"></a> [aws.secondary](#provider\_aws.secondary) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_aws.subscription"></a> [aws.subscription](#provider\_aws.subscription) | 2.46.0 2.46.0 2.46.0 |
@@ -66,6 +68,7 @@ No modules.
 | [aws_sns_topic.artefact_topic](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/sns_topic) | resource |
 | [aws_sns_topic_policy.artefact_topic_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/sns_topic_policy) | resource |
 | [aws_sns_topic_subscription.artefact_topic_subscription](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/sns_topic_subscription) | resource |
+| [archive_file.artefact_lambda](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.artefact_replication](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.artefact_sns_topic_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
