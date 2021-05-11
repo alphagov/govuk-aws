@@ -124,6 +124,11 @@ provider "aws" {
   version = "2.46.0"
 }
 
+provider "archive" {
+  # Versions >= 2.0 don't work because TF 0.11 doesn't trust the signing cert.
+  version = "~> 1.3"
+}
+
 data "aws_caller_identity" "current" {}
 
 data "terraform_remote_state" "infra_monitoring" {
@@ -306,9 +311,18 @@ resource "aws_sns_topic_subscription" "artefact_topic_subscription" {
 }
 
 # AWS Lambda
+data "archive_file" "artefact_lambda" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/ArtefactSync/main.py"
+  output_path = "${path.module}/../../lambda/ArtefactSync/ArtefactSync.zip"
+}
+
 resource "aws_lambda_function" "artefact_lambda_function" {
-  count         = "${var.create_sns_subscription ? 1 : 0}"
-  filename      = "../../lambda/ArtefactSync/ArtefactSync.zip"
+  count = "${var.create_sns_subscription ? 1 : 0}"
+
+  filename         = "${data.archive_file.artefact_lambda.output_path}"
+  source_code_hash = "${data.archive_file.artefact_lambda.output_base64sha256}"
+
   function_name = "govuk-${var.aws_environment}-artefact"
   role          = "${aws_iam_role.govuk_artefact_lambda_role.arn}"
   handler       = "main.lambda_handler"
