@@ -13,6 +13,7 @@ The primary bucket should be in London and the backup in Ireland.
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
+| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
 
 ## Providers
 
@@ -22,7 +23,7 @@ The primary bucket should be in London and the backup in Ireland.
 | <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_external"></a> [external](#provider\_external) | n/a |
-| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | n/a |
+| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 

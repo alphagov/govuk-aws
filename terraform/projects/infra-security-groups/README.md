@@ -6,17 +6,18 @@ Manage the security groups for the entire infrastructure
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
-| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | 0.1.2 |
+| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
+| <a name="requirement_github"></a> [github](#requirement\_github) | ~> 4.9.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
-| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | 0.1.2 |
-| <a name="provider_github"></a> [github](#provider\_github) | n/a |
+| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
+| <a name="provider_github"></a> [github](#provider\_github) | ~> 4.9.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -569,7 +570,7 @@ No modules.
 | [aws_security_group_rule.whitehall-frontend-external-elb_ingress_public_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.whitehall-frontend_ingress_whitehall-frontend-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.whitehall-frontend_ingress_whitehall-frontend-external-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/hashicorp/fastly/0.1.2/docs/data-sources/ip_ranges) | data source |
+| [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/hashicorp/fastly/latest/docs/data-sources/ip_ranges) | data source |
 | [github_ip_ranges.github](https://registry.terraform.io/providers/hashicorp/github/latest/docs/data-sources/ip_ranges) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_vpc](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |

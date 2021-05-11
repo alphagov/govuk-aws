@@ -7,13 +7,14 @@ Manages the Fastly service for data.gov.uk
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_external"></a> [external](#provider\_external) | n/a |
-| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | n/a |
+| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules

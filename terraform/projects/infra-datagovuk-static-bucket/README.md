@@ -10,13 +10,14 @@ datagovuk-static-bucket: A bucket to hold legacy CKAN static data and assets
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
+| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
-| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | n/a |
+| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
