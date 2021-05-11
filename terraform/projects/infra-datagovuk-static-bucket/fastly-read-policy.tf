@@ -1,6 +1,7 @@
 provider "fastly" {
   # We only want to use fastly's data API
   api_key = "test"
+  version = "~> 0.26.0"
 }
 
 data "fastly_ip_ranges" "fastly" {}

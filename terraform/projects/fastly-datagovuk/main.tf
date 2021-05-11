@@ -53,6 +53,7 @@ terraform {
 
 provider "fastly" {
   api_key = "${var.fastly_api_key}"
+  version = "~> 0.26.0"
 }
 
 data "external" "fastly" {

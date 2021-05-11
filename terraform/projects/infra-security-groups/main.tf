@@ -14,7 +14,7 @@ variable "aws_environment" {
 
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.14"
+  required_version = "= 0.11.15"
 }
 
 provider "aws" {
@@ -26,10 +26,12 @@ provider "aws" {
 # an API key is needed but 'fake' seems to work.
 provider "fastly" {
   api_key = "fake"
-  version = "0.1.2"
+  version = "~> 0.26.0"
 }
 
-provider "github" {}
+provider "github" {
+  version = "~> 4.9.0"
+}
 
 data "fastly_ip_ranges" "fastly" {}
 
