@@ -7,12 +7,14 @@ Manages the Fastly logging data which is sent from Fastly to S3.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
+| <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
@@ -55,6 +57,7 @@ No modules.
 | [aws_s3_bucket.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.fastly_logs_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.transition_fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
+| [archive_file.transition_executor](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [template_file.athena_monitoring_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.logs_writer_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.transition_downloader_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |

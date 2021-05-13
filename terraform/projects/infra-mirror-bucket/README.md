@@ -10,6 +10,7 @@ The primary bucket should be in London and the backup in Ireland.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
@@ -19,6 +20,7 @@ The primary bucket should be in London and the backup in Ireland.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | 2.46.0 2.46.0 2.46.0 |
@@ -53,6 +55,7 @@ No modules.
 | [aws_s3_bucket.govuk-mirror-replica](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_policy.govuk_mirror_read_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_policy.govuk_mirror_replica_read_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) | resource |
+| [archive_file.url_rewrite](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_acm_certificate.assets](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
 | [aws_acm_certificate.www](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/caller_identity) | data source |

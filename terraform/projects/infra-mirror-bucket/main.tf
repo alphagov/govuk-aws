@@ -124,6 +124,11 @@ provider "aws" {
   version = "2.46.0"
 }
 
+provider "archive" {
+  # Versions >= 2.0 don't work because TF 0.11 doesn't trust the signing cert.
+  version = "~> 1.3"
+}
+
 data "aws_caller_identity" "current" {}
 
 data "terraform_remote_state" "infra_monitoring" {
@@ -522,8 +527,16 @@ resource "aws_iam_policy_attachment" "basic_lambda_attach" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+data "archive_file" "url_rewrite" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/CloudfrontUrlRewrite/index.js"
+  output_path = "${path.module}/../../lambda/CloudfrontUrlRewrite/CloudfrontUrlRewrite.zip"
+}
+
 resource "aws_lambda_function" "url_rewrite" {
-  filename      = "../../lambda/CloudfrontUrlRewrite/CloudfrontUrlRewrite.zip"
+  filename         = "${data.archive_file.url_rewrite.output_path}"
+  source_code_hash = "${data.archive_file.url_rewrite.output_base64sha256}"
+
   function_name = "url_rewrite"
   role          = "${aws_iam_role.basic_lambda_role.arn}"
   handler       = "index.handler"
