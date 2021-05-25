@@ -30,6 +30,7 @@ sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
 sudo apt-get install -y python3.7
 sudo apt install -y python3-pip
 sudo apt install -y libpq-dev
+sudo apt install -y libicu-dev
 
 # Install zip and unzip utilities
 sudo apt install -y zip unzip

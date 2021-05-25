@@ -30,6 +30,7 @@ sudo apt-get install -y python3.7
 sudo apt install -y python3.7-dev
 sudo apt install -y python3-pip
 sudo apt install -y libpq-dev
+sudo apt install -y libicu-dev
 
 sudo su - ubuntu
 
