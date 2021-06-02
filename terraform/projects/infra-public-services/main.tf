@@ -1858,6 +1858,42 @@ resource "aws_autoscaling_attachment" "mapit-2_asg_attachment_alb" {
   alb_target_group_arn   = "${element(module.mapit_public_lb.target_group_arns, 0)}"
 }
 
+data "aws_autoscaling_groups" "mapit-3" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["blue-mapit-3"]
+  }
+}
+
+resource "aws_autoscaling_attachment" "mapit-3_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.mapit-3.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.mapit-3.names, 0)}"
+  alb_target_group_arn   = "${element(module.mapit_public_lb.target_group_arns, 0)}"
+}
+
+data "aws_autoscaling_groups" "mapit-4" {
+  filter {
+    name   = "key"
+    values = ["Name"]
+  }
+
+  filter {
+    name   = "value"
+    values = ["blue-mapit-4"]
+  }
+}
+
+resource "aws_autoscaling_attachment" "mapit-4_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.mapit-4.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.mapit-4.names, 0)}"
+  alb_target_group_arn   = "${element(module.mapit_public_lb.target_group_arns, 0)}"
+}
+
 resource "aws_route53_record" "mapit_cache_name" {
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
   name    = "mapit-memcached.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"

@@ -69,6 +69,8 @@ This project adds global resources for app components:
 | [aws_autoscaling_attachment.licensify_frontend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.mapit-1_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.mapit-2_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.mapit-3_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.mapit-4_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.monitoring_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.prometheus_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.search_api_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
@@ -194,6 +196,8 @@ This project adds global resources for app components:
 | [aws_autoscaling_groups.licensify_frontend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.mapit-1](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.mapit-2](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.mapit-3](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.mapit-4](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.prometheus](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.search](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
