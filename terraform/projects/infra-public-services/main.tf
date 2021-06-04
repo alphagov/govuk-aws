@@ -59,6 +59,16 @@ variable "account_internal_service_cnames" {
   default = []
 }
 
+variable "account_public_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "account_public_service_cnames" {
+  type    = "list"
+  default = []
+}
+
 variable "apt_public_service_names" {
   type    = "list"
   default = []
@@ -521,6 +531,66 @@ provider "archive" {
 #
 # account
 #
+
+module "account_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-account-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-account-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  listener_internal_certificate_domain_name  = "${var.elb_public_internal_certname}"
+  listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
+  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_account_elb_external_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  default_tags                               = "${map("Project", var.stackname, "aws_migration", "account", "aws_environment", var.aws_environment)}"
+  target_group_health_check_path             = "/_healthcheck-ready_account-api"
+}
+
+resource "aws_wafregional_web_acl_association" "account_public_lb" {
+  resource_arn = "${module.account_public_lb.lb_id}"
+  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+}
+
+module "account_public_lb_rules" {
+  source                 = "../../modules/aws/lb_listener_rules"
+  name                   = "account"
+  autoscaling_group_name = "${data.aws_autoscaling_group.account.name}"
+  rules_host_domain      = "*"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  listener_arn           = "${module.account_public_lb.load_balancer_ssl_listeners[0]}"
+  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.account_public_service_cnames) : ""))}"]
+  default_tags           = "${map("Project", var.stackname, "aws_migration", "account", "aws_environment", var.aws_environment)}"
+}
+
+resource "aws_route53_record" "account_public_service_names" {
+  count   = "${length(var.account_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.account_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.account_public_lb.lb_dns_name}"
+    zone_id                = "${module.account_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "account_public_service_cnames" {
+  count   = "${length(var.account_public_service_cnames)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.account_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.account_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
+  ttl     = "300"
+}
+
+data "aws_autoscaling_group" "account" {
+  name = "${var.app_stackname}-account"
+}
 
 resource "aws_route53_record" "account_internal_service_names" {
   count   = "${length(var.account_internal_service_names)}"
