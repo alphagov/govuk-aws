@@ -92,7 +92,7 @@ resource "aws_security_group" "account_elb_external" {
   }
 }
 
-resource "aws_security_group_rule" "account-elb-external_ingress_office_https" {
+resource "aws_security_group_rule" "account-elb-external_ingress_any_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "account-elb-external_ingress_office_https" {
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.account_elb_external.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "account-elb-external_egress_any_any" {

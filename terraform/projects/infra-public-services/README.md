@@ -24,6 +24,8 @@ This project adds global resources for app components:
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_account_public_lb"></a> [account\_public\_lb](#module\_account\_public\_lb) | ../../modules/aws/lb |  |
+| <a name="module_account_public_lb_rules"></a> [account\_public\_lb\_rules](#module\_account\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
 | <a name="module_alarms-elb-jumpbox-public"></a> [alarms-elb-jumpbox-public](#module\_alarms-elb-jumpbox-public) | ../../modules/aws/alarms/elb |  |
 | <a name="module_backend_public_lb"></a> [backend\_public\_lb](#module\_backend\_public\_lb) | ../../modules/aws/lb |  |
 | <a name="module_backend_public_lb_rules"></a> [backend\_public\_lb\_rules](#module\_backend\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
@@ -90,6 +92,8 @@ This project adds global resources for app components:
 | [aws_lb_listener_rule.backend_alb_blocked_host_headers](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lb_listener_rule) | resource |
 | [aws_route53_record.account_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.account_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.account_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.account_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.apt_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.asset_master_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.backend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
@@ -174,6 +178,7 @@ This project adds global resources for app components:
 | [aws_wafregional_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_pattern_set) | resource |
 | [aws_wafregional_rule.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_rule) | resource |
 | [aws_wafregional_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl) | resource |
+| [aws_wafregional_web_acl_association.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
@@ -181,6 +186,7 @@ This project adds global resources for app components:
 | [aws_wafregional_web_acl_association.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.whitehall_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
 | [archive_file.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
+| [aws_autoscaling_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) | data source |
 | [aws_autoscaling_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) | data source |
 | [aws_autoscaling_group.cache](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) | data source |
 | [aws_autoscaling_groups.bouncer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
@@ -217,6 +223,8 @@ This project adds global resources for app components:
 |------|-------------|------|---------|:--------:|
 | <a name="input_account_internal_service_cnames"></a> [account\_internal\_service\_cnames](#input\_account\_internal\_service\_cnames) | n/a | `list` | `[]` | no |
 | <a name="input_account_internal_service_names"></a> [account\_internal\_service\_names](#input\_account\_internal\_service\_names) | n/a | `list` | `[]` | no |
+| <a name="input_account_public_service_cnames"></a> [account\_public\_service\_cnames](#input\_account\_public\_service\_cnames) | n/a | `list` | `[]` | no |
+| <a name="input_account_public_service_names"></a> [account\_public\_service\_names](#input\_account\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_app_stackname"></a> [app\_stackname](#input\_app\_stackname) | Stackname of the app projects in this environment | `string` | `"blue"` | no |
 | <a name="input_apt_internal_service_names"></a> [apt\_internal\_service\_names](#input\_apt\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_apt_public_service_cnames"></a> [apt\_public\_service\_cnames](#input\_apt\_public\_service\_cnames) | n/a | `list` | `[]` | no |
