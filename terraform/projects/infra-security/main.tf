@@ -86,6 +86,12 @@ variable "role_datascienceuser_policy_arns" {
   default     = []
 }
 
+variable "role_step_function_role_user_arns" {
+  type        = list
+  description = "List of ARNs of users to attach to the role"
+  default     = []
+}
+
 variable "role_step_function_role_policy_arns" {
   type        = list
   description = "List of ARNs of policies to attach to the role"
@@ -190,6 +196,7 @@ module "role_datascienceuser" {
 module "role_step_function" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-step-function-role"
+  role_user_arns   = var.role_step_function_role_user_arns
   role_policy_arns = var.role_step_function_role_policy_arns
 }
 
