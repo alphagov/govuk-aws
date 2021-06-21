@@ -21,9 +21,9 @@ Mirrorer node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-autoscaling-mirrorer"></a> [alarms-autoscaling-mirrorer](#module\_alarms-autoscaling-mirrorer) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-ec2-mirrorer"></a> [alarms-ec2-mirrorer](#module\_alarms-ec2-mirrorer) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_mirrorer"></a> [mirrorer](#module\_mirrorer) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-autoscaling-mirrorer"></a> [alarms-autoscaling-mirrorer](#module\_alarms-autoscaling-mirrorer) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-ec2-mirrorer"></a> [alarms-ec2-mirrorer](#module\_alarms-ec2-mirrorer) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_mirrorer"></a> [mirrorer](#module\_mirrorer) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

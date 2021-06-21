@@ -21,9 +21,9 @@ content-store node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-content-store-external"></a> [alarms-elb-content-store-external](#module\_alarms-elb-content-store-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-content-store-internal"></a> [alarms-elb-content-store-internal](#module\_alarms-elb-content-store-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_content-store"></a> [content-store](#module\_content-store) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-content-store-external"></a> [alarms-elb-content-store-external](#module\_alarms-elb-content-store-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-content-store-internal"></a> [alarms-elb-content-store-internal](#module\_alarms-elb-content-store-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_content-store"></a> [content-store](#module\_content-store) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

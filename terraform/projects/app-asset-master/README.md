@@ -21,9 +21,9 @@ Asset Master node.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-autoscaling-asset-master"></a> [alarms-autoscaling-asset-master](#module\_alarms-autoscaling-asset-master) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-ec2-asset-master"></a> [alarms-ec2-asset-master](#module\_alarms-ec2-asset-master) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_asset-master"></a> [asset-master](#module\_asset-master) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-autoscaling-asset-master"></a> [alarms-autoscaling-asset-master](#module\_alarms-autoscaling-asset-master) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-ec2-asset-master"></a> [alarms-ec2-asset-master](#module\_alarms-ec2-asset-master) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_asset-master"></a> [asset-master](#module\_asset-master) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

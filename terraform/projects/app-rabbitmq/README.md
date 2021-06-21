@@ -21,8 +21,8 @@ Rabbitmq cluster
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-rabbitmq-internal"></a> [alarms-elb-rabbitmq-internal](#module\_alarms-elb-rabbitmq-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_rabbitmq"></a> [rabbitmq](#module\_rabbitmq) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-rabbitmq-internal"></a> [alarms-elb-rabbitmq-internal](#module\_alarms-elb-rabbitmq-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_rabbitmq"></a> [rabbitmq](#module\_rabbitmq) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

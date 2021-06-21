@@ -21,8 +21,8 @@ Docker management node, used to run run adhoc containers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-docker-management-internal"></a> [alarms-elb-docker-management-internal](#module\_alarms-elb-docker-management-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_docker_management"></a> [docker\_management](#module\_docker\_management) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-docker-management-internal"></a> [alarms-elb-docker-management-internal](#module\_alarms-elb-docker-management-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_docker_management"></a> [docker\_management](#module\_docker\_management) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

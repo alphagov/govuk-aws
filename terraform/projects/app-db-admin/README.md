@@ -24,9 +24,9 @@ These nodes connect to RDS instances and administer them.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-autoscaling-db-admin"></a> [alarms-autoscaling-db-admin](#module\_alarms-autoscaling-db-admin) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-ec2-db-admin"></a> [alarms-ec2-db-admin](#module\_alarms-ec2-db-admin) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_db-admin"></a> [db-admin](#module\_db-admin) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-autoscaling-db-admin"></a> [alarms-autoscaling-db-admin](#module\_alarms-autoscaling-db-admin) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-ec2-db-admin"></a> [alarms-ec2-db-admin](#module\_alarms-ec2-db-admin) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_db-admin"></a> [db-admin](#module\_db-admin) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

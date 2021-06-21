@@ -21,9 +21,9 @@ Apt node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_apt"></a> [apt](#module\_apt) | ../../modules/aws/node_group |  |
-| <a name="module_apt_external_lb"></a> [apt\_external\_lb](#module\_apt\_external\_lb) | ../../modules/aws/lb |  |
-| <a name="module_apt_internal_lb"></a> [apt\_internal\_lb](#module\_apt\_internal\_lb) | ../../modules/aws/lb |  |
+| <a name="module_apt"></a> [apt](#module\_apt) | ../../modules/aws/node_group | n/a |
+| <a name="module_apt_external_lb"></a> [apt\_external\_lb](#module\_apt\_external\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_apt_internal_lb"></a> [apt\_internal\_lb](#module\_apt\_internal\_lb) | ../../modules/aws/lb | n/a |
 
 ## Resources
 

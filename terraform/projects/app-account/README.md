@@ -21,8 +21,8 @@ account node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_account"></a> [account](#module\_account) | ../../modules/aws/node_group |  |
-| <a name="module_alarms-elb-account-internal"></a> [alarms-elb-account-internal](#module\_alarms-elb-account-internal) | ../../modules/aws/alarms/elb |  |
+| <a name="module_account"></a> [account](#module\_account) | ../../modules/aws/node_group | n/a |
+| <a name="module_alarms-elb-account-internal"></a> [alarms-elb-account-internal](#module\_alarms-elb-account-internal) | ../../modules/aws/alarms/elb | n/a |
 
 ## Resources
 

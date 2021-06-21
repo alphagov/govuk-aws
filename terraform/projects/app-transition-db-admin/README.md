@@ -21,9 +21,9 @@ DB admin boxes for Transition's RDS instance
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-autoscaling-transition-db-admin"></a> [alarms-autoscaling-transition-db-admin](#module\_alarms-autoscaling-transition-db-admin) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-ec2-transition-db-admin"></a> [alarms-ec2-transition-db-admin](#module\_alarms-ec2-transition-db-admin) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_transition-db-admin"></a> [transition-db-admin](#module\_transition-db-admin) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-autoscaling-transition-db-admin"></a> [alarms-autoscaling-transition-db-admin](#module\_alarms-autoscaling-transition-db-admin) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-ec2-transition-db-admin"></a> [alarms-ec2-transition-db-admin](#module\_alarms-ec2-transition-db-admin) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_transition-db-admin"></a> [transition-db-admin](#module\_transition-db-admin) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

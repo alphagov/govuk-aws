@@ -21,9 +21,9 @@ CI Master Node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-ci-master-external"></a> [alarms-elb-ci-master-external](#module\_alarms-elb-ci-master-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_ci-master"></a> [ci-master](#module\_ci-master) | ../../modules/aws/node_group |  |
-| <a name="module_ci_master_public_lb"></a> [ci\_master\_public\_lb](#module\_ci\_master\_public\_lb) | ../../modules/aws/lb |  |
+| <a name="module_alarms-elb-ci-master-external"></a> [alarms-elb-ci-master-external](#module\_alarms-elb-ci-master-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_ci-master"></a> [ci-master](#module\_ci-master) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci_master_public_lb"></a> [ci\_master\_public\_lb](#module\_ci\_master\_public\_lb) | ../../modules/aws/lb | n/a |
 
 ## Resources
 

@@ -23,9 +23,9 @@ Run resource intensive scripts for data science purposes.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-data-science-internal"></a> [alarms-elb-data-science-internal](#module\_alarms-elb-data-science-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_data-science-1"></a> [data-science-1](#module\_data-science-1) | ../../modules/aws/node_group |  |
-| <a name="module_data-science-2"></a> [data-science-2](#module\_data-science-2) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-data-science-internal"></a> [alarms-elb-data-science-internal](#module\_alarms-elb-data-science-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_data-science-1"></a> [data-science-1](#module\_data-science-1) | ../../modules/aws/node_group | n/a |
+| <a name="module_data-science-2"></a> [data-science-2](#module\_data-science-2) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

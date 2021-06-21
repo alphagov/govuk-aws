@@ -21,9 +21,9 @@ CKAN node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-ckan-external"></a> [alarms-elb-ckan-external](#module\_alarms-elb-ckan-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ckan-internal"></a> [alarms-elb-ckan-internal](#module\_alarms-elb-ckan-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_ckan"></a> [ckan](#module\_ckan) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-ckan-external"></a> [alarms-elb-ckan-external](#module\_alarms-elb-ckan-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ckan-internal"></a> [alarms-elb-ckan-internal](#module\_alarms-elb-ckan-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_ckan"></a> [ckan](#module\_ckan) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

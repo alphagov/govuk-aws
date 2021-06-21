@@ -21,8 +21,8 @@ Deploy node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-deploy-external"></a> [alarms-elb-deploy-external](#module\_alarms-elb-deploy-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_deploy"></a> [deploy](#module\_deploy) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-deploy-external"></a> [alarms-elb-deploy-external](#module\_alarms-elb-deploy-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_deploy"></a> [deploy](#module\_deploy) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

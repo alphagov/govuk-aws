@@ -20,10 +20,10 @@ RDS PostgreSQL instances
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-rds-postgresql-primary"></a> [alarms-rds-postgresql-primary](#module\_alarms-rds-postgresql-primary) | ../../modules/aws/alarms/rds |  |
-| <a name="module_alarms-rds-postgresql-standby"></a> [alarms-rds-postgresql-standby](#module\_alarms-rds-postgresql-standby) | ../../modules/aws/alarms/rds |  |
-| <a name="module_postgresql-primary_rds_instance"></a> [postgresql-primary\_rds\_instance](#module\_postgresql-primary\_rds\_instance) | ../../modules/aws/rds_instance |  |
-| <a name="module_postgresql-standby_rds_instance"></a> [postgresql-standby\_rds\_instance](#module\_postgresql-standby\_rds\_instance) | ../../modules/aws/rds_instance |  |
+| <a name="module_alarms-rds-postgresql-primary"></a> [alarms-rds-postgresql-primary](#module\_alarms-rds-postgresql-primary) | ../../modules/aws/alarms/rds | n/a |
+| <a name="module_alarms-rds-postgresql-standby"></a> [alarms-rds-postgresql-standby](#module\_alarms-rds-postgresql-standby) | ../../modules/aws/alarms/rds | n/a |
+| <a name="module_postgresql-primary_rds_instance"></a> [postgresql-primary\_rds\_instance](#module\_postgresql-primary\_rds\_instance) | ../../modules/aws/rds_instance | n/a |
+| <a name="module_postgresql-standby_rds_instance"></a> [postgresql-standby\_rds\_instance](#module\_postgresql-standby\_rds\_instance) | ../../modules/aws/rds_instance | n/a |
 
 ## Resources
 

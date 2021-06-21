@@ -21,8 +21,8 @@ Gatling node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_gatling"></a> [gatling](#module\_gatling) | ../../modules/aws/node_group |  |
-| <a name="module_gatling_external_lb"></a> [gatling\_external\_lb](#module\_gatling\_external\_lb) | ../../modules/aws/lb |  |
+| <a name="module_gatling"></a> [gatling](#module\_gatling) | ../../modules/aws/node_group | n/a |
+| <a name="module_gatling_external_lb"></a> [gatling\_external\_lb](#module\_gatling\_external\_lb) | ../../modules/aws/lb | n/a |
 
 ## Resources
 

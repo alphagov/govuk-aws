@@ -21,8 +21,8 @@ Jumpbox node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-jumpbox-internal"></a> [alarms-elb-jumpbox-internal](#module\_alarms-elb-jumpbox-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_jumpbox"></a> [jumpbox](#module\_jumpbox) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-jumpbox-internal"></a> [alarms-elb-jumpbox-internal](#module\_alarms-elb-jumpbox-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_jumpbox"></a> [jumpbox](#module\_jumpbox) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

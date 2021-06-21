@@ -22,8 +22,8 @@ Whitehall Backend nodes
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_internal_lb"></a> [internal\_lb](#module\_internal\_lb) | ../../modules/aws/lb |  |
-| <a name="module_whitehall-backend"></a> [whitehall-backend](#module\_whitehall-backend) | ../../modules/aws/node_group |  |
+| <a name="module_internal_lb"></a> [internal\_lb](#module\_internal\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_whitehall-backend"></a> [whitehall-backend](#module\_whitehall-backend) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

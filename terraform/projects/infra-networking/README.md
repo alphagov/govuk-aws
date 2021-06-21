@@ -20,14 +20,14 @@ This module governs the creation of full network stacks.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_infra_alarms_natgateway"></a> [infra\_alarms\_natgateway](#module\_infra\_alarms\_natgateway) | ../../modules/aws/alarms/natgateway |  |
-| <a name="module_infra_nat"></a> [infra\_nat](#module\_infra\_nat) | ../../modules/aws/network/nat |  |
-| <a name="module_infra_private_subnet"></a> [infra\_private\_subnet](#module\_infra\_private\_subnet) | ../../modules/aws/network/private_subnet |  |
-| <a name="module_infra_private_subnet_elasticache"></a> [infra\_private\_subnet\_elasticache](#module\_infra\_private\_subnet\_elasticache) | ../../modules/aws/network/private_subnet |  |
-| <a name="module_infra_private_subnet_elasticsearch"></a> [infra\_private\_subnet\_elasticsearch](#module\_infra\_private\_subnet\_elasticsearch) | ../../modules/aws/network/private_subnet |  |
-| <a name="module_infra_private_subnet_rds"></a> [infra\_private\_subnet\_rds](#module\_infra\_private\_subnet\_rds) | ../../modules/aws/network/private_subnet |  |
-| <a name="module_infra_private_subnet_reserved_ips"></a> [infra\_private\_subnet\_reserved\_ips](#module\_infra\_private\_subnet\_reserved\_ips) | ../../modules/aws/network/private_subnet |  |
-| <a name="module_infra_public_subnet"></a> [infra\_public\_subnet](#module\_infra\_public\_subnet) | ../../modules/aws/network/public_subnet |  |
+| <a name="module_infra_alarms_natgateway"></a> [infra\_alarms\_natgateway](#module\_infra\_alarms\_natgateway) | ../../modules/aws/alarms/natgateway | n/a |
+| <a name="module_infra_nat"></a> [infra\_nat](#module\_infra\_nat) | ../../modules/aws/network/nat | n/a |
+| <a name="module_infra_private_subnet"></a> [infra\_private\_subnet](#module\_infra\_private\_subnet) | ../../modules/aws/network/private_subnet | n/a |
+| <a name="module_infra_private_subnet_elasticache"></a> [infra\_private\_subnet\_elasticache](#module\_infra\_private\_subnet\_elasticache) | ../../modules/aws/network/private_subnet | n/a |
+| <a name="module_infra_private_subnet_elasticsearch"></a> [infra\_private\_subnet\_elasticsearch](#module\_infra\_private\_subnet\_elasticsearch) | ../../modules/aws/network/private_subnet | n/a |
+| <a name="module_infra_private_subnet_rds"></a> [infra\_private\_subnet\_rds](#module\_infra\_private\_subnet\_rds) | ../../modules/aws/network/private_subnet | n/a |
+| <a name="module_infra_private_subnet_reserved_ips"></a> [infra\_private\_subnet\_reserved\_ips](#module\_infra\_private\_subnet\_reserved\_ips) | ../../modules/aws/network/private_subnet | n/a |
+| <a name="module_infra_public_subnet"></a> [infra\_public\_subnet](#module\_infra\_public\_subnet) | ../../modules/aws/network/public_subnet | n/a |
 
 ## Resources
 

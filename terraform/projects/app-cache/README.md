@@ -21,9 +21,9 @@ Cache application servers
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-cache-external"></a> [alarms-elb-cache-external](#module\_alarms-elb-cache-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-cache-internal"></a> [alarms-elb-cache-internal](#module\_alarms-elb-cache-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_cache"></a> [cache](#module\_cache) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-cache-external"></a> [alarms-elb-cache-external](#module\_alarms-elb-cache-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-cache-internal"></a> [alarms-elb-cache-internal](#module\_alarms-elb-cache-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_cache"></a> [cache](#module\_cache) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 
