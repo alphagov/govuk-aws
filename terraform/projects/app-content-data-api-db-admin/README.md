@@ -21,9 +21,9 @@ DB admin boxes for the Content Data API RDS instance
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-autoscaling-content-data-api-db-admin"></a> [alarms-autoscaling-content-data-api-db-admin](#module\_alarms-autoscaling-content-data-api-db-admin) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-ec2-content-data-api-db-admin"></a> [alarms-ec2-content-data-api-db-admin](#module\_alarms-ec2-content-data-api-db-admin) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_content-data-api-db-admin"></a> [content-data-api-db-admin](#module\_content-data-api-db-admin) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-autoscaling-content-data-api-db-admin"></a> [alarms-autoscaling-content-data-api-db-admin](#module\_alarms-autoscaling-content-data-api-db-admin) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-ec2-content-data-api-db-admin"></a> [alarms-ec2-content-data-api-db-admin](#module\_alarms-ec2-content-data-api-db-admin) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_content-data-api-db-admin"></a> [content-data-api-db-admin](#module\_content-data-api-db-admin) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

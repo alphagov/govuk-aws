@@ -21,8 +21,8 @@ Puppetmaster node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-puppetmaster-internal"></a> [alarms-elb-puppetmaster-internal](#module\_alarms-elb-puppetmaster-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_puppetmaster"></a> [puppetmaster](#module\_puppetmaster) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-puppetmaster-internal"></a> [alarms-elb-puppetmaster-internal](#module\_alarms-elb-puppetmaster-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_puppetmaster"></a> [puppetmaster](#module\_puppetmaster) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

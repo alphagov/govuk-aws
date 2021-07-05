@@ -21,8 +21,8 @@ Prometheus node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_prometheus-1"></a> [prometheus-1](#module\_prometheus-1) | ../../modules/aws/node_group |  |
-| <a name="module_prometheus_internal_alb"></a> [prometheus\_internal\_alb](#module\_prometheus\_internal\_alb) | ../../modules/aws/lb |  |
+| <a name="module_prometheus-1"></a> [prometheus-1](#module\_prometheus-1) | ../../modules/aws/node_group | n/a |
+| <a name="module_prometheus_internal_alb"></a> [prometheus\_internal\_alb](#module\_prometheus\_internal\_alb) | ../../modules/aws/lb | n/a |
 
 ## Resources
 

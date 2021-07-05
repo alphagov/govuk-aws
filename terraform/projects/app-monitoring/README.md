@@ -21,9 +21,9 @@ Monitoring node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-monitoring-external"></a> [alarms-elb-monitoring-external](#module\_alarms-elb-monitoring-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-monitoring-internal"></a> [alarms-elb-monitoring-internal](#module\_alarms-elb-monitoring-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_monitoring"></a> [monitoring](#module\_monitoring) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-monitoring-external"></a> [alarms-elb-monitoring-external](#module\_alarms-elb-monitoring-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-monitoring-internal"></a> [alarms-elb-monitoring-internal](#module\_alarms-elb-monitoring-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_monitoring"></a> [monitoring](#module\_monitoring) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

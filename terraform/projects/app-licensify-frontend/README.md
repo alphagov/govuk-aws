@@ -21,8 +21,8 @@ Licensify Frontend nodes
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_internal_lb"></a> [internal\_lb](#module\_internal\_lb) | ../../modules/aws/lb |  |
-| <a name="module_licensify-frontend"></a> [licensify-frontend](#module\_licensify-frontend) | ../../modules/aws/node_group |  |
+| <a name="module_internal_lb"></a> [internal\_lb](#module\_internal\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_licensify-frontend"></a> [licensify-frontend](#module\_licensify-frontend) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

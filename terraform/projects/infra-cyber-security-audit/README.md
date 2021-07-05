@@ -17,7 +17,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cyber_security_audit_role"></a> [cyber\_security\_audit\_role](#module\_cyber\_security\_audit\_role) | git::https://github.com/alphagov/tech-ops.git?ref=13f54e5//cyber-security/modules/gds_security_audit_role |  |
+| <a name="module_cyber_security_audit_role"></a> [cyber\_security\_audit\_role](#module\_cyber\_security\_audit\_role) | git::https://github.com/alphagov/tech-ops.git | 13f54e5//cyber-security/modules/gds_security_audit_role |
 
 ## Resources
 

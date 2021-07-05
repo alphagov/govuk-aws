@@ -21,9 +21,9 @@ Bouncer node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-bouncer-external"></a> [alarms-elb-bouncer-external](#module\_alarms-elb-bouncer-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_bouncer"></a> [bouncer](#module\_bouncer) | ../../modules/aws/node_group |  |
-| <a name="module_bouncer_internal_lb"></a> [bouncer\_internal\_lb](#module\_bouncer\_internal\_lb) | ../../modules/aws/lb |  |
+| <a name="module_alarms-elb-bouncer-external"></a> [alarms-elb-bouncer-external](#module\_alarms-elb-bouncer-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_bouncer"></a> [bouncer](#module\_bouncer) | ../../modules/aws/node_group | n/a |
+| <a name="module_bouncer_internal_lb"></a> [bouncer\_internal\_lb](#module\_bouncer\_internal\_lb) | ../../modules/aws/lb | n/a |
 
 ## Resources
 

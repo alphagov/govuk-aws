@@ -20,8 +20,8 @@ Backend VDC Redis Elasticache cluster
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elasticache-backend-redis"></a> [alarms-elasticache-backend-redis](#module\_alarms-elasticache-backend-redis) | ../../modules/aws/alarms/elasticache |  |
-| <a name="module_backend_redis_cluster"></a> [backend\_redis\_cluster](#module\_backend\_redis\_cluster) | ../../modules/aws/elasticache_redis_cluster |  |
+| <a name="module_alarms-elasticache-backend-redis"></a> [alarms-elasticache-backend-redis](#module\_alarms-elasticache-backend-redis) | ../../modules/aws/alarms/elasticache | n/a |
+| <a name="module_backend_redis_cluster"></a> [backend\_redis\_cluster](#module\_backend\_redis\_cluster) | ../../modules/aws/elasticache_redis_cluster | n/a |
 
 ## Resources
 

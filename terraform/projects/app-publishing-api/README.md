@@ -21,9 +21,9 @@ publishing-api node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-publishing-api-external"></a> [alarms-elb-publishing-api-external](#module\_alarms-elb-publishing-api-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-publishing-api-internal"></a> [alarms-elb-publishing-api-internal](#module\_alarms-elb-publishing-api-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_publishing-api"></a> [publishing-api](#module\_publishing-api) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-publishing-api-external"></a> [alarms-elb-publishing-api-external](#module\_alarms-elb-publishing-api-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-publishing-api-internal"></a> [alarms-elb-publishing-api-internal](#module\_alarms-elb-publishing-api-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_publishing-api"></a> [publishing-api](#module\_publishing-api) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

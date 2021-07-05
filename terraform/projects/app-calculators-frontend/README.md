@@ -21,10 +21,10 @@ Calculators Frontend application servers
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-calculators-frontend-internal"></a> [alarms-elb-calculators-frontend-internal](#module\_alarms-elb-calculators-frontend-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_calculators-frontend"></a> [calculators-frontend](#module\_calculators-frontend) | ../../modules/aws/node_group |  |
-| <a name="module_internal_lb"></a> [internal\_lb](#module\_internal\_lb) | ../../modules/aws/lb |  |
-| <a name="module_internal_lb_rules"></a> [internal\_lb\_rules](#module\_internal\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
+| <a name="module_alarms-elb-calculators-frontend-internal"></a> [alarms-elb-calculators-frontend-internal](#module\_alarms-elb-calculators-frontend-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_calculators-frontend"></a> [calculators-frontend](#module\_calculators-frontend) | ../../modules/aws/node_group | n/a |
+| <a name="module_internal_lb"></a> [internal\_lb](#module\_internal\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_internal_lb_rules"></a> [internal\_lb\_rules](#module\_internal\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
 
 ## Resources
 

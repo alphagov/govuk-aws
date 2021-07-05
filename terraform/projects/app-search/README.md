@@ -21,8 +21,8 @@ Search application servers
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-search-internal"></a> [alarms-elb-search-internal](#module\_alarms-elb-search-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_search"></a> [search](#module\_search) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-search-internal"></a> [alarms-elb-search-internal](#module\_alarms-elb-search-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_search"></a> [search](#module\_search) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

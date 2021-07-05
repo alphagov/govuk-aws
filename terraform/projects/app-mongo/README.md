@@ -21,15 +21,15 @@ Mongo hosts
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-autoscaling-mongo-1"></a> [alarms-autoscaling-mongo-1](#module\_alarms-autoscaling-mongo-1) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-autoscaling-mongo-2"></a> [alarms-autoscaling-mongo-2](#module\_alarms-autoscaling-mongo-2) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-autoscaling-mongo-3"></a> [alarms-autoscaling-mongo-3](#module\_alarms-autoscaling-mongo-3) | ../../modules/aws/alarms/autoscaling |  |
-| <a name="module_alarms-ec2-mongo-1"></a> [alarms-ec2-mongo-1](#module\_alarms-ec2-mongo-1) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_alarms-ec2-mongo-2"></a> [alarms-ec2-mongo-2](#module\_alarms-ec2-mongo-2) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_alarms-ec2-mongo-3"></a> [alarms-ec2-mongo-3](#module\_alarms-ec2-mongo-3) | ../../modules/aws/alarms/ec2 |  |
-| <a name="module_mongo-1"></a> [mongo-1](#module\_mongo-1) | ../../modules/aws/node_group |  |
-| <a name="module_mongo-2"></a> [mongo-2](#module\_mongo-2) | ../../modules/aws/node_group |  |
-| <a name="module_mongo-3"></a> [mongo-3](#module\_mongo-3) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-autoscaling-mongo-1"></a> [alarms-autoscaling-mongo-1](#module\_alarms-autoscaling-mongo-1) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-autoscaling-mongo-2"></a> [alarms-autoscaling-mongo-2](#module\_alarms-autoscaling-mongo-2) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-autoscaling-mongo-3"></a> [alarms-autoscaling-mongo-3](#module\_alarms-autoscaling-mongo-3) | ../../modules/aws/alarms/autoscaling | n/a |
+| <a name="module_alarms-ec2-mongo-1"></a> [alarms-ec2-mongo-1](#module\_alarms-ec2-mongo-1) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_alarms-ec2-mongo-2"></a> [alarms-ec2-mongo-2](#module\_alarms-ec2-mongo-2) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_alarms-ec2-mongo-3"></a> [alarms-ec2-mongo-3](#module\_alarms-ec2-mongo-3) | ../../modules/aws/alarms/ec2 | n/a |
+| <a name="module_mongo-1"></a> [mongo-1](#module\_mongo-1) | ../../modules/aws/node_group | n/a |
+| <a name="module_mongo-2"></a> [mongo-2](#module\_mongo-2) | ../../modules/aws/node_group | n/a |
+| <a name="module_mongo-3"></a> [mongo-3](#module\_mongo-3) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

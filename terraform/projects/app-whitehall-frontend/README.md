@@ -21,8 +21,8 @@ Whitehall Frontend nodes
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-whitehall-frontend-internal"></a> [alarms-elb-whitehall-frontend-internal](#module\_alarms-elb-whitehall-frontend-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_whitehall-frontend"></a> [whitehall-frontend](#module\_whitehall-frontend) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-whitehall-frontend-internal"></a> [alarms-elb-whitehall-frontend-internal](#module\_alarms-elb-whitehall-frontend-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_whitehall-frontend"></a> [whitehall-frontend](#module\_whitehall-frontend) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

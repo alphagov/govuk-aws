@@ -17,7 +17,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_csw_inspector_role"></a> [csw\_inspector\_role](#module\_csw\_inspector\_role) | git::https://github.com/alphagov/csw-client-role.git |  |
+| <a name="module_csw_inspector_role"></a> [csw\_inspector\_role](#module\_csw\_inspector\_role) | git::https://github.com/alphagov/csw-client-role.git | n/a |
 
 ## Resources
 

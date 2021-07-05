@@ -21,9 +21,9 @@ Graphite node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-graphite-external"></a> [alarms-elb-graphite-external](#module\_alarms-elb-graphite-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-graphite-internal"></a> [alarms-elb-graphite-internal](#module\_alarms-elb-graphite-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_graphite-1"></a> [graphite-1](#module\_graphite-1) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-graphite-external"></a> [alarms-elb-graphite-external](#module\_alarms-elb-graphite-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-graphite-internal"></a> [alarms-elb-graphite-internal](#module\_alarms-elb-graphite-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_graphite-1"></a> [graphite-1](#module\_graphite-1) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

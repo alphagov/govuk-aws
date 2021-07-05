@@ -21,9 +21,9 @@ Draft Cache servers
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-draft-cache-external"></a> [alarms-elb-draft-cache-external](#module\_alarms-elb-draft-cache-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-draft-cache-internal"></a> [alarms-elb-draft-cache-internal](#module\_alarms-elb-draft-cache-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_draft-cache"></a> [draft-cache](#module\_draft-cache) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-draft-cache-external"></a> [alarms-elb-draft-cache-external](#module\_alarms-elb-draft-cache-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-draft-cache-internal"></a> [alarms-elb-draft-cache-internal](#module\_alarms-elb-draft-cache-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_draft-cache"></a> [draft-cache](#module\_draft-cache) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

@@ -21,22 +21,22 @@ CI agents
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-ci-agent-1-internal"></a> [alarms-elb-ci-agent-1-internal](#module\_alarms-elb-ci-agent-1-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-2-internal"></a> [alarms-elb-ci-agent-2-internal](#module\_alarms-elb-ci-agent-2-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-3-internal"></a> [alarms-elb-ci-agent-3-internal](#module\_alarms-elb-ci-agent-3-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-4-internal"></a> [alarms-elb-ci-agent-4-internal](#module\_alarms-elb-ci-agent-4-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-5-internal"></a> [alarms-elb-ci-agent-5-internal](#module\_alarms-elb-ci-agent-5-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-6-internal"></a> [alarms-elb-ci-agent-6-internal](#module\_alarms-elb-ci-agent-6-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-7-internal"></a> [alarms-elb-ci-agent-7-internal](#module\_alarms-elb-ci-agent-7-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-ci-agent-8-internal"></a> [alarms-elb-ci-agent-8-internal](#module\_alarms-elb-ci-agent-8-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_ci-agent-1"></a> [ci-agent-1](#module\_ci-agent-1) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-2"></a> [ci-agent-2](#module\_ci-agent-2) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-3"></a> [ci-agent-3](#module\_ci-agent-3) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-4"></a> [ci-agent-4](#module\_ci-agent-4) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-5"></a> [ci-agent-5](#module\_ci-agent-5) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-6"></a> [ci-agent-6](#module\_ci-agent-6) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-7"></a> [ci-agent-7](#module\_ci-agent-7) | ../../modules/aws/node_group |  |
-| <a name="module_ci-agent-8"></a> [ci-agent-8](#module\_ci-agent-8) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-ci-agent-1-internal"></a> [alarms-elb-ci-agent-1-internal](#module\_alarms-elb-ci-agent-1-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-2-internal"></a> [alarms-elb-ci-agent-2-internal](#module\_alarms-elb-ci-agent-2-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-3-internal"></a> [alarms-elb-ci-agent-3-internal](#module\_alarms-elb-ci-agent-3-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-4-internal"></a> [alarms-elb-ci-agent-4-internal](#module\_alarms-elb-ci-agent-4-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-5-internal"></a> [alarms-elb-ci-agent-5-internal](#module\_alarms-elb-ci-agent-5-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-6-internal"></a> [alarms-elb-ci-agent-6-internal](#module\_alarms-elb-ci-agent-6-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-7-internal"></a> [alarms-elb-ci-agent-7-internal](#module\_alarms-elb-ci-agent-7-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-8-internal"></a> [alarms-elb-ci-agent-8-internal](#module\_alarms-elb-ci-agent-8-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_ci-agent-1"></a> [ci-agent-1](#module\_ci-agent-1) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-2"></a> [ci-agent-2](#module\_ci-agent-2) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-3"></a> [ci-agent-3](#module\_ci-agent-3) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-4"></a> [ci-agent-4](#module\_ci-agent-4) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-5"></a> [ci-agent-5](#module\_ci-agent-5) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-6"></a> [ci-agent-6](#module\_ci-agent-6) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-7"></a> [ci-agent-7](#module\_ci-agent-7) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-8"></a> [ci-agent-8](#module\_ci-agent-8) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

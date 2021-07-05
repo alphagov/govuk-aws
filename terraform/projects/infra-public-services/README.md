@@ -24,33 +24,33 @@ This project adds global resources for app components:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_account_public_lb"></a> [account\_public\_lb](#module\_account\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_account_public_lb_rules"></a> [account\_public\_lb\_rules](#module\_account\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
-| <a name="module_alarms-elb-jumpbox-public"></a> [alarms-elb-jumpbox-public](#module\_alarms-elb-jumpbox-public) | ../../modules/aws/alarms/elb |  |
-| <a name="module_backend_public_lb"></a> [backend\_public\_lb](#module\_backend\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_backend_public_lb_rules"></a> [backend\_public\_lb\_rules](#module\_backend\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
-| <a name="module_bouncer_public_lb"></a> [bouncer\_public\_lb](#module\_bouncer\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_cache_public_lb"></a> [cache\_public\_lb](#module\_cache\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_cache_public_lb_rules"></a> [cache\_public\_lb\_rules](#module\_cache\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
-| <a name="module_ckan_public_lb"></a> [ckan\_public\_lb](#module\_ckan\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_content-store_public_lb"></a> [content-store\_public\_lb](#module\_content-store\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_deploy_public_lb"></a> [deploy\_public\_lb](#module\_deploy\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_draft_cache_public_lb"></a> [draft\_cache\_public\_lb](#module\_draft\_cache\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_email_alert_api_public_lb"></a> [email\_alert\_api\_public\_lb](#module\_email\_alert\_api\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_feedback_public_lb"></a> [feedback\_public\_lb](#module\_feedback\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_graphite_public_lb"></a> [graphite\_public\_lb](#module\_graphite\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_licensify_backend_public_lb"></a> [licensify\_backend\_public\_lb](#module\_licensify\_backend\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_licensify_frontend_public_lb"></a> [licensify\_frontend\_public\_lb](#module\_licensify\_frontend\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_mapit_public_lb"></a> [mapit\_public\_lb](#module\_mapit\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_monitoring_public_lb"></a> [monitoring\_public\_lb](#module\_monitoring\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_prometheus_public_lb"></a> [prometheus\_public\_lb](#module\_prometheus\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_search_api_public_lb"></a> [search\_api\_public\_lb](#module\_search\_api\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_search_api_public_lb_rules"></a> [search\_api\_public\_lb\_rules](#module\_search\_api\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules |  |
-| <a name="module_sidekiq_monitoring_public_lb"></a> [sidekiq\_monitoring\_public\_lb](#module\_sidekiq\_monitoring\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_static_public_lb"></a> [static\_public\_lb](#module\_static\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_support_api_public_lb"></a> [support\_api\_public\_lb](#module\_support\_api\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_whitehall_backend_public_lb"></a> [whitehall\_backend\_public\_lb](#module\_whitehall\_backend\_public\_lb) | ../../modules/aws/lb |  |
-| <a name="module_whitehall_frontend_public_lb"></a> [whitehall\_frontend\_public\_lb](#module\_whitehall\_frontend\_public\_lb) | ../../modules/aws/lb |  |
+| <a name="module_account_public_lb"></a> [account\_public\_lb](#module\_account\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_account_public_lb_rules"></a> [account\_public\_lb\_rules](#module\_account\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
+| <a name="module_alarms-elb-jumpbox-public"></a> [alarms-elb-jumpbox-public](#module\_alarms-elb-jumpbox-public) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_backend_public_lb"></a> [backend\_public\_lb](#module\_backend\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_backend_public_lb_rules"></a> [backend\_public\_lb\_rules](#module\_backend\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
+| <a name="module_bouncer_public_lb"></a> [bouncer\_public\_lb](#module\_bouncer\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_cache_public_lb"></a> [cache\_public\_lb](#module\_cache\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_cache_public_lb_rules"></a> [cache\_public\_lb\_rules](#module\_cache\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
+| <a name="module_ckan_public_lb"></a> [ckan\_public\_lb](#module\_ckan\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_content-store_public_lb"></a> [content-store\_public\_lb](#module\_content-store\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_deploy_public_lb"></a> [deploy\_public\_lb](#module\_deploy\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_draft_cache_public_lb"></a> [draft\_cache\_public\_lb](#module\_draft\_cache\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_email_alert_api_public_lb"></a> [email\_alert\_api\_public\_lb](#module\_email\_alert\_api\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_feedback_public_lb"></a> [feedback\_public\_lb](#module\_feedback\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_graphite_public_lb"></a> [graphite\_public\_lb](#module\_graphite\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_licensify_backend_public_lb"></a> [licensify\_backend\_public\_lb](#module\_licensify\_backend\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_licensify_frontend_public_lb"></a> [licensify\_frontend\_public\_lb](#module\_licensify\_frontend\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_mapit_public_lb"></a> [mapit\_public\_lb](#module\_mapit\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_monitoring_public_lb"></a> [monitoring\_public\_lb](#module\_monitoring\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_prometheus_public_lb"></a> [prometheus\_public\_lb](#module\_prometheus\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_search_api_public_lb"></a> [search\_api\_public\_lb](#module\_search\_api\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_search_api_public_lb_rules"></a> [search\_api\_public\_lb\_rules](#module\_search\_api\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
+| <a name="module_sidekiq_monitoring_public_lb"></a> [sidekiq\_monitoring\_public\_lb](#module\_sidekiq\_monitoring\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_static_public_lb"></a> [static\_public\_lb](#module\_static\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_support_api_public_lb"></a> [support\_api\_public\_lb](#module\_support\_api\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_whitehall_backend_public_lb"></a> [whitehall\_backend\_public\_lb](#module\_whitehall\_backend\_public\_lb) | ../../modules/aws/lb | n/a |
+| <a name="module_whitehall_frontend_public_lb"></a> [whitehall\_frontend\_public\_lb](#module\_whitehall\_frontend\_public\_lb) | ../../modules/aws/lb | n/a |
 
 ## Resources
 

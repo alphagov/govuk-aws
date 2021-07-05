@@ -21,7 +21,7 @@ and resources to export these logs to S3
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/aws/network/vpc |  |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | ../../modules/aws/network/vpc | n/a |
 
 ## Resources
 

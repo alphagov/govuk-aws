@@ -24,15 +24,16 @@ Infrastructure security settings:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_gds_role_admin"></a> [gds\_role\_admin](#module\_gds\_role\_admin) | ../../modules/aws/iam/gds_user_role |  |
-| <a name="module_gds_role_poweruser"></a> [gds\_role\_poweruser](#module\_gds\_role\_poweruser) | ../../modules/aws/iam/gds_user_role |  |
-| <a name="module_gds_role_user"></a> [gds\_role\_user](#module\_gds\_role\_user) | ../../modules/aws/iam/gds_user_role |  |
-| <a name="module_role_admin"></a> [role\_admin](#module\_role\_admin) | ../../modules/aws/iam/role_user |  |
-| <a name="module_role_datascienceuser"></a> [role\_datascienceuser](#module\_role\_datascienceuser) | ../../modules/aws/iam/role_user |  |
-| <a name="module_role_internal_admin"></a> [role\_internal\_admin](#module\_role\_internal\_admin) | ../../modules/aws/iam/role_user |  |
-| <a name="module_role_platformhealth_poweruser"></a> [role\_platformhealth\_poweruser](#module\_role\_platformhealth\_poweruser) | ../../modules/aws/iam/role_user |  |
-| <a name="module_role_poweruser"></a> [role\_poweruser](#module\_role\_poweruser) | ../../modules/aws/iam/role_user |  |
-| <a name="module_role_user"></a> [role\_user](#module\_role\_user) | ../../modules/aws/iam/role_user |  |
+| <a name="module_gds_role_admin"></a> [gds\_role\_admin](#module\_gds\_role\_admin) | ../../modules/aws/iam/gds_user_role | n/a |
+| <a name="module_gds_role_poweruser"></a> [gds\_role\_poweruser](#module\_gds\_role\_poweruser) | ../../modules/aws/iam/gds_user_role | n/a |
+| <a name="module_gds_role_user"></a> [gds\_role\_user](#module\_gds\_role\_user) | ../../modules/aws/iam/gds_user_role | n/a |
+| <a name="module_role_admin"></a> [role\_admin](#module\_role\_admin) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_datascienceuser"></a> [role\_datascienceuser](#module\_role\_datascienceuser) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_internal_admin"></a> [role\_internal\_admin](#module\_role\_internal\_admin) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_platformhealth_poweruser"></a> [role\_platformhealth\_poweruser](#module\_role\_platformhealth\_poweruser) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_poweruser"></a> [role\_poweruser](#module\_role\_poweruser) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_step_function"></a> [role\_step\_function](#module\_role\_step\_function) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_user"></a> [role\_user](#module\_role\_user) | ../../modules/aws/iam/role_user | n/a |
 
 ## Resources
 
@@ -72,6 +73,8 @@ Infrastructure security settings:
 | <a name="input_role_platformhealth_poweruser_user_arns"></a> [role\_platformhealth\_poweruser\_user\_arns](#input\_role\_platformhealth\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | <a name="input_role_poweruser_policy_arns"></a> [role\_poweruser\_policy\_arns](#input\_role\_poweruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | <a name="input_role_poweruser_user_arns"></a> [role\_poweruser\_user\_arns](#input\_role\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
+| <a name="input_role_step_function_role_policy_arns"></a> [role\_step\_function\_role\_policy\_arns](#input\_role\_step\_function\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
+| <a name="input_role_step_function_role_user_arns"></a> [role\_step\_function\_role\_user\_arns](#input\_role\_step\_function\_role\_user\_arns) | List of ARNs of users to attach to the role | `list` | `[]` | no |
 | <a name="input_role_user_policy_arns"></a> [role\_user\_policy\_arns](#input\_role\_user\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | <a name="input_role_user_user_arns"></a> [role\_user\_user\_arns](#input\_role\_user\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | The public part of an SSH keypair | `string` | `null` | no |

@@ -21,9 +21,9 @@ draft-content-store node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-draft-content-store-external"></a> [alarms-elb-draft-content-store-external](#module\_alarms-elb-draft-content-store-external) | ../../modules/aws/alarms/elb |  |
-| <a name="module_alarms-elb-draft-content-store-internal"></a> [alarms-elb-draft-content-store-internal](#module\_alarms-elb-draft-content-store-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_draft-content-store"></a> [draft-content-store](#module\_draft-content-store) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-draft-content-store-external"></a> [alarms-elb-draft-content-store-external](#module\_alarms-elb-draft-content-store-external) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-draft-content-store-internal"></a> [alarms-elb-draft-content-store-internal](#module\_alarms-elb-draft-content-store-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_draft-content-store"></a> [draft-content-store](#module\_draft-content-store) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

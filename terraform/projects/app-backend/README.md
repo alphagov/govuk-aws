@@ -21,9 +21,9 @@ Backend node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_backend"></a> [backend](#module\_backend) | ../../modules/aws/node_group |  |
-| <a name="module_backend_internal_alb"></a> [backend\_internal\_alb](#module\_backend\_internal\_alb) | ../../modules/aws/lb |  |
-| <a name="module_backend_internal_alb_rules"></a> [backend\_internal\_alb\_rules](#module\_backend\_internal\_alb\_rules) | ../../modules/aws/lb_listener_rules |  |
+| <a name="module_backend"></a> [backend](#module\_backend) | ../../modules/aws/node_group | n/a |
+| <a name="module_backend_internal_alb"></a> [backend\_internal\_alb](#module\_backend\_internal\_alb) | ../../modules/aws/lb | n/a |
+| <a name="module_backend_internal_alb_rules"></a> [backend\_internal\_alb\_rules](#module\_backend\_internal\_alb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
 
 ## Resources
 

@@ -21,11 +21,11 @@ Mapit node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-mapit-internal"></a> [alarms-elb-mapit-internal](#module\_alarms-elb-mapit-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_mapit-1"></a> [mapit-1](#module\_mapit-1) | ../../modules/aws/node_group |  |
-| <a name="module_mapit-2"></a> [mapit-2](#module\_mapit-2) | ../../modules/aws/node_group |  |
-| <a name="module_mapit-3"></a> [mapit-3](#module\_mapit-3) | ../../modules/aws/node_group |  |
-| <a name="module_mapit-4"></a> [mapit-4](#module\_mapit-4) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-mapit-internal"></a> [alarms-elb-mapit-internal](#module\_alarms-elb-mapit-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_mapit-1"></a> [mapit-1](#module\_mapit-1) | ../../modules/aws/node_group | n/a |
+| <a name="module_mapit-2"></a> [mapit-2](#module\_mapit-2) | ../../modules/aws/node_group | n/a |
+| <a name="module_mapit-3"></a> [mapit-3](#module\_mapit-3) | ../../modules/aws/node_group | n/a |
+| <a name="module_mapit-4"></a> [mapit-4](#module\_mapit-4) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

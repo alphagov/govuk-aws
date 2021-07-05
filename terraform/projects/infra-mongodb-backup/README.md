@@ -17,8 +17,8 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_govuk-mongodb-backup-s3"></a> [govuk-mongodb-backup-s3](#module\_govuk-mongodb-backup-s3) | ../../modules/aws/s3_bucket_lifecycle |  |
-| <a name="module_govuk-mongodb-backup-s3-daily"></a> [govuk-mongodb-backup-s3-daily](#module\_govuk-mongodb-backup-s3-daily) | ../../modules/aws/s3_bucket_lifecycle |  |
+| <a name="module_govuk-mongodb-backup-s3"></a> [govuk-mongodb-backup-s3](#module\_govuk-mongodb-backup-s3) | ../../modules/aws/s3_bucket_lifecycle | n/a |
+| <a name="module_govuk-mongodb-backup-s3-daily"></a> [govuk-mongodb-backup-s3-daily](#module\_govuk-mongodb-backup-s3-daily) | ../../modules/aws/s3_bucket_lifecycle | n/a |
 
 ## Resources
 

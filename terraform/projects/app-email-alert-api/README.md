@@ -21,8 +21,8 @@ email-alert-api node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-email-alert-api-internal"></a> [alarms-elb-email-alert-api-internal](#module\_alarms-elb-email-alert-api-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_email-alert-api"></a> [email-alert-api](#module\_email-alert-api) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-email-alert-api-internal"></a> [alarms-elb-email-alert-api-internal](#module\_alarms-elb-email-alert-api-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_email-alert-api"></a> [email-alert-api](#module\_email-alert-api) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 

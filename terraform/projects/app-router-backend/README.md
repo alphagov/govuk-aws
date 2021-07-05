@@ -21,10 +21,10 @@ Router backend hosts both Mongo and router-api
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-router-api-internal"></a> [alarms-elb-router-api-internal](#module\_alarms-elb-router-api-internal) | ../../modules/aws/alarms/elb |  |
-| <a name="module_router-backend-1"></a> [router-backend-1](#module\_router-backend-1) | ../../modules/aws/node_group |  |
-| <a name="module_router-backend-2"></a> [router-backend-2](#module\_router-backend-2) | ../../modules/aws/node_group |  |
-| <a name="module_router-backend-3"></a> [router-backend-3](#module\_router-backend-3) | ../../modules/aws/node_group |  |
+| <a name="module_alarms-elb-router-api-internal"></a> [alarms-elb-router-api-internal](#module\_alarms-elb-router-api-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_router-backend-1"></a> [router-backend-1](#module\_router-backend-1) | ../../modules/aws/node_group | n/a |
+| <a name="module_router-backend-2"></a> [router-backend-2](#module\_router-backend-2) | ../../modules/aws/node_group | n/a |
+| <a name="module_router-backend-3"></a> [router-backend-3](#module\_router-backend-3) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 
