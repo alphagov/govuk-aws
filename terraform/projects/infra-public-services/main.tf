@@ -1517,7 +1517,7 @@ module "prometheus_public_lb" {
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment)}"
-  target_group_health_check_path             = "/metrics"
+  target_group_health_check_path             = "/-/ready"
 }
 
 resource "aws_route53_record" "prometheus_public_service_names" {
