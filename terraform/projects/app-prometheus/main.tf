@@ -53,6 +53,12 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "ebs_volume_size" {
+  type        = "string"
+  description = "EBS volume size"
+  default     = "64"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -83,8 +89,8 @@ keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
 
 resource "aws_ebs_volume" "prometheus-1" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.prometheus_1_subnet)}"
-  size              = 64
-  type              = "gp2"
+  size              = "${var.ebs_volume_size}"
+  type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-prometheus-1"
