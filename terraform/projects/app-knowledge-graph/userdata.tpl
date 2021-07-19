@@ -23,7 +23,8 @@ pip install --upgrade pip
 
 # Install pip and dependencies used in this start-up script
 sudo apt install -y python-pip
-pip install awscli
+pip install awscli==1.19.112
+pip install futures
 
 # Install Python 3.7
 sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
