@@ -28,7 +28,7 @@ rm $TMPFILE
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: install Puppetlabs package signing key ..."
 curl --silent --show-error --fail \
-  http://apt.puppetlabs.com/DEB-GPG-KEY-puppet-20250406 | apt-key add -
+  https://apt.puppetlabs.com/DEB-GPG-KEY-puppet-20250406 | apt-key add -
 
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: install Gov.UK package signing key and repositories ..."
 curl --silent --show-error --fail \
