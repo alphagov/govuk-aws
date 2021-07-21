@@ -25,6 +25,12 @@ variable "enable_clustering" {
   default     = false
 }
 
+variable "instance_type" {
+  type        = "string"
+  description = "Instance type used for Elasticache nodes"
+  default     = "cache.r4.large"
+}
+
 variable "internal_zone_name" {
   type        = "string"
   description = "The name of the Route53 zone that contains internal records"
@@ -67,7 +73,7 @@ module "backend_redis_cluster" {
   default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis")}"
   subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_elasticache_ids}"
   security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
-  elasticache_node_type = "cache.r4.large"
+  elasticache_node_type = "${var.instance_type}"
 }
 
 module "alarms-elasticache-backend-redis" {
