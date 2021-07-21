@@ -41,6 +41,12 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "node_number" {
+  type        = "string"
+  description = "Override the number of nodes per cluster specified by the module."
+  default     = "2"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -67,13 +73,14 @@ resource "aws_route53_record" "service_record" {
 }
 
 module "backend_redis_cluster" {
-  source                = "../../modules/aws/elasticache_redis_cluster"
-  enable_clustering     = "${var.enable_clustering}"
-  name                  = "${var.stackname}-backend-redis"
-  default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis")}"
-  subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_elasticache_ids}"
-  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
-  elasticache_node_type = "${var.instance_type}"
+  source                  = "../../modules/aws/elasticache_redis_cluster"
+  enable_clustering       = "${var.enable_clustering}"
+  name                    = "${var.stackname}-backend-redis"
+  default_tags            = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis")}"
+  subnet_ids              = "${data.terraform_remote_state.infra_networking.private_subnet_elasticache_ids}"
+  security_group_ids      = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
+  elasticache_node_type   = "${var.instance_type}"
+  elasticache_node_number = "${var.node_number}"
 }
 
 module "alarms-elasticache-backend-redis" {
