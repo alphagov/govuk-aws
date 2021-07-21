@@ -26,6 +26,12 @@ variable "elasticache_node_type" {
   default     = "cache.m3.medium"
 }
 
+variable "elasticache_node_number" {
+  type        = "string"
+  description = "The number of nodes per cluster."
+  default     = "2"
+}
+
 variable "security_group_ids" {
   type        = "list"
   description = "Security group IDs to apply to this cluster"
@@ -72,7 +78,7 @@ resource "aws_elasticache_replication_group" "redis_master_with_replica" {
   replication_group_id          = "${var.name}"
   replication_group_description = "${var.name} redis master with replica"
   node_type                     = "${var.elasticache_node_type}"
-  number_cache_clusters         = 2
+  number_cache_clusters         = "${var.elasticache_node_number}"
   port                          = 6379
   parameter_group_name          = "default.redis3.2"
   engine_version                = "3.2.10"
