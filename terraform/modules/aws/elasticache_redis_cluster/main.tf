@@ -43,6 +43,11 @@ variable "enable_clustering" {
   default     = true
 }
 
+variable "redis_engine_version" {
+  type        = "string"
+  description = "The Elasticache Redis engine version."
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -61,7 +66,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   port                          = 6379
   parameter_group_name          = "default.redis3.2.cluster.on"
   automatic_failover_enabled    = true
-  engine_version                = "3.2.10"
+  engine_version                = "${var.redis_engine_version}"
   subnet_group_name             = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
   security_group_ids            = ["${var.security_group_ids}"]
 
