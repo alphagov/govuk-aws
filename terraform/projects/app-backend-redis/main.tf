@@ -47,6 +47,12 @@ variable "node_number" {
   default     = "2"
 }
 
+variable "redis_engine_version" {
+  type        = "string"
+  description = "The Elasticache Redis engine version."
+  default     = "3.2.10"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -81,6 +87,7 @@ module "backend_redis_cluster" {
   security_group_ids      = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
   elasticache_node_type   = "${var.instance_type}"
   elasticache_node_number = "${var.node_number}"
+  redis_engine_version    = "${var.redis_engine_version}"
 }
 
 module "alarms-elasticache-backend-redis" {
