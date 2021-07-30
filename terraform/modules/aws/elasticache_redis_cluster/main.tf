@@ -48,6 +48,11 @@ variable "redis_engine_version" {
   description = "The Elasticache Redis engine version."
 }
 
+variable "redis_parameter_group_name" {
+  type        = "string"
+  description = "The Elasticache Redis parameter group name."
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -64,7 +69,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replication_group_description = "${var.name} redis cluster"
   node_type                     = "${var.elasticache_node_type}"
   port                          = 6379
-  parameter_group_name          = "default.redis3.2.cluster.on"
+  parameter_group_name          = "${var.redis_parameter_group_name}.cluster.on"
   automatic_failover_enabled    = true
   engine_version                = "${var.redis_engine_version}"
   subnet_group_name             = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
@@ -85,8 +90,8 @@ resource "aws_elasticache_replication_group" "redis_master_with_replica" {
   node_type                     = "${var.elasticache_node_type}"
   number_cache_clusters         = "${var.elasticache_node_number}"
   port                          = 6379
-  parameter_group_name          = "default.redis3.2"
-  engine_version                = "3.2.10"
+  parameter_group_name          = "${var.redis_parameter_group_name}"
+  engine_version                = "${var.redis_engine_version}"
   automatic_failover_enabled    = true
 
   subnet_group_name  = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"

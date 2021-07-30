@@ -48,6 +48,7 @@ Backend VDC Redis Elasticache cluster
 | <a name="input_internal_zone_name"></a> [internal\_zone\_name](#input\_internal\_zone\_name) | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | <a name="input_node_number"></a> [node\_number](#input\_node\_number) | Override the number of nodes per cluster specified by the module. | `string` | `"2"` | no |
 | <a name="input_redis_engine_version"></a> [redis\_engine\_version](#input\_redis\_engine\_version) | The Elasticache Redis engine version. | `string` | `"3.2.10"` | no |
+| <a name="input_redis_parameter_group_name"></a> [redis\_parameter\_group\_name](#input\_redis\_parameter\_group\_name) | The Elasticache Redis parameter group name. | `string` | `"default.redis3.2"` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_networking_key_stack"></a> [remote\_state\_infra\_networking\_key\_stack](#input\_remote\_state\_infra\_networking\_key\_stack) | Override infra\_networking remote state path | `string` | `""` | no |
