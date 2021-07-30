@@ -34,6 +34,7 @@ No modules.
 | <a name="input_enable_clustering"></a> [enable\_clustering](#input\_enable\_clustering) | Set to true to enable clustering mode | `string` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | The common name for all the resources created by this module | `string` | n/a | yes |
 | <a name="input_redis_engine_version"></a> [redis\_engine\_version](#input\_redis\_engine\_version) | The Elasticache Redis engine version. | `string` | n/a | yes |
+| <a name="input_redis_parameter_group_name"></a> [redis\_parameter\_group\_name](#input\_redis\_parameter\_group\_name) | The Elasticache Redis parameter group name. | `string` | n/a | yes |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | Security group IDs to apply to this cluster | `list` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs to assign to the aws\_elasticache\_subnet\_group | `list` | n/a | yes |
 
