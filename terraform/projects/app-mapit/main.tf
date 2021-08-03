@@ -332,42 +332,6 @@ resource "aws_ebs_volume" "mapit-4" {
   }
 }
 
-module "mapit-5" {
-  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
-  source                        = "../../modules/aws/node_group"
-  name                          = "${var.stackname}-mapit-5"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-5")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "1"
-  instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
-  root_block_device_volume_size = "20"
-  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
-  ebs_encrypted                 = "${var.ebs_encrypted}"
-  ebs_device_name               = "${var.ebs_device_name}"
-}
-
-resource "aws_ebs_volume" "mapit-5" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
-  encrypted         = "${var.ebs_encrypted}"
-  size              = 20
-  type              = "gp3"
-
-  tags {
-    Name            = "${var.stackname}-mapit"
-    Project         = "${var.stackname}"
-    Device          = "xvdf"
-    aws_hostname    = "mapit-5"
-    aws_migration   = "mapit"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
-  }
-}
-
 resource "aws_iam_policy" "mapit_iam_policy" {
   name   = "${var.stackname}-mapit-additional"
   path   = "/"
@@ -391,11 +355,6 @@ resource "aws_iam_role_policy_attachment" "mapit_3_iam_role_policy_attachment" {
 
 resource "aws_iam_role_policy_attachment" "mapit_4_iam_role_policy_attachment" {
   role       = "${module.mapit-4.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "mapit_5_iam_role_policy_attachment" {
-  role       = "${module.mapit-5.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
 }
 
