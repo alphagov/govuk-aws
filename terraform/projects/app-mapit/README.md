@@ -26,6 +26,7 @@ Mapit node
 | <a name="module_mapit-2"></a> [mapit-2](#module\_mapit-2) | ../../modules/aws/node_group | n/a |
 | <a name="module_mapit-3"></a> [mapit-3](#module\_mapit-3) | ../../modules/aws/node_group | n/a |
 | <a name="module_mapit-4"></a> [mapit-4](#module\_mapit-4) | ../../modules/aws/node_group | n/a |
+| <a name="module_mapit-5"></a> [mapit-5](#module\_mapit-5) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 
@@ -35,6 +36,7 @@ Mapit node
 | [aws_ebs_volume.mapit-2](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
 | [aws_ebs_volume.mapit-3](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
 | [aws_ebs_volume.mapit-4](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.mapit-5](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
 | [aws_elasticache_cluster.memcached](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elasticache_cluster) | resource |
 | [aws_elasticache_subnet_group.memcached](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elasticache_subnet_group) | resource |
 | [aws_elb.mapit_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
@@ -43,6 +45,7 @@ Mapit node
 | [aws_iam_role_policy_attachment.mapit_2_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.mapit_3_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.mapit_4_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.mapit_5_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_route53_record.mapit_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.memcached_cname](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [null_resource.user_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
