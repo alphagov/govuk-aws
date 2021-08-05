@@ -38,4 +38,6 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_roles_and_arns"></a> [roles\_and\_arns](#output\_roles\_and\_arns) | Map of '$username-$role' to role ARN. e.g. {'joe.bloggs-admin': 'arn:aws:iam::123467890123:role/joe.bloggs-admin'} |

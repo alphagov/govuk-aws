@@ -55,12 +55,14 @@ locals {
   EOF
 
   maybe_source_ip_restriction = var.restrict_to_gds_ips ? local.gds_ip_restriction_policy_fragment : ""
+
+  roles_and_user_arns = {
+    for user_arn in var.role_user_arns : "${regex("/(.+)@", user_arn)[0]}-${var.role_suffix}" => user_arn
+  }
 }
 
 resource "aws_iam_role" "gds_user_role" {
-  for_each = {
-    for user in var.role_user_arns : "${regex("^.*/(.+)@.*$", user)[0]}-${var.role_suffix}" => user
-  }
+  for_each = local.roles_and_user_arns
 
   name                 = each.key
   max_session_duration = 28800
@@ -97,4 +99,9 @@ resource "aws_iam_role_policy_attachment" "gds_user_role_policy_attachments" {
   policy_arn = each.value.policy_arn
 
   depends_on = [aws_iam_role.gds_user_role]
+}
+
+output "roles_and_arns" {
+  value       = { for role in aws_iam_role.gds_user_role : role.name => role.arn }
+  description = "Map of '$username-$role' to role ARN. e.g. {'joe.bloggs-admin': 'arn:aws:iam::123467890123:role/joe.bloggs-admin'}"
 }

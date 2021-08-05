@@ -419,6 +419,21 @@ resource "aws_kms_key" "shared_documentdb" {
 # Outputs
 # --------------------------------------------------------------
 
+output "admin_roles_and_arns" {
+  value       = module.gds_role_admin.roles_and_arns
+  description = "Map of '$username-admin' to role ARN, for the *-admin roles. e.g. {'joe.bloggs-admin': 'arn:aws:iam::123467890123:role/joe.bloggs-admin'}"
+}
+
+output "poweruser_roles_and_arns" {
+  value       = module.gds_role_poweruser.roles_and_arns
+  description = "Map of '$username-poweruser' to role ARN, for the *-poweruser roles. e.g. {'joe.bloggs-poweruser': 'arn:aws:iam::123467890123:role/joe.bloggs-poweruser'}"
+}
+
+output "user_roles_and_arns" {
+  value       = module.gds_role_user.roles_and_arns
+  description = "Map of '$username-user' to role ARN, for the *-user roles. e.g. {'joe.bloggs-user': 'arn:aws:iam::123467890123:role/joe.bloggs-user'}"
+}
+
 output "sops_kms_key_arn" {
   value       = aws_kms_key.sops.arn
   description = "The ARN of the Sops KMS key"
