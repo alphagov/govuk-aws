@@ -217,6 +217,40 @@ resource "aws_iam_role_policy_attachment" "role_step_function" {
   policy_arn = element(var.role_step_function_role_policy_arns, count.index)
 }
 
+resource "aws_iam_role" "event_bridge" {
+  name = "govuk-event-bridge"
+
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "events.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
+      }
+    ]
+  })
+
+  inline_policy {
+    name = "govuk-event-bridge_inline_policy"
+
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "states:StartExecution"
+              ],
+              "Resource": "*"
+          }
+      ]
+    })
+  }
+}
+
 module "role_user" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-users"
