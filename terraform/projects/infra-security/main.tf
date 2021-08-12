@@ -193,11 +193,28 @@ module "role_datascienceuser" {
   role_policy_arns = var.role_datascienceuser_policy_arns
 }
 
-module "role_step_function" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-step-function-role"
-  role_user_arns   = var.role_step_function_role_user_arns
-  role_policy_arns = var.role_step_function_role_policy_arns
+resource "aws_iam_role" "role_step_function" {
+  name = "govuk-step-function-role"
+
+  assume_role_policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "states.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole"
+        }
+      ]
+    })
+}
+
+resource "aws_iam_role_policy_attachment" "role_step_function" {
+  count      = length(var.role_step_function_role_policy_arns)
+  role       = aws_iam_role.role_step_function.name
+  policy_arn = element(var.role_step_function_role_policy_arns, count.index)
 }
 
 module "role_user" {
