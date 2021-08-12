@@ -232,23 +232,28 @@ resource "aws_iam_role" "event_bridge" {
       }
     ]
   })
+}
 
-  inline_policy {
-    name = "govuk-event-bridge_inline_policy"
+resource "aws_iam_policy" "event_bridge" {
+  name        = "govuk-invoke-step-functions"
 
-    policy = jsonencode({
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "states:StartExecution"
-              ],
-              "Resource": "*"
-          }
-      ]
-    })
-  }
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "states:StartExecution"
+            ],
+            "Resource": "arn:aws:states:*"
+        }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "event_bridge" {
+  role       = aws_iam_role.event_bridge.name
+  policy_arn = aws_iam_policy.event_bridge.arn
 }
 
 module "role_user" {
