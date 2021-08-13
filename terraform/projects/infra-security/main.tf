@@ -217,7 +217,7 @@ resource "aws_iam_role_policy_attachment" "role_step_function" {
   policy_arn = element(var.role_step_function_role_policy_arns, count.index)
 }
 
-data "aws_iam_policy_document" "pass-step-function" {
+data "aws_iam_policy_document" "pass_step_function" {
   statement {
     actions   = ["iam:PassRole"]
     effect    = "Allow"
@@ -225,15 +225,15 @@ data "aws_iam_policy_document" "pass-step-function" {
   }
 }
 
-resource "aws_iam_policy" "pass-step-function" {
+resource "aws_iam_policy" "pass_step_function" {
   name        = "govuk-pass-step-function-role"
   description = "Allows user to assign step function role to a new step function"
-  policy      = data.aws_iam_policy_document.pass-step-function.json
+  policy      = data.aws_iam_policy_document.pass_step_function.json
 }
 
-resource "aws_iam_role_policy_attachment" "event_bridge" {
+resource "aws_iam_role_policy_attachment" "datascience_pass_step_function" {
   role       = role_datascience.role_name
-  policy_arn = aws_iam_policy.pass-step-function.arn
+  policy_arn = aws_iam_policy.pass_step_function.arn
 }
 
 resource "aws_iam_role" "event_bridge" {
