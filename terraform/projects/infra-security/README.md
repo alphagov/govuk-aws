@@ -32,7 +32,6 @@ Infrastructure security settings:
 | <a name="module_role_internal_admin"></a> [role\_internal\_admin](#module\_role\_internal\_admin) | ../../modules/aws/iam/role_user | n/a |
 | <a name="module_role_platformhealth_poweruser"></a> [role\_platformhealth\_poweruser](#module\_role\_platformhealth\_poweruser) | ../../modules/aws/iam/role_user | n/a |
 | <a name="module_role_poweruser"></a> [role\_poweruser](#module\_role\_poweruser) | ../../modules/aws/iam/role_user | n/a |
-| <a name="module_role_step_function"></a> [role\_step\_function](#module\_role\_step\_function) | ../../modules/aws/iam/role_user | n/a |
 | <a name="module_role_user"></a> [role\_user](#module\_role\_user) | ../../modules/aws/iam/role_user | n/a |
 
 ## Resources
@@ -44,6 +43,11 @@ Infrastructure security settings:
 | [aws_iam_policy.data-science-access-glue](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.data-science-access-sagemaker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.deny-eip-release](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.event_bridge](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.event_bridge](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.role_step_function](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.event_bridge](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.role_step_function](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_key_pair.govuk-infra-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_kms_alias.sops](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
 | [aws_kms_key.licensify_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
