@@ -197,18 +197,18 @@ resource "aws_iam_role" "role_step_function" {
   name = "govuk-step-function-role"
 
   assume_role_policy = jsonencode({
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Sid": "",
-          "Effect": "Allow",
-          "Principal": {
-            "Service": "states.amazonaws.com"
-          },
-          "Action": "sts:AssumeRole"
-        }
-      ]
-    })
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "states.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "role_step_function" {
@@ -221,32 +221,32 @@ resource "aws_iam_role" "event_bridge" {
   name = "govuk-event-bridge"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "events.amazonaws.com"
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "events.amazonaws.com"
         },
-        "Action": "sts:AssumeRole"
+        "Action" : "sts:AssumeRole"
       }
     ]
   })
 }
 
 resource "aws_iam_policy" "event_bridge" {
-  name        = "govuk-invoke-step-functions"
+  name = "govuk-invoke-step-functions"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "states:StartExecution"
-            ],
-            "Resource": "arn:aws:states:*"
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "states:StartExecution"
+        ],
+        "Resource" : "arn:aws:states:*"
+      }
     ]
   })
 }
