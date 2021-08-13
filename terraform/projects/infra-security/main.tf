@@ -193,11 +193,86 @@ module "role_datascienceuser" {
   role_policy_arns = var.role_datascienceuser_policy_arns
 }
 
-module "role_step_function" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-step-function-role"
-  role_user_arns   = var.role_step_function_role_user_arns
-  role_policy_arns = var.role_step_function_role_policy_arns
+resource "aws_iam_role" "role_step_function" {
+  name = "govuk-step-function-role"
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "states.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "role_step_function" {
+  count      = length(var.role_step_function_role_policy_arns)
+  role       = aws_iam_role.role_step_function.name
+  policy_arn = element(var.role_step_function_role_policy_arns, count.index)
+}
+
+data "aws_iam_policy_document" "pass_step_function" {
+  statement {
+    actions   = ["iam:PassRole"]
+    effect    = "Allow"
+    resources = [aws_iam_role.role_step_function.arn]
+  }
+}
+
+resource "aws_iam_policy" "pass_step_function" {
+  name        = "govuk-pass-step-function-role"
+  description = "Allows user to assign step function role to a new step function"
+  policy      = data.aws_iam_policy_document.pass_step_function.json
+}
+
+resource "aws_iam_role_policy_attachment" "datascience_pass_step_function" {
+  role       = "govuk-datascienceusers"
+  policy_arn = aws_iam_policy.pass_step_function.arn
+}
+
+resource "aws_iam_role" "event_bridge" {
+  name = "govuk-event-bridge"
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "events.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "event_bridge" {
+  name = "govuk-invoke-step-functions"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "states:StartExecution"
+        ],
+        "Resource" : "arn:aws:states:*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "event_bridge" {
+  role       = aws_iam_role.event_bridge.name
+  policy_arn = aws_iam_policy.event_bridge.arn
 }
 
 module "role_user" {
