@@ -232,7 +232,7 @@ resource "aws_iam_policy" "pass_step_function" {
 }
 
 resource "aws_iam_role_policy_attachment" "datascience_pass_step_function" {
-  role       = module.role_datascience.role_name
+  role       = module.role_datascienceuser.role_name
   policy_arn = aws_iam_policy.pass_step_function.arn
 }
 
