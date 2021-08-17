@@ -4,57 +4,57 @@
 * Backend VDC Redis Elasticache cluster
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "enable_clustering" {
-  type        = "string"
+  type        = bool
   description = "Enable clustering"
   default     = false
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type used for Elasticache nodes"
   default     = "cache.r4.large"
 }
 
 variable "internal_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains internal records"
 }
 
 variable "internal_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
 variable "node_number" {
-  type        = "string"
+  type        = string
   description = "Override the number of nodes per cluster specified by the module."
   default     = "2"
 }
 
 variable "redis_engine_version" {
-  type        = "string"
+  type        = string
   description = "The Elasticache Redis engine version."
   default     = "3.2.10"
 }
 
 variable "redis_parameter_group_name" {
-  type        = "string"
+  type        = string
   description = "The Elasticache Redis parameter group name."
   default     = "default.redis3.2"
 }
@@ -62,13 +62,13 @@ variable "redis_parameter_group_name" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
-  required_version = "= 0.11.14"
+  backend "s3" {}
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "2.46.0"
+  region  = var.aws_region
+  version = "= 3.37.0"
 }
 
 data "aws_route53_zone" "internal" {
@@ -86,11 +86,11 @@ resource "aws_route53_record" "service_record" {
 
 module "backend_redis_cluster" {
   source                     = "../../modules/aws/elasticache_redis_cluster"
-  enable_clustering          = "${var.enable_clustering}"
+  enable_clustering          = var.enable_clustering
   name                       = "${var.stackname}-backend-redis"
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis")}"
-  subnet_ids                 = "${data.terraform_remote_state.infra_networking.private_subnet_elasticache_ids}"
-  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_backend-redis_id}"]
+  subnet_ids                 = data.terraform_remote_state.infra_networking.outputs.private_subnet_elasticache_ids
+  security_group_ids         = [data.terraform_remote_state.infra_security_groups.outputs.sg_backend-redis_id]
   elasticache_node_type      = "${var.instance_type}"
   elasticache_node_number    = "${var.node_number}"
   redis_engine_version       = "${var.redis_engine_version}"
@@ -100,7 +100,7 @@ module "backend_redis_cluster" {
 module "alarms-elasticache-backend-redis" {
   source           = "../../modules/aws/alarms/elasticache"
   name_prefix      = "${var.stackname}-backend-redis"
-  alarm_actions    = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions    = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
   cache_cluster_id = "${module.backend_redis_cluster.replication_group_id}"
 }
 
