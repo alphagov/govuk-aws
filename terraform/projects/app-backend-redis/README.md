@@ -6,14 +6,14 @@ Backend VDC Redis Elasticache cluster
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.30 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | = 3.37.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.13.6 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | = 3.38.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | = 3.37.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | = 3.38.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -27,8 +27,8 @@ Backend VDC Redis Elasticache cluster
 
 | Name | Type |
 |------|------|
-| [aws_route53_record.service_record](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/resources/route53_record) | resource |
-| [aws_route53_zone.internal](https://registry.terraform.io/providers/hashicorp/aws/3.37.0/docs/data-sources/route53_zone) | data source |
+| [aws_route53_record.service_record](https://registry.terraform.io/providers/hashicorp/aws/3.38.0/docs/resources/route53_record) | resource |
+| [aws_route53_zone.internal](https://registry.terraform.io/providers/hashicorp/aws/3.38.0/docs/data-sources/route53_zone) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_root_dns_zones](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |

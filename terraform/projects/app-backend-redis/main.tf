@@ -63,12 +63,12 @@ variable "redis_parameter_group_name" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "= 0.13.6"
 }
 
 provider "aws" {
   region  = var.aws_region
-  version = "= 3.37.0"
+  version = "= 3.38.0"
 }
 
 data "aws_route53_zone" "internal" {
