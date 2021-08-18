@@ -53,10 +53,10 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_cpuutilization" {
   statistic           = "Average"
   threshold           = "${var.cpuutilization_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the percentage of CPU utilization."
 
-  dimensions {
+  dimensions = {
     CacheClusterId = "${var.cache_cluster_id}"
   }
 }
@@ -71,10 +71,10 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_freeablememory" {
   statistic           = "Average"
   threshold           = "${var.freeablememory_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the amount of free memory available on the host."
 
-  dimensions {
+  dimensions = {
     CacheClusterId = "${var.cache_cluster_id}"
   }
 }

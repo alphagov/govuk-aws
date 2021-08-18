@@ -31,7 +31,7 @@ No modules.
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map` | `{}` | no |
 | <a name="input_elasticache_node_number"></a> [elasticache\_node\_number](#input\_elasticache\_node\_number) | The number of nodes per cluster. | `string` | `"2"` | no |
 | <a name="input_elasticache_node_type"></a> [elasticache\_node\_type](#input\_elasticache\_node\_type) | The node type to use. Must not be t.* in order to use failover. | `string` | `"cache.m3.medium"` | no |
-| <a name="input_enable_clustering"></a> [enable\_clustering](#input\_enable\_clustering) | Set to true to enable clustering mode | `string` | `true` | no |
+| <a name="input_enable_clustering"></a> [enable\_clustering](#input\_enable\_clustering) | Set to true to enable clustering mode | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | The common name for all the resources created by this module | `string` | n/a | yes |
 | <a name="input_redis_engine_version"></a> [redis\_engine\_version](#input\_redis\_engine\_version) | The Elasticache Redis engine version. | `string` | n/a | yes |
 | <a name="input_redis_parameter_group_name"></a> [redis\_parameter\_group\_name](#input\_redis\_parameter\_group\_name) | The Elasticache Redis parameter group name. | `string` | n/a | yes |

@@ -38,7 +38,7 @@ variable "security_group_ids" {
 }
 
 variable "enable_clustering" {
-  type        = "string"
+  type        = bool
   description = "Set to true to enable clustering mode"
   default     = true
 }
@@ -53,16 +53,20 @@ variable "redis_parameter_group_name" {
   description = "The Elasticache Redis parameter group name."
 }
 
+locals {
+  enable_clustering_count = var.enable_clustering ? 1 : 0
+}
+
 # Resources
 # --------------------------------------------------------------
 
 resource "aws_elasticache_subnet_group" "redis_cluster_subnet_group" {
   name       = "${var.name}"
-  subnet_ids = ["${var.subnet_ids}"]
+  subnet_ids = var.subnet_ids
 }
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
-  count = "${var.enable_clustering}"
+  count = local.enable_clustering_count
 
   # replication_group_id          = "${length(var.name) > 20 ? substr(var.name, 0, 20) : var.name}"
   replication_group_id          = "${var.name}"
@@ -73,7 +77,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   automatic_failover_enabled    = true
   engine_version                = "${var.redis_engine_version}"
   subnet_group_name             = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
-  security_group_ids            = ["${var.security_group_ids}"]
+  security_group_ids            = var.security_group_ids
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 
@@ -84,7 +88,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
 }
 
 resource "aws_elasticache_replication_group" "redis_master_with_replica" {
-  count                         = "${1 - var.enable_clustering}"
+  count                         = 1 - local.enable_clustering_count
   replication_group_id          = "${var.name}"
   replication_group_description = "${var.name} redis master with replica"
   node_type                     = "${var.elasticache_node_type}"
@@ -93,9 +97,10 @@ resource "aws_elasticache_replication_group" "redis_master_with_replica" {
   parameter_group_name          = "${var.redis_parameter_group_name}"
   engine_version                = "${var.redis_engine_version}"
   automatic_failover_enabled    = true
+  multi_az_enabled              = true
 
   subnet_group_name  = "${aws_elasticache_subnet_group.redis_cluster_subnet_group.name}"
-  security_group_ids = ["${var.security_group_ids}"]
+  security_group_ids = var.security_group_ids
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
@@ -105,12 +110,12 @@ resource "aws_elasticache_replication_group" "redis_master_with_replica" {
 
 // Configuration endpoint address of the redis cluster.
 output "configuration_endpoint_address" {
-  value       = "${var.enable_clustering > 0 ? join("", aws_elasticache_replication_group.redis_cluster.*.configuration_endpoint_address) : join("", aws_elasticache_replication_group.redis_master_with_replica.*.primary_endpoint_address)}"
+  value       = "${var.enable_clustering ? join("", aws_elasticache_replication_group.redis_cluster.*.configuration_endpoint_address) : join("", aws_elasticache_replication_group.redis_master_with_replica.*.primary_endpoint_address)}"
   description = "Configuration endpoint address of the redis cluster."
 }
 
 // The ID of the ElastiCache Replication Group.
 output "replication_group_id" {
-  value       = "${var.enable_clustering > 0 ? join("", aws_elasticache_replication_group.redis_cluster.*.id) : join("", aws_elasticache_replication_group.redis_master_with_replica.*.id)}"
+  value       = "${var.enable_clustering ? join("", aws_elasticache_replication_group.redis_cluster.*.id) : join("", aws_elasticache_replication_group.redis_master_with_replica.*.id)}"
   description = "The ID of the ElastiCache Replication Group."
 }
