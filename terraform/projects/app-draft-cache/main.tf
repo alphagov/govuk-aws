@@ -160,6 +160,18 @@ resource "aws_route53_record" "draft-cache_service_record" {
   }
 }
 
+resource "aws_route53_record" "authenticating-proxy_service_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "authenticating-proxy.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.draft-cache_elb.dns_name}"
+    zone_id                = "${aws_elb.draft-cache_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_route53_record" "draft-router-api_internal_record" {
   zone_id = "${data.aws_route53_zone.internal.zone_id}"
   name    = "draft-router-api.${var.internal_domain_name}"
