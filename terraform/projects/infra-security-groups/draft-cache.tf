@@ -87,6 +87,20 @@ resource "aws_security_group_rule" "draft-cache-elb_ingress_cache_https" {
   source_security_group_id = "${aws_security_group.draft-cache.id}"
 }
 
+# Allow Jenkins to speak to ELB to make /healthcheck requests
+resource "aws_security_group_rule" "draft-cache-elb_ingress_management_https" {
+  type      = "ingress"
+  to_port   = 443
+  from_port = 443
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.draft-cache_elb.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
 resource "aws_security_group" "draft-cache_external_elb" {
   name        = "${var.stackname}_draft-cache_elb_external_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
