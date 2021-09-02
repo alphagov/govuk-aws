@@ -190,7 +190,7 @@ module "role_datascienceuser" {
   source           = "../../modules/aws/iam/role_user"
   role_name        = "govuk-datascienceusers"
   role_user_arns   = var.role_datascienceuser_user_arns
-  role_policy_arns = var.role_datascienceuser_policy_arns
+  role_policy_arns = concat(var.role_datascienceuser_policy_arns, [aws_iam_policy.pass_step_function.arn])
 }
 
 resource "aws_iam_role" "role_step_function" {
@@ -229,11 +229,6 @@ resource "aws_iam_policy" "pass_step_function" {
   name        = "govuk-pass-step-function-role"
   description = "Allows user to assign step function role to a new step function"
   policy      = data.aws_iam_policy_document.pass_step_function.json
-}
-
-resource "aws_iam_role_policy_attachment" "datascience_pass_step_function" {
-  role       = "govuk-datascienceusers"
-  policy_arn = aws_iam_policy.pass_step_function.arn
 }
 
 resource "aws_iam_role" "event_bridge" {
