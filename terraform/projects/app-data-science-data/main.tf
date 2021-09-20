@@ -191,7 +191,7 @@ resource "aws_autoscaling_group" "data-science-data_asg" {
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
   scheduled_action_name  = "data-science-data_schedule-spin-up"
-  recurrence             = "29 5 * * MON-SUN"
+  recurrence             = "29 4 * * MON-SUN"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 1
