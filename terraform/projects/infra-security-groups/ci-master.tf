@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${data.github_ip_ranges.github.hooks}"]
+  cidr_blocks       = ["${data.github_ip_ranges.github.hooks_ipv4}"]
 }
 
 resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {

@@ -9,7 +9,7 @@ Manage the security groups for the entire infrastructure
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
-| <a name="requirement_github"></a> [github](#requirement\_github) | ~> 4.9.0 |
+| <a name="requirement_github"></a> [github](#requirement\_github) | ~> 4.14.0 |
 
 ## Providers
 
@@ -17,7 +17,7 @@ Manage the security groups for the entire infrastructure
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
 | <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
-| <a name="provider_github"></a> [github](#provider\_github) | ~> 4.9.0 |
+| <a name="provider_github"></a> [github](#provider\_github) | ~> 4.14.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
