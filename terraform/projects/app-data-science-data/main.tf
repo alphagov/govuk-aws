@@ -143,7 +143,7 @@ resource "aws_launch_template" "data-science-data_launch_template" {
   name     = "data-science-data_launch-template"
   image_id = "${data.aws_ami.ubuntu_bionic.id}"
 
-  instance_type = "r4.2xlarge"
+  instance_type = "r4.4xlarge"
 
   vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"]
 
