@@ -51,6 +51,12 @@ variable "load_balancer_type" {
   default     = "application"
 }
 
+variable "idle_timeout" {
+  type        = "string"
+  description = "The time in seconds that the connection is allowed to be idle."
+  default     = "60"
+}
+
 variable "access_logs_bucket_name" {
   type        = "string"
   description = "The S3 bucket name to store the logs in."
@@ -205,6 +211,7 @@ resource "aws_lb" "lb" {
   security_groups    = ["${var.security_groups}"]
   subnets            = ["${var.subnets}"]
   load_balancer_type = "${var.load_balancer_type}"
+  idle_timeout       = "${var.idle_timeout}"
 
   access_logs {
     enabled = true

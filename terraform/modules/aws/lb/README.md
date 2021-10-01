@@ -78,6 +78,7 @@ No modules.
 | <a name="input_httpcode_elb_5xx_count_threshold"></a> [httpcode\_elb\_5xx\_count\_threshold](#input\_httpcode\_elb\_5xx\_count\_threshold) | The value against which the HTTPCode\_ELB\_5XX\_Count metric is compared. | `string` | `"80"` | no |
 | <a name="input_httpcode_target_4xx_count_threshold"></a> [httpcode\_target\_4xx\_count\_threshold](#input\_httpcode\_target\_4xx\_count\_threshold) | The value against which the HTTPCode\_Target\_4XX\_Count metric is compared. | `string` | `"0"` | no |
 | <a name="input_httpcode_target_5xx_count_threshold"></a> [httpcode\_target\_5xx\_count\_threshold](#input\_httpcode\_target\_5xx\_count\_threshold) | The value against which the HTTPCode\_Target\_5XX\_Count metric is compared. | `string` | `"80"` | no |
+| <a name="input_idle_timeout"></a> [idle\_timeout](#input\_idle\_timeout) | The time in seconds that the connection is allowed to be idle. | `string` | `"60"` | no |
 | <a name="input_internal"></a> [internal](#input\_internal) | If true, the LB will be internal. | `string` | `true` | no |
 | <a name="input_listener_action"></a> [listener\_action](#input\_listener\_action) | A map of Load Balancer Listener and default target group action, both specified as PROTOCOL:PORT. | `map` | n/a | yes |
 | <a name="input_listener_certificate_domain_name"></a> [listener\_certificate\_domain\_name](#input\_listener\_certificate\_domain\_name) | HTTPS Listener certificate domain name. | `string` | `""` | no |
