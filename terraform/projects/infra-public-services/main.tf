@@ -669,6 +669,7 @@ module "backend_public_lb" {
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_external_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
+  idle_timeout                               = 400
 }
 
 resource "aws_wafregional_web_acl_association" "backend_public_lb" {
