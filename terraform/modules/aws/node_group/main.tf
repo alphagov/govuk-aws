@@ -116,6 +116,12 @@ variable "asg_health_check_grace_period" {
   default     = "60"
 }
 
+variable "asg_health_check_type" {
+  type        = "string"
+  description = "Controls how health checking is done. Permitted values: EC2 or ELB."
+  default     = "EC2"
+}
+
 variable "asg_desired_capacity" {
   type        = "string"
   description = "The autoscaling groups desired capacity"
@@ -330,7 +336,7 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
   min_size                  = "${var.asg_min_size}"
   max_size                  = "${var.asg_max_size}"
   health_check_grace_period = "${var.asg_health_check_grace_period}"
-  health_check_type         = "EC2"
+  health_check_type         = "${var.asg_health_check_type}"
   force_delete              = false
   wait_for_capacity_timeout = 0
   launch_configuration      = "${local.launch_configuration_name}"
