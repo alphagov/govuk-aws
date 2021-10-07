@@ -418,6 +418,52 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     max_ttl                = 31536000
   }
 
+  # Precedence 0
+  ordered_cache_behavior {
+    path_pattern     = "/alerts/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "Notify alerts"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 31536000
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  # Precedence 1
+  ordered_cache_behavior {
+    path_pattern     = "/alerts"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "Notify alerts"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 31536000
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
   price_class = "PriceClass_All"
 
   restrictions {
