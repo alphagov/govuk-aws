@@ -88,6 +88,7 @@ No modules.
 | <a name="input_cloudfront_www_distribution_aliases"></a> [cloudfront\_www\_distribution\_aliases](#input\_cloudfront\_www\_distribution\_aliases) | Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution. | `list` | `[]` | no |
 | <a name="input_lifecycle_government_uploads"></a> [lifecycle\_government\_uploads](#input\_lifecycle\_government\_uploads) | Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/ | `string` | `"8"` | no |
 | <a name="input_lifecycle_main"></a> [lifecycle\_main](#input\_lifecycle\_main) | Number of days for the lifecycle rule for the mirror | `string` | `"5"` | no |
+| <a name="input_notify_cloudfront_domain"></a> [notify\_cloudfront\_domain](#input\_notify\_cloudfront\_domain) | The domain of the Notify CloudFront to proxy /alerts requests to. | `string` | `""` | no |
 | <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_remote_state_app_mirrorer_key_stack"></a> [remote\_state\_app\_mirrorer\_key\_stack](#input\_remote\_state\_app\_mirrorer\_key\_stack) | stackname path to app\_mirrorer remote state | `string` | `""` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
