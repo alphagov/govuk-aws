@@ -86,6 +86,12 @@ variable "cloudfront_assets_certificate_domain" {
   default     = ""
 }
 
+variable "notify_cloudfront_domain" {
+  type        = "string"
+  description = "The domain of the Notify CloudFront to proxy /alerts requests to."
+  default     = ""
+}
+
 variable "lifecycle_main" {
   type        = "string"
   description = "Number of days for the lifecycle rule for the mirror"
@@ -358,6 +364,19 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
     s3_origin_config {
       origin_access_identity = "${aws_cloudfront_origin_access_identity.mirror_access_identity.cloudfront_access_identity_path}"
+    }
+  }
+
+  origin {
+    domain_name = "${var.notify_cloudfront_domain}"
+    origin_id   = "Notify alerts"
+    origin_path = ""
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
 
