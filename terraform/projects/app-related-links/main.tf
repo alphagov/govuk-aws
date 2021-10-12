@@ -205,7 +205,7 @@ resource "aws_key_pair" "concourse_public_key" {
 resource "aws_launch_template" "related-links-generation_launch-template" {
   name          = "related-links-generation_launch-template"
   image_id      = "${data.aws_ami.ubuntu_bionic.id}"
-  instance_type = "m5.4xlarge"
+  instance_type = "m5.8xlarge"
 
   vpc_security_group_ids = [
     "${data.terraform_remote_state.infra_security_groups.sg_related-links_id}",
