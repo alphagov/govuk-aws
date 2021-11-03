@@ -108,7 +108,10 @@ CI agents
 | <a name="input_ci_agent_6_subnet"></a> [ci\_agent\_6\_subnet](#input\_ci\_agent\_6\_subnet) | subnet to deploy EC2 and EBS of CI agent 6 | `string` | `"govuk_private_c"` | no |
 | <a name="input_ci_agent_7_subnet"></a> [ci\_agent\_7\_subnet](#input\_ci\_agent\_7\_subnet) | subnet to deploy EC2 and EBS of CI agent 7 | `string` | `"govuk_private_a"` | no |
 | <a name="input_ci_agent_8_subnet"></a> [ci\_agent\_8\_subnet](#input\_ci\_agent\_8\_subnet) | subnet to deploy EC2 and EBS of CI agent 8 | `string` | `"govuk_private_b"` | no |
+| <a name="input_data_block_device_volume_size"></a> [data\_block\_device\_volume\_size](#input\_data\_block\_device\_volume\_size) | Size of the data volume in GB | `string` | `"130"` | no |
+| <a name="input_docker_block_device_volume_size"></a> [docker\_block\_device\_volume\_size](#input\_docker\_block\_device\_volume\_size) | Size of the Docker volume in GB | `string` | `"130"` | no |
 | <a name="input_ebs_encrypted"></a> [ebs\_encrypted](#input\_ebs\_encrypted) | whether or not the EBS volume is encrypted | `string` | `"true"` | no |
+| <a name="input_ebs_volume_type"></a> [ebs\_volume\_type](#input\_ebs\_volume\_type) | Volume type to use for data and Docker EBS volumes; see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html | `string` | `"gp3"` | no |
 | <a name="input_elb_internal_certname"></a> [elb\_internal\_certname](#input\_elb\_internal\_certname) | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | <a name="input_instance_ami_filter_name"></a> [instance\_ami\_filter\_name](#input\_instance\_ami\_filter\_name) | Name to use to find AMI images | `string` | `""` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance type used for EC2 resources | `string` | `"m5.2xlarge"` | no |
