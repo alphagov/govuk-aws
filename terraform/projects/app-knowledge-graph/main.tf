@@ -313,7 +313,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-down"
-  recurrence             = "29 17 * * MON-FRI"
+  recurrence             = "29 19 * * MON-FRI"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
@@ -462,7 +462,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph-lab_schedule-spin-up" {
 resource "aws_autoscaling_schedule" "knowledge-graph-lab_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-lab_asg.name}"
   scheduled_action_name  = "knowledge-graph-lab_schedule-spin-down"
-  recurrence             = "29 17 * * MON-FRI"
+  recurrence             = "29 19 * * MON-FRI"
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
