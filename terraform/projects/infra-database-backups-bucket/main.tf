@@ -256,6 +256,28 @@ resource "aws_s3_bucket" "database_backups" {
       days = 365
     }
   }
+
+  # Lifecycle rule for GOV.UK accounts (pre digital identity) backup
+
+  lifecycle_rule {
+    id      = "govuk_accounts_pre_digital_identity_lifecycle_rule"
+    prefix  = "govuk-accounts-pre-digital-identity/"
+    enabled = true
+
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = "${var.standard_s3_storage_time}"
+    }
+
+    transition {
+      storage_class = "GLACIER"
+      days          = "${var.glacier_storage_time}"
+    }
+
+    expiration {
+      days = 730
+    }
+  }
   versioning {
     enabled = true
   }
