@@ -28,6 +28,7 @@ Infrastructure security settings:
 | <a name="module_gds_role_poweruser"></a> [gds\_role\_poweruser](#module\_gds\_role\_poweruser) | ../../modules/aws/iam/gds_user_role | n/a |
 | <a name="module_gds_role_user"></a> [gds\_role\_user](#module\_gds\_role\_user) | ../../modules/aws/iam/gds_user_role | n/a |
 | <a name="module_role_admin"></a> [role\_admin](#module\_role\_admin) | ../../modules/aws/iam/role_user | n/a |
+| <a name="module_role_dataengineeruser"></a> [role\_dataengineeruser](#module\_role\_dataengineeruser) | ../../modules/aws/iam/role_user | n/a |
 | <a name="module_role_datascienceuser"></a> [role\_datascienceuser](#module\_role\_datascienceuser) | ../../modules/aws/iam/role_user | n/a |
 | <a name="module_role_internal_admin"></a> [role\_internal\_admin](#module\_role\_internal\_admin) | ../../modules/aws/iam/role_user | n/a |
 | <a name="module_role_platformhealth_poweruser"></a> [role\_platformhealth\_poweruser](#module\_role\_platformhealth\_poweruser) | ../../modules/aws/iam/role_user | n/a |
@@ -71,6 +72,8 @@ Infrastructure security settings:
 | <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_role_admin_policy_arns"></a> [role\_admin\_policy\_arns](#input\_role\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | <a name="input_role_admin_user_arns"></a> [role\_admin\_user\_arns](#input\_role\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
+| <a name="input_role_dataengineeruser_policy_arns"></a> [role\_dataengineeruser\_policy\_arns](#input\_role\_dataengineeruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
+| <a name="input_role_dataengineeruser_user_arns"></a> [role\_dataengineeruser\_user\_arns](#input\_role\_dataengineeruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | <a name="input_role_datascienceuser_policy_arns"></a> [role\_datascienceuser\_policy\_arns](#input\_role\_datascienceuser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | <a name="input_role_datascienceuser_user_arns"></a> [role\_datascienceuser\_user\_arns](#input\_role\_datascienceuser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | <a name="input_role_internal_admin_policy_arns"></a> [role\_internal\_admin\_policy\_arns](#input\_role\_internal\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
