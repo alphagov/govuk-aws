@@ -26,8 +26,16 @@ jobs:
           fi
 
       - name: Shellcheck
+        env:
+          SHELLCHECK_VERSION: '0.8.0'
         run: |
-          brew install shellcheck
+          curl --silent \
+            --fail \
+            --location \
+            --output shellcheck.tar.xz \
+            "https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.darwin.x86_64.tar.xz"
+          tar -xf shellcheck.tar.xz
+          export PATH="${PATH}:$(pwd)/shellcheck-v${SHELLCHECK_VERSION}"
 
           echo "Running shellcheck..."
           shellcheck -e SC2086,SC1117 jenkins.sh tools/*.sh terraform/userdata/*
