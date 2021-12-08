@@ -64,7 +64,7 @@ variable "internal_domain_name" {
 variable "instance_type" {
   type        = "string"
   description = "Instance type used for RDS resources"
-  default     = "db.m4.large"
+  default     = "db.m5.large"
 }
 
 # Resources
