@@ -2,7 +2,7 @@
 
 GOV.UK Ask Export
 
-This data export process requires cross account permissions to S3 as an export target. Due to the cross account permissions, this module currently only works with the production backend currently.
+This data export process requires cross account permissions to S3 as an export target. Outside of the production environment, this terraform can be configured to create a bucket.
 
 ## Requirements
 
@@ -30,6 +30,7 @@ No modules.
 | [aws_iam_policy.ask_export_s3_writer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_attachment.s3_writer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_user.ask_export](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
+| [aws_s3_bucket.ask_export_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [template_file.s3_writer_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
@@ -44,6 +45,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
+| <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | Whether to create the bucket, in production we're expecting to use a bucket in a different AWS account | `boolean` | `"false"` | no |
 | <a name="input_export_s3_bucket_name"></a> [export\_s3\_bucket\_name](#input\_export\_s3\_bucket\_name) | Bucket name to allow write permissions | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
