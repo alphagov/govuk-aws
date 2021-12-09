@@ -45,7 +45,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | Whether to create the bucket, in production we're expecting to use a bucket in a different AWS account | `boolean` | `"false"` | no |
+| <a name="input_create_bucket"></a> [create\_bucket](#input\_create\_bucket) | Whether to create the bucket, in production we're expecting to use a bucket in a different AWS account - should be specified as a string boolean, terraform 0.11 doesn't have booleans | `string` | `"false"` | no |
 | <a name="input_export_s3_bucket_name"></a> [export\_s3\_bucket\_name](#input\_export\_s3\_bucket\_name) | Bucket name to allow write permissions | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |

@@ -28,8 +28,8 @@ variable "export_s3_bucket_name" {
 }
 
 variable "create_bucket" {
-  type        = "boolean"
-  description = "Whether to create the bucket, in production we're expecting to use a bucket in a different AWS account"
+  type        = "string"
+  description = "Whether to create the bucket, in production we're expecting to use a bucket in a different AWS account - should be specified as a string boolean, terraform 0.11 doesn't have booleans"
   default     = "false"
 }
 
