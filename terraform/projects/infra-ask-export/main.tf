@@ -3,7 +3,7 @@
 *
 * GOV.UK Ask Export
 *
-* This data export process requires cross account permissions to S3 as an export target. Due to the cross account permissions, this module currently only works with the production backend currently.
+* This data export process requires cross account permissions to S3 as an export target. Outside of the production environment, this terraform can be configured to create a bucket.
 */
 
 variable "aws_region" {
@@ -27,6 +27,12 @@ variable "export_s3_bucket_name" {
   description = "Bucket name to allow write permissions"
 }
 
+variable "create_bucket" {
+  type        = "boolean"
+  description = "Whether to create the bucket, in production we're expecting to use a bucket in a different AWS account"
+  default     = "false"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -37,6 +43,16 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "2.46.0"
+}
+
+resource "aws_s3_bucket" "ask_export_bucket" {
+  count  = "${var.create_bucket ? 1 : 0}"
+  bucket = "${var.export_s3_bucket_name}"
+
+  tags {
+    Name            = "${var.export_s3_bucket_name}"
+    aws_environment = "${var.aws_environment}"
+  }
 }
 
 resource "aws_iam_user" "ask_export" {
