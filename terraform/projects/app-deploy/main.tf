@@ -287,6 +287,11 @@ resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
   policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "related_links_jenkins" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.app_related_links.policy_related_links_jenkins_policy_arn}"
+}
+
 locals {
   elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 50 : 0}"
   elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 50 : 0}"
