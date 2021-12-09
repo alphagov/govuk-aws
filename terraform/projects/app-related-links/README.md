@@ -31,23 +31,29 @@ No modules.
 | [aws_autoscaling_group.related-links-ingestion](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_group) | resource |
 | [aws_iam_instance_profile.related-links_instance-profile](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.read_content_store_backups_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.read_secrets_from_secrets_manager_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.read_write_related_links_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.scale_asg_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
-| [aws_iam_role.concourse_role](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role) | resource |
+| [aws_iam_policy.related_links_jenkins_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
 | [aws_iam_role.ec2_role](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.attach_read_content_store_backups_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.attach_read_secrets_from_secrets_manager_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.attach_read_write_related_links_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.scale_asg_concourse_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_key_pair.concourse_public_key](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/key_pair) | resource |
+| [aws_key_pair.jenkins_public_key](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/key_pair) | resource |
 | [aws_launch_template.related-links-generation_launch-template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) | resource |
 | [aws_launch_template.related-links-ingestion_launch-template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) | resource |
 | [aws_s3_bucket.s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/s3_bucket) | resource |
 | [aws_ami.ubuntu_bionic](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/ami) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.read_content_store_backups_bucket_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.read_secrets_from_secrets_manager_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.read_write_related_links_bucket_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.scale_asg_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
-| [template_file.concourse_assume_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [aws_iam_policy_document.related_links_jenkins_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/region) | data source |
+| [aws_secretsmanager_secret.secret_big_query_service_account_key](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/secretsmanager_secret) | data source |
+| [aws_secretsmanager_secret.secret_publishing_api_bearer_token](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/secretsmanager_secret) | data source |
 | [template_file.ec2_assume_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [template_file.provision-generation-instance-userdata](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [template_file.provision-ingestion-instance-userdata](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [terraform_remote_state.infra_database_backups_bucket](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
@@ -62,7 +68,6 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_concourse_aws_account_id"></a> [concourse\_aws\_account\_id](#input\_concourse\_aws\_account\_id) | AWS account ID which contains the Concourse role | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_database_backups_bucket_key_stack"></a> [remote\_state\_infra\_database\_backups\_bucket\_key\_stack](#input\_remote\_state\_infra\_database\_backups\_bucket\_key\_stack) | Override stackname path to infra\_database\_backups\_bucket remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
@@ -77,6 +82,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_concourse_role_name"></a> [concourse\_role\_name](#output\_concourse\_role\_name) | Name of the role assumed by Concourse |
 | <a name="output_policy_read_content_store_backups_bucket_policy_arn"></a> [policy\_read\_content\_store\_backups\_bucket\_policy\_arn](#output\_policy\_read\_content\_store\_backups\_bucket\_policy\_arn) | ARN of the policy used to read content store backups from the database backups bucket |
 | <a name="output_policy_read_write_related_links_bucket_policy_arn"></a> [policy\_read\_write\_related\_links\_bucket\_policy\_arn](#output\_policy\_read\_write\_related\_links\_bucket\_policy\_arn) | ARN of the policy used to read/write data from/to the related links bucket |
+| <a name="output_policy_related_links_jenkins_policy_arn"></a> [policy\_related\_links\_jenkins\_policy\_arn](#output\_policy\_related\_links\_jenkins\_policy\_arn) | ARN of the policy used by Jenkins to manage related links generation and ingestion |
