@@ -11,6 +11,12 @@ variable "remote_state_bucket" {
   description = "S3 bucket we store our terraform state in"
 }
 
+variable "remote_state_app_related_links_key_stack" {
+  type        = "string"
+  description = "Override app_related_links remote state path"
+  default     = ""
+}
+
 variable "remote_state_infra_vpc_key_stack" {
   type        = "string"
   description = "Override infra_vpc remote state path"
@@ -49,6 +55,16 @@ variable "remote_state_infra_monitoring_key_stack" {
 
 # Resources
 # --------------------------------------------------------------
+
+data "terraform_remote_state" "app_related_links" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/app-related-links.tfstate"
+    region = "${var.aws_region}"
+  }
+}
 
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"

@@ -21,11 +21,6 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "concourse_aws_account_id" {
-  type        = "string"
-  description = "AWS account ID which contains the Concourse role"
-}
-
 locals {
   content_store_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
   related_links_bucket_name = "govuk-related-links-${var.aws_environment}"
@@ -42,6 +37,18 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_secretsmanager_secret" "secret_big_query_service_account_key" {
+  name = "related_links-BIG_QUERY_SERVICE_ACCOUNT_KEY"
+}
+
+data "aws_secretsmanager_secret" "secret_publishing_api_bearer_token" {
+  name = "related_links_PUBLISHING_API_BEARER_TOKEN"
 }
 
 resource "aws_s3_bucket" "s3_bucket" {
@@ -67,54 +74,6 @@ data "aws_ami" "ubuntu_bionic" {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
   }
-}
-
-resource "aws_iam_role" "concourse_role" {
-  name               = "concourse_role"
-  assume_role_policy = "${data.template_file.concourse_assume_policy_template.rendered}"
-}
-
-data "template_file" "concourse_assume_policy_template" {
-  template = "${file("${path.module}/../../policies/concourse_assume_policy.tpl")}"
-
-  vars {
-    concourse_aws_account_id = "${var.concourse_aws_account_id}"
-  }
-}
-
-data "aws_iam_policy_document" "scale_asg_policy_document" {
-  statement {
-    actions = [
-      "autoscaling:DescribeAutoScalingGroups",
-      "ec2:DescribeInstances",
-      "ec2:DescribeInstanceStatus",
-    ]
-
-    resources = [
-      "*",
-    ]
-  }
-
-  statement {
-    actions = [
-      "autoscaling:SetDesiredCapacity",
-    ]
-
-    resources = [
-      "${aws_autoscaling_group.related-links-generation.arn}",
-      "${aws_autoscaling_group.related-links-ingestion.arn}",
-    ]
-  }
-}
-
-resource "aws_iam_policy" "scale_asg_policy" {
-  name   = "scale_asg_policy"
-  policy = "${data.aws_iam_policy_document.scale_asg_policy_document.json}"
-}
-
-resource "aws_iam_role_policy_attachment" "scale_asg_concourse_role_attachment" {
-  role       = "${aws_iam_role.concourse_role.name}"
-  policy_arn = "${aws_iam_policy.scale_asg_policy.arn}"
 }
 
 data "template_file" "ec2_assume_policy_template" {
@@ -172,6 +131,95 @@ data "aws_iam_policy_document" "read_write_related_links_bucket_policy_document"
   }
 }
 
+data "aws_iam_policy_document" "read_secrets_from_secrets_manager_policy_document" {
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue",
+    ]
+
+    resources = [
+      "${data.aws_secretsmanager_secret.secret_big_query_service_account_key.arn}",
+      "${data.aws_secretsmanager_secret.secret_publishing_api_bearer_token.arn}",
+    ]
+  }
+}
+
+data "template_file" "provision-generation-instance-userdata" {
+  template = "${file("${path.module}/provision-generation-instance.tpl")}"
+
+  vars {
+    database_backups_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+    related_links_bucket_name    = "govuk-related-links-${var.aws_environment}"
+  }
+}
+
+data "template_file" "provision-ingestion-instance-userdata" {
+  template = "${file("${path.module}/provision-ingestion-instance.tpl")}"
+
+  vars {
+    publishing_api_uri        = "https://publishing-api.${var.aws_environment}.govuk-internal.digital"
+    related_links_bucket_name = "govuk-related-links-${var.aws_environment}"
+  }
+}
+
+data "aws_iam_policy_document" "related_links_jenkins_policy_document" {
+  statement {
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "ec2:DescribeInstances",
+      "ec2:DescribeInstanceStatus",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "autoscaling:SetDesiredCapacity",
+    ]
+
+    resources = [
+      "${aws_autoscaling_group.related-links-generation.arn}",
+      "${aws_autoscaling_group.related-links-ingestion.arn}",
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.content_store_bucket_name}",
+      "arn:aws:s3:::${local.related_links_bucket_name}",
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.content_store_bucket_name}/mongo-api/*",
+      "arn:aws:s3:::${local.related_links_bucket_name}/*",
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:CreateMultipartUpload",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.related_links_bucket_name}/*",
+    ]
+  }
+}
+
 resource "aws_iam_policy" "read_content_store_backups_bucket_policy" {
   name   = "read_content_store_backups_bucket_policy"
   policy = "${data.aws_iam_policy_document.read_content_store_backups_bucket_policy_document.json}"
@@ -180,6 +228,11 @@ resource "aws_iam_policy" "read_content_store_backups_bucket_policy" {
 resource "aws_iam_policy" "read_write_related_links_bucket_policy" {
   name   = "read_write_related_links_bucket_policy"
   policy = "${data.aws_iam_policy_document.read_write_related_links_bucket_policy_document.json}"
+}
+
+resource "aws_iam_policy" "read_secrets_from_secrets_manager_policy" {
+  name   = "read_secrets_from_secrets_manager_policy"
+  policy = "${data.aws_iam_policy_document.read_secrets_from_secrets_manager_policy_document.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "attach_read_content_store_backups_bucket_policy" {
@@ -192,14 +245,24 @@ resource "aws_iam_role_policy_attachment" "attach_read_write_related_links_bucke
   policy_arn = "${aws_iam_policy.read_write_related_links_bucket_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "attach_read_secrets_from_secrets_manager_policy" {
+  role       = "${aws_iam_role.ec2_role.name}"
+  policy_arn = "${aws_iam_policy.read_secrets_from_secrets_manager_policy.arn}"
+}
+
+resource "aws_iam_policy" "related_links_jenkins_policy" {
+  name   = "related_links_jenkins_policy"
+  policy = "${data.aws_iam_policy_document.related_links_jenkins_policy_document.json}"
+}
+
 resource "aws_iam_instance_profile" "related-links_instance-profile" {
   name = "related-links_instance-profile"
   role = "${aws_iam_role.ec2_role.name}"
 }
 
-resource "aws_key_pair" "concourse_public_key" {
-  key_name   = "concourse-public-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDmhwTY/gIED+aNtja8rgo9B0lYWdhK81NRP1heZ7A8oV5GKbLqiHwyZha/1NiTlyoLuptUFzZb9zYC0pqPYnE8H1C4pssk6yNvNX0rhMO3xhGy52qkgfKN21B23tVFK+x1q2znAb8o/OoApvIW8PGyoQDYQ4/ygHeYvr9UjWyUkLEprUoB25ZU133qSEmnL9m5j6+0ZAOvI+mGJyPJ0o6x1e5q9IT7WN+//TDE+iON2WMWOqidmtsy6ARIKtCvifX0+3CgiUaJ55IpsICesfuaHMziuMarD/VWWWwAjKCrsFKywnnKC1Q3e1rmzwhUe/f1z1P3HXEu6orrBQxMNSrxkAvfwfWnru9fsabIL+ve4Ymm/oOWdHgLP35qkOYrXQzsQU+KzCsU1HnMix8p7DZO13vzpWfaDpw3v0vEwpZOYGN92RWZMaz2id2m1fJ4tRa+j4XNcdg5KE7b8egVwUCef3GL/LJKwJpWJ+ai4dWEfBziVwmq2CDZ5Q3ABw3eg9REHvTZf/+T9q0VQ9F4UQAyM9XILF/C/xYH4KGSHamWQphWZTrhV9w3c86jHZMRxOlgukvg82N+ENJmn0RS5f834ebKhGwtqXiqqFWqn6ukVjfvtzUsDFvEsVILUdG+TrxzpogPo7VWdLWqWDVIGWj2aCgBZW9U0nvqmd9zz9toMQ=="
+resource "aws_key_pair" "jenkins_public_key" {
+  key_name   = "jenkins-public-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDQBl40cv64wBa1zEG3dIOwsTTcJsMybZW0nPmCLBqS9/xzv4WoW5VzvID6yrSlg5XfX1Qxq8FmFGIDaAhb1fna2Z05EAC1Jh8EnCSFK8Q6NaUGxlyYoHRD06kZI8ZdAj3Ct8Hsqa0YaWKa/vSIWKIRtboVKm6SMbNxcLwQ04AG2zP2wtnGpyDKBPZol/L3jxVExx1B2lIww0drSKNFKQzM9kijZyAmhu8ocClNl19Rv86q44v0PcDIv5hkW5bEbsavTghnLNXad2dmiSP5Se68NscumyboetuG+o0lOFbFjuHk8NaXklOWiFZxJaJXiOVLihXHVhpDcuXEzwNoOKhYEzA06vHBVXbngBuEsgns/Hgpz4we2H4y4k9w9eJ4rKNhTvrfAzcYzEsnmhbNtQMZaLbqKnWBt2+X6lKTYUBpnUWXwLMaAb5dqEqD+LGiDxcfJ4b6UctSR7+CF29gRChwv0HUO1NdiVzZ2AMrqsYp9QtCWnfNipveGZl9Rqox3JSt4u/+7+I9xw0d8bFp8xCPxan78eMu42i3jNm4qcbbXGvPU6WFP0htjZZ8S0Fq7Dss4AbADrLxwepW8n7E+PozZRjH2P7TgmZ+wQXS6aUNHdgDeYsv5070NYK33wuE2f9GNVuN35/5ImB9PuyxDNSdHIPXTABMOZk7fVQUqXLCRw=="
 }
 
 resource "aws_launch_template" "related-links-generation_launch-template" {
@@ -211,7 +274,7 @@ resource "aws_launch_template" "related-links-generation_launch-template" {
     "${data.terraform_remote_state.infra_security_groups.sg_related-links_id}",
   ]
 
-  key_name = "${aws_key_pair.concourse_public_key.key_name}"
+  key_name = "${aws_key_pair.jenkins_public_key.key_name}"
 
   iam_instance_profile {
     name = "${aws_iam_instance_profile.related-links_instance-profile.name}"
@@ -230,6 +293,8 @@ resource "aws_launch_template" "related-links-generation_launch-template" {
       volume_size = 64
     }
   }
+
+  user_data = "${base64encode(data.template_file.provision-generation-instance-userdata.rendered)}"
 }
 
 resource "aws_autoscaling_group" "related-links-generation" {
@@ -243,7 +308,7 @@ resource "aws_autoscaling_group" "related-links-generation" {
     version = "$Latest"
   }
 
-  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
 
   tag {
     key                 = "Name"
@@ -262,7 +327,7 @@ resource "aws_launch_template" "related-links-ingestion_launch-template" {
     "${data.terraform_remote_state.infra_security_groups.sg_management_id}",
   ]
 
-  key_name = "${aws_key_pair.concourse_public_key.key_name}"
+  key_name = "${aws_key_pair.jenkins_public_key.key_name}"
 
   iam_instance_profile {
     name = "${aws_iam_instance_profile.related-links_instance-profile.name}"
@@ -281,6 +346,8 @@ resource "aws_launch_template" "related-links-ingestion_launch-template" {
       volume_size = 8
     }
   }
+
+  user_data = "${base64encode(data.template_file.provision-ingestion-instance-userdata.rendered)}"
 }
 
 resource "aws_autoscaling_group" "related-links-ingestion" {
@@ -294,7 +361,7 @@ resource "aws_autoscaling_group" "related-links-ingestion" {
     version = "$Latest"
   }
 
-  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
 
   tag {
     key                 = "Name"
@@ -316,7 +383,7 @@ output "policy_read_write_related_links_bucket_policy_arn" {
   description = "ARN of the policy used to read/write data from/to the related links bucket"
 }
 
-output "concourse_role_name" {
-  value       = "${aws_iam_role.concourse_role.name}"
-  description = "Name of the role assumed by Concourse"
+output "policy_related_links_jenkins_policy_arn" {
+  value       = "${aws_iam_policy.related_links_jenkins_policy.arn}"
+  description = "ARN of the policy used by Jenkins to manage related links generation and ingestion"
 }
