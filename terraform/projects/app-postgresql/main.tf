@@ -126,6 +126,25 @@ resource "aws_db_parameter_group" "postgresql_pg" {
     name  = "log_lock_waits"
     value = true
   }
+
+  # Configure database for AWS DMS as per: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.PostgreSQL.html#CHAP_Source.PostgreSQL.RDSPostgreSQL.CDC
+  parameter {
+    name         = "rds.logical_replication"
+    value        = "1"
+    apply_method = "pending-reboot"
+  }
+
+  parameter {
+    name  = "wal_sender_timeout"
+    value = "0"
+  }
+
+  # AWS DMS process raises an error if this isn't enabled
+  parameter {
+    name         = "shared_preload_libraries"
+    value        = "pglogical"
+    apply_method = "pending-reboot"
+  }
 }
 
 module "postgresql-primary_rds_instance" {
