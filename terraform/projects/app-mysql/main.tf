@@ -127,6 +127,22 @@ resource "aws_db_parameter_group" "mysql-primary" {
     value = 1
   }
 
+  # Configure database for AWS DMS as per: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MySQL.html#CHAP_Source.MySQL.AmazonManaged
+  parameter {
+    name  = "binlog_checksum"
+    value = "NONE"
+  }
+
+  parameter {
+    name  = "binlog_format"
+    value = "ROW"
+  }
+
+  parameter {
+    name  = "binlog_row_image"
+    value = "Full"
+  }
+
   tags {
     aws_stackname = "${var.stackname}"
   }
