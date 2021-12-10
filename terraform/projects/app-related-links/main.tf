@@ -21,6 +21,11 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "jenkins_ssh_public_key" {
+  type        = "string"
+  description = "Jenkins SSH public key"
+}
+
 locals {
   content_store_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
   related_links_bucket_name = "govuk-related-links-${var.aws_environment}"
@@ -262,7 +267,7 @@ resource "aws_iam_instance_profile" "related-links_instance-profile" {
 
 resource "aws_key_pair" "jenkins_public_key" {
   key_name   = "jenkins-public-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDQBl40cv64wBa1zEG3dIOwsTTcJsMybZW0nPmCLBqS9/xzv4WoW5VzvID6yrSlg5XfX1Qxq8FmFGIDaAhb1fna2Z05EAC1Jh8EnCSFK8Q6NaUGxlyYoHRD06kZI8ZdAj3Ct8Hsqa0YaWKa/vSIWKIRtboVKm6SMbNxcLwQ04AG2zP2wtnGpyDKBPZol/L3jxVExx1B2lIww0drSKNFKQzM9kijZyAmhu8ocClNl19Rv86q44v0PcDIv5hkW5bEbsavTghnLNXad2dmiSP5Se68NscumyboetuG+o0lOFbFjuHk8NaXklOWiFZxJaJXiOVLihXHVhpDcuXEzwNoOKhYEzA06vHBVXbngBuEsgns/Hgpz4we2H4y4k9w9eJ4rKNhTvrfAzcYzEsnmhbNtQMZaLbqKnWBt2+X6lKTYUBpnUWXwLMaAb5dqEqD+LGiDxcfJ4b6UctSR7+CF29gRChwv0HUO1NdiVzZ2AMrqsYp9QtCWnfNipveGZl9Rqox3JSt4u/+7+I9xw0d8bFp8xCPxan78eMu42i3jNm4qcbbXGvPU6WFP0htjZZ8S0Fq7Dss4AbADrLxwepW8n7E+PozZRjH2P7TgmZ+wQXS6aUNHdgDeYsv5070NYK33wuE2f9GNVuN35/5ImB9PuyxDNSdHIPXTABMOZk7fVQUqXLCRw=="
+  public_key = "${var.jenkins_ssh_public_key}"
 }
 
 resource "aws_launch_template" "related-links-generation_launch-template" {
