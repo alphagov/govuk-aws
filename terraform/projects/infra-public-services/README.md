@@ -274,7 +274,7 @@ This project adds global resources for app components:
 | <a name="input_elasticsearch6_internal_service_names"></a> [elasticsearch6\_internal\_service\_names](#input\_elasticsearch6\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_elb_public_certname"></a> [elb\_public\_certname](#input\_elb\_public\_certname) | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | <a name="input_elb_public_internal_certname"></a> [elb\_public\_internal\_certname](#input\_elb\_public\_internal\_certname) | The ACM secondary cert domain name to find the ARN of | `string` | n/a | yes |
-| <a name="input_elb_public_secondary_certname"></a> [elb\_public\_secondary\_certname](#input\_elb\_public\_secondary\_certname) | The ACM secondary cert domain name to find the ARN of | `string` | n/a | yes |
+| <a name="input_elb_public_secondary_certname"></a> [elb\_public\_secondary\_certname](#input\_elb\_public\_secondary\_certname) | The ACM secondary cert domain name to find the ARN of | `string` | `""` | no |
 | <a name="input_email_alert_api_internal_service_names"></a> [email\_alert\_api\_internal\_service\_names](#input\_email\_alert\_api\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_email_alert_api_public_service_names"></a> [email\_alert\_api\_public\_service\_names](#input\_email\_alert\_api\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_enable_lb_app_healthchecks"></a> [enable\_lb\_app\_healthchecks](#input\_enable\_lb\_app\_healthchecks) | Use application specific target groups and healthchecks based on the list of services in the cname variable. | `string` | `false` | no |

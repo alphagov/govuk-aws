@@ -43,6 +43,7 @@ variable "elb_external_certname" {
 variable "elb_public_secondary_certname" {
   type        = "string"
   description = "The ACM secondary cert domain name to find the ARN of"
+  default     = ""
 }
 
 variable "apt_1_subnet" {
