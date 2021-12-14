@@ -524,6 +524,81 @@ resource "aws_autoscaling_attachment" "asg_classic" {
   elb                    = aws_elb.node[each.key].id
 }
 
+resource "aws_autoscaling_notification" "notifications" {
+  for_each = var.databases
+
+  group_names = [aws_autoscaling_group.node[each.key].name]
+  topic_arn   = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn
+  notifications = [
+    "autoscaling:EC2_INSTANCE_LAUNCH",
+    "autoscaling:EC2_INSTANCE_TERMINATE",
+    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+  ]
+}
+
+# Alarm if there is no instance for 60s
+resource "aws_cloudwatch_metric_alarm" "autoscaling_groupinserviceinstances" {
+  for_each = var.databases
+
+  alarm_name          = "${aws_autoscaling_group.node[each.key].name}-autoscaling-groupinserviceinstances"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "GroupInServiceInstances"
+  namespace           = "AWS/AutoScaling"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "1"
+  actions_enabled     = true
+  alarm_actions       = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
+  alarm_description   = "This metric monitors instances in service in an AutoScalingGroup"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.node[each.key].name
+  }
+}
+
+# Alarm if the average CPU utilisation is over 85% for 60s
+resource "aws_cloudwatch_metric_alarm" "ec2_cpuutilization" {
+  for_each = var.databases
+
+  alarm_name          = "${aws_autoscaling_group.node[each.key].name}-ec2-cpuutilization"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "85"
+  actions_enabled     = true
+  alarm_actions       = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
+  alarm_description   = "This metric monitors CPU utilization in an instance"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.node[each.key].name
+  }
+}
+
+# Alarm if the EC2 status check is failing for 60s
+resource "aws_cloudwatch_metric_alarm" "ec2_statuscheckfailed_instance" {
+  for_each = var.databases
+
+  alarm_name          = "${aws_autoscaling_group.node[each.key].name}-ec2-statuscheckfailed_instance"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "StatusCheckFailed_Instance"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "1"
+  actions_enabled     = true
+  alarm_actions       = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
+  alarm_description   = "This metric monitors the status of the instance status check"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.node[each.key].name
+  }
+}
+
 resource "aws_route53_record" "db_admin_service_record" {
   for_each = var.databases
 
