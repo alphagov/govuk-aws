@@ -101,12 +101,6 @@ locals {
     aws_stackname   = var.stackname
     aws_environment = var.aws_environment
   }
-
-  user_data_snippets = [
-    "00-base",
-    "10-db-admin",
-    "20-puppet-client",
-  ]
 }
 
 terraform {
@@ -399,19 +393,11 @@ resource "aws_iam_instance_profile" "node" {
   role = aws_iam_role.node_iam_role.name
 }
 
-resource "null_resource" "user_data" {
-  count = length(local.user_data_snippets)
-
-  triggers = {
-    snippet = file("../../userdata/${local.user_data_snippets[count.index]}")
-  }
-}
-
 resource "aws_launch_configuration" "node" {
   name_prefix   = "${var.stackname}-govuk-rds-"
   image_id      = data.aws_ami.node_ami_ubuntu.id
   instance_type = "t2.medium"
-  user_data     = join("\n\n", ["#!/usr/bin/env bash", join("\n", null_resource.user_data.*.triggers.snippet)])
+  user_data     = join("\n\n", [for f in ["00-base", "10-db-admin", "20-puppet-client"] : file("../../userdata/${f}")])
 
   security_groups = [
     data.terraform_remote_state.infra_security_groups.outputs.sg_db-admin_id,
@@ -470,58 +456,6 @@ resource "aws_autoscaling_group" "node" {
   lifecycle {
     create_before_destroy = true
   }
-}
-
-resource "aws_elb" "node" {
-  for_each = var.databases
-
-  name            = "rds-${each.value.name}"
-  subnets         = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
-  security_groups = [data.terraform_remote_state.infra_security_groups.outputs.sg_db-admin_elb_id]
-  internal        = true
-
-  access_logs {
-    bucket        = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
-    bucket_prefix = "elb/rds-${each.value.name}-internal-elb"
-    interval      = 60
-  }
-
-  listener {
-    instance_port     = 22
-    instance_protocol = "tcp"
-    lb_port           = 22
-    lb_protocol       = "tcp"
-  }
-
-  listener {
-    instance_port     = 6432
-    instance_protocol = "tcp"
-    lb_port           = 6432
-    lb_protocol       = "tcp"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-
-    target   = "TCP:22"
-    interval = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = merge(local.tags, { Name = "rds-${each.value.name}" })
-}
-
-resource "aws_autoscaling_attachment" "asg_classic" {
-  for_each = var.databases
-
-  autoscaling_group_name = aws_autoscaling_group.node[each.key].id
-  elb                    = aws_elb.node[each.key].id
 }
 
 resource "aws_autoscaling_notification" "notifications" {
@@ -599,18 +533,34 @@ resource "aws_cloudwatch_metric_alarm" "ec2_statuscheckfailed_instance" {
   }
 }
 
-resource "aws_route53_record" "db_admin_service_record" {
-  for_each = var.databases
+# All environments should be able to write to the backups bucket for
+# their respective environment.
+resource "aws_iam_role_policy_attachment" "write_db-admin_database_backups_iam_role_policy_attachment" {
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.outputs.dbadmin_write_database_backups_bucket_policy_arn
+}
 
-  zone_id = data.aws_route53_zone.internal.zone_id
-  name    = "${each.value.name}-db-admin.${var.internal_domain_name}"
-  type    = "A"
+# All environments, except production for safety reasons, should be able to read from the production database
+# backups bucket, to enable restoring the backups, and the overnight
+# data syncs.
+resource "aws_iam_role_policy_attachment" "read_from_production_database_backups_from_production_iam_role_policy_attachment" {
+  count      = var.aws_environment != "production" ? 1 : 0
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.outputs.production_dbadmin_read_database_backups_bucket_policy_arn
+}
 
-  alias {
-    name                   = aws_elb.node[each.key].dns_name
-    zone_id                = aws_elb.node[each.key].zone_id
-    evaluate_target_health = true
-  }
+# integration environment should be able to read integration and staging database backups
+resource "aws_iam_role_policy_attachment" "read_from_integration_database_backups_from_integration_iam_role_policy_attachment" {
+  count      = var.aws_environment == "integration" ? 1 : 0
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.outputs.integration_dbadmin_read_database_backups_bucket_policy_arn
+}
+
+# staging environment should be able to read staging database backups
+resource "aws_iam_role_policy_attachment" "read_from_staging_database_backups_from_integration_iam_role_policy_attachment" {
+  count      = var.aws_environment == "staging" ? 1 : 0
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.outputs.staging_dbadmin_read_database_backups_bucket_policy_arn
 }
 
 
