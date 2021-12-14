@@ -73,6 +73,16 @@ variable "terraform_delete_rds_timeout" {
   default     = "2h"
 }
 
+variable "internal_zone_name" {
+  type        = string
+  description = "The name of the Route53 zone that contains internal records"
+}
+
+variable "internal_domain_name" {
+  type        = string
+  description = "The domain name of the internal DNS records, it could be different from the zone name"
+}
+
 locals {
   tags = {
     Project         = var.stackname
@@ -221,6 +231,21 @@ resource "aws_cloudwatch_metric_alarm" "rds_freestoragespace" {
   dimensions = {
     DBInstanceIdentifier = aws_db_instance.instance[each.key].id
   }
+}
+
+data "aws_route53_zone" "internal" {
+  name         = var.internal_zone_name
+  private_zone = true
+}
+
+resource "aws_route53_record" "database" {
+  for_each = var.databases
+
+  zone_id = data.aws_route53_zone.internal.zone_id
+  name    = "${each.value.name}-${each.value.engine}.${var.internal_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = [aws_db_instance.instance[each.key].address]
 }
 
 
