@@ -83,12 +83,30 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
+variable "instance_ami_filter_name" {
+  type        = string
+  description = "Name to use to find AMI images for the instance"
+  default     = "ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"
+}
+
+variable "instance_key_name" {
+  type        = string
+  description = "Name of the instance key"
+  default     = "govuk-infra"
+}
+
 locals {
   tags = {
     Project         = var.stackname
     aws_stackname   = var.stackname
     aws_environment = var.aws_environment
   }
+
+  user_data_snippets = [
+    "00-base",
+    "10-db-admin",
+    "20-puppet-client",
+  ]
 }
 
 terraform {
@@ -109,6 +127,13 @@ provider "aws" {
 
 
 # Resources
+# --------------------------------------------------------------
+
+data "aws_route53_zone" "internal" {
+  name         = var.internal_zone_name
+  private_zone = true
+}
+
 # --------------------------------------------------------------
 
 resource "aws_db_subnet_group" "subnet_group" {
@@ -233,11 +258,6 @@ resource "aws_cloudwatch_metric_alarm" "rds_freestoragespace" {
   }
 }
 
-data "aws_route53_zone" "internal" {
-  name         = var.internal_zone_name
-  private_zone = true
-}
-
 resource "aws_route53_record" "database" {
   for_each = var.databases
 
@@ -246,6 +266,210 @@ resource "aws_route53_record" "database" {
   type    = "CNAME"
   ttl     = 300
   records = [aws_db_instance.instance[each.key].address]
+}
+
+# --------------------------------------------------------------
+
+data "aws_ami" "node_ami_ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = [var.instance_ami_filter_name]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  # this is the ID of the Amazon owner of the AMI we use
+  owners = ["099720109477"]
+}
+
+data "aws_iam_policy_document" "assume_node_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "node_iam_role" {
+  name = "${var.stackname}-govuk-rds-role"
+  path = "/"
+
+  assume_role_policy = data.aws_iam_policy_document.assume_node_role.json
+}
+
+data "aws_iam_policy_document" "node_iam_policy" {
+  statement {
+    actions = [
+      "ec2:DescribeTags",
+      "ec2:DescribeInstances",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "node_iam_policy" {
+  name = "${var.stackname}-govuk-rds-iam-policy"
+  path = "/"
+
+  policy = data.aws_iam_policy_document.node_iam_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "node_iam_policy" {
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = aws_iam_policy.node_iam_policy.arn
+}
+
+resource "aws_iam_instance_profile" "node" {
+  name = "${var.stackname}-govuk-rds-instance-profile"
+  role = aws_iam_role.node_iam_role.name
+}
+
+resource "null_resource" "user_data" {
+  count = length(local.user_data_snippets)
+
+  triggers = {
+    snippet = file("../../userdata/${local.user_data_snippets[count.index]}")
+  }
+}
+
+resource "aws_launch_configuration" "node" {
+  name_prefix   = "${var.stackname}-govuk-rds-"
+  image_id      = data.aws_ami.node_ami_ubuntu.id
+  instance_type = "t2.medium"
+  user_data     = join("\n\n", ["#!/usr/bin/env bash", join("\n", null_resource.user_data.*.triggers.snippet)])
+
+  security_groups = [
+    data.terraform_remote_state.infra_security_groups.outputs.sg_db-admin_id,
+    data.terraform_remote_state.infra_security_groups.outputs.sg_management_id,
+  ]
+
+  iam_instance_profile        = aws_iam_instance_profile.node.name
+  associate_public_ip_address = false
+  key_name                    = var.instance_key_name
+
+  root_block_device {
+    volume_type           = "gp2"
+    volume_size           = 512
+    delete_on_termination = true
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "node" {
+  for_each = var.databases
+
+  name = "${var.stackname}-govuk-rds-${each.value.name}"
+
+  vpc_zone_identifier = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
+
+  desired_capacity          = 1
+  min_size                  = 1
+  max_size                  = 1
+  health_check_grace_period = 60
+  health_check_type         = "EC2"
+  force_delete              = false
+  wait_for_capacity_timeout = 0
+  launch_configuration      = aws_launch_configuration.node.name
+
+  enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupPendingInstances",
+    "GroupStandbyInstances",
+    "GroupTerminatingInstances",
+    "GroupTotalInstances",
+  ]
+
+  tags = concat(
+    [for k, v in local.tags : { key = k, value = v, propagate_at_launch = true }],
+    [{ key = "name", value = "${var.stackname}-govuk-rds-${each.value.name}", propagate_at_launch = true }],
+    [{ key = "aws_migration", value = "${replace(each.value.name, "-", "_")}_db_admin", propagate_at_launch = true }],
+    [{ key = "aws_hostname", value = "${each.value.name}-db-admin-1", propagate_at_launch = true }]
+  )
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_elb" "node" {
+  for_each = var.databases
+
+  name            = "rds-${each.value.name}"
+  subnets         = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
+  security_groups = [data.terraform_remote_state.infra_security_groups.outputs.sg_db-admin_elb_id]
+  internal        = true
+
+  access_logs {
+    bucket        = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
+    bucket_prefix = "elb/rds-${each.value.name}-internal-elb"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port     = 6432
+    instance_protocol = "tcp"
+    lb_port           = 6432
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:22"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = merge(local.tags, { Name = "rds-${each.value.name}" })
+}
+
+resource "aws_autoscaling_attachment" "asg_classic" {
+  for_each = var.databases
+
+  autoscaling_group_name = aws_autoscaling_group.node[each.key].id
+  elb                    = aws_elb.node[each.key].id
+}
+
+resource "aws_route53_record" "db_admin_service_record" {
+  for_each = var.databases
+
+  zone_id = data.aws_route53_zone.internal.zone_id
+  name    = "${each.value.name}-db-admin.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_elb.node[each.key].dns_name
+    zone_id                = aws_elb.node[each.key].zone_id
+    evaluate_target_health = true
+  }
 }
 
 
@@ -281,5 +505,19 @@ output "rds_address" {
 
   value = {
     for k, v in aws_db_instance.instance : k => v.address
+  }
+}
+
+output "instance_iam_role_name" {
+  description = "db-admin node IAM role name"
+
+  value = aws_iam_role.node_iam_role.name
+}
+
+output "autoscaling_group_name" {
+  description = "ASG names"
+
+  value = {
+    for k, v in aws_autoscaling_group.node : k => v.name
   }
 }
