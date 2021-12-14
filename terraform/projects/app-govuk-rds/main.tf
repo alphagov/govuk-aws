@@ -165,6 +165,64 @@ resource "aws_db_instance" "instance" {
   tags = merge(local.tags, { Name = "${var.stackname}-govuk-rds-${each.value.name}-${each.value.engine}" })
 }
 
+resource "aws_db_event_subscription" "subscription" {
+  for_each = var.databases
+
+  name      = "${aws_db_instance.instance[each.key].name}-event-subscription"
+  sns_topic = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn
+
+  source_type = "db-instance"
+  source_ids  = [aws_db_instance.instance[each.key].id]
+  event_categories = [
+    "availability",
+    "deletion",
+    "failure",
+    "low storage",
+  ]
+}
+
+# Alarm if average CPU utilisation is above the threshold (we use 80% for most of our databases) for 60s
+resource "aws_cloudwatch_metric_alarm" "rds_cpuutilization" {
+  for_each = var.databases
+
+  alarm_name          = "${aws_db_instance.instance[each.key].name}-rds-cpuutilization"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/RDS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = each.value.cpuutilization_threshold
+  actions_enabled     = true
+  alarm_actions       = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
+  alarm_description   = "This metric monitors the percentage of CPU utilization."
+
+  dimensions = {
+    DBInstanceIdentifier = aws_db_instance.instance[each.key].id
+  }
+}
+
+# Alarm if free storage space is below the threshold (we use 10GiB for most of our databases) for 60s
+resource "aws_cloudwatch_metric_alarm" "rds_freestoragespace" {
+  for_each = var.databases
+
+  alarm_name          = "${aws_db_instance.instance[each.key].name}-rds-freestoragespace"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "FreeStorageSpace"
+  namespace           = "AWS/RDS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = each.value.freestoragespace_threshold
+  actions_enabled     = true
+  alarm_actions       = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
+  alarm_description   = "This metric monitors the amount of available storage space."
+
+  dimensions = {
+    DBInstanceIdentifier = aws_db_instance.instance[each.key].id
+  }
+}
+
 
 # Outputs
 # --------------------------------------------------------------
