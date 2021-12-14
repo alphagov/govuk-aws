@@ -328,6 +328,72 @@ resource "aws_iam_role_policy_attachment" "node_iam_policy" {
   policy_arn = aws_iam_policy.node_iam_policy.arn
 }
 
+data "aws_iam_policy_document" "node_additional_policy" {
+  statement {
+    actions = [
+      "rds:ModifyDBInstance",
+      "rds:DeleteDBInstance",
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "rds:db-tag/scrubber"
+      values   = ["scrubber"]
+    }
+  }
+
+
+  statement {
+    actions = [
+      "rds:RestoreDBInstanceFromDBSnapshot",
+      "rds:DescribeDBClusterSnapshotAttributes",
+      "rds:DescribeDBClusterParameters",
+      "rds:DescribeDBEngineVersions",
+      "rds:DescribeDBSnapshots",
+      "rds:CopyDBSnapshot",
+      "rds:CopyDBClusterSnapshot",
+      "rds:DescribePendingMaintenanceActions",
+      "rds:DescribeDBLogFiles",
+      "rds:DescribeDBParameterGroups",
+      "rds:DescribeDBSnapshotAttributes",
+      "rds:DescribeReservedDBInstancesOfferings",
+      "rds:ListTagsForResource",
+      "rds:CreateDBSnapshot",
+      "rds:CreateDBClusterSnapshot",
+      "rds:DescribeDBParameters",
+      "rds:ModifyDBClusterSnapshotAttribute",
+      "rds:ModifyDBSnapshot",
+      "rds:ModifyDBSnapshotAttribute",
+      "rds:DeleteDBSnapshot",
+      "rds:DescribeDBClusters",
+      "rds:DescribeDBClusterParameterGroups",
+      "rds:DescribeDBClusterSnapshots",
+      "rds:DescribeDBInstances",
+      "rds:DescribeEngineDefaultClusterParameters",
+      "rds:DescribeOrderableDBInstanceOptions",
+      "rds:DescribeEngineDefaultParameters",
+      "rds:DescribeCertificates",
+      "rds:DescribeEventCategories",
+      "rds:DescribeAccountAttributes",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "node_additional_policy" {
+  name   = "${var.stackname}-govuk-rds-iam-additional"
+  path   = "/"
+  policy = data.aws_iam_policy_document.node_additional_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "node_additional_policy" {
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = aws_iam_policy.node_additional_policy.arn
+}
+
 resource "aws_iam_instance_profile" "node" {
   name = "${var.stackname}-govuk-rds-instance-profile"
   role = aws_iam_role.node_iam_role.name
