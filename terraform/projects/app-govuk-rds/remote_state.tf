@@ -21,6 +21,12 @@ variable "remote_state_infra_networking_key_stack" {
   default     = ""
 }
 
+variable "remote_state_infra_root_dns_zones_key_stack" {
+  type        = string
+  description = "Override path to infra_root_dns_zones remote state"
+  default     = ""
+}
+
 variable "remote_state_infra_security_groups_key_stack" {
   type        = string
   description = "Override path to infra_security_groups remote state"
@@ -59,6 +65,16 @@ data "terraform_remote_state" "infra_networking" {
   config = {
     bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
+    region = var.aws_region
+  }
+}
+
+data "terraform_remote_state" "infra_root_dns_zones" {
+  backend = "s3"
+
+  config = {
+    bucket = var.remote_state_bucket
+    key    = "${coalesce(var.remote_state_infra_root_dns_zones_key_stack, var.stackname)}/infra-root-dns-zones.tfstate"
     region = var.aws_region
   }
 }

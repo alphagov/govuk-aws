@@ -121,7 +121,8 @@ data "aws_route53_zone" "internal" {
   private_zone = true
 }
 
-resource "aws_route53_record" "database" {
+# internal_domain_name is ${var.stackname}.${internal_root_domain_name}
+resource "aws_route53_record" "database_internal_domain_name" {
   for_each = var.databases
 
   zone_id = data.aws_route53_zone.internal.zone_id
@@ -129,4 +130,14 @@ resource "aws_route53_record" "database" {
   type    = "CNAME"
   ttl     = 300
   records = [aws_db_instance.instance[each.key].address]
+}
+
+resource "aws_route53_record" "database_internal_root_domain_name" {
+  for_each = var.databases
+
+  zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
+  name    = "${each.value.name}-${each.value.engine}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
+  type    = "CNAME"
+  ttl     = 300
+  records = [aws_route53_record.database_internal_domain_name[each.key].fqdn]
 }
