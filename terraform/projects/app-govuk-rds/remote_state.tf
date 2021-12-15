@@ -27,6 +27,12 @@ variable "remote_state_infra_security_groups_key_stack" {
   default     = ""
 }
 
+variable "remote_state_infra_vpc_key_stack" {
+  type        = string
+  description = "Override path to infra_vpc remote state"
+  default     = ""
+}
+
 data "terraform_remote_state" "infra_database_backups_bucket" {
   backend = "s3"
 
@@ -63,6 +69,16 @@ data "terraform_remote_state" "infra_security_groups" {
   config = {
     bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_security_groups_key_stack, var.stackname)}/infra-security-groups.tfstate"
+    region = var.aws_region
+  }
+}
+
+data "terraform_remote_state" "infra_vpc" {
+  backend = "s3"
+
+  config = {
+    bucket = var.remote_state_bucket
+    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = var.aws_region
   }
 }

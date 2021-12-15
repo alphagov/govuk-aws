@@ -130,6 +130,76 @@ data "aws_route53_zone" "internal" {
 
 # --------------------------------------------------------------
 
+resource "aws_security_group" "rds" {
+  for_each = var.databases
+
+  name        = "${var.stackname}_${each.value.name}_rds_access"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
+  description = "Access to ${each.value.name} RDS"
+
+  tags = merge(local.tags, { Name = "${var.stackname}_${each.value.name}_rds_access" })
+}
+
+resource "aws_security_group" "db_admin" {
+  for_each = var.databases
+
+  name        = "${var.stackname}_${each.value.name}_db-admin_access"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
+  description = "Access to ${each.value.name} db-admin"
+
+  tags = merge(local.tags, { Name = "${var.stackname}_${each.value.name}_db-admin_access" })
+}
+
+resource "aws_security_group_rule" "rds_ingress_db-admin_postgres" {
+  for_each = { for name, config in var.databases : name => config if config.engine == "postgres" }
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = aws_security_group.rds[each.key].id
+  source_security_group_id = aws_security_group.db_admin[each.key].id
+}
+
+resource "aws_security_group_rule" "rds_ingress_db-admin_mysql" {
+  for_each = { for name, config in var.databases : name => config if config.engine == "mysql" }
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = aws_security_group.rds[each.key].id
+  source_security_group_id = aws_security_group.db_admin[each.key].id
+}
+
+resource "aws_security_group_rule" "db-admin_ingress_management_ssh" {
+  for_each = var.databases
+
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = aws_security_group.db_admin[each.key].id
+  source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
+}
+
+resource "aws_security_group_rule" "db-admin_egress_any_any" {
+  for_each = var.databases
+
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = aws_security_group.db_admin[each.key].id
+}
+
+# --------------------------------------------------------------
+
 resource "aws_db_subnet_group" "subnet_group" {
   name       = "${var.stackname}-govuk-rds-subnet"
   subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_rds_ids
@@ -176,11 +246,7 @@ resource "aws_db_instance" "instance" {
   snapshot_identifier     = "${each.value.name}-snapshot"
   monitoring_interval     = 60
   monitoring_role_arn     = data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn
-
-  vpc_security_group_ids = [
-    data.terraform_remote_state.infra_security_groups.outputs.sg_mysql-primary_id,
-    data.terraform_remote_state.infra_security_groups.outputs.sg_postgresql-primary_id,
-  ]
+  vpc_security_group_ids  = [aws_security_group.rds[each.key].id]
 
   timeouts {
     create = var.terraform_create_rds_timeout
@@ -394,13 +460,15 @@ resource "aws_iam_instance_profile" "node" {
 }
 
 resource "aws_launch_configuration" "node" {
-  name_prefix   = "${var.stackname}-govuk-rds-"
+  for_each = var.databases
+
+  name_prefix   = "${var.stackname}-govuk-rds-${each.value.name}-"
   image_id      = data.aws_ami.node_ami_ubuntu.id
   instance_type = "t2.medium"
   user_data     = join("\n\n", [for f in ["00-base", "10-db-admin", "20-puppet-client"] : file("../../userdata/${f}")])
 
   security_groups = [
-    data.terraform_remote_state.infra_security_groups.outputs.sg_db-admin_id,
+    aws_security_group.db_admin[each.key].id,
     data.terraform_remote_state.infra_security_groups.outputs.sg_management_id,
   ]
 
@@ -433,7 +501,7 @@ resource "aws_autoscaling_group" "node" {
   health_check_type         = "EC2"
   force_delete              = false
   wait_for_capacity_timeout = 0
-  launch_configuration      = aws_launch_configuration.node.name
+  launch_configuration      = aws_launch_configuration.node[each.key].name
 
   enabled_metrics = [
     "GroupMinSize",
@@ -610,5 +678,21 @@ output "autoscaling_group_name" {
 
   value = {
     for k, v in aws_autoscaling_group.node : k => v.name
+  }
+}
+
+output "sg_rds" {
+  description = "RDS instance security groups"
+
+  value = {
+    for k, v in aws_security_group.rds : k => v.id
+  }
+}
+
+output "sg_db_admin" {
+  description = "db-admin security groups"
+
+  value = {
+    for k, v in aws_security_group.db_admin : k => v.id
   }
 }
