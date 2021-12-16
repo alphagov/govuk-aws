@@ -57,13 +57,11 @@ resource "aws_db_instance" "instance" {
 }
 
 resource "aws_db_event_subscription" "subscription" {
-  for_each = var.databases
-
-  name      = "${each.value.name}-event-subscription"
+  name      = "govuk-rds-event-subscription"
   sns_topic = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn
 
   source_type = "db-instance"
-  source_ids  = [aws_db_instance.instance[each.key].id]
+  source_ids  = [for instance in aws_db_instance.instance : instance.id]
   event_categories = [
     "availability",
     "deletion",
