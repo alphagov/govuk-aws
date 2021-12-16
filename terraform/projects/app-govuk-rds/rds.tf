@@ -41,7 +41,6 @@ resource "aws_db_instance" "instance" {
   backup_retention_period = var.backup_retention_period
   backup_window           = var.backup_window
   copy_tags_to_snapshot   = true
-  snapshot_identifier     = "${each.value.name}-snapshot"
   monitoring_interval     = 60
   monitoring_role_arn     = data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn
   vpc_security_group_ids  = [aws_security_group.rds[each.key].id]
