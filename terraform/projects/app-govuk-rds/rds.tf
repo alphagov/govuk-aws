@@ -9,7 +9,7 @@ resource "aws_db_parameter_group" "engine_params" {
   for_each = var.databases
 
   name_prefix = "${each.value.name}-${each.value.engine}-"
-  family      = "${each.value.engine}${each.value.engine_version}"
+  family      = merge({ engine_params_family = "${each.value.engine}${each.value.engine_version}" }, each.value)["engine_params_family"]
 
   dynamic "parameter" {
     for_each = each.value.engine_params
