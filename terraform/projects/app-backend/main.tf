@@ -202,7 +202,7 @@ resource "aws_security_group_rule" "collections-publisher-rds_ingress_backend_my
   to_port   = 3306
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.collections-publisher-rds.id}"
+  security_group_id        = "${data.aws_security_group.collections-publisher-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -220,7 +220,7 @@ resource "aws_security_group_rule" "contacts-admin-rds_ingress_backend_mysql" {
   to_port   = 3306
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.contacts-admin-rds.id}"
+  security_group_id        = "${data.aws_security_group.contacts-admin-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -238,7 +238,7 @@ resource "aws_security_group_rule" "content-data-admin-rds_ingress_backend_postg
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.content-data-admin-rds.id}"
+  security_group_id        = "${data.aws_security_group.content-data-admin-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -256,7 +256,7 @@ resource "aws_security_group_rule" "content-publisher-rds_ingress_backend_postgr
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.content-publisher-rds.id}"
+  security_group_id        = "${data.aws_security_group.content-publisher-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -274,7 +274,7 @@ resource "aws_security_group_rule" "content-tagger-rds_ingress_backend_postgres"
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.content-tagger-rds.id}"
+  security_group_id        = "${data.aws_security_group.content-tagger-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -292,7 +292,7 @@ resource "aws_security_group_rule" "link-checker-api-rds_ingress_backend_postgre
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.link-checker-api-rds.id}"
+  security_group_id        = "${data.aws_security_group.link-checker-api-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -310,7 +310,7 @@ resource "aws_security_group_rule" "local-links-manager-rds_ingress_backend_post
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.local-links-manager-rds.id}"
+  security_group_id        = "${data.aws_security_group.local-links-manager-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -328,7 +328,7 @@ resource "aws_security_group_rule" "release-rds_ingress_backend_mysql" {
   to_port   = 3306
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.release-rds.id}"
+  security_group_id        = "${data.aws_security_group.release-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -346,7 +346,7 @@ resource "aws_security_group_rule" "search-admin-rds_ingress_backend_mysql" {
   to_port   = 3306
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.search-admin-rds.id}"
+  security_group_id        = "${data.aws_security_group.search-admin-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -364,7 +364,7 @@ resource "aws_security_group_rule" "service-manual-publisher-rds_ingress_backend
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.service-manual-publisher-rds.id}"
+  security_group_id        = "${data.aws_security_group.service-manual-publisher-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -382,7 +382,7 @@ resource "aws_security_group_rule" "signon-rds_ingress_backend_mysql" {
   to_port   = 3306
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.signon-rds.id}"
+  security_group_id        = "${data.aws_security_group.signon-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
@@ -400,7 +400,7 @@ resource "aws_security_group_rule" "support-api-rds_ingress_backend_postgres" {
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.support-api-rds.id}"
+  security_group_id        = "${data.aws_security_group.support-api-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 

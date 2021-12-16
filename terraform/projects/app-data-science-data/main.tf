@@ -215,7 +215,7 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
 data "aws_security_group" "publishing-api-rds" {
   count = "${var.use_split_database}"
 
-  name = "${var.stackname}_publishing-api_rds_access"
+  name = "blue_publishing-api_rds_access"
 }
 
 resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data_postgres" {
@@ -226,6 +226,6 @@ resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.publishing-api-rds.id}"
+  security_group_id        = "${data.aws_security_group.publishing-api-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"
 }
