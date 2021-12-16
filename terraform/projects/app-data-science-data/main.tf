@@ -215,7 +215,7 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
 data "aws_security_group" "publishing-api-rds" {
   count = "${var.use_split_database}"
 
-  name = "${var.stackname}_publishing-api_rds_access"
+  name = "blue_publishing-api_rds_access"
 }
 
 resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data_postgres" {
