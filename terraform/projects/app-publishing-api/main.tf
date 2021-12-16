@@ -300,7 +300,7 @@ resource "aws_security_group_rule" "publishing-api-rds_ingress_publishing-api_po
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.publishing-api-rds.id}"
+  security_group_id        = "${data.aws_security_group.publishing-api-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_publishing-api_id}"
 }
 

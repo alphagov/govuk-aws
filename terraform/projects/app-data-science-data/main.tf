@@ -226,6 +226,6 @@ resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.publishing-api-rds.id}"
+  security_group_id        = "${data.aws_security_group.publishing-api-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"
 }

@@ -197,7 +197,7 @@ resource "aws_security_group_rule" "whitehall-rds_ingress_whitehall-backend_mysq
   to_port   = 3306
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.whitehall-rds.id}"
+  security_group_id        = "${data.aws_security_group.whitehall-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_id}"
 }
 
