@@ -59,7 +59,7 @@ resource "aws_db_instance" "instance" {
 resource "aws_db_event_subscription" "subscription" {
   for_each = var.databases
 
-  name      = "${aws_db_instance.instance[each.key].name}-event-subscription"
+  name      = "${each.value.name}-event-subscription"
   sns_topic = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn
 
   source_type = "db-instance"
@@ -76,7 +76,7 @@ resource "aws_db_event_subscription" "subscription" {
 resource "aws_cloudwatch_metric_alarm" "rds_cpuutilization" {
   for_each = var.databases
 
-  alarm_name          = "${aws_db_instance.instance[each.key].name}-rds-cpuutilization"
+  alarm_name          = "${each.value.name}-rds-cpuutilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -97,7 +97,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpuutilization" {
 resource "aws_cloudwatch_metric_alarm" "rds_freestoragespace" {
   for_each = var.databases
 
-  alarm_name          = "${aws_db_instance.instance[each.key].name}-rds-freestoragespace"
+  alarm_name          = "${each.value.name}-rds-freestoragespace"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "FreeStorageSpace"
