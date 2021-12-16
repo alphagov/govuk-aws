@@ -30,7 +30,6 @@ resource "aws_db_instance" "instance" {
   username                = var.database_credentials[each.key].username
   password                = var.database_credentials[each.key].password
   allocated_storage       = each.value.allocated_storage
-  max_allocated_storage   = each.value.allocated_storage
   instance_class          = each.value.instance_class
   identifier              = "${each.value.name}-${each.value.engine}"
   storage_type            = "gp2"
