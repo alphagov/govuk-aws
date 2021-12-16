@@ -21,6 +21,12 @@ variable "stackname" {
   description = "Stackname"
 }
 
+variable "use_split_database" {
+  type        = "string"
+  description = "Set to 1 to use the new split database instances"
+  default     = "0"
+}
+
 locals {
   data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
 }
@@ -204,4 +210,22 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
   min_size               = -1
   max_size               = -1
   desired_capacity       = 0
+}
+
+data "aws_security_group" "publishing-api-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_publishing-api_rds_access"
+}
+
+resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.publishing-api-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"
 }

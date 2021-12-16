@@ -76,6 +76,12 @@ variable "rules_for_existing_target_groups" {
   default     = {}
 }
 
+variable "use_split_database" {
+  type        = "string"
+  description = "Set to 1 to use the new split database instances"
+  default     = "0"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -180,6 +186,222 @@ resource "aws_route53_record" "app_service_records_redirected_public_alb" {
   type    = "CNAME"
   records = ["backend.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
+}
+
+data "aws_security_group" "collections-publisher-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_collections-publisher_rds_access"
+}
+
+resource "aws_security_group_rule" "collections-publisher-rds_ingress_backend_mysql" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.collections-publisher-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "contacts-admin-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_contacts-admin_rds_access"
+}
+
+resource "aws_security_group_rule" "contacts-admin-rds_ingress_backend_mysql" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.contacts-admin-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "content-data-admin-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_content-data-admin_rds_access"
+}
+
+resource "aws_security_group_rule" "content-data-admin-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.content-data-admin-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "content-publisher-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_content-publisher_rds_access"
+}
+
+resource "aws_security_group_rule" "content-publisher-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.content-publisher-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "content-tagger-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_content-tagger_rds_access"
+}
+
+resource "aws_security_group_rule" "content-tagger-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.content-tagger-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "link-checker-api-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_link-checker-api_rds_access"
+}
+
+resource "aws_security_group_rule" "link-checker-api-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.link-checker-api-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "local-links-manager-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_local-links-manager_rds_access"
+}
+
+resource "aws_security_group_rule" "local-links-manager-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.local-links-manager-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "release-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_release_rds_access"
+}
+
+resource "aws_security_group_rule" "release-rds_ingress_backend_mysql" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.release-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "search-admin-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_search-admin_rds_access"
+}
+
+resource "aws_security_group_rule" "search-admin-rds_ingress_backend_mysql" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.search-admin-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "service-manual-publisher-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_service-manual-publisher_rds_access"
+}
+
+resource "aws_security_group_rule" "service-manual-publisher-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.service-manual-publisher-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "signon-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_signon_rds_access"
+}
+
+resource "aws_security_group_rule" "signon-rds_ingress_backend_mysql" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.signon-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+}
+
+data "aws_security_group" "support-api-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_support-api_rds_access"
+}
+
+resource "aws_security_group_rule" "support-api-rds_ingress_backend_postgres" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.support-api-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
 }
 
 # Outputs

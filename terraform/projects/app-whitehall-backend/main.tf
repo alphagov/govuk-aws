@@ -48,6 +48,12 @@ variable "instance_type" {
   default     = "m5.large"
 }
 
+variable "use_split_database" {
+  type        = "string"
+  description = "Set to 1 to use the new split database instances"
+  default     = "0"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -175,6 +181,24 @@ resource "aws_iam_role_policy" "whitehall_csvs_policy" {
 resource "aws_iam_role_policy_attachment" "whitehall_csvs_attach" {
   role       = "${module.whitehall-backend.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.s3_writer.arn}"
+}
+
+data "aws_security_group" "whitehall-rds" {
+  count = "${var.use_split_database}"
+
+  name = "${var.stackname}_whitehall_rds_access"
+}
+
+resource "aws_security_group_rule" "whitehall-rds_ingress_whitehall-backend_mysql" {
+  count = "${var.use_split_database}"
+
+  type      = "ingress"
+  from_port = 3306
+  to_port   = 3306
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.whitehall-rds.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_id}"
 }
 
 # Outputs
