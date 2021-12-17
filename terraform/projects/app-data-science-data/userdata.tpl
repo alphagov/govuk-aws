@@ -100,7 +100,7 @@ chmod +x ./build_knowledge_graph_data
 
 # Run knowledge graph build script
 touch /var/tmp/data_generation_process.log
-./build_knowledge_graph_data -d ${data_infrastructure_bucket_name} > /var/tmp/data_generation_process.log
+./build_knowledge_graph_data -d ${data_infrastructure_bucket_name} > /var/tmp/data_generation_process.log 2>&1
 
 # Copy logs across to S3
 date_today=$(date '+%F')
