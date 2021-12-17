@@ -210,7 +210,7 @@ resource "aws_autoscaling_notification" "notifications" {
 resource "aws_cloudwatch_metric_alarm" "autoscaling_groupinserviceinstances" {
   for_each = var.databases
 
-  alarm_name          = "${aws_autoscaling_group.node[each.key].name}-autoscaling-groupinserviceinstances"
+  alarm_name          = "${each.value.name}-autoscaling-groupinserviceinstances"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "GroupInServiceInstances"
@@ -231,7 +231,7 @@ resource "aws_cloudwatch_metric_alarm" "autoscaling_groupinserviceinstances" {
 resource "aws_cloudwatch_metric_alarm" "ec2_cpuutilization" {
   for_each = var.databases
 
-  alarm_name          = "${aws_autoscaling_group.node[each.key].name}-ec2-cpuutilization"
+  alarm_name          = "${each.value.name}-ec2-cpuutilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -252,7 +252,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpuutilization" {
 resource "aws_cloudwatch_metric_alarm" "ec2_statuscheckfailed_instance" {
   for_each = var.databases
 
-  alarm_name          = "${aws_autoscaling_group.node[each.key].name}-ec2-statuscheckfailed_instance"
+  alarm_name          = "${each.value.name}-ec2-statuscheckfailed_instance"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "StatusCheckFailed_Instance"

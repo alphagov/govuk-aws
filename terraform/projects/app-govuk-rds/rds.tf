@@ -30,7 +30,6 @@ resource "aws_db_instance" "instance" {
   username                = var.database_credentials[each.key].username
   password                = var.database_credentials[each.key].password
   allocated_storage       = each.value.allocated_storage
-  max_allocated_storage   = each.value.allocated_storage
   instance_class          = each.value.instance_class
   identifier              = "${each.value.name}-${each.value.engine}"
   storage_type            = "gp2"
@@ -58,13 +57,11 @@ resource "aws_db_instance" "instance" {
 }
 
 resource "aws_db_event_subscription" "subscription" {
-  for_each = var.databases
-
-  name      = "${aws_db_instance.instance[each.key].name}-event-subscription"
+  name      = "govuk-rds-event-subscription"
   sns_topic = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn
 
   source_type = "db-instance"
-  source_ids  = [aws_db_instance.instance[each.key].id]
+  source_ids  = [for instance in aws_db_instance.instance : instance.id]
   event_categories = [
     "availability",
     "deletion",
@@ -77,7 +74,7 @@ resource "aws_db_event_subscription" "subscription" {
 resource "aws_cloudwatch_metric_alarm" "rds_cpuutilization" {
   for_each = var.databases
 
-  alarm_name          = "${aws_db_instance.instance[each.key].name}-rds-cpuutilization"
+  alarm_name          = "${each.value.name}-rds-cpuutilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -98,7 +95,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpuutilization" {
 resource "aws_cloudwatch_metric_alarm" "rds_freestoragespace" {
   for_each = var.databases
 
-  alarm_name          = "${aws_db_instance.instance[each.key].name}-rds-freestoragespace"
+  alarm_name          = "${each.value.name}-rds-freestoragespace"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "FreeStorageSpace"
