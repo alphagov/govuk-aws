@@ -32,10 +32,7 @@ sudo apt install -y libicu-dev
 sudo su - ubuntu
 
 ## Set-up BigQuery access
-big_query_key_file=$(/usr/local/bin/aws ssm get-parameter --name govuk_big_query_data_service_user_key_file --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.')
-
-# Store Big Query credentials
-echo $big_query_key_file > /var/tmp/bigquery.json
+echo "$(aws secretsmanager get-secret-value --secret-id related_links-BIG_QUERY_SERVICE_ACCOUNT_KEY --query "SecretString" --region eu-west-1 | jq -r '.')" > /var/tmp/bigquery.json
 chmod 400 /var/tmp/bigquery.json
 
 # Create Python 3.7 virtual environment
