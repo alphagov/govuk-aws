@@ -63,6 +63,10 @@ resource "aws_iam_instance_profile" "data-science-data_instance_profile" {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_secretsmanager_secret" "secret_big_query_service_account_key" {
+  name = "related_links-BIG_QUERY_SERVICE_ACCOUNT_KEY"
+}
+
 data "aws_iam_policy_document" "data-science-data_read_ssm_policy_document" {
   statement {
     actions = [
@@ -76,6 +80,18 @@ data "aws_iam_policy_document" "data-science-data_read_ssm_policy_document" {
       "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_publishing_api_database",
       "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_publishing_api_user",
       "arn:aws:ssm:eu-west-1:${data.aws_caller_identity.current.account_id}:parameter/govuk_knowledge_graph_publishing_api_password",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "read_secrets_from_secrets_manager_policy_document" {
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue",
+    ]
+
+    resources = [
+      "${data.aws_secretsmanager_secret.secret_big_query_service_account_key.arn}",
     ]
   }
 }
@@ -97,6 +113,11 @@ resource "aws_iam_policy" "data-science-data_read_ssm_policy" {
   policy = "${data.aws_iam_policy_document.data-science-data_read_ssm_policy_document.json}"
 }
 
+resource "aws_iam_policy" "read_secrets_from_secrets_manager_policy" {
+  name   = "read_secrets_from_secrets_manager_policy"
+  policy = "${data.aws_iam_policy_document.read_secrets_from_secrets_manager_policy_document.json}"
+}
+
 resource "aws_iam_policy" "invoke_sagemaker_govner_endpoint_policy" {
   name   = "invoke_sagemaker_govner_endpoint_policy"
   policy = "${data.aws_iam_policy_document.invoke_sagemaker_govner_endpoint_policy_document.json}"
@@ -105,6 +126,11 @@ resource "aws_iam_policy" "invoke_sagemaker_govner_endpoint_policy" {
 resource "aws_iam_role_policy_attachment" "data-science-data_read_ssm_role_attachment" {
   role       = "${aws_iam_role.data-science-data_role.name}"
   policy_arn = "${aws_iam_policy.data-science-data_read_ssm_policy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "read_secrets_from_secrets_manager_role_attachment" {
+  role       = "${aws_iam_role.data-science-data_role.name}"
+  policy_arn = "${aws_iam_policy.read_secrets_from_secrets_manager_policy.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "invoke_sagemaker_govner_endpoint_role_attachment" {

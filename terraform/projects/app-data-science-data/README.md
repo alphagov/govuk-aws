@@ -33,11 +33,13 @@ No modules.
 | [aws_iam_instance_profile.data-science-data_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.data-science-data_read_ssm_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.invoke_sagemaker_govner_endpoint_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.read_secrets_from_secrets_manager_policy](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_policy) | resource |
 | [aws_iam_role.data-science-data_role](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.data-science-data_read_content_store_backups_bucket_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.data-science-data_read_related_links_bucket_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.data-science-data_read_ssm_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.invoke_sagemaker_govner_endpoint_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.read_secrets_from_secrets_manager_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.read_write_data_infrastructure_bucket_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.data-science-data_launch_template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) | resource |
 | [aws_security_group_rule.publishing-api-rds_ingress_data-science-data_postgres](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/security_group_rule) | resource |
@@ -45,6 +47,8 @@ No modules.
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.data-science-data_read_ssm_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.invoke_sagemaker_govner_endpoint_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.read_secrets_from_secrets_manager_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_secretsmanager_secret.secret_big_query_service_account_key](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/secretsmanager_secret) | data source |
 | [aws_security_group.publishing-api-rds](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/security_group) | data source |
 | [template_file.data-science-data_userdata](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.ec2_assume_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
