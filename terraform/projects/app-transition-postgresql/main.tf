@@ -86,7 +86,7 @@ data "aws_route53_zone" "internal" {
 
 resource "aws_db_parameter_group" "app_transition_pg" {
   name_prefix = "app-transition-pg-"
-  family      = "postgres9.6"
+  family      = "postgres13"
 
   parameter {
     name  = "log_min_duration_statement"
@@ -114,7 +114,7 @@ module "transition-postgresql-primary_rds_instance" {
 
   name                  = "${var.stackname}-transition-postgresql-primary"
   engine_name           = "postgres"
-  engine_version        = "9.6"
+  engine_version        = "13"
   default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
   subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username              = "${var.username}"
