@@ -100,5 +100,6 @@ Search application servers
 |------|-------------|
 | <a name="output_ecr_repository_url"></a> [ecr\_repository\_url](#output\_ecr\_repository\_url) | URL of the ECR repository |
 | <a name="output_ltr_role_arn"></a> [ltr\_role\_arn](#output\_ltr\_role\_arn) | LTR role ARN |
+| <a name="output_scale_learntorank_asg_policy_arn"></a> [scale\_learntorank\_asg\_policy\_arn](#output\_scale\_learntorank\_asg\_policy\_arn) | ARN of the policy used by to scale the ASG for learn to rank |
 | <a name="output_search_elb_dns_name"></a> [search\_elb\_dns\_name](#output\_search\_elb\_dns\_name) | DNS name to access the search service |
 | <a name="output_service_dns_name"></a> [service\_dns\_name](#output\_service\_dns\_name) | DNS name to access the node service |

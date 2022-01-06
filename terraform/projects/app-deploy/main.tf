@@ -292,6 +292,11 @@ resource "aws_iam_role_policy_attachment" "related_links_jenkins" {
   policy_arn = "${data.terraform_remote_state.app_related_links.policy_related_links_jenkins_policy_arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "learn_to_rank_jenkins" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.app_search.scale_learntorank_asg_policy_arn}"
+}
+
 locals {
   elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 50 : 0}"
   elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 50 : 0}"
