@@ -569,6 +569,11 @@ output "service_dns_name" {
   description = "DNS name to access the node service"
 }
 
+output "scale_learntorank_asg_policy_arn" {
+  value       = "${aws_iam_policy.scale-learntorank-generation-asg-policy.arn}"
+  description = "ARN of the policy used by to scale the ASG for learn to rank"
+}
+
 output "ltr_role_arn" {
   value       = "${aws_iam_role.learntorank.arn}"
   description = "LTR role ARN"

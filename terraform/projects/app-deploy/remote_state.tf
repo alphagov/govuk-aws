@@ -17,6 +17,12 @@ variable "remote_state_app_related_links_key_stack" {
   default     = ""
 }
 
+variable "remote_state_app_search_key_stack" {
+  type        = "string"
+  description = "Override app_search remote state path"
+  default     = ""
+}
+
 variable "remote_state_infra_vpc_key_stack" {
   type        = "string"
   description = "Override infra_vpc remote state path"
@@ -55,6 +61,16 @@ variable "remote_state_infra_monitoring_key_stack" {
 
 # Resources
 # --------------------------------------------------------------
+
+data "terraform_remote_state" "app_search" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_app_search_key_stack, var.stackname)}/app-search.tfstate"
+    region = "${var.aws_region}"
+  }
+}
 
 data "terraform_remote_state" "app_related_links" {
   backend = "s3"
