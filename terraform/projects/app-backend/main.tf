@@ -76,9 +76,15 @@ variable "rules_for_existing_target_groups" {
   default     = {}
 }
 
-variable "use_split_database" {
+variable "use_split_mysql_database" {
   type        = "string"
-  description = "Set to 1 to use the new split database instances"
+  description = "Set to 1 to use the new split mysql database instances"
+  default     = "0"
+}
+
+variable "use_split_postgres_database" {
+  type        = "string"
+  description = "Set to 1 to use the new split postgres database instances"
   default     = "0"
 }
 
@@ -189,13 +195,13 @@ resource "aws_route53_record" "app_service_records_redirected_public_alb" {
 }
 
 data "aws_security_group" "collections-publisher-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   name = "${var.stackname}_collections-publisher_rds_access"
 }
 
 resource "aws_security_group_rule" "collections-publisher-rds_ingress_backend_mysql" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   type      = "ingress"
   from_port = 3306
@@ -207,13 +213,13 @@ resource "aws_security_group_rule" "collections-publisher-rds_ingress_backend_my
 }
 
 data "aws_security_group" "contacts-admin-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   name = "${var.stackname}_contacts-admin_rds_access"
 }
 
 resource "aws_security_group_rule" "contacts-admin-rds_ingress_backend_mysql" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   type      = "ingress"
   from_port = 3306
@@ -225,13 +231,13 @@ resource "aws_security_group_rule" "contacts-admin-rds_ingress_backend_mysql" {
 }
 
 data "aws_security_group" "content-data-admin-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_content-data-admin_rds_access"
 }
 
 resource "aws_security_group_rule" "content-data-admin-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
@@ -243,13 +249,13 @@ resource "aws_security_group_rule" "content-data-admin-rds_ingress_backend_postg
 }
 
 data "aws_security_group" "content-publisher-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_content-publisher_rds_access"
 }
 
 resource "aws_security_group_rule" "content-publisher-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
@@ -261,13 +267,13 @@ resource "aws_security_group_rule" "content-publisher-rds_ingress_backend_postgr
 }
 
 data "aws_security_group" "content-tagger-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_content-tagger_rds_access"
 }
 
 resource "aws_security_group_rule" "content-tagger-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
@@ -279,13 +285,13 @@ resource "aws_security_group_rule" "content-tagger-rds_ingress_backend_postgres"
 }
 
 data "aws_security_group" "link-checker-api-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_link-checker-api_rds_access"
 }
 
 resource "aws_security_group_rule" "link-checker-api-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
@@ -297,13 +303,13 @@ resource "aws_security_group_rule" "link-checker-api-rds_ingress_backend_postgre
 }
 
 data "aws_security_group" "local-links-manager-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_local-links-manager_rds_access"
 }
 
 resource "aws_security_group_rule" "local-links-manager-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
@@ -315,13 +321,13 @@ resource "aws_security_group_rule" "local-links-manager-rds_ingress_backend_post
 }
 
 data "aws_security_group" "release-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   name = "${var.stackname}_release_rds_access"
 }
 
 resource "aws_security_group_rule" "release-rds_ingress_backend_mysql" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   type      = "ingress"
   from_port = 3306
@@ -333,13 +339,13 @@ resource "aws_security_group_rule" "release-rds_ingress_backend_mysql" {
 }
 
 data "aws_security_group" "search-admin-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   name = "${var.stackname}_search-admin_rds_access"
 }
 
 resource "aws_security_group_rule" "search-admin-rds_ingress_backend_mysql" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   type      = "ingress"
   from_port = 3306
@@ -351,13 +357,13 @@ resource "aws_security_group_rule" "search-admin-rds_ingress_backend_mysql" {
 }
 
 data "aws_security_group" "service-manual-publisher-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_service-manual-publisher_rds_access"
 }
 
 resource "aws_security_group_rule" "service-manual-publisher-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
@@ -369,13 +375,13 @@ resource "aws_security_group_rule" "service-manual-publisher-rds_ingress_backend
 }
 
 data "aws_security_group" "signon-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   name = "${var.stackname}_signon_rds_access"
 }
 
 resource "aws_security_group_rule" "signon-rds_ingress_backend_mysql" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_mysql_database}"
 
   type      = "ingress"
   from_port = 3306
@@ -387,13 +393,13 @@ resource "aws_security_group_rule" "signon-rds_ingress_backend_mysql" {
 }
 
 data "aws_security_group" "support-api-rds" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   name = "${var.stackname}_support-api_rds_access"
 }
 
 resource "aws_security_group_rule" "support-api-rds_ingress_backend_postgres" {
-  count = "${var.use_split_database}"
+  count = "${var.use_split_postgres_database}"
 
   type      = "ingress"
   from_port = 5432
