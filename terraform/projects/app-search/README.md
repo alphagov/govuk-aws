@@ -53,7 +53,7 @@ Search application servers
 | [aws_s3_bucket.sitemaps_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [null_resource.user_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_acm_certificate.elb_cert](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
-| [aws_ami.ubuntu_bionic](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/ami) | data source |
+| [aws_ami.ubuntu_focal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/ami) | data source |
 | [aws_iam_policy_document.ecr-usage](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.learntorank-assume-role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.scale-learntorank-generation-asg](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |

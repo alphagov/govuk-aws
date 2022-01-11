@@ -460,7 +460,7 @@ resource "aws_key_pair" "learntorank-generation-key" {
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDGNF9QVcjq9LUioccV8Fw161BrM3EHPRtwzp+2IRaYrgpwgBoIxgK2q1LLrLSwcoLfbDyU3dW0cMN0wpbxFzHTFuDqzm5fdAzhijZJCKMyPtMSPOhUev+/JfHVZj7JGXHV2SOMM1Q1XkEBwgenPmR2Hz6fMs3+R/LdeNkMTU1H/fOXl6WU9DY1XAUdYzfufRXiDt2aCGCOknAWqOAdT+22FZcmgc657tt9xbOJYzVoEAqBArCxixpf5N7Tha0QUac8QGQQxw01LENHRN1S4NLtvUEBqI3m99f8NleOlO4eD7XBkcwPXMrFP7/4IqAPq+JgoD2OrDSX3HiE8HNtJTLr0vmP5plBiwH3Bd+32oILQiw4HqXt8JpTfr/fAJXlsHCmYkxlEzhhZ46H1VZsgU9BM69C/bWTvGWCFAYrWbu2vt9Gbo1nbZVTQjLBfKgY3vxk5Tmj4b43AGI1tprPdBh43IdQvvYu9oiTodzxetaQoK8fUMKPVoQruPJNfKcu3Yukm8DvVmwQqoAgik5iYk7up9gX1L//L0dJIpjWSlU5ytpmG+M5k+Abbg+kkIjnCXXkS2Icwnh3BEIvxLIt9MaMf89Lxi4Jin1uNu727Z9cXGRp8Fyz5GdDEKz37P5k7jFEV70KYLwl3r7qxp66RafXgRx/fRRVHdTNf43O6UqDUQ== concourse-worker"
 }
 
-data "aws_ami" "ubuntu_bionic" {
+data "aws_ami" "ubuntu_focal" {
   most_recent = true
 
   # canonical
@@ -468,13 +468,13 @@ data "aws_ami" "ubuntu_bionic" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
 }
 
 resource "aws_launch_template" "learntorank-generation" {
   name          = "govuk-${var.aws_environment}-search-ltr-generation"
-  image_id      = "${data.aws_ami.ubuntu_bionic.id}"
+  image_id      = "${data.aws_ami.ubuntu_focal.id}"
   instance_type = "c5.large"
 
   vpc_security_group_ids = [
