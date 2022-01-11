@@ -71,7 +71,7 @@ provider "aws" {
 
 resource "aws_db_parameter_group" "content_data_api" {
   name_prefix = "govuk-content-data-api"
-  family      = "postgres9.6"
+  family      = "postgres13"
 
   # DBInstanceClassMemory is in bytes, divide by 1024 * 16 to convert
   # to kilobytes, and specify that a a 16th of the overall system
@@ -146,7 +146,7 @@ module "content-data-api-postgresql-primary_rds_instance" {
   name                  = "${var.stackname}-content-data-api-postgresql-primary"
   parameter_group_name  = "${aws_db_parameter_group.content_data_api.name}"
   engine_name           = "postgres"
-  engine_version        = "9.6"
+  engine_version        = "13.3"
   default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_primary")}"
   subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
   username              = "${var.username}"
