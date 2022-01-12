@@ -184,7 +184,7 @@ resource "aws_autoscaling_group" "node" {
 
   tags = concat(
     [for k, v in local.tags : { key = k, value = v, propagate_at_launch = true }],
-    [{ key = "name", value = "${var.stackname}-govuk-rds-${each.value.name}", propagate_at_launch = true }],
+    [{ key = "Name", value = "${var.stackname}-govuk-rds-${each.value.name}", propagate_at_launch = true }],
     [{ key = "aws_migration", value = "${replace(each.value.name, "-", "_")}_db_admin", propagate_at_launch = true }],
     [{ key = "aws_hostname", value = "${each.value.name}-db-admin-1", propagate_at_launch = true }]
   )
