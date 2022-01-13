@@ -372,6 +372,11 @@ data "aws_iam_policy_document" "learntorank-assume-role" {
       type        = "Service"
       identifiers = ["sagemaker.amazonaws.com"]
     }
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
   }
 }
 
@@ -452,7 +457,7 @@ data "aws_iam_policy_document" "ecr-usage" {
 
 resource "aws_iam_instance_profile" "learntorank-generation" {
   name = "govuk-${var.aws_environment}-search-ltr-generation"
-  role = "${module.search.instance_iam_role_name}"
+  role = "${aws_iam_role.learntorank.name}"
 }
 
 resource "aws_key_pair" "learntorank-generation-key" {
