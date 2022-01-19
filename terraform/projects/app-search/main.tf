@@ -70,11 +70,6 @@ variable "instance_type" {
   default     = "c5.xlarge"
 }
 
-variable "concourse_aws_account_id" {
-  type        = "string"
-  description = "AWS account ID which contains the Concourse role"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -364,11 +359,6 @@ data "aws_iam_policy_document" "learntorank-assume-role" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.concourse_aws_account_id}:role/cd-govuk-tools-concourse-worker"]
-    }
-
-    principals {
       type        = "Service"
       identifiers = ["sagemaker.amazonaws.com"]
     }
@@ -426,7 +416,6 @@ data "aws_iam_policy_document" "ecr-usage" {
       type = "AWS"
 
       identifiers = [
-        "arn:aws:iam::${var.concourse_aws_account_id}:root",
         "${aws_iam_role.learntorank.arn}",
       ]
     }
@@ -434,23 +423,6 @@ data "aws_iam_policy_document" "ecr-usage" {
     principals {
       type        = "Service"
       identifiers = ["sagemaker.amazonaws.com"]
-    }
-  }
-
-  statement {
-    sid = "write"
-
-    actions = [
-      "ecr:BatchDeleteImage",
-      "ecr:CompleteLayerUpload",
-      "ecr:InitiateLayerUpload",
-      "ecr:PutImage",
-      "ecr:UploadLayerPart",
-    ]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.concourse_aws_account_id}:role/cd-govuk-tools-concourse-worker"]
     }
   }
 }
