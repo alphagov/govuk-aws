@@ -52,12 +52,6 @@ variable "instance_type" {
   default     = "m5.large"
 }
 
-variable "use_split_database" {
-  type        = "string"
-  description = "Set to 1 to use the new split database instances"
-  default     = "0"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -161,14 +155,10 @@ module "alarms-elb-whitehall-frontend-internal" {
 }
 
 data "aws_security_group" "whitehall-rds" {
-  count = "${var.use_split_database}"
-
   name = "${var.stackname}_whitehall_rds_access"
 }
 
 resource "aws_security_group_rule" "whitehall-rds_ingress_whitehall-frontend_mysql" {
-  count = "${var.use_split_database}"
-
   type      = "ingress"
   from_port = 3306
   to_port   = 3306

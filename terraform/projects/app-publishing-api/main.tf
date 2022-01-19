@@ -72,12 +72,6 @@ variable "instance_type" {
   default     = "m5.large"
 }
 
-variable "use_split_database" {
-  type        = "string"
-  description = "Set to 1 to use the new split database instances"
-  default     = "0"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -287,14 +281,10 @@ module "alarms-elb-publishing-api-external" {
 }
 
 data "aws_security_group" "publishing-api-rds" {
-  count = "${var.use_split_database}"
-
   name = "${var.stackname}_publishing-api_rds_access"
 }
 
 resource "aws_security_group_rule" "publishing-api-rds_ingress_publishing-api_postgres" {
-  count = "${var.use_split_database}"
-
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
