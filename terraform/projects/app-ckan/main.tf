@@ -57,12 +57,6 @@ variable "instance_type" {
   default     = "m5.xlarge"
 }
 
-variable "use_split_database" {
-  type        = "string"
-  description = "Set to 1 to use the new split database instances"
-  default     = "0"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -271,14 +265,10 @@ module "alarms-elb-ckan-external" {
 }
 
 data "aws_security_group" "ckan-rds" {
-  count = "${var.use_split_database}"
-
   name = "${var.stackname}_ckan_rds_access"
 }
 
 resource "aws_security_group_rule" "ckan-rds_ingress_ckan_postgres" {
-  count = "${var.use_split_database}"
-
   type      = "ingress"
   from_port = 5432
   to_port   = 5432

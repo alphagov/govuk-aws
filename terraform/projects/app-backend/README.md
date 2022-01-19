@@ -90,8 +90,6 @@ Backend node
 | <a name="input_renamed_app_service_records_alb"></a> [renamed\_app\_service\_records\_alb](#input\_renamed\_app\_service\_records\_alb) | List of renamed application service names that get traffic via internal alb | `list` | `[]` | no |
 | <a name="input_rules_for_existing_target_groups"></a> [rules\_for\_existing\_target\_groups](#input\_rules\_for\_existing\_target\_groups) | create an additional rule for a target group already created via rules\_host | `map` | `{}` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
-| <a name="input_use_split_mysql_database"></a> [use\_split\_mysql\_database](#input\_use\_split\_mysql\_database) | Set to 1 to use the new split mysql database instances | `string` | `"0"` | no |
-| <a name="input_use_split_postgres_database"></a> [use\_split\_postgres\_database](#input\_use\_split\_postgres\_database) | Set to 1 to use the new split postgres database instances | `string` | `"0"` | no |
 | <a name="input_user_data_snippets"></a> [user\_data\_snippets](#input\_user\_data\_snippets) | List of user-data snippets | `list` | n/a | yes |
 
 ## Outputs
