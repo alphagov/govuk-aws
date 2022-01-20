@@ -83,7 +83,6 @@ Infrastructure security settings:
 | <a name="input_role_poweruser_policy_arns"></a> [role\_poweruser\_policy\_arns](#input\_role\_poweruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | <a name="input_role_poweruser_user_arns"></a> [role\_poweruser\_user\_arns](#input\_role\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | <a name="input_role_step_function_role_policy_arns"></a> [role\_step\_function\_role\_policy\_arns](#input\_role\_step\_function\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_step_function_role_user_arns"></a> [role\_step\_function\_role\_user\_arns](#input\_role\_step\_function\_role\_user\_arns) | List of ARNs of users to attach to the role | `list` | `[]` | no |
 | <a name="input_role_user_policy_arns"></a> [role\_user\_policy\_arns](#input\_role\_user\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
 | <a name="input_role_user_user_arns"></a> [role\_user\_user\_arns](#input\_role\_user\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
 | <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | The public part of an SSH keypair | `string` | `null` | no |

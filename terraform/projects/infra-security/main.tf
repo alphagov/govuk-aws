@@ -98,12 +98,6 @@ variable "role_dataengineeruser_policy_arns" {
   default     = []
 }
 
-variable "role_step_function_role_user_arns" {
-  type        = list
-  description = "List of ARNs of users to attach to the role"
-  default     = []
-}
-
 variable "role_step_function_role_policy_arns" {
   type        = list
   description = "List of ARNs of policies to attach to the role"
