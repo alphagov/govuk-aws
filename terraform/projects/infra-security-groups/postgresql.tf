@@ -12,6 +12,7 @@ resource "aws_security_group" "postgresql-primary" {
   name        = "${var.stackname}_postgresql-primary_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to postgresql-primary from its clients"
+  count       = 0
 
   tags {
     Name = "${var.stackname}_postgresql-primary_access"
@@ -23,6 +24,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_account_postgres"
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
@@ -36,6 +38,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_backend_postgres"
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
@@ -49,6 +52,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_ckan_postgres" {
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
@@ -62,6 +66,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_email-alert-api_p
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
@@ -75,6 +80,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_publishing-api_po
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
@@ -88,6 +94,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_db-admin_postgres
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
@@ -101,6 +108,7 @@ resource "aws_security_group_rule" "postgresql-primary_ingress_data-science-data
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.postgresql-primary.id}"
