@@ -22,10 +22,6 @@ output "sg_asset-master-efs_id" {
   value = "${aws_security_group.asset-master-efs.id}"
 }
 
-output "sg_postgresql-primary_id" {
-  value = "${aws_security_group.postgresql-primary.id}"
-}
-
 output "sg_apt_external_elb_id" {
   value = "${aws_security_group.apt_external_elb.id}"
 }
