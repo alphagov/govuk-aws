@@ -144,7 +144,6 @@ No modules.
 | [aws_security_group.mysql-primary](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mysql-replica](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.offsite_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.postgresql-primary](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.prometheus](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.prometheus_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.prometheus_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -488,13 +487,6 @@ No modules.
 | [aws_security_group_rule.mysql-replica_ingress_frontend_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.offsite-ssh_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.offsite-ssh_ingress_office-and-carrenza_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_account_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_ckan_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_data-science-data_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_db-admin_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_email-alert-api_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.postgresql-primary_ingress_publishing-api_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.prometheus-elb_egress_prometheus_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.prometheus-elb_ingress_officeips_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.prometheus-internal-elb_egress_prometheus_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
