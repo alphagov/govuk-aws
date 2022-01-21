@@ -708,7 +708,6 @@ No modules.
 | <a name="output_sg_mysql-primary_id"></a> [sg\_mysql-primary\_id](#output\_sg\_mysql-primary\_id) | n/a |
 | <a name="output_sg_mysql-replica_id"></a> [sg\_mysql-replica\_id](#output\_sg\_mysql-replica\_id) | n/a |
 | <a name="output_sg_offsite_ssh_id"></a> [sg\_offsite\_ssh\_id](#output\_sg\_offsite\_ssh\_id) | n/a |
-| <a name="output_sg_postgresql-primary_id"></a> [sg\_postgresql-primary\_id](#output\_sg\_postgresql-primary\_id) | n/a |
 | <a name="output_sg_prometheus_external_elb_id"></a> [sg\_prometheus\_external\_elb\_id](#output\_sg\_prometheus\_external\_elb\_id) | n/a |
 | <a name="output_sg_prometheus_id"></a> [sg\_prometheus\_id](#output\_sg\_prometheus\_id) | n/a |
 | <a name="output_sg_prometheus_internal_elb_id"></a> [sg\_prometheus\_internal\_elb\_id](#output\_sg\_prometheus\_internal\_elb\_id) | n/a |
