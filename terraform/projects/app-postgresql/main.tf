@@ -192,7 +192,7 @@ module "postgresql-standby_rds_instance" {
   max_allocated_storage      = "${var.max_allocated_storage}"
   replicate_source_db        = "${module.postgresql-primary_rds_instance.rds_instance_id}"
   event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
-  skip_final_snapshot        = "${var.skip_final_snapshot}"
+  skip_final_snapshot        = true
   parameter_group_name       = "${aws_db_parameter_group.postgresql_pg.name}"
 }
 
