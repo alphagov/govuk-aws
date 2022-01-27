@@ -12,6 +12,7 @@ resource "aws_security_group" "mysql-primary" {
   name        = "${var.stackname}_mysql-primary_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to mysql-primary from its clients"
+  count       = 0
 
   tags {
     Name = "${var.stackname}_mysql-primary_access"
@@ -23,6 +24,7 @@ resource "aws_security_group_rule" "mysql-primary_ingress_backend_mysql" {
   from_port = 3306
   to_port   = 3306
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.mysql-primary.id}"
@@ -36,6 +38,7 @@ resource "aws_security_group_rule" "mysql-primary_ingress_whitehall-backend_mysq
   from_port = 3306
   to_port   = 3306
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.mysql-primary.id}"
@@ -49,6 +52,7 @@ resource "aws_security_group_rule" "mysql-primary_ingress_whitehall-frontend_mys
   from_port = 3306
   to_port   = 3306
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.mysql-primary.id}"
@@ -62,6 +66,7 @@ resource "aws_security_group_rule" "mysql-primary_ingress_db-admin_mysql" {
   from_port = 3306
   to_port   = 3306
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.mysql-primary.id}"
@@ -74,6 +79,7 @@ resource "aws_security_group" "mysql-replica" {
   name        = "${var.stackname}_mysql-replica_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to mysql-replica from its clients"
+  count       = 0
 
   tags {
     Name = "${var.stackname}_mysql-replica_access"
@@ -86,6 +92,7 @@ resource "aws_security_group_rule" "mysql-replica_ingress_frontend_mysql" {
   from_port = 3306
   to_port   = 3306
   protocol  = "tcp"
+  count     = 0
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.mysql-replica.id}"
