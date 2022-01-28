@@ -45,12 +45,6 @@ variable "elb_internal_certname" {
   description = "The ACM cert domain name to find the ARN of"
 }
 
-variable "remote_state_infra_database_backups_bucket_key_stack" {
-  type        = "string"
-  description = "Override stackname path to infra_database_backups_bucket remote state"
-  default     = ""
-}
-
 variable "remote_state_infra_graphite_backups_bucket_key_stack" {
   type        = "string"
   description = "Override stackname path to infra_graphite_backups_bucket remote state"
@@ -323,37 +317,9 @@ resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_cloudwatch
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "write_graphite_database_backups_iam_role_policy_attachment" {
-  count      = 1
-  role       = "${module.graphite-1.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.graphite_write_database_backups_bucket_policy_arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "read_integration_graphite_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "integration" ? 1 : 0}"
-  role       = "${module.graphite-1.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_graphite_read_database_backups_bucket_policy_arn}"
-}
-
-resource "aws_iam_role_policy_attachment" "read_staging_graphite_database_backups_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "staging" ? 1 : 0}"
-  role       = "${module.graphite-1.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_graphite_read_database_backups_bucket_policy_arn}"
-}
-
 resource "aws_iam_role_policy_attachment" "access_graphite_backups_iam_role_policy_attachment" {
   role       = "${module.graphite-1.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.infra_graphite_backups_bucket.access_graphite_backups_bucket_policy_arn}"
-}
-
-data "terraform_remote_state" "infra_database_backups_bucket" {
-  backend = "s3"
-
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
-    region = "${var.aws_region}"
-  }
 }
 
 data "terraform_remote_state" "infra_graphite_backups_bucket" {
