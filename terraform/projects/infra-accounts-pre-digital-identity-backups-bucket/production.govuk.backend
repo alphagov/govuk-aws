@@ -1,0 +1,4 @@
+bucket  = "govuk-terraform-steppingstone-production"
+key     = "govuk/infra-accounts-pre-digital-identity-backups-bucket.tfstate"
+encrypt = true
+region  = "eu-west-1"
