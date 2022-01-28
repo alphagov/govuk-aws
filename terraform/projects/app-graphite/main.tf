@@ -51,6 +51,12 @@ variable "remote_state_infra_database_backups_bucket_key_stack" {
   default     = ""
 }
 
+variable "remote_state_infra_graphite_backups_bucket_key_stack" {
+  type        = "string"
+  description = "Override stackname path to infra_graphite_backups_bucket remote state"
+  default     = "govuk"
+}
+
 variable "external_zone_name" {
   type        = "string"
   description = "The name of the Route53 zone that contains external records"
@@ -335,12 +341,27 @@ resource "aws_iam_role_policy_attachment" "read_staging_graphite_database_backup
   policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_graphite_read_database_backups_bucket_policy_arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "access_graphite_backups_iam_role_policy_attachment" {
+  role       = "${module.graphite-1.instance_iam_role_name}"
+  policy_arn = "${data.terraform_remote_state.infra_graphite_backups_bucket.access_graphite_backups_bucket_policy_arn}"
+}
+
 data "terraform_remote_state" "infra_database_backups_bucket" {
   backend = "s3"
 
   config {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
+    region = "${var.aws_region}"
+  }
+}
+
+data "terraform_remote_state" "infra_graphite_backups_bucket" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_graphite_backups_bucket_key_stack, var.stackname)}/infra-graphite-backups-bucket.tfstate"
     region = "${var.aws_region}"
   }
 }
