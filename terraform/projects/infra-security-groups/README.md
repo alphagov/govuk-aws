@@ -141,8 +141,6 @@ No modules.
 | [aws_security_group.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.monitoring_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.monitoring_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mysql-primary](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mysql-replica](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.offsite_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.prometheus](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.prometheus_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -480,11 +478,6 @@ No modules.
 | [aws_security_group_rule.monitoring_ingress_monitoring-internal-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.monitoring_ingress_monitoring-internal-elb_nsca](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.monitoring_ingress_monitoring-internal-elb_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mysql-primary_ingress_backend_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mysql-primary_ingress_db-admin_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mysql-primary_ingress_whitehall-backend_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mysql-primary_ingress_whitehall-frontend_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mysql-replica_ingress_frontend_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.offsite-ssh_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.offsite-ssh_ingress_office-and-carrenza_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.prometheus-elb_egress_prometheus_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -697,8 +690,6 @@ No modules.
 | <a name="output_sg_monitoring_external_elb_id"></a> [sg\_monitoring\_external\_elb\_id](#output\_sg\_monitoring\_external\_elb\_id) | n/a |
 | <a name="output_sg_monitoring_id"></a> [sg\_monitoring\_id](#output\_sg\_monitoring\_id) | n/a |
 | <a name="output_sg_monitoring_internal_elb_id"></a> [sg\_monitoring\_internal\_elb\_id](#output\_sg\_monitoring\_internal\_elb\_id) | n/a |
-| <a name="output_sg_mysql-primary_id"></a> [sg\_mysql-primary\_id](#output\_sg\_mysql-primary\_id) | n/a |
-| <a name="output_sg_mysql-replica_id"></a> [sg\_mysql-replica\_id](#output\_sg\_mysql-replica\_id) | n/a |
 | <a name="output_sg_offsite_ssh_id"></a> [sg\_offsite\_ssh\_id](#output\_sg\_offsite\_ssh\_id) | n/a |
 | <a name="output_sg_prometheus_external_elb_id"></a> [sg\_prometheus\_external\_elb\_id](#output\_sg\_prometheus\_external\_elb\_id) | n/a |
 | <a name="output_sg_prometheus_id"></a> [sg\_prometheus\_id](#output\_sg\_prometheus\_id) | n/a |
