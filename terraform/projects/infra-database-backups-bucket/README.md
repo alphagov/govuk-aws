@@ -123,14 +123,9 @@ No modules.
 | <a name="input_aws_backup_region"></a> [aws\_backup\_region](#input\_aws\_backup\_region) | AWS region | `string` | `"eu-west-2"` | no |
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_expiration_time"></a> [expiration\_time](#input\_expiration\_time) | Expiration time in days of S3 Objects | `string` | `"120"` | no |
-| <a name="input_expiration_time_whisper_mongo"></a> [expiration\_time\_whisper\_mongo](#input\_expiration\_time\_whisper\_mongo) | Expiration time in days for Whisper/Mongo S3 database backups | `string` | `"7"` | no |
-| <a name="input_glacier_storage_time"></a> [glacier\_storage\_time](#input\_glacier\_storage\_time) | Storage time in days for Glacier Objects | `string` | `"90"` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
-| <a name="input_replication_setting"></a> [replication\_setting](#input\_replication\_setting) | Whether replication is Enabled or Disabled | `string` | `"Enabled"` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
-| <a name="input_standard_s3_storage_time"></a> [standard\_s3\_storage\_time](#input\_standard\_s3\_storage\_time) | Storage time in days for Standard S3 Bucket Objects | `string` | `"30"` | no |
 
 ## Outputs
 

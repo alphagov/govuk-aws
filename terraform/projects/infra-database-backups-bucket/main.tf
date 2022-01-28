@@ -40,36 +40,6 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
-variable "standard_s3_storage_time" {
-  type        = "string"
-  description = "Storage time in days for Standard S3 Bucket Objects"
-  default     = "30"
-}
-
-variable "glacier_storage_time" {
-  type        = "string"
-  description = "Storage time in days for Glacier Objects"
-  default     = "90"
-}
-
-variable "expiration_time" {
-  type        = "string"
-  description = "Expiration time in days of S3 Objects"
-  default     = "120"
-}
-
-variable "expiration_time_whisper_mongo" {
-  type        = "string"
-  description = "Expiration time in days for Whisper/Mongo S3 database backups"
-  default     = "7"
-}
-
-variable "replication_setting" {
-  type        = "string"
-  description = "Whether replication is Enabled or Disabled"
-  default     = "Enabled"
-}
-
 # Set up the backend & provider for each region
 terraform {
   backend          "s3"             {}
@@ -111,130 +81,54 @@ resource "aws_s3_bucket" "database_backups" {
     target_prefix = "s3/govuk-${var.aws_environment}-database-backups/"
   }
 
-  # Production/Staging lifecycle rules.
-  #
-  # TODO: make staging use the same rules as integration. We don't need to
-  # retain backups of staging for very long.
-
-  lifecycle_rule {
-    id      = "mysql_lifecycle_rule"
-    prefix  = "mysql/"
-    enabled = "${var.aws_environment != "integration"}"
-
-    transition {
-      storage_class = "STANDARD_IA"
-      days          = "${var.standard_s3_storage_time}"
-    }
-
-    transition {
-      storage_class = "GLACIER"
-      days          = "${var.glacier_storage_time}"
-    }
-
-    expiration {
-      days = 120
-    }
-  }
-  lifecycle_rule {
-    id      = "postgres_lifecycle_rule"
-    prefix  = "postgres/"
-    enabled = "${var.aws_environment != "integration"}"
-
-    transition {
-      storage_class = "STANDARD_IA"
-      days          = "${var.standard_s3_storage_time}"
-    }
-
-    transition {
-      storage_class = "GLACIER"
-      days          = "${var.glacier_storage_time}"
-    }
-
-    expiration {
-      days = 120
-    }
-  }
-  lifecycle_rule {
-    id      = "mongo_daily_lifecycle_rule"
-    prefix  = "mongodb/daily"
-    enabled = "${var.aws_environment != "integration"}"
-
-    transition {
-      storage_class = "STANDARD_IA"
-      days          = "${var.standard_s3_storage_time}"
-    }
-
-    transition {
-      storage_class = "GLACIER"
-      days          = "${var.glacier_storage_time}"
-    }
-
-    expiration {
-      days = 120
-    }
-  }
-  lifecycle_rule {
-    id      = "mongo_regular_lifecycle_rule"
-    prefix  = "mongodb/regular"
+  versioning {
+    # It's not entirely clear if versioning is useful on this bucket – but it was previously configured this way,
+    # so we've decided not to change it. Whilst it helps protect against accidental deletion, it doesn't protect
+    # against malicious actors, so shouldn't be considered a security feature.
     enabled = true
-
-    expiration {
-      days = "${var.expiration_time_whisper_mongo}"
-    }
-  }
-  lifecycle_rule {
-    id      = "whisper_lifecycle_rule"
-    prefix  = "whisper/"
-    enabled = true
-
-    expiration {
-      days = "${var.expiration_time_whisper_mongo}"
-    }
   }
 
-  # Integration-specific lifecycle rules. These rules are created in all
-  # environments but are only enabled in Integration.
-  #
-  # TODO: create these only in environments where they're needed, instead of
-  # creating them everywhere and leaving them disabled.
-  #
-  # TODO: these are all set to the same var.expiration_time so just replace
-  # them with one rule. Similarly for the prod ones above.
-
   lifecycle_rule {
-    id      = "mysql_lifecycle_rule_integration"
-    prefix  = "mysql/"
-    enabled = "${var.aws_environment == "integration"}"
+    # Use a long retention period in production
+    id      = "long_retention_period"
+    enabled = "${var.aws_environment == "production"}"
 
+    # Ideally everything would go in the Standard (Infrequent Access) storage class when created.
+    # But newly created objects always go into Standard, and can only move into IA after at least 30 days.
+    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = 30
+    }
+
+    # Likewise, we have to wait at least another 30 days before we can move objects into Glacier storage.
+    transition {
+      storage_class = "GLACIER"
+      days          = 60
+    }
+
+    # Versioning is enabled on this bucket, so this rule will 'soft delete' objects.
+    # In AWS lingo, this means a 'delete marker' will be set on the current version of the object.
+    # More info on how expiration rules apply to versioned buckets here:
+    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/intro-lifecycle-rules.html#intro-lifecycle-rules-actions
     expiration {
-      days = "${var.expiration_time}"
+      days = 120
+    }
+
+    # This rule will 'hard delete' objects 1 day after they were 'soft deleted'.
+    # In other words: old database backups will be permanently deleted 1 day after they've expired.
+    noncurrent_version_expiration {
+      days = "1"
     }
   }
+
   lifecycle_rule {
-    id      = "postgres_lifecycle_rule_integration"
-    prefix  = "postgres/"
-    enabled = "${var.aws_environment == "integration"}"
+    # Use a short retention period in integration and staging
+    id      = "short_retention_period"
+    enabled = "${var.aws_environment != "production"}"
 
     expiration {
-      days = "${var.expiration_time}"
-    }
-  }
-  lifecycle_rule {
-    id      = "mongo_daily_lifecycle_rule_integration"
-    prefix  = "mongodb/daily"
-    enabled = "${var.aws_environment == "integration"}"
-
-    expiration {
-      days = "${var.expiration_time}"
-    }
-  }
-  lifecycle_rule {
-    id      = "whole_bucket_lifecycle_rule_integration"
-    prefix  = ""
-    enabled = "${var.aws_environment == "integration"}"
-
-    expiration {
-      days = "${var.expiration_time}"
+      days = "3"
     }
 
     noncurrent_version_expiration {
@@ -242,56 +136,16 @@ resource "aws_s3_bucket" "database_backups" {
     }
   }
 
-  # End of Integration-specific lifecycle rules.
-
-
-  # Lifecycle rule for coronavirus find support backup
-
-  lifecycle_rule {
-    id      = "coronavirus_find_support_lifecycle_rule"
-    prefix  = "coronavirus-find-support/production.sql.gzip"
-    enabled = true
-
-    expiration {
-      days = 365
-    }
-  }
-
-  # Lifecycle rule for GOV.UK accounts (pre digital identity) backup
-
-  lifecycle_rule {
-    id      = "govuk_accounts_pre_digital_identity_lifecycle_rule"
-    prefix  = "govuk-accounts-pre-digital-identity/"
-    enabled = true
-
-    transition {
-      storage_class = "STANDARD_IA"
-      days          = "${var.standard_s3_storage_time}"
-    }
-
-    transition {
-      storage_class = "GLACIER"
-      days          = "${var.glacier_storage_time}"
-    }
-
-    expiration {
-      days = 730
-    }
-  }
-  versioning {
-    enabled = true
-  }
   replication_configuration {
     role = "${aws_iam_role.backup_replication_role.arn}"
 
     rules {
       id     = "main_replication_rule"
-      prefix = ""
-      status = "${var.replication_setting}"
+      status = "Enabled"
 
       destination {
         bucket        = "${aws_s3_bucket.database_backups_replica.arn}"
-        storage_class = "STANDARD"
+        storage_class = "STANDARD_IA"
       }
     }
   }
@@ -303,8 +157,53 @@ resource "aws_s3_bucket" "database_backups_replica" {
   region   = "${var.aws_backup_region}"
   provider = "aws.eu-london"
 
+  tags {
+    Name            = "govuk-${var.aws_environment}-database-backups-replica"
+    aws_environment = "${var.aws_environment}"
+  }
+
   versioning {
     enabled = true
+  }
+
+  # Use the same lifecycle rules as the source bucket
+  # This ensures the replica bucket gets cleaned up in a timely manner
+  lifecycle_rule {
+    # Use a long retention period in production
+    id      = "long_retention_period"
+    enabled = "${var.aws_environment == "production"}"
+
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = 30
+    }
+
+    transition {
+      storage_class = "GLACIER"
+      days          = 60
+    }
+
+    expiration {
+      days = 120
+    }
+
+    noncurrent_version_expiration {
+      days = "1"
+    }
+  }
+
+  lifecycle_rule {
+    # Use a short retention period in integration and staging
+    id      = "short_retention_period"
+    enabled = "${var.aws_environment != "production"}"
+
+    expiration {
+      days = "3"
+    }
+
+    noncurrent_version_expiration {
+      days = "1"
+    }
   }
 }
 
