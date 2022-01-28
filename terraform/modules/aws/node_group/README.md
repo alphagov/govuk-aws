@@ -55,6 +55,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_asg_desired_capacity"></a> [asg\_desired\_capacity](#input\_asg\_desired\_capacity) | The autoscaling groups desired capacity | `string` | `"1"` | no |
 | <a name="input_asg_health_check_grace_period"></a> [asg\_health\_check\_grace\_period](#input\_asg\_health\_check\_grace\_period) | The time to wait after creation before checking the status of the instance | `string` | `"60"` | no |
+| <a name="input_asg_health_check_type"></a> [asg\_health\_check\_type](#input\_asg\_health\_check\_type) | The ASG health check Type: should Target Group health checks be ignored | `string` | `"EC2"` | no |
 | <a name="input_asg_max_size"></a> [asg\_max\_size](#input\_asg\_max\_size) | The autoscaling groups max\_size | `string` | `"1"` | no |
 | <a name="input_asg_min_size"></a> [asg\_min\_size](#input\_asg\_min\_size) | The autoscaling groups max\_size | `string` | `"1"` | no |
 | <a name="input_asg_notification_topic_arn"></a> [asg\_notification\_topic\_arn](#input\_asg\_notification\_topic\_arn) | The Topic ARN for Autoscaling Group notifications to be sent to | `string` | `""` | no |
