@@ -14,6 +14,10 @@ resource "aws_security_group" "mysql-primary" {
   description = "Access to mysql-primary from its clients"
   count       = 0
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags {
     Name = "${var.stackname}_mysql-primary_access"
   }
@@ -80,6 +84,10 @@ resource "aws_security_group" "mysql-replica" {
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   description = "Access to mysql-replica from its clients"
   count       = 0
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags {
     Name = "${var.stackname}_mysql-replica_access"
