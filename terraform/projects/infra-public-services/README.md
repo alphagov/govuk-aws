@@ -152,8 +152,6 @@ This project adds global resources for app components:
 | [aws_route53_record.mongo_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.monitoring_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mysql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.prometheus_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.prometheus_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.publishing_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
@@ -296,8 +294,6 @@ This project adds global resources for app components:
 | <a name="input_monitoring_internal_service_names"></a> [monitoring\_internal\_service\_names](#input\_monitoring\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_monitoring_internal_service_names_cname_dest"></a> [monitoring\_internal\_service\_names\_cname\_dest](#input\_monitoring\_internal\_service\_names\_cname\_dest) | This variable specifies the CNAME record destination to be associated with the service names defined in monitoring\_internal\_service\_names | `string` | `"alert"` | no |
 | <a name="input_monitoring_public_service_names"></a> [monitoring\_public\_service\_names](#input\_monitoring\_public\_service\_names) | n/a | `list` | `[]` | no |
-| <a name="input_mysql_internal_service_names"></a> [mysql\_internal\_service\_names](#input\_mysql\_internal\_service\_names) | n/a | `list` | `[]` | no |
-| <a name="input_postgresql_internal_service_names"></a> [postgresql\_internal\_service\_names](#input\_postgresql\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_prometheus_internal_service_names"></a> [prometheus\_internal\_service\_names](#input\_prometheus\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_prometheus_public_service_names"></a> [prometheus\_public\_service\_names](#input\_prometheus\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_publishing_api_internal_service_names"></a> [publishing\_api\_internal\_service\_names](#input\_publishing\_api\_internal\_service\_names) | n/a | `list` | `[]` | no |

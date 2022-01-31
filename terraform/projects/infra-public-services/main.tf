@@ -427,16 +427,6 @@ variable "monitoring_internal_service_names_cname_dest" {
   default     = "alert"
 }
 
-variable "mysql_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
-variable "postgresql_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
 variable "publishing_api_internal_service_names" {
   type    = "list"
   default = []
@@ -2066,32 +2056,6 @@ resource "aws_route53_record" "monitoring_internal_service_names" {
   name    = "${element(var.monitoring_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${var.monitoring_internal_service_names_cname_dest}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# Mysql
-#
-
-resource "aws_route53_record" "mysql_internal_service_names" {
-  count   = "${length(var.mysql_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.mysql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.mysql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-#
-# postgresql
-#
-
-resource "aws_route53_record" "postgresql_internal_service_names" {
-  count   = "${length(var.postgresql_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.postgresql_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.postgresql_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 
