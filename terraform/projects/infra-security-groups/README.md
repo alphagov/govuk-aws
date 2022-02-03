@@ -131,6 +131,9 @@ No modules.
 | [aws_security_group.licensify_backend_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.licensify_documentdb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.licensify_frontend_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.locations-api](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.locations-api_elb_internal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.locations-api_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.management](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mapit](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mapit_cache](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -404,6 +407,7 @@ No modules.
 | [aws_security_group_rule.ithc_ingress_frontend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_licensify_backend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_licensify_frontend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ithc_ingress_locations-api_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_mapit_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_publishing-api_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_router-backend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -447,6 +451,12 @@ No modules.
 | [aws_security_group_rule.licensify-frontend-internal-lb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.licensify-frontend_ingress_licensify-frontend-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.licensify-frontend_ingress_licensify-frontend-internal-lb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.locations-api-elb-external_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.locations-api-elb-external_ingress_any_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.locations-api-elb-internal_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.locations-api-elb-internal_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.locations-api_ingress_locations-api-elb-external_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.locations-api_ingress_locations-api-elb-internal_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.management_ingress_deploy_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.management_ingress_jumpbox_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.management_ingress_monitoring_nrpe](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
