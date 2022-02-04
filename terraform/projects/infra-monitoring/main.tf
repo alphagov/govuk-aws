@@ -113,16 +113,22 @@ resource "aws_s3_bucket" "aws-logging" {
     Environment = "${var.aws_environment}"
   }
 
-  # Expire everything after 30 days
   lifecycle_rule {
     enabled = true
 
+    # 'Soft delete' everything after 30 days (because versioning is enabled)
     expiration {
       days = 30
+    }
+
+    # Permanently delete everything after 31 days
+    noncurrent_version_expiration {
+      days = "1"
     }
   }
 
   versioning {
+    # Needs to be enabled because we have replication configured
     enabled = true
   }
 
