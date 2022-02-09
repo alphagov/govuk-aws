@@ -84,7 +84,7 @@ No modules.
 | <a name="input_listener_certificate_domain_name"></a> [listener\_certificate\_domain\_name](#input\_listener\_certificate\_domain\_name) | HTTPS Listener certificate domain name. | `string` | `""` | no |
 | <a name="input_listener_internal_certificate_domain_name"></a> [listener\_internal\_certificate\_domain\_name](#input\_listener\_internal\_certificate\_domain\_name) | HTTPS Listener internal certificate domain name. | `string` | `""` | no |
 | <a name="input_listener_secondary_certificate_domain_name"></a> [listener\_secondary\_certificate\_domain\_name](#input\_listener\_secondary\_certificate\_domain\_name) | HTTPS Listener secondary certificate domain name. | `string` | `""` | no |
-| <a name="input_listener_ssl_policy"></a> [listener\_ssl\_policy](#input\_listener\_ssl\_policy) | The name of the SSL Policy for HTTPS listeners. | `string` | `"ELBSecurityPolicy-2016-08"` | no |
+| <a name="input_listener_ssl_policy"></a> [listener\_ssl\_policy](#input\_listener\_ssl\_policy) | The name of the SSL Policy for HTTPS listeners. | `string` | `"ELBSecurityPolicy-TLS-1-2-2017-01"` | no |
 | <a name="input_load_balancer_type"></a> [load\_balancer\_type](#input\_load\_balancer\_type) | The type of load balancer to create. Possible values are application or network. The default value is application. | `string` | `"application"` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the LB. This name must be unique within your AWS account, can have a maximum of 32 characters. | `string` | n/a | yes |
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | A list of security group IDs to assign to the LB. Only valid for Load Balancers of type application. | `list` | `[]` | no |

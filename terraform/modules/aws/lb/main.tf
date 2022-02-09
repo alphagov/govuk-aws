@@ -94,7 +94,7 @@ variable "listener_internal_certificate_domain_name" {
 variable "listener_ssl_policy" {
   type        = "string"
   description = "The name of the SSL Policy for HTTPS listeners."
-  default     = "ELBSecurityPolicy-2016-08"
+  default     = "ELBSecurityPolicy-TLS-1-2-2017-01"
 }
 
 variable "internal" {
