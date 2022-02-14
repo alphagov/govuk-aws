@@ -11,14 +11,14 @@ Infrastructure security settings:
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.13.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.25.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.25 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.25.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.2 |
 
 ## Modules
 
@@ -69,22 +69,22 @@ Infrastructure security settings:
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
-| <a name="input_role_admin_policy_arns"></a> [role\_admin\_policy\_arns](#input\_role\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_admin_user_arns"></a> [role\_admin\_user\_arns](#input\_role\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
-| <a name="input_role_dataengineeruser_policy_arns"></a> [role\_dataengineeruser\_policy\_arns](#input\_role\_dataengineeruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_dataengineeruser_user_arns"></a> [role\_dataengineeruser\_user\_arns](#input\_role\_dataengineeruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
-| <a name="input_role_datascienceuser_policy_arns"></a> [role\_datascienceuser\_policy\_arns](#input\_role\_datascienceuser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_datascienceuser_user_arns"></a> [role\_datascienceuser\_user\_arns](#input\_role\_datascienceuser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
-| <a name="input_role_internal_admin_policy_arns"></a> [role\_internal\_admin\_policy\_arns](#input\_role\_internal\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_internal_admin_user_arns"></a> [role\_internal\_admin\_user\_arns](#input\_role\_internal\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
-| <a name="input_role_platformhealth_poweruser_policy_arns"></a> [role\_platformhealth\_poweruser\_policy\_arns](#input\_role\_platformhealth\_poweruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_platformhealth_poweruser_user_arns"></a> [role\_platformhealth\_poweruser\_user\_arns](#input\_role\_platformhealth\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
-| <a name="input_role_poweruser_policy_arns"></a> [role\_poweruser\_policy\_arns](#input\_role\_poweruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_poweruser_user_arns"></a> [role\_poweruser\_user\_arns](#input\_role\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
-| <a name="input_role_step_function_role_policy_arns"></a> [role\_step\_function\_role\_policy\_arns](#input\_role\_step\_function\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_user_policy_arns"></a> [role\_user\_policy\_arns](#input\_role\_user\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
-| <a name="input_role_user_user_arns"></a> [role\_user\_user\_arns](#input\_role\_user\_user\_arns) | List of ARNs of external users that can assume the role | `list` | `[]` | no |
+| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list(any)` | n/a | yes |
+| <a name="input_role_admin_policy_arns"></a> [role\_admin\_policy\_arns](#input\_role\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_admin_user_arns"></a> [role\_admin\_user\_arns](#input\_role\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
+| <a name="input_role_dataengineeruser_policy_arns"></a> [role\_dataengineeruser\_policy\_arns](#input\_role\_dataengineeruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_dataengineeruser_user_arns"></a> [role\_dataengineeruser\_user\_arns](#input\_role\_dataengineeruser\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
+| <a name="input_role_datascienceuser_policy_arns"></a> [role\_datascienceuser\_policy\_arns](#input\_role\_datascienceuser\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_datascienceuser_user_arns"></a> [role\_datascienceuser\_user\_arns](#input\_role\_datascienceuser\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
+| <a name="input_role_internal_admin_policy_arns"></a> [role\_internal\_admin\_policy\_arns](#input\_role\_internal\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_internal_admin_user_arns"></a> [role\_internal\_admin\_user\_arns](#input\_role\_internal\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
+| <a name="input_role_platformhealth_poweruser_policy_arns"></a> [role\_platformhealth\_poweruser\_policy\_arns](#input\_role\_platformhealth\_poweruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_platformhealth_poweruser_user_arns"></a> [role\_platformhealth\_poweruser\_user\_arns](#input\_role\_platformhealth\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
+| <a name="input_role_poweruser_policy_arns"></a> [role\_poweruser\_policy\_arns](#input\_role\_poweruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_poweruser_user_arns"></a> [role\_poweruser\_user\_arns](#input\_role\_poweruser\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
+| <a name="input_role_step_function_role_policy_arns"></a> [role\_step\_function\_role\_policy\_arns](#input\_role\_step\_function\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_user_policy_arns"></a> [role\_user\_policy\_arns](#input\_role\_user\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
+| <a name="input_role_user_user_arns"></a> [role\_user\_user\_arns](#input\_role\_user\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
 | <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | The public part of an SSH keypair | `string` | `null` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | `""` | no |
 
