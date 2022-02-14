@@ -27,91 +27,91 @@ variable "stackname" {
 }
 
 variable "role_admin_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_admin_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_internal_admin_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_internal_admin_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_platformhealth_poweruser_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_platformhealth_poweruser_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_poweruser_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_poweruser_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_datascienceuser_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_datascienceuser_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_dataengineeruser_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_dataengineeruser_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_step_function_role_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
 
 variable "role_user_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
   default     = []
 }
 
 variable "role_user_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }
@@ -123,7 +123,7 @@ variable "ssh_public_key" {
 }
 
 variable "office_ips" {
-  type        = list
+  type        = list(any)
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
