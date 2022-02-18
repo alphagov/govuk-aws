@@ -6,7 +6,7 @@ Creates S3 bucket for asset master attachments storage
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 
 ## Providers
 
