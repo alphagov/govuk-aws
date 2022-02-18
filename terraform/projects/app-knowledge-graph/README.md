@@ -8,7 +8,7 @@ The central knowledge graph which can be used to ask questions of GOV.UK content
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 1.40.0 |
 
 ## Providers

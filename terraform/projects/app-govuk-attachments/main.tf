@@ -60,7 +60,7 @@ variable "additional_policy_attachment_roles" {
 
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.14"
+  required_version = "= 0.11.15"
 }
 
 resource "aws_s3_bucket" "bucket" {

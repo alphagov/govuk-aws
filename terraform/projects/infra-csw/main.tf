@@ -20,7 +20,7 @@ variable "csw_agent_account_id" {}
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.14"
+  required_version = "= 0.11.15"
 }
 
 provider "aws" {

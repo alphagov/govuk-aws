@@ -12,7 +12,7 @@ Create resources to manage infrastructure and app monitoring:
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 

@@ -6,7 +6,7 @@ This project creates a multi-region EU bucket in google cloud, i.e. gcs.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | = 2.4.1 |
 
 ## Providers
