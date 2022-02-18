@@ -56,7 +56,7 @@ You can then configure a terraform project to use this backend by:
    ```
    terraform {
      backend          "gcs"            {}
-     required_version = "= 0.11.14"
+     required_version = "= 0.11.15"
    }
    ```
 

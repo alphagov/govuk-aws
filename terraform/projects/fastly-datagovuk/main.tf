@@ -48,7 +48,7 @@ variable "backend_domain" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.14"
+  required_version = "= 0.11.15"
 }
 
 provider "fastly" {
