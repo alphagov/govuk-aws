@@ -91,7 +91,7 @@ module "locations-api" {
 }
 
 # Internal ALB for locations api
-module "locations_api_internal_alb" {
+module "locations-api_internal_alb" {
   source                           = "../../modules/aws/lb"
   name                             = "${var.stackname}-locations-api-internal"
   internal                         = true
@@ -118,13 +118,13 @@ module "locations_api_internal_alb" {
 }
 
 # listerner rules for locations api internal ALB
-module "locations_api_internal_alb_rules" {
+module "locations-api_internal_alb_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
   name                   = "locations-api"
-  autoscaling_group_name = "${module.locations_api.autoscaling_group_name}"
+  autoscaling_group_name = "${module.locations-api.autoscaling_group_name}"
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  listener_arn           = "${module.locations_api_internal_alb.load_balancer_ssl_listeners[0]}"
+  listener_arn           = "${module.locations-api_internal_alb.load_balancer_ssl_listeners[0]}"
 
   default_tags = {
     Project         = "${var.stackname}"
@@ -139,8 +139,8 @@ resource "aws_route53_record" "service_record_internal" {
   type    = "A"
 
   alias {
-    name                   = "${module.locations_api_internal_alb.lb_dns_name}"
-    zone_id                = "${module.locations_api_internal_alb.lb_zone_id}"
+    name                   = "${module.locations-api_internal_alb.lb_dns_name}"
+    zone_id                = "${module.locations-api_internal_alb.lb_zone_id}"
     evaluate_target_health = true
   }
 }
@@ -163,16 +163,11 @@ resource "aws_security_group_rule" "locations-api-rds_ingress_locations_api_post
 # --------------------------------------------------------------
 
 output "locations_api_alb_internal_address" {
-  value       = "${module.locations_api_internal_alb.lb_dns_name}"
+  value       = "${module.locations-api_internal_alb.lb_dns_name}"
   description = "AWS' internal DNS name for the locations api ELB"
 }
 
 output "service_dns_name_internal" {
   value       = "${aws_route53_record.service_record_internal.name}"
   description = "DNS name to access the node service"
-}
-
-output "app_service_records_internal_dns_name" {
-  value       = "${aws_route53_record.app_service_records_internal.*.name}"
-  description = "DNS name to access the app service records"
 }

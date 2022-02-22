@@ -22,8 +22,8 @@ Locations API node
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_locations-api"></a> [locations-api](#module\_locations-api) | ../../modules/aws/node_group | n/a |
-| <a name="module_locations_api_internal_alb"></a> [locations\_api\_internal\_alb](#module\_locations\_api\_internal\_alb) | ../../modules/aws/lb | n/a |
-| <a name="module_locations_api_internal_alb_rules"></a> [locations\_api\_internal\_alb\_rules](#module\_locations\_api\_internal\_alb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
+| <a name="module_locations-api_internal_alb"></a> [locations-api\_internal\_alb](#module\_locations-api\_internal\_alb) | ../../modules/aws/lb | n/a |
+| <a name="module_locations-api_internal_alb_rules"></a> [locations-api\_internal\_alb\_rules](#module\_locations-api\_internal\_alb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
 
 ## Resources
 
@@ -68,6 +68,5 @@ Locations API node
 
 | Name | Description |
 |------|-------------|
-| <a name="output_app_service_records_internal_dns_name"></a> [app\_service\_records\_internal\_dns\_name](#output\_app\_service\_records\_internal\_dns\_name) | DNS name to access the app service records |
 | <a name="output_locations_api_alb_internal_address"></a> [locations\_api\_alb\_internal\_address](#output\_locations\_api\_alb\_internal\_address) | AWS' internal DNS name for the locations api ELB |
 | <a name="output_service_dns_name_internal"></a> [service\_dns\_name\_internal](#output\_service\_dns\_name\_internal) | DNS name to access the node service |
