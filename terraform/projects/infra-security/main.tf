@@ -396,6 +396,67 @@ resource "aws_iam_policy" "data-science-access-sagemaker" {
   policy      = data.aws_iam_policy_document.data-science-access-sagemaker.json
 }
 
+data "aws_iam_policy_document" "shield-response-team-access" {
+  statement {
+    sid = "SRTAccessProtectedResources"
+    actions = [
+      "cloudfront:List*",
+      "route53:List*",
+      "elasticloadbalancing:Describe*",
+      "cloudwatch:Describe*",
+      "cloudwatch:Get*",
+      "cloudwatch:List*",
+      "cloudfront:GetDistribution*",
+      "globalaccelerator:ListAccelerators",
+      "globalaccelerator:DescribeAccelerator",
+      "ec2:DescribeRegions",
+      "ec2:DescribeAddresses"
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid = "SRTManageProtections"
+    actions = [
+      "shield:*",
+      "waf:*",
+      "wafv2:*",
+      "waf-regional:*",
+      "elasticloadbalancing:SetWebACL",
+      "cloudfront:UpdateDistribution",
+      "apigateway:SetWebACL"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "shield-response-team-access" {
+  name        = "shield-response-team-access"
+  description = "Policy to be used by the AWS shield response team, if there is an active DDoS attempt and we ask for their help."
+  policy      = data.aws_iam_policy_document.shield-response-team-access.json
+}
+
+resource "aws_iam_role" "shield-response-team-access" {
+  name = "shield-response-team-access"
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "drt.shield.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "shield-response-team-access" {
+  role       = aws_iam_role.shield-response-team-access.name
+  policy_arn = aws_iam_policy.shield-response-team-access.arn
+}
+
 # SOPS KMS key
 
 data "aws_iam_policy_document" "kms_sops_policy" {
