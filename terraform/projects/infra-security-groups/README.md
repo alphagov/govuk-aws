@@ -687,6 +687,8 @@ No modules.
 | <a name="output_sg_licensify-frontend_id"></a> [sg\_licensify-frontend\_id](#output\_sg\_licensify-frontend\_id) | n/a |
 | <a name="output_sg_licensify-frontend_internal_lb_id"></a> [sg\_licensify-frontend\_internal\_lb\_id](#output\_sg\_licensify-frontend\_internal\_lb\_id) | n/a |
 | <a name="output_sg_licensify_documentdb_id"></a> [sg\_licensify\_documentdb\_id](#output\_sg\_licensify\_documentdb\_id) | n/a |
+| <a name="output_sg_locations-api_id"></a> [sg\_locations-api\_id](#output\_sg\_locations-api\_id) | n/a |
+| <a name="output_sg_locations-api_internal_alb_id"></a> [sg\_locations-api\_internal\_alb\_id](#output\_sg\_locations-api\_internal\_alb\_id) | n/a |
 | <a name="output_sg_management_id"></a> [sg\_management\_id](#output\_sg\_management\_id) | n/a |
 | <a name="output_sg_mapit_cache_id"></a> [sg\_mapit\_cache\_id](#output\_sg\_mapit\_cache\_id) | n/a |
 | <a name="output_sg_mapit_carrenza_alb_id"></a> [sg\_mapit\_carrenza\_alb\_id](#output\_sg\_mapit\_carrenza\_alb\_id) | n/a |

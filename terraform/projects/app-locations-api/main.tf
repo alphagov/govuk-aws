@@ -56,7 +56,7 @@ variable "instance_type" {
 # --------------------------------------------------------------
 terraform {
   locations_api    "s3"             {}
-  required_version = "= 0.11.14"
+  required_version = "= 0.11.15"
 }
 
 provider "aws" {
@@ -106,7 +106,7 @@ module "locations-api_internal_alb" {
 
   subnets = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
 
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_locations-api_internal_lb_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_locations-api_internal_alb_id}"]
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
@@ -149,14 +149,14 @@ data "aws_security_group" "locations-api-rds" {
   name = "${var.stackname}_locations-api_rds_access"
 }
 
-resource "aws_security_group_rule" "locations-api-rds_ingress_locations_api_postgres" {
+resource "aws_security_group_rule" "locations-api-rds_ingress_locations-api_postgres" {
   type      = "ingress"
   from_port = 5432
   to_port   = 5432
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.locations-api-rds.0.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_locations_api_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_locations-api_id}"
 }
 
 # Outputs
