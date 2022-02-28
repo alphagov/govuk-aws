@@ -25,7 +25,7 @@ variable "instance_ami_filter_name" {
   default     = ""
 }
 
-variable "alb_internal_certname" {
+variable "elb_internal_certname" {
   type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
@@ -70,7 +70,7 @@ data "aws_route53_zone" "internal" {
 }
 
 data "aws_acm_certificate" "alb_internal_cert" {
-  domain   = "${var.alb_internal_certname}"
+  domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
 }
 
@@ -98,7 +98,7 @@ module "locations-api_alb_internal" {
   vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
   access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "alb/${var.stackname}-locations-api-internal-alb"
-  listener_certificate_domain_name = "${var.alb_internal_certname}"
+  listener_certificate_domain_name = "${var.elb_internal_certname}"
 
   listener_action = {
     "HTTPS:443" = "HTTP:80"
