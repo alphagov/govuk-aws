@@ -354,8 +354,8 @@ output "sg_locations-api_id" {
   value = "${aws_security_group.locations-api.id}"
 }
 
-output "sg_locations-api_internal_alb_id" {
-  value = "${aws_security_group.locations-api_internal_alb.id}"
+output "sg_locations-api_alb_internal" {
+  value = "${aws_security_group.locations-api_alb_internal.id}"
 }
 
 output "sg_mapit_id" {

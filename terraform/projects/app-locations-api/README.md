@@ -22,8 +22,8 @@ Locations API node
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_locations-api"></a> [locations-api](#module\_locations-api) | ../../modules/aws/node_group | n/a |
-| <a name="module_locations-api_internal_alb"></a> [locations-api\_internal\_alb](#module\_locations-api\_internal\_alb) | ../../modules/aws/lb | n/a |
-| <a name="module_locations-api_internal_alb_rules"></a> [locations-api\_internal\_alb\_rules](#module\_locations-api\_internal\_alb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
+| <a name="module_locations-api_alb_internal"></a> [locations-api\_alb\_internal](#module\_locations-api\_alb\_internal) | ../../modules/aws/lb | n/a |
+| <a name="module_locations-api_alb_internal_rules"></a> [locations-api\_alb\_internal\_rules](#module\_locations-api\_alb\_internal\_rules) | ../../modules/aws/lb_listener_rules | n/a |
 
 ## Resources
 

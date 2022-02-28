@@ -91,7 +91,7 @@ module "locations-api" {
 }
 
 # Internal ALB for locations api
-module "locations-api_internal_alb" {
+module "locations-api_alb_internal" {
   source                           = "../../modules/aws/lb"
   name                             = "${var.stackname}-locations-api-internal"
   internal                         = true
@@ -106,7 +106,7 @@ module "locations-api_internal_alb" {
 
   subnets = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
 
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_locations-api_internal_alb_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_locations-api_alb_internal}"]
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
@@ -118,13 +118,13 @@ module "locations-api_internal_alb" {
 }
 
 # listerner rules for locations api internal ALB
-module "locations-api_internal_alb_rules" {
+module "locations-api_alb_internal_rules" {
   source                 = "../../modules/aws/lb_listener_rules"
   name                   = "locations-api"
   autoscaling_group_name = "${module.locations-api.autoscaling_group_name}"
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  listener_arn           = "${module.locations-api_internal_alb.load_balancer_ssl_listeners[0]}"
+  listener_arn           = "${module.locations-api_alb_internal.load_balancer_ssl_listeners[0]}"
 
   default_tags = {
     Project         = "${var.stackname}"
@@ -139,8 +139,8 @@ resource "aws_route53_record" "service_record_internal" {
   type    = "A"
 
   alias {
-    name                   = "${module.locations-api_internal_alb.lb_dns_name}"
-    zone_id                = "${module.locations-api_internal_alb.lb_zone_id}"
+    name                   = "${module.locations-api_alb_internal.lb_dns_name}"
+    zone_id                = "${module.locations-api_alb_internal.lb_zone_id}"
     evaluate_target_health = true
   }
 }
@@ -163,7 +163,7 @@ resource "aws_security_group_rule" "locations-api-rds_ingress_locations-api_post
 # --------------------------------------------------------------
 
 output "locations_api_alb_internal_address" {
-  value       = "${module.locations-api_internal_alb.lb_dns_name}"
+  value       = "${module.locations-api_alb_internal.lb_dns_name}"
   description = "AWS' internal DNS name for the locations api ALB"
 }
 
