@@ -10,21 +10,21 @@
 # === Outputs:
 #
 # sg_locations-api_internal_id
-# sg_locations-api_elb_internal_id
+# sg_locations-api_alb_internal_id
 # sg_locations-api_external_id
-# sg_locations-api_elb_external_id
+# sg_locations-api_alb_external_id
 #
 resource "aws_security_group" "locations-api" {
   name        = "${var.stackname}_locations-api_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access to the locations-api host from its ELB"
+  description = "Access to the locations-api host from its ALB"
 
   tags {
     Name = "${var.stackname}_locations-api_access"
   }
 }
 
-resource "aws_security_group_rule" "locations-api_ingress_locations-api-elb-internal_http" {
+resource "aws_security_group_rule" "locations-api_ingress_locations-api-alb-internal_http" {
   type      = "ingress"
   from_port = 80
   to_port   = 80
@@ -34,40 +34,40 @@ resource "aws_security_group_rule" "locations-api_ingress_locations-api-elb-inte
   security_group_id = "${aws_security_group.locations-api.id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.locations-api_elb_internal.id}"
+  source_security_group_id = "${aws_security_group.locations-api_alb_internal.id}"
 }
 
-resource "aws_security_group" "locations-api_elb_internal" {
-  name        = "${var.stackname}_locations-api_elb_internal_access"
+resource "aws_security_group" "locations-api_alb_internal" {
+  name        = "${var.stackname}_locations-api_alb_internal_access"
   vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  description = "Access the locations-api ELB"
+  description = "Access the locations-api ALB"
 
   tags {
-    Name = "${var.stackname}_locations-api_elb_access"
+    Name = "${var.stackname}_locations-api_alb_access"
   }
 }
 
 # TODO: Audit
-resource "aws_security_group_rule" "locations-api-elb-internal_ingress_management_https" {
+resource "aws_security_group_rule" "locations-api-alb-internal_ingress_management_https" {
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.locations-api_elb_internal.id}"
+  security_group_id = "${aws_security_group.locations-api_alb_internal.id}"
 
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.management.id}"
 }
 
-resource "aws_security_group_rule" "locations-api-elb-internal_egress_any_any" {
+resource "aws_security_group_rule" "locations-api-alb-internal_egress_any_any" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.locations-api_elb_internal.id}"
+  security_group_id = "${aws_security_group.locations-api_alb_internal.id}"
 }
 
 resource "aws_security_group" "locations-api_ithc_access" {
