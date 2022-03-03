@@ -57,6 +57,7 @@ Infrastructure security settings:
 | [aws_kms_alias.sops](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
 | [aws_kms_key.licensify_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_key.shared_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [aws_kms_key.router_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_key.sops](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.allow-iam-key-rotation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -102,3 +103,4 @@ Infrastructure security settings:
 | <a name="output_shared_documentdb_kms_key_arn"></a> [shared\_documentdb\_kms\_key\_arn](#output\_shared\_documentdb\_kms\_key\_arn) | The ARN of the Shared DocumentDB KMS key |
 | <a name="output_sops_kms_key_arn"></a> [sops\_kms\_key\_arn](#output\_sops\_kms\_key\_arn) | The ARN of the Sops KMS key |
 | <a name="output_user_roles_and_arns"></a> [user\_roles\_and\_arns](#output\_user\_roles\_and\_arns) | Map of '$username-user' to role ARN, for the *-user roles. e.g. {'joe.bloggs-user': 'arn:aws:iam::123467890123:role/joe.bloggs-user'} |
+| <a name="output_router_documentdb_kms_key_arn"></a> [router\_documentdb\_kms\_key\_arn](#output\_router\_documentdb\_kms\_key\_arn) | The ARN of the Router DocumentDB KMS key |

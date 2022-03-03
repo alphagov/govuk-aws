@@ -561,6 +561,12 @@ resource "aws_kms_key" "shared_documentdb" {
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
 }
 
+resource "aws_kms_key" "router_documentdb" {
+  description = "Encryption key for Router DocumentDB"
+  policy      = data.aws_iam_policy_document.kms_sops_policy.json
+}
+
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -592,4 +598,9 @@ output "licensify_documentdb_kms_key_arn" {
 output "shared_documentdb_kms_key_arn" {
   value       = aws_kms_key.shared_documentdb.arn
   description = "The ARN of the Shared DocumentDB KMS key"
+}
+
+output "router_documentdb_kms_key_arn" {
+  value       = aws_kms_key.router_documentdb.arn
+  description = "The ARN of the Router DocumentDB KMS key"
 }
