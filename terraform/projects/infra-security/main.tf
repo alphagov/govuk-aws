@@ -511,6 +511,11 @@ resource "aws_kms_alias" "sops" {
   target_key_id = aws_kms_key.sops.key_id
 }
 
+resource "aws_kms_key" "imminence_documentdb" {
+  description = "Encryption key for Imminence DocumentDB"
+  policy      = data.aws_iam_policy_document.kms_sops_policy.json
+}
+
 resource "aws_kms_key" "licensify_documentdb" {
   description = "Encryption key for Licensify DocumentDB"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
@@ -542,6 +547,11 @@ output "user_roles_and_arns" {
 output "sops_kms_key_arn" {
   value       = aws_kms_key.sops.arn
   description = "The ARN of the Sops KMS key"
+}
+
+output "imminence_documentdb_kms_key_arn" {
+  value       = aws_kms_key.imminence_documentdb.arn
+  description = "The ARN of the Imminence DocumentDB KMS key"
 }
 
 output "licensify_documentdb_kms_key_arn" {
