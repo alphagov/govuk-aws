@@ -3,7 +3,6 @@
 Dedicated DocumentDB to support the router apps:
   1. router
   2. router-api
-  3. authenticating-proxy
 
 ## Requirements
 
@@ -71,4 +70,4 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_router_documentdb_endpoint"></a> [router\_documentdb\_endpoint](#output\_router\_documentdb\_endpoint) | The endpoint of the router DocumentDB |
+| <a name="output_router_documentdb_endpoint"></a> [router\_documentdb\_endpoint](#output\_router\_documentdb\_endpoint) | The endpoint of the Router DocumentDB |

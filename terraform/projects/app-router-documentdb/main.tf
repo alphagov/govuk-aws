@@ -4,7 +4,6 @@
 * Dedicated DocumentDB to support the router apps:
 *   1. router
 *   2. router-api
-*   3. authenticating-proxy
 */
 variable "aws_environment" {
   type        = "string"
@@ -164,5 +163,5 @@ resource "aws_route53_record" "share-documentdb_internal_service_cname" {
 # --------------------------------------------------------------
 output "router_documentdb_endpoint" {
   value       = "${aws_docdb_cluster.cluster.endpoint}"
-  description = "The endpoint of the router DocumentDB"
+  description = "The endpoint of the Router DocumentDB"
 }
