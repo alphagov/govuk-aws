@@ -11,18 +11,9 @@ aws elb register-instances-with-load-balancer --load-balancer-name ${elb_name} -
 
 sudo locale-gen en_GB.UTF-8
 
-# Upgrade pip
-pip install --upgrade pip
-
-# Install pip and dependencies used in this start-up script
 sudo apt install -y python-pip
 pip install awscli==1.19.112
-pip install futures
 
-# Install Python 3.7
-sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt-get update
-sudo apt-get install -y python3.7
-sudo apt install -y python3-pip
 sudo apt install -y libpq-dev
 sudo apt install -y libicu-dev
 
@@ -30,17 +21,6 @@ sudo apt install -y libicu-dev
 sudo apt install -y zip unzip
 
 sudo su - ubuntu
-
-# Create Python 3.7 virtual environment
-cd /var
-mkdir envs
-cd envs
-sudo apt install -y virtualenv
-virtualenv -p python3.7 python37
-source python37/bin/activate
-sudo chown -R ubuntu:ubuntu /var/envs/python37
-
-pip install csvkit
 
 # Create data dir
 sudo mkdir /var/data
