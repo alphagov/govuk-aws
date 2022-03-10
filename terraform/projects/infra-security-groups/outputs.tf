@@ -350,6 +350,14 @@ output "sg_licensify-backend_id" {
   value = "${aws_security_group.licensify-backend.id}"
 }
 
+output "sg_locations-api_id" {
+  value = "${aws_security_group.locations-api.id}"
+}
+
+output "sg_locations-api_internal_lb_id" {
+  value = "${aws_security_group.locations-api_internal_lb.id}"
+}
+
 output "sg_mapit_id" {
   value = "${aws_security_group.mapit.id}"
 }
