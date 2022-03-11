@@ -560,3 +560,13 @@ output "ecr_repository_url" {
   value       = "${aws_ecr_repository.repo.repository_url}"
   description = "URL of the ECR repository"
 }
+
+output "search_relevancy_s3_policy_arn" {
+  value       = "${aws_iam_policy.search_relevancy_bucket_access.arn}"
+  description = "ARN of the policy used to access the search-relevancy S3 bucket"
+}
+
+output "sitemaps_s3_policy_arn" {
+  value       = "${aws_iam_policy.sitemaps_bucket_access.arn}"
+  description = "ARN of the policy used to access the sitemaps S3 bucket"
+}
