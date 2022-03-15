@@ -63,4 +63,6 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_asset_manager_bucket_arn"></a> [asset\_manager\_bucket\_arn](#output\_asset\_manager\_bucket\_arn) | n/a |
