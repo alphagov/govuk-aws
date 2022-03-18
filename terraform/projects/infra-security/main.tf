@@ -375,6 +375,7 @@ resource "aws_iam_policy" "data-science-access-glue" {
 data "aws_iam_policy_document" "data-science-access-sagemaker" {
   statement {
     actions = [
+      "sagemaker:CreateCodeRepository",
       "sagemaker:CreateNotebookInstance",
       "sagemaker:CreatePresignedNotebookInstanceUrl",
       "sagemaker:DescribeNotebookInstance",
