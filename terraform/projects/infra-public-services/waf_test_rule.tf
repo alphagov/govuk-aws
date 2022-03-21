@@ -16,7 +16,7 @@ resource "aws_wafregional_regex_match_set" "x_always_block" {
       type = "HEADER"
     }
 
-    regex_pattern_set_id = "${aws_wafregional_regex_pattern_set.x_always_block.id}"
+    regex_pattern_set_id = aws_wafregional_regex_pattern_set.x_always_block.id
     text_transformation  = "NONE"
   }
 }
@@ -26,7 +26,7 @@ resource "aws_wafregional_rule" "x_always_block" {
   metric_name = "XAlwaysBlock"
 
   predicate {
-    data_id = "${aws_wafregional_regex_match_set.x_always_block.id}"
+    data_id = aws_wafregional_regex_match_set.x_always_block.id
     negated = false
     type    = "RegexMatch"
   }
