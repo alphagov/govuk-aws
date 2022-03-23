@@ -7,13 +7,13 @@ Dedicated DocumentDB to support the imminence app.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 1.1.7 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -24,12 +24,12 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_docdb_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_cluster) | resource |
-| [aws_docdb_cluster_instance.cluster_instances](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_cluster_instance) | resource |
-| [aws_docdb_cluster_parameter_group.parameter_group](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_cluster_parameter_group) | resource |
-| [aws_docdb_subnet_group.cluster_subnet](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/docdb_subnet_group) | resource |
-| [aws_route53_record.share-documentdb_internal_service_cname](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_zone.internal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) | data source |
+| [aws_docdb_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster) | resource |
+| [aws_docdb_cluster_instance.cluster_instances](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster_instance) | resource |
+| [aws_docdb_cluster_parameter_group.parameter_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster_parameter_group) | resource |
+| [aws_docdb_subnet_group.cluster_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_subnet_group) | resource |
+| [aws_route53_record.share-documentdb_internal_service_cname](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_zone.internal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_root_dns_zones](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
