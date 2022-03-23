@@ -145,7 +145,7 @@ resource "aws_docdb_cluster" "cluster" {
   vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_imminence_documentdb_id}"]
 
   # enabled_cloudwatch_logs_exports is ["profiler"] if profiling is enabled, otherwise [].
-  enabled_cloudwatch_logs_exports = ["${slice("${tolist(["profiler"])}", 0, var.profiler == "enabled" ? 1 : 0)}"]
+  enabled_cloudwatch_logs_exports = var.profiler == "enabled" ? ["profiler"] : []
 
   tags = {
     Service  = "imminence documentdb"
