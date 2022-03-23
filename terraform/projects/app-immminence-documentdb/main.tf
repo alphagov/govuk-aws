@@ -4,7 +4,7 @@
 * Dedicated DocumentDB to support the imminence app.
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS environment"
 }
 
@@ -14,68 +14,68 @@ data "aws_route53_zone" "internal" {
 }
 
 variable "internal_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains internal records"
 }
 
 variable "internal_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type used for DocumentDB resources"
   default     = "db.r5.large"
 }
 
 variable "instance_count" {
-  type        = "string"
+  type        = string
   description = "Instance count used for DocumentDB resources"
   default     = "3"
 }
 
 variable "master_username" {
-  type        = "string"
+  type        = string
   description = "Username of master user on DocumentDB cluster"
 }
 
 variable "master_password" {
-  type        = "string"
+  type        = string
   description = "Password of master user on DocumentDB cluster"
 }
 
 variable "tls" {
-  type        = "string"
+  type        = string
   description = "Whether to enable or disable TLS for the DocumentDB cluster. Must be either 'enabled' or 'disabled'."
   default     = "disabled"
 }
 
 variable "profiler" {
-  type        = "string"
+  type        = string
   description = "Whether to log slow queries to CloudWatch. Must be either 'enabled' or 'disabled'."
   default     = "enabled"
 }
 
 variable "profiler_threshold_ms" {
-  type        = "string"
+  type        = string
   description = "Queries which take longer than this number of milliseconds are logged to CloudWatch if profiler is enabled. Minimum is 50."
   default     = "300"
 }
 
 variable "backup_retention_period" {
-  type        = "string"
+  type        = string
   description = "Retention period in days for DocumentDB automatic snapshots"
   default     = "1"
 }
@@ -83,13 +83,19 @@ variable "backup_retention_period" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 1.1.7"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.46.0"
 }
 
 resource "aws_docdb_cluster_instance" "cluster_instances" {
