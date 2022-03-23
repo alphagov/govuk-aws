@@ -84,7 +84,7 @@ variable "backup_retention_period" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= ~> 1.1"
+  required_version = "~> 1.1"
 
   required_providers {
     aws = {
