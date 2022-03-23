@@ -108,7 +108,7 @@ resource "aws_docdb_cluster_instance" "cluster_instances" {
 
 resource "aws_docdb_subnet_group" "cluster_subnet" {
   name       = "imminence-documentdb-${var.aws_environment}"
-  subnet_ids = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  subnet_ids = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
 }
 
 resource "aws_docdb_cluster_parameter_group" "parameter_group" {
@@ -141,8 +141,8 @@ resource "aws_docdb_cluster" "cluster" {
   storage_encrypted               = true
   backup_retention_period         = var.backup_retention_period
   db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.parameter_group.name
-  kms_key_id                      = data.terraform_remote_state.infra_security.imminence_documentdb_kms_key_arn
-  vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_imminence_documentdb_id}"]
+  kms_key_id                      = data.terraform_remote_state.infra_security.outputs.imminence_documentdb_kms_key_arn
+  vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_imminence_documentdb_id}"]
 
   # enabled_cloudwatch_logs_exports is ["profiler"] if profiling is enabled, otherwise [].
   enabled_cloudwatch_logs_exports = ["${slice("${list("profiler")}", 0, var.profiler == "enabled" ? 1 : 0)}"]
