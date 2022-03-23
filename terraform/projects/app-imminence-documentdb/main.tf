@@ -9,7 +9,7 @@ variable "aws_environment" {
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
+  name         = var.internal_zone_name
   private_zone = true
 }
 
@@ -95,15 +95,15 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region = var.aws_region
 }
 
 resource "aws_docdb_cluster_instance" "cluster_instances" {
-  count              = "${var.instance_count}"
+  count              = var.instance_count
   identifier         = "imminence-documentdb-${count.index}"
-  cluster_identifier = "${aws_docdb_cluster.cluster.id}"
-  instance_class     = "${var.instance_type}"
-  tags               = "${aws_docdb_cluster.cluster.tags}"
+  cluster_identifier = aws_docdb_cluster.cluster.id
+  instance_class     = var.instance_type
+  tags               = aws_docdb_cluster.cluster.tags
 }
 
 resource "aws_docdb_subnet_group" "cluster_subnet" {
@@ -118,30 +118,30 @@ resource "aws_docdb_cluster_parameter_group" "parameter_group" {
 
   parameter {
     name  = "tls"
-    value = "${var.tls}"
+    value = var.tls
   }
 
   parameter {
     name  = "profiler"
-    value = "${var.profiler}"
+    value = var.profiler
   }
 
   parameter {
     name  = "profiler_threshold_ms"
-    value = "${var.profiler_threshold_ms}"
+    value = var.profiler_threshold_ms
   }
 }
 
 resource "aws_docdb_cluster" "cluster" {
   cluster_identifier              = "imminence-documentdb-${var.aws_environment}"
   availability_zones              = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  db_subnet_group_name            = "${aws_docdb_subnet_group.cluster_subnet.name}"
-  master_username                 = "${var.master_username}"
-  master_password                 = "${var.master_password}"
+  db_subnet_group_name            = aws_docdb_subnet_group.cluster_subnet.name
+  master_username                 = var.master_username
+  master_password                 = var.master_password
   storage_encrypted               = true
-  backup_retention_period         = "${var.backup_retention_period}"
-  db_cluster_parameter_group_name = "${aws_docdb_cluster_parameter_group.parameter_group.name}"
-  kms_key_id                      = "${data.terraform_remote_state.infra_security.imminence_documentdb_kms_key_arn}"
+  backup_retention_period         = var.backup_retention_period
+  db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.parameter_group.name
+  kms_key_id                      = data.terraform_remote_state.infra_security.imminence_documentdb_kms_key_arn
   vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_imminence_documentdb_id}"]
 
   # enabled_cloudwatch_logs_exports is ["profiler"] if profiling is enabled, otherwise [].
@@ -156,7 +156,7 @@ resource "aws_docdb_cluster" "cluster" {
 }
 
 resource "aws_route53_record" "share-documentdb_internal_service_cname" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "imminence-documentdb.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
@@ -166,6 +166,6 @@ resource "aws_route53_record" "share-documentdb_internal_service_cname" {
 # Outputs
 # --------------------------------------------------------------
 output "imminence_documentdb_endpoint" {
-  value       = "${aws_docdb_cluster.cluster.endpoint}"
+  value       = aws_docdb_cluster.cluster.endpoint
   description = "The endpoint of the Imminence DocumentDB"
 }
