@@ -108,7 +108,7 @@ resource "aws_docdb_cluster_instance" "cluster_instances" {
 
 resource "aws_docdb_subnet_group" "cluster_subnet" {
   name       = "imminence-documentdb-${var.aws_environment}"
-  subnet_ids = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 }
 
 resource "aws_docdb_cluster_parameter_group" "parameter_group" {
