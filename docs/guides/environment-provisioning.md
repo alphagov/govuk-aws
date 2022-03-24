@@ -475,6 +475,7 @@ To ensure that applications deploy correctly, ensure that the datastores exist:
 `app-rabbitmq`
 `app-rate-limit-redis`
 `app-router-backend`
+`app-imminence-documentdb`
 `app-shared-documentdb`
 `app-transition-postgresql`
 

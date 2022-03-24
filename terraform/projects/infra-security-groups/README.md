@@ -691,6 +691,7 @@ No modules.
 | <a name="output_sg_graphite_external_elb_id"></a> [sg\_graphite\_external\_elb\_id](#output\_sg\_graphite\_external\_elb\_id) | n/a |
 | <a name="output_sg_graphite_id"></a> [sg\_graphite\_id](#output\_sg\_graphite\_id) | n/a |
 | <a name="output_sg_graphite_internal_elb_id"></a> [sg\_graphite\_internal\_elb\_id](#output\_sg\_graphite\_internal\_elb\_id) | n/a |
+| <a name="output_sg_imminence_documentdb_id"></a> [sg\_imminence\_documentdb\_id](#output\_sg\_imminence\_documentdb\_id) | n/a |
 | <a name="output_sg_jumpbox_id"></a> [sg\_jumpbox\_id](#output\_sg\_jumpbox\_id) | n/a |
 | <a name="output_sg_knowledge-graph_elb_external_id"></a> [sg\_knowledge-graph\_elb\_external\_id](#output\_sg\_knowledge-graph\_elb\_external\_id) | n/a |
 | <a name="output_sg_knowledge-graph_id"></a> [sg\_knowledge-graph\_id](#output\_sg\_knowledge-graph\_id) | n/a |

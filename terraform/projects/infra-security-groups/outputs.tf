@@ -222,6 +222,10 @@ output "sg_shared_documentdb_id" {
   value = "${aws_security_group.shared-documentdb.id}"
 }
 
+output "sg_imminence_documentdb_id" {
+  value = "${aws_security_group.imminence-documentdb.id}"
+}
+
 output "sg_draft-cache_id" {
   value = "${aws_security_group.draft-cache.id}"
 }
