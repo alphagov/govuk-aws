@@ -31,7 +31,8 @@ resource "aws_security_group_rule" "imminence-documentdb_ingress_db-admin_mongod
   source_security_group_id = "${aws_security_group.db-admin.id}"
 }
 
-# Allow imminence apps on backend machines to access the imminence documentdb cluster
+# Allow imminence apps in the backend group to access the imminence documentdb cluster
+# See source_security_group_id for how to tighten this.
 resource "aws_security_group_rule" "imminence-documentdb_ingress_backend_imminence_apps" {
   type      = "ingress"
   from_port = 27017
@@ -42,5 +43,8 @@ resource "aws_security_group_rule" "imminence-documentdb_ingress_backend_imminen
   security_group_id = "${aws_security_group.imminence-documentdb.id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.imminence-backend.id}"
+  # When a specialised imminence backend groups is made, update this to
+  # lock it down to just that, not all apps in the backend group
+  # source_security_group_id = "${aws_security_group.imminence-backend.id}"
+  source_security_group_id = "${aws_security_group.backend.id}"
 }
