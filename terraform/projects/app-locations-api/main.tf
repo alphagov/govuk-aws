@@ -103,6 +103,7 @@ module "internal_lb" {
   access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/locations-api-internal-lb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
+  target_group_health_check_path   = "/_healthcheck-ready_locations-api"
 
   listener_action = {
     "HTTPS:443" = "HTTP:80"
