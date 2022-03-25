@@ -58,16 +58,6 @@ variable "app_service_records" {
   default     = []
 }
 
-variable "external_domain_name" {
-  type        = "string"
-  description = "The domain name of the external DNS records, it could be different from the zone name"
-}
-
-variable "external_zone_name" {
-  type        = "string"
-  description = "The name of the Route53 zone that contains external records"
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -78,11 +68,6 @@ terraform {
 data "aws_route53_zone" "internal" {
   name         = "${var.internal_zone_name}"
   private_zone = true
-}
-
-data "aws_route53_zone" "external" {
-  name         = "${var.external_zone_name}"
-  private_zone = false
 }
 
 provider "aws" {
@@ -135,10 +120,10 @@ resource "aws_route53_record" "service_record" {
 
 resource "aws_route53_record" "app_service_records" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${var.external_domain_name}"
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${var.internal_zone_name}"
   type    = "CNAME"
-  records = ["locations-api.${var.external_domain_name}"]
+  records = ["locations-api.${var.internal_zone_name}"]
   ttl     = "300"
 }
 
