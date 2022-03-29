@@ -1054,40 +1054,6 @@ resource "aws_route53_record" "content_data_api_postgresql_internal_service_name
 
 # Content-store
 
-module "content-store_public_lb" {
-  source                                     = "../../modules/aws/lb"
-  name                                       = "${var.stackname}-content-store-public"
-  internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix                  = "elb/${var.stackname}-content-store-public-elb"
-  listener_certificate_domain_name           = "${var.elb_public_certname}"
-  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
-
-  listener_action = {
-    "HTTPS:443" = "HTTP:80"
-  }
-
-  target_group_health_check_path = "/_healthcheck-ready_content-store"
-  subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_external_elb_id}"]
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                   = "${map("Project", var.stackname, "aws_migration", "content-store", "aws_environment", var.aws_environment)}"
-}
-
-resource "aws_route53_record" "content-store_public_service_names" {
-  count   = "${length(var.content_store_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.content_store_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${module.content-store_public_lb.lb_dns_name}"
-    zone_id                = "${module.content-store_public_lb.lb_zone_id}"
-    evaluate_target_health = true
-  }
-}
-
 data "aws_autoscaling_groups" "content-store" {
   filter {
     name   = "key"
@@ -1098,12 +1064,6 @@ data "aws_autoscaling_groups" "content-store" {
     name   = "value"
     values = ["blue-content-store"]
   }
-}
-
-resource "aws_autoscaling_attachment" "content-store_asg_attachment_alb" {
-  count                  = "${length(data.aws_autoscaling_groups.content-store.names) > 0 ? 1 : 0}"
-  autoscaling_group_name = "${element(data.aws_autoscaling_groups.content-store.names, 0)}"
-  alb_target_group_arn   = "${element(module.content-store_public_lb.target_group_arns, 0)}"
 }
 
 resource "aws_route53_record" "content_store_internal_service_names" {
