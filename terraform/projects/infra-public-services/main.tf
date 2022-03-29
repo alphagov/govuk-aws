@@ -181,6 +181,16 @@ variable "graphite_public_service_names" {
   default = []
 }
 
+variable "locations_api_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
+variable "locations_api_public_service_cnames" {
+  type    = "list"
+  default = []
+}
+
 variable "prometheus_public_service_names" {
   type    = "list"
   default = []
@@ -1581,6 +1591,28 @@ resource "aws_route53_record" "graphite_internal_service_names" {
   name    = "${element(var.graphite_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.graphite_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# locations-api
+#
+
+resource "aws_route53_record" "locations_api_internal_service_names" {
+  count   = "${length(var.locations_api_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.locations_api_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.locations_api_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+resource "aws_route53_record" "locations_api_public_service_cnames" {
+  count   = "${length(var.locations_api_public_service_cnames)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.locations_api_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.locations_api_internal_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
 }
 

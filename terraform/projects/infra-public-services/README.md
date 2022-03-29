@@ -146,6 +146,8 @@ This project adds global resources for app components:
 | [aws_route53_record.licensify_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.licensify_frontend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.licensify_frontend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.locations_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.locations_api_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mapit_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mapit_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mapit_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
@@ -288,6 +290,8 @@ This project adds global resources for app components:
 | <a name="input_licensify_frontend_internal_service_names"></a> [licensify\_frontend\_internal\_service\_names](#input\_licensify\_frontend\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_licensify_frontend_public_service_cnames"></a> [licensify\_frontend\_public\_service\_cnames](#input\_licensify\_frontend\_public\_service\_cnames) | n/a | `list` | `[]` | no |
 | <a name="input_licensify_frontend_public_service_names"></a> [licensify\_frontend\_public\_service\_names](#input\_licensify\_frontend\_public\_service\_names) | n/a | `list` | `[]` | no |
+| <a name="input_locations_api_internal_service_names"></a> [locations\_api\_internal\_service\_names](#input\_locations\_api\_internal\_service\_names) | n/a | `list` | `[]` | no |
+| <a name="input_locations_api_public_service_cnames"></a> [locations\_api\_public\_service\_cnames](#input\_locations\_api\_public\_service\_cnames) | n/a | `list` | `[]` | no |
 | <a name="input_mapit_internal_service_names"></a> [mapit\_internal\_service\_names](#input\_mapit\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_mapit_public_service_names"></a> [mapit\_public\_service\_names](#input\_mapit\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_mongo_internal_service_names"></a> [mongo\_internal\_service\_names](#input\_mongo\_internal\_service\_names) | n/a | `list` | `[]` | no |
