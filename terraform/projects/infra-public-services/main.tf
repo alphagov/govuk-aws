@@ -7,45 +7,45 @@
 *
 */
 variable "aws_region" {
-  type        = string
+  type        = "string"
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = string
+  type        = "string"
   description = "Stackname"
 }
 
 variable "aws_environment" {
-  type        = string
+  type        = "string"
   description = "AWS Environment"
 }
 
 variable "elb_public_certname" {
-  type        = string
+  type        = "string"
   description = "The ACM cert domain name to find the ARN of"
 }
 
 variable "elb_public_secondary_certname" {
-  type        = string
+  type        = "string"
   description = "The ACM secondary cert domain name to find the ARN of"
   default     = ""
 }
 
 variable "elb_public_internal_certname" {
-  type        = string
+  type        =  "string"
   description = "The ACM secondary cert domain name to find the ARN of"
 }
 
 variable "app_stackname" {
-  type        = string
+  type        =  "string"
   description = "Stackname of the app projects in this environment"
   default     = "blue"
 }
 
 variable "enable_lb_app_healthchecks" {
-  type        = string
+  type        =  "string"
   description = "Use application specific target groups and healthchecks based on the list of services in the cname variable."
   default     = false
 }
