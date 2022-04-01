@@ -21,7 +21,6 @@ content-store node
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alarms-elb-content-store-external"></a> [alarms-elb-content-store-external](#module\_alarms-elb-content-store-external) | ../../modules/aws/alarms/elb | n/a |
 | <a name="module_alarms-elb-content-store-internal"></a> [alarms-elb-content-store-internal](#module\_alarms-elb-content-store-internal) | ../../modules/aws/alarms/elb | n/a |
 | <a name="module_content-store"></a> [content-store](#module\_content-store) | ../../modules/aws/node_group | n/a |
 
@@ -29,9 +28,7 @@ content-store node
 
 | Name | Type |
 |------|------|
-| [aws_elb.content-store_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
 | [aws_elb.content-store_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
-| [aws_route53_record.external_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.internal_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [null_resource.user_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_acm_certificate.elb_external_cert](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
@@ -52,7 +49,7 @@ content-store node
 | <a name="input_asg_size"></a> [asg\_size](#input\_asg\_size) | The autoscaling groups desired/max/min capacity | `string` | `"2"` | no |
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_create_external_elb"></a> [create\_external\_elb](#input\_create\_external\_elb) | Create the external ELB | `bool` | `true` | no |
+| <a name="input_create_external_elb"></a> [create\_external\_elb](#input\_create\_external\_elb) | Create the external ELB | `bool` | `false` | no |
 | <a name="input_elb_external_certname"></a> [elb\_external\_certname](#input\_elb\_external\_certname) | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | <a name="input_elb_internal_certname"></a> [elb\_internal\_certname](#input\_elb\_internal\_certname) | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
 | <a name="input_external_domain_name"></a> [external\_domain\_name](#input\_external\_domain\_name) | The domain name of the external DNS records, it could be different from the zone name | `string` | n/a | yes |
@@ -75,6 +72,4 @@ content-store node
 
 | Name | Description |
 |------|-------------|
-| <a name="output_content-store_elb_address"></a> [content-store\_elb\_address](#output\_content-store\_elb\_address) | AWS' internal DNS name for the content-store ELB |
-| <a name="output_external_service_dns_name"></a> [external\_service\_dns\_name](#output\_external\_service\_dns\_name) | DNS name to access the node service |
 | <a name="output_internal_service_dns_name"></a> [internal\_service\_dns\_name](#output\_internal\_service\_dns\_name) | DNS name to access the node service |
