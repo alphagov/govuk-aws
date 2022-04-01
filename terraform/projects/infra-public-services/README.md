@@ -33,7 +33,6 @@ This project adds global resources for app components:
 | <a name="module_cache_public_lb"></a> [cache\_public\_lb](#module\_cache\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_cache_public_lb_rules"></a> [cache\_public\_lb\_rules](#module\_cache\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
 | <a name="module_ckan_public_lb"></a> [ckan\_public\_lb](#module\_ckan\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_content-store_public_lb"></a> [content-store\_public\_lb](#module\_content-store\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_deploy_public_lb"></a> [deploy\_public\_lb](#module\_deploy\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_draft_cache_public_lb"></a> [draft\_cache\_public\_lb](#module\_draft\_cache\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_email_alert_api_public_lb"></a> [email\_alert\_api\_public\_lb](#module\_email\_alert\_api\_public\_lb) | ../../modules/aws/lb | n/a |
@@ -41,14 +40,9 @@ This project adds global resources for app components:
 | <a name="module_graphite_public_lb"></a> [graphite\_public\_lb](#module\_graphite\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_licensify_backend_public_lb"></a> [licensify\_backend\_public\_lb](#module\_licensify\_backend\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_licensify_frontend_public_lb"></a> [licensify\_frontend\_public\_lb](#module\_licensify\_frontend\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_mapit_public_lb"></a> [mapit\_public\_lb](#module\_mapit\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_monitoring_public_lb"></a> [monitoring\_public\_lb](#module\_monitoring\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_prometheus_public_lb"></a> [prometheus\_public\_lb](#module\_prometheus\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_search_api_public_lb"></a> [search\_api\_public\_lb](#module\_search\_api\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_search_api_public_lb_rules"></a> [search\_api\_public\_lb\_rules](#module\_search\_api\_public\_lb\_rules) | ../../modules/aws/lb_listener_rules | n/a |
 | <a name="module_sidekiq_monitoring_public_lb"></a> [sidekiq\_monitoring\_public\_lb](#module\_sidekiq\_monitoring\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_static_public_lb"></a> [static\_public\_lb](#module\_static\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_support_api_public_lb"></a> [support\_api\_public\_lb](#module\_support\_api\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_whitehall_backend_public_lb"></a> [whitehall\_backend\_public\_lb](#module\_whitehall\_backend\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_whitehall_frontend_public_lb"></a> [whitehall\_frontend\_public\_lb](#module\_whitehall\_frontend\_public\_lb) | ../../modules/aws/lb | n/a |
 
@@ -60,7 +54,6 @@ This project adds global resources for app components:
 | [aws_autoscaling_attachment.bouncer_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.cache_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.ckan_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.content-store_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.deploy_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.draft_cache_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.email_alert_api_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
@@ -69,16 +62,9 @@ This project adds global resources for app components:
 | [aws_autoscaling_attachment.jumpbox_asg_attachment_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.licensify_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.licensify_frontend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.mapit-1_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.mapit-2_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.mapit-3_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.mapit-4_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.monitoring_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.prometheus_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.search_api_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.sidekiq_monitoring_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.static_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.support_api_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.whitehall_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.whitehall_frontend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_elb.jumpbox_public_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
@@ -114,7 +100,6 @@ This project adds global resources for app components:
 | [aws_route53_record.ckan_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.ckan_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.ckan_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.content-store_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.content_data_api_db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.content_data_api_postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.content_store_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
@@ -150,7 +135,6 @@ This project adds global resources for app components:
 | [aws_route53_record.locations_api_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mapit_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mapit_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mapit_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mongo_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.monitoring_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
@@ -160,12 +144,9 @@ This project adds global resources for app components:
 | [aws_route53_record.puppetmaster_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.rabbitmq_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.router_backend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.search_api_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.search_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.search_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.sidekiq_monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.static_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.support_api_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.transition_db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.transition_postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.whitehall_backend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
@@ -293,7 +274,6 @@ This project adds global resources for app components:
 | <a name="input_locations_api_internal_service_names"></a> [locations\_api\_internal\_service\_names](#input\_locations\_api\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_locations_api_public_service_cnames"></a> [locations\_api\_public\_service\_cnames](#input\_locations\_api\_public\_service\_cnames) | n/a | `list` | `[]` | no |
 | <a name="input_mapit_internal_service_names"></a> [mapit\_internal\_service\_names](#input\_mapit\_internal\_service\_names) | n/a | `list` | `[]` | no |
-| <a name="input_mapit_public_service_names"></a> [mapit\_public\_service\_names](#input\_mapit\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_mongo_internal_service_names"></a> [mongo\_internal\_service\_names](#input\_mongo\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_monitoring_internal_service_names"></a> [monitoring\_internal\_service\_names](#input\_monitoring\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_monitoring_internal_service_names_cname_dest"></a> [monitoring\_internal\_service\_names\_cname\_dest](#input\_monitoring\_internal\_service\_names\_cname\_dest) | This variable specifies the CNAME record destination to be associated with the service names defined in monitoring\_internal\_service\_names | `string` | `"alert"` | no |
@@ -316,8 +296,6 @@ This project adds global resources for app components:
 | <a name="input_search_internal_service_names"></a> [search\_internal\_service\_names](#input\_search\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_sidekiq_monitoring_public_service_names"></a> [sidekiq\_monitoring\_public\_service\_names](#input\_sidekiq\_monitoring\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
-| <a name="input_static_public_service_names"></a> [static\_public\_service\_names](#input\_static\_public\_service\_names) | n/a | `list` | `[]` | no |
-| <a name="input_support_api_public_service_names"></a> [support\_api\_public\_service\_names](#input\_support\_api\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_transition_db_admin_internal_service_names"></a> [transition\_db\_admin\_internal\_service\_names](#input\_transition\_db\_admin\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_transition_postgresql_internal_service_names"></a> [transition\_postgresql\_internal\_service\_names](#input\_transition\_postgresql\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_waf_logs_hec_endpoint"></a> [waf\_logs\_hec\_endpoint](#input\_waf\_logs\_hec\_endpoint) | Splunk endpoint for shipping application firewall logs | `string` | n/a | yes |
