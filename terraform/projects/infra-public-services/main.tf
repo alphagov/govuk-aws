@@ -2080,48 +2080,6 @@ data "aws_autoscaling_groups" "static" {
   }
 }
 
-# support-api
-
-module "support_api_public_lb" {
-  source                                     = "../../modules/aws/lb"
-  name                                       = "${var.stackname}-support-api-public"
-  internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  access_logs_bucket_prefix                  = "elb/${var.stackname}-support-api-public-elb"
-  listener_certificate_domain_name           = "${var.elb_public_certname}"
-  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
-
-  listener_action = {
-    "HTTPS:443" = "HTTP:80"
-  }
-
-  target_group_health_check_path = "/_healthcheck-ready_support-api"
-  subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_support-api_external_elb_id}"]
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                   = "${map("Project", var.stackname, "aws_migration", "support-api", "aws_environment", var.aws_environment)}"
-}
-
-resource "aws_route53_record" "support_api_public_service_names" {
-  count   = "${length(var.support_api_public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.support_api_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${module.support_api_public_lb.lb_dns_name}"
-    zone_id                = "${module.support_api_public_lb.lb_zone_id}"
-    evaluate_target_health = true
-  }
-}
-
-resource "aws_autoscaling_attachment" "support_api_backend_asg_attachment_alb" {
-  count                  = "${data.aws_autoscaling_group.backend.name != "" ? 1 : 0}"
-  autoscaling_group_name = "${data.aws_autoscaling_group.backend.name}"
-  alb_target_group_arn   = "${element(module.support_api_public_lb.target_group_arns, 0)}"
-}
-
 #
 # sidekiq-monitoring
 #
