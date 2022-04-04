@@ -3,25 +3,76 @@ resource "aws_wafregional_web_acl" "default" {
   metric_name = "CachePublicWebACL"
 
   default_action {
-    type = "ALLOW"
+    type  = "ALLOW"
+    allow = {}
   }
 
   rule {
+    name     = "XAlwaysBlock"
+    priority = 1
+
     action {
-      type = "BLOCK"
+      type  = "BLOCK"
+      block = {}
+    }
+  }
+
+  statement {
+    byte_match_statement {
+      field_to_match {
+        single_single_header {
+          name = "x-always-block"
+        }
+      }
     }
 
+    positional_constraint = "EXACTLY"
+    search_string         = "true"
+
+    text_transformation {
+      priority = 2
+      type     = "NONE"
+    }
+  }
+
+  visibility_config {
+    cloudwatchcloudwatch_metrics_enabled = true
+    metric_name                          = "cache-waf-x-always-block"
+    sampled_requests_enabled             = true
+  }
+
+  rule {
+    name     = "Ratelimit"
     priority = 2
-    rule_id  = "${aws_wafregional_rule.x_always_block.id}"
-  }
 
-  logging_configuration {
-    log_destination = "${aws_kinesis_firehose_delivery_stream.splunk.arn}"
-  }
+    action {
+      count {}
+    }
 
-  depends_on = [
-    "aws_wafregional_rule.x_always_block",
-  ]
+    statement {
+      rate_based_statement {
+        limit              = 2000           # requests per IP in 5 minute window
+        aggregate_key_type = "FORWARDED_IP"
+
+        forwarded_ip_config {
+          fallback_behavior = "MATCH"
+          header_name       = "True-CLient-IP" # set in Fastly VCL
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "cache-waf-rate-limit"
+      sampled_requests_enabled   = true
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "cache-waf"
+      sampled_requests_enabled   = true
+    }
+  }
 }
 
 resource "aws_s3_bucket" "aws_waf_logs" {
