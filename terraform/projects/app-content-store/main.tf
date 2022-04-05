@@ -63,7 +63,7 @@ variable "external_domain_name" {
 
 variable "create_external_elb" {
   description = "Create the external ELB"
-  default     = true
+  default     = false
 }
 
 variable "instance_type" {
@@ -102,59 +102,6 @@ data "aws_acm_certificate" "elb_external_cert" {
 data "aws_acm_certificate" "elb_internal_cert" {
   domain   = "${var.elb_internal_certname}"
   statuses = ["ISSUED"]
-}
-
-resource "aws_elb" "content-store_external_elb" {
-  count = "${var.create_external_elb}"
-
-  name            = "${var.stackname}-content-store-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_content-store_external_elb_id}"]
-  internal        = "false"
-
-  access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    bucket_prefix = "elb/${var.stackname}-content-store-external-elb"
-    interval      = 60
-  }
-
-  listener {
-    instance_port     = "80"
-    instance_protocol = "http"
-    lb_port           = "443"
-    lb_protocol       = "https"
-
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "HTTP:80/_healthcheck-live_content-store"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
-
-  tags = "${map("Name", "${var.stackname}-content-store", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_store")}"
-}
-
-resource "aws_route53_record" "external_service_record" {
-  count = "${var.create_external_elb}"
-
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
-  name    = "content-store.${var.external_domain_name}"
-  type    = "A"
-
-  alias {
-    name                   = "${aws_elb.content-store_external_elb.dns_name}"
-    zone_id                = "${aws_elb.content-store_external_elb.zone_id}"
-    evaluate_target_health = true
-  }
 }
 
 resource "aws_elb" "content-store_internal_elb" {
@@ -247,31 +194,8 @@ locals {
   elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 50 : 0}"
 }
 
-module "alarms-elb-content-store-external" {
-  source                         = "../../modules/aws/alarms/elb"
-  name_prefix                    = "${var.stackname}-content-store-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${join("", aws_elb.content-store_external_elb.*.name)}"
-  httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
-  httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
-  surgequeuelength_threshold     = "0"
-  healthyhostcount_threshold     = "0"
-}
-
 # Outputs
 # --------------------------------------------------------------
-
-output "content-store_elb_address" {
-  value       = "${join("", aws_elb.content-store_external_elb.*.dns_name)}"
-  description = "AWS' internal DNS name for the content-store ELB"
-}
-
-output "external_service_dns_name" {
-  value       = "${join("", aws_route53_record.external_service_record.*.name)}"
-  description = "DNS name to access the node service"
-}
 
 output "internal_service_dns_name" {
   value       = "${aws_route53_record.internal_service_record.name}"
