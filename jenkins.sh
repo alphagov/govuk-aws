@@ -41,7 +41,7 @@ fi
 rm -rf govuk-aws-data
 
 if [[ "$GOVUK_AWS_DATA_BRANCH" == "" ]]; then
-  GOVUK_AWS_DATA_BRANCH="master"
+  GOVUK_AWS_DATA_BRANCH="main"
 fi
 
 echo "Cloning govuk-aws-data"
