@@ -1641,6 +1641,11 @@ resource "aws_wafregional_web_acl_association" "licensify_frontend_public_lb" {
   web_acl_id   = "${aws_wafregional_web_acl.default.id}"
 }
 
+resource "aws_shield_protection" "govuk-licensify-frontend-public" {
+  name         = "${var.stackname}-licensify-frontend-publicgovuk"
+  resource_arn = "${module.licensify_frontend_public_lb.lb_id}"
+}
+
 resource "aws_route53_record" "licensify_frontend_public_service_names" {
   count   = "${length(var.licensify_frontend_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"

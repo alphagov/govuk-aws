@@ -149,6 +149,7 @@ This project adds global resources for app components:
 | [aws_route53_record.whitehall_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.aws_waf_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_shield_protection.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.govuk-licensify-frontend-public](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
 | [aws_wafregional_regex_match_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_match_set) | resource |
 | [aws_wafregional_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_pattern_set) | resource |
 | [aws_wafregional_rule.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_rule) | resource |
