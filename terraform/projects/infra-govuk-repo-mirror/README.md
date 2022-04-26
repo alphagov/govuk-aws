@@ -1,8 +1,8 @@
 ## Module: govuk-repo-mirror
 
-Configures a user and role to allow the govuk-repo-mirror Concourse pipeline
-to push to AWS CodeCommit (the user is used by the Jenkins
-Deploy\_App job and the role is used by the Concourse mirroring job)
+Configures a user and role to allow the "Mirror GitHub repositories"
+Jenkins job to push to AWS CodeCommit. See
+See https://deploy.integration.publishing.service.gov.uk/job/Mirror_Github_Repositories/
 
 ## Requirements
 
@@ -26,16 +26,11 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_iam_role.govuk_concourse_codecommit_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.govuk_concourse_codecommit_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role.govuk_jenkins_codecommit_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.govuk_jenkins_codecommit_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_user.govuk_codecommit_user](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
-| [aws_iam_user.govuk_concourse_codecommit_user](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
 | [aws_iam_user_policy_attachment.govuk_codecommit_user_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_policy_attachment) | resource |
-| [aws_iam_user_policy_attachment.govuk_concourse_codecommit_user_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_policy_attachment) | resource |
-| [aws_iam_user_ssh_key.govuk_codecommit_user_jenkins_production_ssh_key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_ssh_key) | resource |
-| [aws_iam_user_ssh_key.govuk_codecommit_user_jenkins_staging_ssh_key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_ssh_key) | resource |
-| [aws_iam_user_ssh_key.govuk_concourse_codecommit_production_user_ssh_key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_ssh_key) | resource |
-| [aws_iam_user_ssh_key.govuk_concourse_codecommit_staging_user_ssh_key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_ssh_key) | resource |
+| [aws_iam_user_ssh_key.govuk_repo_mirror_user_ssh_public_key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user_ssh_key) | resource |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_root_dns_zones](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
@@ -49,9 +44,8 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_concourse_role_arn"></a> [concourse\_role\_arn](#input\_concourse\_role\_arn) | The role ARN of the role that Concourse uses to assume the govuk\_concourse\_codecommit\_role role | `string` | n/a | yes |
-| <a name="input_jenkins_carrenza_production_ssh_public_key"></a> [jenkins\_carrenza\_production\_ssh\_public\_key](#input\_jenkins\_carrenza\_production\_ssh\_public\_key) | The SSH public key of the Jenkins instance in the Carrenza production environment | `string` | n/a | yes |
-| <a name="input_jenkins_carrenza_staging_ssh_public_key"></a> [jenkins\_carrenza\_staging\_ssh\_public\_key](#input\_jenkins\_carrenza\_staging\_ssh\_public\_key) | The SSH public key of the Jenkins instance in the Carrenza staging environment | `string` | n/a | yes |
+| <a name="input_govuk_repo_mirror_user_ssh_public_key"></a> [govuk\_repo\_mirror\_user\_ssh\_public\_key](#input\_govuk\_repo\_mirror\_user\_ssh\_public\_key) | The SSH public key of the govuk-repo-mirror-user user in AWS | `string` | n/a | yes |
+| <a name="input_jenkins_role_arn"></a> [jenkins\_role\_arn](#input\_jenkins\_role\_arn) | The role ARN of the role that Jenkins uses to assume the govuk\_jenkins\_codecommit\_role role | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_networking_key_stack"></a> [remote\_state\_infra\_networking\_key\_stack](#input\_remote\_state\_infra\_networking\_key\_stack) | Override infra\_networking remote state path | `string` | `""` | no |

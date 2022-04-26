@@ -1,9 +1,9 @@
 /**
 * ## Module: govuk-repo-mirror
 *
-* Configures a user and role to allow the govuk-repo-mirror Concourse pipeline
-* to push to AWS CodeCommit (the user is used by the Jenkins
-* Deploy_App job and the role is used by the Concourse mirroring job)
+* Configures a user and role to allow the "Mirror GitHub repositories"
+* Jenkins job to push to AWS CodeCommit. See
+* See https://deploy.integration.publishing.service.gov.uk/job/Mirror_Github_Repositories/
 */
 variable "aws_region" {
   type        = "string"
@@ -21,19 +21,14 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "jenkins_carrenza_staging_ssh_public_key" {
+variable "govuk_repo_mirror_user_ssh_public_key" {
   type        = "string"
-  description = "The SSH public key of the Jenkins instance in the Carrenza staging environment"
+  description = "The SSH public key of the govuk-repo-mirror-user user in AWS"
 }
 
-variable "jenkins_carrenza_production_ssh_public_key" {
+variable "jenkins_role_arn" {
   type        = "string"
-  description = "The SSH public key of the Jenkins instance in the Carrenza production environment"
-}
-
-variable "concourse_role_arn" {
-  type        = "string"
-  description = "The role ARN of the role that Concourse uses to assume the govuk_concourse_codecommit_role role"
+  description = "The role ARN of the role that Jenkins uses to assume the govuk_jenkins_codecommit_role role"
 }
 
 terraform {
@@ -47,7 +42,7 @@ provider "aws" {
 }
 
 resource "aws_iam_user" "govuk_codecommit_user" {
-  name = "govuk-${var.aws_environment}-govuk-code-commit-user"
+  name = "govuk-repo-mirror-user"
 }
 
 resource "aws_iam_user_policy_attachment" "govuk_codecommit_user_policy_attachment" {
@@ -55,41 +50,14 @@ resource "aws_iam_user_policy_attachment" "govuk_codecommit_user_policy_attachme
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
 
-resource "aws_iam_user_ssh_key" "govuk_codecommit_user_jenkins_staging_ssh_key" {
+resource "aws_iam_user_ssh_key" "govuk_repo_mirror_user_ssh_public_key" {
   username   = "${aws_iam_user.govuk_codecommit_user.name}"
   encoding   = "SSH"
-  public_key = "${var.jenkins_carrenza_staging_ssh_public_key}"
+  public_key = "${var.govuk_repo_mirror_user_ssh_public_key}"
 }
 
-resource "aws_iam_user_ssh_key" "govuk_codecommit_user_jenkins_production_ssh_key" {
-  username   = "${aws_iam_user.govuk_codecommit_user.name}"
-  encoding   = "SSH"
-  public_key = "${var.jenkins_carrenza_production_ssh_public_key}"
-}
-
-resource "aws_iam_user" "govuk_concourse_codecommit_user" {
-  name = "govuk-concourse-codecommit-user"
-}
-
-resource "aws_iam_user_policy_attachment" "govuk_concourse_codecommit_user_policy_attachment" {
-  user       = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
-}
-
-resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_staging_user_ssh_key" {
-  username   = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
-  encoding   = "SSH"
-  public_key = "${var.jenkins_carrenza_staging_ssh_public_key}"
-}
-
-resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_production_user_ssh_key" {
-  username   = "${aws_iam_user.govuk_concourse_codecommit_user.name}"
-  encoding   = "SSH"
-  public_key = "${var.jenkins_carrenza_production_ssh_public_key}"
-}
-
-resource "aws_iam_role" "govuk_concourse_codecommit_role" {
-  name = "govuk-concourse-codecommit-role"
+resource "aws_iam_role" "govuk_jenkins_codecommit_role" {
+  name = "govuk-repo-mirror-role"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -99,7 +67,7 @@ resource "aws_iam_role" "govuk_concourse_codecommit_role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "AWS": "${var.concourse_role_arn}"
+        "AWS": "${var.jenkins_role_arn}"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -109,7 +77,7 @@ resource "aws_iam_role" "govuk_concourse_codecommit_role" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "govuk_concourse_codecommit_role_policy_attachment" {
-  role       = "${aws_iam_role.govuk_concourse_codecommit_role.name}"
+resource "aws_iam_role_policy_attachment" "govuk_jenkins_codecommit_role_policy_attachment" {
+  role       = "${aws_iam_role.govuk_jenkins_codecommit_role.name}"
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
