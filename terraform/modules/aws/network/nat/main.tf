@@ -26,6 +26,11 @@ resource "aws_eip" "nat" {
   }
 }
 
+resource "aws_shield_protection" "aws_eip" {
+  name         = "${var.stackname}-aws-eip_shield"
+  resource_arn = "${module.aws_eip.lb_id}"
+}
+
 resource "aws_nat_gateway" "nat" {
   count         = "${var.subnet_ids_length}"
   allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
