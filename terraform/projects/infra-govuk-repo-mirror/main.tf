@@ -1,9 +1,12 @@
 /**
 * ## Module: govuk-repo-mirror
 *
-* Configures a user and role to allow the govuk-repo-mirror Concourse pipeline
-* to push to AWS CodeCommit (the user is used by the Jenkins
-* Deploy_App job and the role is used by the Concourse mirroring job)
+* Configures:
+* 1. an IAM role to allow the `mirror_github_repositories` Jenkins job
+*    in Integration to mirror the GOV.UK GitHub repositories to AWS CodeCommit in
+*    Tools
+* 2. an IAM user with SSH authorized keys from Jenkins in Integration, Staging and
+*    Production to access to AWS CodeCommit in Tools to deploy applications
 */
 variable "aws_region" {
   type        = "string"
@@ -31,10 +34,13 @@ variable "jenkins_carrenza_production_ssh_public_key" {
   description = "The SSH public key of the Jenkins instance in the Carrenza production environment"
 }
 
-variable "concourse_role_arn" {
+variable "integration_jenkins_role_arn" {
   type        = "string"
-  description = "The role ARN of the role that Concourse uses to assume the govuk_concourse_codecommit_role role"
+  description = "ARN of the role that Jenkins uses to assume the govuk_codecommit_poweruser role"
 }
+
+# Resources
+# --------------------------------------------------------------
 
 terraform {
   backend          "s3"             {}
@@ -88,8 +94,8 @@ resource "aws_iam_user_ssh_key" "govuk_concourse_codecommit_production_user_ssh_
   public_key = "${var.jenkins_carrenza_production_ssh_public_key}"
 }
 
-resource "aws_iam_role" "govuk_concourse_codecommit_role" {
-  name = "govuk-concourse-codecommit-role"
+resource "aws_iam_role" "govuk_codecommit_poweruser" {
+  name = "govuk-codecommit-poweruser"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -99,17 +105,17 @@ resource "aws_iam_role" "govuk_concourse_codecommit_role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "AWS": "${var.concourse_role_arn}"
+        "AWS": "${var.integration_jenkins_role_arn}"
       },
       "Effect": "Allow",
-      "Sid": ""
+      "Sid": "AllowJenkinsAssumeRole"
     }
   ]
 }
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "govuk_concourse_codecommit_role_policy_attachment" {
-  role       = "${aws_iam_role.govuk_concourse_codecommit_role.name}"
+resource "aws_iam_role_policy_attachment" "govuk_codecommit_poweruser_policy_attachment" {
+  role       = "${aws_iam_role.govuk_codecommit_poweruser.name}"
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }

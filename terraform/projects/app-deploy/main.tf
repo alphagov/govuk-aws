@@ -19,6 +19,12 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "tools_govuk_codecommit_poweruser_role_arn" {
+  type        = "string"
+  description = "ARN of the role that Integration Jenkins to assume the Tools govuk_codecommit_poweruser role"
+  default     = ""
+}
+
 variable "ebs_encrypted" {
   type        = "string"
   description = "Whether or not the EBS volume is encrypted"
@@ -272,6 +278,28 @@ resource "aws_iam_policy" "deploy_iam_policy" {
   policy = "${file("${path.module}/additional_policy.json")}"
 }
 
+# Allow the Jenkins server in Integration to assume the govuk-codecommit-poweruser role
+# in the Tools account to mirror GitHub repos in AWS CodeCommit
+resource "aws_iam_policy" "allow_assume_tools_codecommit_poweruser_policy" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "govuk-${var.aws_environment}-tools-codecommit-poweruser-policy"
+  description = "Allows assuming the role of 'govuk-codecommit-poweruser' in the Tools environment"
+
+  policy = "${data.aws_iam_policy_document.allow_assume_tools_codecommit_poweruser_policy_document.json}"
+}
+
+data "aws_iam_policy_document" "allow_assume_tools_codecommit_poweruser_policy_document" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    resources = [
+      "${var.tools_govuk_codecommit_poweruser_role_arn}",
+    ]
+  }
+}
+
 resource "aws_iam_role_policy_attachment" "deploy_iam_role_policy_attachment" {
   role       = "${module.deploy.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.deploy_iam_policy.arn}"
@@ -285,6 +313,11 @@ resource "aws_iam_role_policy_attachment" "allow_writes_from_artefact_bucket" {
 resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
   role       = "${module.deploy.instance_iam_role_name}"
   policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "allow_assume_role_concourse_code_commit" {
+  role       = "${module.deploy.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.allow_assume_tools_codecommit_poweruser_policy.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "related_links_jenkins" {
