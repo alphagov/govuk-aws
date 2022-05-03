@@ -289,6 +289,8 @@ resource "aws_iam_policy" "allow_assume_tools_codecommit_poweruser_policy" {
 }
 
 data "aws_iam_policy_document" "allow_assume_tools_codecommit_poweruser_policy_document" {
+  count = "${var.aws_environment == "integration" ? 1 : 0}"
+
   statement {
     actions = [
       "sts:AssumeRole",
@@ -316,6 +318,7 @@ resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
 }
 
 resource "aws_iam_role_policy_attachment" "allow_assume_role_concourse_code_commit" {
+  count      = "${var.aws_environment == "integration" ? 1 : 0}"
   role       = "${module.deploy.instance_iam_role_name}"
   policy_arn = "${aws_iam_policy.allow_assume_tools_codecommit_poweruser_policy.arn}"
 }
