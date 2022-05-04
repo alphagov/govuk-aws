@@ -38,36 +38,6 @@ variable "role_admin_policy_arns" {
   default     = []
 }
 
-variable "role_internal_admin_user_arns" {
-  type        = list(any)
-  description = "List of ARNs of external users that can assume the role"
-  default     = []
-}
-
-variable "role_internal_admin_policy_arns" {
-  type        = list(any)
-  description = "List of ARNs of policies to attach to the role"
-  default     = []
-}
-
-variable "role_platformhealth_poweruser_user_arns" {
-  type        = list(any)
-  description = "List of ARNs of external users that can assume the role"
-  default     = []
-}
-
-variable "role_platformhealth_poweruser_policy_arns" {
-  type        = list(any)
-  description = "List of ARNs of policies to attach to the role"
-  default     = []
-}
-
-variable "role_poweruser_user_arns" {
-  type        = list(any)
-  description = "List of ARNs of external users that can assume the role"
-  default     = []
-}
-
 variable "role_poweruser_policy_arns" {
   type        = list(any)
   description = "List of ARNs of policies to attach to the role"
@@ -148,48 +118,20 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-module "role_admin" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-administrators"
-  role_user_arns   = var.role_admin_user_arns
-  role_policy_arns = var.role_admin_policy_arns
-}
-
 module "gds_role_admin" {
   source           = "../../modules/aws/iam/gds_user_role"
   role_suffix      = "admin"
-  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_poweruser_user_arns))
+  role_user_arns   = toset(var.role_admin_user_arns)
   role_policy_arns = var.role_admin_policy_arns
   office_ips       = var.office_ips
-}
-
-module "role_internal_admin" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-internal-administrators"
-  role_user_arns   = var.role_internal_admin_user_arns
-  role_policy_arns = var.role_internal_admin_policy_arns
-}
-
-module "role_platformhealth_poweruser" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-platformhealth-powerusers"
-  role_user_arns   = var.role_platformhealth_poweruser_user_arns
-  role_policy_arns = var.role_platformhealth_poweruser_policy_arns
 }
 
 module "gds_role_poweruser" {
   source           = "../../modules/aws/iam/gds_user_role"
   role_suffix      = "poweruser"
-  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_poweruser_user_arns))
+  role_user_arns   = toset(var.role_admin_user_arns)
   role_policy_arns = var.role_poweruser_policy_arns
   office_ips       = var.office_ips
-}
-
-module "role_poweruser" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-powerusers"
-  role_user_arns   = var.role_poweruser_user_arns
-  role_policy_arns = var.role_poweruser_policy_arns
 }
 
 module "role_datascienceuser" {
@@ -283,17 +225,10 @@ resource "aws_iam_role_policy_attachment" "event_bridge" {
   policy_arn = aws_iam_policy.event_bridge.arn
 }
 
-module "role_user" {
-  source           = "../../modules/aws/iam/role_user"
-  role_name        = "govuk-users"
-  role_user_arns   = var.role_user_user_arns
-  role_policy_arns = var.role_user_policy_arns
-}
-
 module "gds_role_user" {
   source           = "../../modules/aws/iam/gds_user_role"
   role_suffix      = "user"
-  role_user_arns   = toset(concat(var.role_admin_user_arns, var.role_internal_admin_user_arns, var.role_platformhealth_poweruser_user_arns, var.role_poweruser_user_arns, var.role_user_user_arns))
+  role_user_arns   = toset(concat(var.role_user_user_arns, var.role_admin_user_arns))
   role_policy_arns = var.role_user_policy_arns
   office_ips       = var.office_ips
 }
@@ -500,7 +435,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
+      identifiers = [for role, arn in module.gds_role_admin.roles_and_arns : arn]
     }
   }
 
@@ -519,7 +454,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
+      identifiers = [for role, arn in module.gds_role_admin.roles_and_arns : arn]
     }
   }
 
@@ -536,7 +471,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [module.role_admin.role_arn, module.role_internal_admin.role_arn]
+      identifiers = [for role, arn in module.gds_role_admin.roles_and_arns : arn]
     }
   }
 }
