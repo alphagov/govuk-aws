@@ -324,6 +324,11 @@ module "ci_master_public_lb" {
   default_tags                               = "${map("Project", "govuk", "aws_migration", "ci_master", "aws_environment", var.aws_environment)}"
 }
 
+resource "aws_shield_protection" "ci_master_public_lb" {
+  name         = "${var.stackname}-ci-master-public_shield"
+  resource_arn = "${module.ci_master_public_lb.lb_id}"
+}
+
 resource "aws_route53_record" "ci_master_public_service_names" {
   count   = "${length(var.public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
