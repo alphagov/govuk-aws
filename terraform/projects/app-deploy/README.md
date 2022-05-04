@@ -85,7 +85,7 @@ Deploy node
 | <a name="input_remote_state_infra_stack_dns_zones_key_stack"></a> [remote\_state\_infra\_stack\_dns\_zones\_key\_stack](#input\_remote\_state\_infra\_stack\_dns\_zones\_key\_stack) | Override stackname path to infra\_stack\_dns\_zones remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_vpc_key_stack"></a> [remote\_state\_infra\_vpc\_key\_stack](#input\_remote\_state\_infra\_vpc\_key\_stack) | Override infra\_vpc remote state path | `string` | `""` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
-| <a name="input_tools_govuk_codecommit_poweruser_role_arn"></a> [tools\_govuk\_codecommit\_poweruser\_role\_arn](#input\_tools\_govuk\_codecommit\_poweruser\_role\_arn) | ARN of the role that Integration Jenkins to assume the Tools govuk\_codecommit\_poweruser role | `string` | `""` | no |
+| <a name="input_tools_govuk_codecommit_poweruser_role_arn"></a> [tools\_govuk\_codecommit\_poweruser\_role\_arn](#input\_tools\_govuk\_codecommit\_poweruser\_role\_arn) | ARN of the role that Mirrorer Jenkins to assume the Tools govuk\_codecommit\_poweruser role | `string` | `""` | no |
 | <a name="input_user_data_snippets"></a> [user\_data\_snippets](#input\_user\_data\_snippets) | List of user-data snippets | `list` | n/a | yes |
 
 ## Outputs
