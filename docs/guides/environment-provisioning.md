@@ -473,6 +473,7 @@ To ensure that applications deploy correctly, ensure that the datastores exist:
 `app-mysql`
 `app-postgresql`
 `app-rabbitmq`
+`app-rate-limit-redis`
 `app-router-backend`
 `app-shared-documentdb`
 `app-transition-postgresql`
