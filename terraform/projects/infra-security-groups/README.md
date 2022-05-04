@@ -157,6 +157,7 @@ No modules.
 | [aws_security_group.puppetmaster_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.rabbitmq](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.rabbitmq_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.rate-limit-redis](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.related-links](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.router-api_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.router-backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -524,6 +525,7 @@ No modules.
 | [aws_security_group_rule.rabbitmq_ingress_rabbitmq-elb_rabbitmq-stomp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq_ingress_rabbitmq_rabbitmq-epmd](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq_ingress_rabbitmq_rabbitmq-transport](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.rate-limit-redis_ingress_frontend_redis](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.related-links_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.related-links_ingress_jenkins_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.router-api-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -719,6 +721,7 @@ No modules.
 | <a name="output_sg_puppetmaster_id"></a> [sg\_puppetmaster\_id](#output\_sg\_puppetmaster\_id) | n/a |
 | <a name="output_sg_rabbitmq_elb_id"></a> [sg\_rabbitmq\_elb\_id](#output\_sg\_rabbitmq\_elb\_id) | n/a |
 | <a name="output_sg_rabbitmq_id"></a> [sg\_rabbitmq\_id](#output\_sg\_rabbitmq\_id) | n/a |
+| <a name="output_sg_rate-limit-redis_id"></a> [sg\_rate-limit-redis\_id](#output\_sg\_rate-limit-redis\_id) | n/a |
 | <a name="output_sg_related-links_id"></a> [sg\_related-links\_id](#output\_sg\_related-links\_id) | n/a |
 | <a name="output_sg_router-api_elb_id"></a> [sg\_router-api\_elb\_id](#output\_sg\_router-api\_elb\_id) | n/a |
 | <a name="output_sg_router-backend_id"></a> [sg\_router-backend\_id](#output\_sg\_router-backend\_id) | n/a |

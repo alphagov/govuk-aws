@@ -426,6 +426,10 @@ output "sg_rabbitmq_id" {
   value = "${aws_security_group.rabbitmq.id}"
 }
 
+output "sg_rate-limit-redis_id" {
+  value = "${aws_security_group.rate-limit-redis.id}"
+}
+
 output "sg_router-api_elb_id" {
   value = "${aws_security_group.router-api_elb.id}"
 }
