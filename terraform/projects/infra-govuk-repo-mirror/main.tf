@@ -3,7 +3,7 @@
 *
 * Configures:
 * 1. an IAM role to allow the `mirror_github_repositories` Jenkins job
-*    in Integration to mirror the GOV.UK GitHub repositories to AWS CodeCommit in
+*    in Production to mirror the GOV.UK GitHub repositories to AWS CodeCommit in
 *    Tools
 * 2. an IAM user with SSH authorized keys from Jenkins in Integration, Staging and
 *    Production to access to AWS CodeCommit in Tools to deploy applications
@@ -24,9 +24,14 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "integration_jenkins_role_arn" {
+variable "govuk_codecommit_mirrorer_ssh_key" {
   type        = string
-  description = "ARN of the role that Jenkins uses to assume the govuk_codecommit_poweruser role"
+  description = "SSH key of the IAM user used by the GOV.UK repo mirroring script to access Tools AWS CodeCommit"
+}
+
+variable "mirrorer_jenkins_role_arn" {
+  type        = string
+  description = "ARN of the role that Mirrorer Jenkins uses to assume the govuk_codecommit_poweruser role"
 }
 
 variable "govuk_environments_ssh_key" {
@@ -68,7 +73,7 @@ resource "aws_iam_role" "govuk_codecommit_poweruser" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "AWS": "${var.integration_jenkins_role_arn}"
+        "AWS": "${var.mirrorer_jenkins_role_arn}"
       },
       "Effect": "Allow",
       "Sid": "AllowJenkinsAssumeRole"
@@ -81,6 +86,21 @@ EOF
 resource "aws_iam_role_policy_attachment" "govuk_codecommit_poweruser_policy_attachment" {
   role       = aws_iam_role.govuk_codecommit_poweruser.name
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
+}
+
+resource "aws_iam_user" "govuk_codecommit_mirrorer" {
+  name = "govuk-codecommit-mirrorer"
+}
+
+resource "aws_iam_user_policy_attachment" "govuk_codecommit_mirrorer_policy_attachment" {
+  user       = aws_iam_user.govuk_codecommit_mirrorer.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
+}
+
+resource "aws_iam_user_ssh_key" "govuk_codecommit_mirrorer_ssh_key" {
+  username   = aws_iam_user.govuk_codecommit_mirrorer.name
+  encoding   = "SSH"
+  public_key = var.govuk_codecommit_mirrorer_ssh_key
 }
 
 // Allow Jenkins Deloy_App job to clone AWSCodeCommit repositories
