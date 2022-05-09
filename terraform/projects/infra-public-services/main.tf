@@ -427,6 +427,11 @@ variable "rabbitmq_internal_service_names" {
   default = []
 }
 
+variable "rate_limit_redis_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "router_backend_internal_service_names" {
   type    = "list"
   default = []
@@ -2060,6 +2065,19 @@ resource "aws_route53_record" "rabbitmq_internal_service_names" {
   name    = "${element(var.rabbitmq_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.rabbitmq_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# rate-limit-redis
+#
+
+resource "aws_route53_record" "rate_limit_redis_internal_service_names" {
+  count   = "${length(var.rate_limit_redis_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.rate_limit_redis_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.rate_limit_redis_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

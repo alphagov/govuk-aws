@@ -138,6 +138,7 @@ This project adds global resources for app components:
 | [aws_route53_record.publishing_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.puppetmaster_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.rabbitmq_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.rate_limit_redis_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.router_backend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.search_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.search_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
@@ -298,6 +299,7 @@ This project adds global resources for app components:
 | <a name="input_publishing_api_internal_service_names"></a> [publishing\_api\_internal\_service\_names](#input\_publishing\_api\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_puppetmaster_internal_service_names"></a> [puppetmaster\_internal\_service\_names](#input\_puppetmaster\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_rabbitmq_internal_service_names"></a> [rabbitmq\_internal\_service\_names](#input\_rabbitmq\_internal\_service\_names) | n/a | `list` | `[]` | no |
+| <a name="input_rate_limit_redis_internal_service_names"></a> [rate\_limit\_redis\_internal\_service\_names](#input\_rate\_limit\_redis\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_networking_key_stack"></a> [remote\_state\_infra\_networking\_key\_stack](#input\_remote\_state\_infra\_networking\_key\_stack) | Override infra\_networking remote state path | `string` | `""` | no |
