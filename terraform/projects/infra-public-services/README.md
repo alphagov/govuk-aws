@@ -10,14 +10,14 @@ This project adds global resources for app components:
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.69.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.69.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -48,156 +48,156 @@ This project adds global resources for app components:
 
 | Name | Type |
 |------|------|
-| [aws_autoscaling_attachment.backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.bouncer_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.cache_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.ckan_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.deploy_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.draft_cache_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.email_alert_api_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.graphite_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.jumpbox_asg_attachment_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.licensify_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.licensify_frontend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.monitoring_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.prometheus_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.sidekiq_monitoring_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.whitehall_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_elb.jumpbox_public_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
-| [aws_iam_role.aws_waf_firehose](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy.aws_waf_firehose](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy) | resource |
-| [aws_kinesis_firehose_delivery_stream.splunk](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/kinesis_firehose_delivery_stream) | resource |
-| [aws_lambda_function.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
-| [aws_lb_listener.licensify_backend_http_80](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lb_listener) | resource |
-| [aws_lb_listener.licensify_frontend_public_http_80](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lb_listener) | resource |
-| [aws_lb_listener_rule.backend_alb_blocked_host_headers](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lb_listener_rule) | resource |
-| [aws_route53_record.account_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.account_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.account_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.account_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.apt_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.asset_master_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.backend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.backend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.backend_internal_service_redirected_via_public_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.backend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.backend_redis_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.bouncer_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.bouncer_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.cache_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.cache_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.cache_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.cache_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.calculators_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.calculators_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.ckan_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.ckan_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.ckan_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.ckan_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.content_data_api_db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.content_data_api_postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.content_store_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.deploy_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.deploy_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.docker_management_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_cache_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_cache_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_cache_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_cache_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_content_store_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_content_store_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.draft_whitehall_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.elasticsearch6_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.email_alert_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.email_alert_api_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.frontend_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.graphite_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.graphite_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.jumpbox_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_frontend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_frontend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.locations_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.locations_api_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mapit_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mapit_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mongo_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.monitoring_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.prometheus_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.prometheus_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.publishing_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.puppetmaster_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.rabbitmq_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.router_backend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.search_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.search_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.sidekiq_monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.transition_db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.transition_postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.whitehall_backend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.whitehall_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.whitehall_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
-| [aws_s3_bucket.aws_waf_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_shield_protection.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.bouncer_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.cache_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.ckan_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.deploy_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.draft_cache_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.email_alert_api_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.graphite_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.prometheus_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.sidekiq_monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/shield_protection) | resource |
-| [aws_wafregional_regex_match_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_match_set) | resource |
-| [aws_wafregional_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_regex_pattern_set) | resource |
-| [aws_wafregional_rule.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_rule) | resource |
-| [aws_wafregional_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl) | resource |
-| [aws_wafregional_web_acl_association.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_autoscaling_attachment.backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.bouncer_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.cache_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.ckan_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.deploy_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.draft_cache_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.email_alert_api_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.graphite_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.jumpbox_asg_attachment_elb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.licensify_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.licensify_frontend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.monitoring_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.prometheus_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.sidekiq_monitoring_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_autoscaling_attachment.whitehall_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
+| [aws_elb.jumpbox_public_elb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/elb) | resource |
+| [aws_iam_role.aws_waf_firehose](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/iam_role) | resource |
+| [aws_iam_role.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.aws_waf_firehose](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/iam_role_policy) | resource |
+| [aws_kinesis_firehose_delivery_stream.splunk](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/kinesis_firehose_delivery_stream) | resource |
+| [aws_lambda_function.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lambda_function) | resource |
+| [aws_lb_listener.licensify_backend_http_80](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lb_listener) | resource |
+| [aws_lb_listener.licensify_frontend_public_http_80](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lb_listener) | resource |
+| [aws_lb_listener_rule.backend_alb_blocked_host_headers](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lb_listener_rule) | resource |
+| [aws_route53_record.account_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.account_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.account_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.account_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.apt_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.asset_master_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.backend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.backend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.backend_internal_service_redirected_via_public_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.backend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.backend_redis_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.bouncer_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.bouncer_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.cache_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.cache_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.cache_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.cache_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.calculators_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.calculators_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ckan_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ckan_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ckan_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ckan_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.content_data_api_db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.content_data_api_postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.content_store_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.deploy_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.deploy_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.docker_management_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_cache_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_cache_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_cache_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_cache_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_content_store_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_content_store_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.draft_whitehall_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.elasticsearch6_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.email_alert_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.email_alert_api_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.frontend_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.graphite_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.graphite_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.jumpbox_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.licensify_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.licensify_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.licensify_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.licensify_frontend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.licensify_frontend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.locations_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.locations_api_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.mapit_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.mapit_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.mongo_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.monitoring_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.prometheus_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.prometheus_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.publishing_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.puppetmaster_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.rabbitmq_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.router_backend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.search_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.search_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.sidekiq_monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.transition_db_admin_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.transition_postgresql_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.whitehall_backend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.whitehall_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.whitehall_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_s3_bucket.aws_waf_logs](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/s3_bucket) | resource |
+| [aws_shield_protection.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.bouncer_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.cache_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.ckan_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.deploy_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.draft_cache_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.email_alert_api_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.graphite_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.prometheus_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.sidekiq_monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_shield_protection.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
+| [aws_wafregional_regex_match_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_regex_match_set) | resource |
+| [aws_wafregional_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_regex_pattern_set) | resource |
+| [aws_wafregional_rule.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_rule) | resource |
+| [aws_wafregional_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl) | resource |
+| [aws_wafregional_web_acl_association.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafregional_web_acl_association.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafregional_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafregional_web_acl_association.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafregional_web_acl_association.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafregional_web_acl_association.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
 | [archive_file.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
-| [aws_autoscaling_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) | data source |
-| [aws_autoscaling_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) | data source |
-| [aws_autoscaling_group.cache](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_group) | data source |
-| [aws_autoscaling_groups.bouncer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.ckan](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.content-store](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.deploy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.draft_cache](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.email_alert_api](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.frontend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.graphite](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.jumpbox](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.licensify_backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.licensify_frontend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-1](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-2](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-3](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-4](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.prometheus](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.search](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.static](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.whitehall_backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.whitehall_frontend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
+| [aws_autoscaling_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
+| [aws_autoscaling_group.cache](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
+| [aws_autoscaling_groups.bouncer](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.ckan](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.content-store](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.deploy](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.draft_cache](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.email_alert_api](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.frontend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.graphite](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.jumpbox](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.licensify_backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.licensify_frontend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.mapit-1](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.mapit-2](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.mapit-3](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.mapit-4](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.prometheus](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.search](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.static](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.whitehall_backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
+| [aws_autoscaling_groups.whitehall_frontend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_root_dns_zones](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |

@@ -496,7 +496,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.46.0"
+  version = "2.69.0"
 }
 
 provider "archive" {
