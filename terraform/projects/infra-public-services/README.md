@@ -168,9 +168,18 @@ This project adds global resources for app components:
 | [aws_wafv2_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl) | resource |
 | [aws_wafv2_web_acl_association.account_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_association.backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.bouncer_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.ckan_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.deploy_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.draft_cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.email_alert_api_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.graphite_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_association.licensify_backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_association.licensify_frontend_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.monitoring_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.prometheus_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.sidekiq_monitoring_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_association.whitehall_backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_logging_configuration.public_cache_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [archive_file.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
