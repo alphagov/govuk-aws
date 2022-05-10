@@ -169,10 +169,14 @@ This project adds global resources for app components:
 | [aws_wafregional_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl) | resource |
 | [aws_wafregional_web_acl_association.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
 | [aws_wafregional_web_acl_association.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafv2_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_regex_pattern_set) | resource |
+| [aws_wafv2_rule_group.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_rule_group) | resource |
+| [aws_wafv2_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl) | resource |
+| [aws_wafv2_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_logging_configuration.public_cache_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [archive_file.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_autoscaling_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
 | [aws_autoscaling_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |

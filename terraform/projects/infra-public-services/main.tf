@@ -847,9 +847,9 @@ module "cache_public_lb" {
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
 }
 
-resource "aws_wafregional_web_acl_association" "cache_public_web_acl" {
+resource "aws_wafv2_web_acl_association" "cache_public_web_acl" {
   resource_arn = "${module.cache_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_shield_protection" "cache_public_lb" {
