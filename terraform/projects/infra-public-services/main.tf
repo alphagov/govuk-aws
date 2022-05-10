@@ -531,9 +531,9 @@ resource "aws_shield_protection" "account_public_lb" {
   resource_arn = "${module.account_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "account_public_lb" {
+resource "aws_wafv2_web_acl_association" "account_public_web_acl" {
   resource_arn = "${module.account_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 module "account_public_lb_rules" {
@@ -658,9 +658,9 @@ resource "aws_shield_protection" "backend_public_lb" {
   resource_arn = "${module.backend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "backend_public_lb" {
+resource "aws_wafv2_web_acl_association" "backend_public_web_acl" {
   resource_arn = "${module.backend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
@@ -1686,9 +1686,9 @@ resource "aws_shield_protection" "licensify_frontend_public_lb" {
   resource_arn = "${module.licensify_frontend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "licensify_frontend_public_lb" {
+resource "aws_wafv2_web_acl_association" "licensify_frontend_web_acl" {
   resource_arn = "${module.licensify_frontend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "licensify_frontend_public_service_names" {
@@ -1801,10 +1801,11 @@ resource "aws_shield_protection" "licensify_backend_public_lb" {
   resource_arn = "${module.licensify_backend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "licensify_backend_public_lb" {
+resource "aws_wafv2_web_acl_association" "licensify_backend_public_web_acl" {
   resource_arn = "${module.licensify_backend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
+
 
 resource "aws_route53_record" "licensify_backend_public_service_names" {
   count   = "${length(var.licensify_backend_public_service_names)}"
@@ -2196,9 +2197,9 @@ resource "aws_shield_protection" "whitehall_backend_public_lb" {
   resource_arn = "${module.whitehall_backend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "whitehall_backend_public_lb" {
+resource "aws_wafv2_web_acl_association" "whitehall_backend_public_web_acl" {
   resource_arn = "${module.whitehall_backend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "whitehall_backend_public_service_names" {

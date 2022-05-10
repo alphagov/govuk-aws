@@ -1,29 +1,3 @@
-resource "aws_wafregional_web_acl" "default" {
-  name        = "CachePublicWebACL"
-  metric_name = "CachePublicWebACL"
-
-  default_action {
-    type = "ALLOW"
-  }
-
-  rule {
-    action {
-      type = "BLOCK"
-    }
-
-    priority = 2
-    rule_id  = "${aws_wafregional_rule.x_always_block.id}"
-  }
-
-  logging_configuration {
-    log_destination = "${aws_kinesis_firehose_delivery_stream.splunk.arn}"
-  }
-
-  depends_on = [
-    "aws_wafregional_rule.x_always_block",
-  ]
-}
-
 resource "aws_wafv2_web_acl" "default" {
   name  = "x-always-block_web_acl"
   scope = "REGIONAL"
@@ -213,9 +187,4 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
       }
     }
   }
-}
-
-output "default_waf_acl" {
-  value       = "${aws_wafregional_web_acl.default.id}"
-  description = "GOV.UK default regional WAF ACL"
 }
