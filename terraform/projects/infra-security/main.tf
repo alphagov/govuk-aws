@@ -109,8 +109,15 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.25"
     }
+
+    time = {
+      source  = "hashicorp/time"
+      version = "0.7.2"
+    }
   }
 }
+
+provider "time" {}
 
 provider "aws" {
   region = var.aws_region
@@ -476,9 +483,26 @@ data "aws_iam_policy_document" "kms_sops_policy" {
   }
 }
 
+
+/*
+wait resource that will be used by the aws_kms_key resources so that they
+wait until the iam_roles are created and propagated before attaching kms
+policies referring the newly created iam_roles
+
+See issues:
+1. https://github.com/hashicorp/terraform-provider-aws/issues/245
+2. https://discuss.hashicorp.com/t/terraform-malformed-policy/11281/2
+*/
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [module.gds_role_admin]
+
+  create_duration = "30s"
+}
+
 resource "aws_kms_key" "sops" {
   description = "Encryption key for govuk-aws-data"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  depends_on  = [time_sleep.wait_30_seconds]
 }
 
 resource "aws_kms_alias" "sops" {
@@ -489,11 +513,13 @@ resource "aws_kms_alias" "sops" {
 resource "aws_kms_key" "licensify_documentdb" {
   description = "Encryption key for Licensify DocumentDB"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  depends_on  = [time_sleep.wait_30_seconds]
 }
 
 resource "aws_kms_key" "shared_documentdb" {
   description = "Encryption key for Shared DocumentDB"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  depends_on  = [time_sleep.wait_30_seconds]
 }
 
 # Outputs
