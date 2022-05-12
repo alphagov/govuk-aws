@@ -163,16 +163,25 @@ This project adds global resources for app components:
 | [aws_shield_protection.prometheus_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
 | [aws_shield_protection.sidekiq_monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
 | [aws_shield_protection.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/shield_protection) | resource |
-| [aws_wafregional_regex_match_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_regex_match_set) | resource |
-| [aws_wafregional_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_regex_pattern_set) | resource |
-| [aws_wafregional_rule.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_rule) | resource |
-| [aws_wafregional_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl) | resource |
-| [aws_wafregional_web_acl_association.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
-| [aws_wafregional_web_acl_association.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafregional_web_acl_association) | resource |
+| [aws_wafv2_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_regex_pattern_set) | resource |
+| [aws_wafv2_rule_group.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_rule_group) | resource |
+| [aws_wafv2_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl) | resource |
+| [aws_wafv2_web_acl_association.account_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.bouncer_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.ckan_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.deploy_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.draft_cache_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.email_alert_api_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.graphite_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.licensify_backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.licensify_frontend_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.monitoring_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.prometheus_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.sidekiq_monitoring_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_association.whitehall_backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_association) | resource |
+| [aws_wafv2_web_acl_logging_configuration.public_cache_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [archive_file.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_autoscaling_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
 | [aws_autoscaling_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
@@ -314,6 +323,4 @@ This project adds global resources for app components:
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_default_waf_acl"></a> [default\_waf\_acl](#output\_default\_waf\_acl) | GOV.UK default regional WAF ACL |
+No outputs.

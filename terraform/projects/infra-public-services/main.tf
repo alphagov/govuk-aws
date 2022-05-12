@@ -531,9 +531,9 @@ resource "aws_shield_protection" "account_public_lb" {
   resource_arn = "${module.account_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "account_public_lb" {
+resource "aws_wafv2_web_acl_association" "account_public_web_acl" {
   resource_arn = "${module.account_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 module "account_public_lb_rules" {
@@ -658,9 +658,9 @@ resource "aws_shield_protection" "backend_public_lb" {
   resource_arn = "${module.backend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "backend_public_lb" {
+resource "aws_wafv2_web_acl_association" "backend_public_web_acl" {
   resource_arn = "${module.backend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
@@ -787,6 +787,11 @@ resource "aws_shield_protection" "bouncer_public_lb" {
   resource_arn = "${module.bouncer_public_lb.lb_id}"
 }
 
+resource "aws_wafv2_web_acl_association" "bouncer_public_web_acl" {
+  resource_arn = "${module.bouncer_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
+}
+
 resource "aws_route53_record" "bouncer_public_service_names" {
   count   = "${length(var.bouncer_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
@@ -847,9 +852,9 @@ module "cache_public_lb" {
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
 }
 
-resource "aws_wafregional_web_acl_association" "cache_public_web_acl" {
+resource "aws_wafv2_web_acl_association" "cache_public_web_acl" {
   resource_arn = "${module.cache_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_shield_protection" "cache_public_lb" {
@@ -961,6 +966,11 @@ module "ckan_public_lb" {
 resource "aws_shield_protection" "ckan_public_lb" {
   name         = "${var.stackname}-ckan-public-lb_shield"
   resource_arn = "${module.ckan_public_lb.lb_id}"
+}
+
+resource "aws_wafv2_web_acl_association" "ckan_public_web_acl" {
+  resource_arn = "${module.ckan_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "ckan_public_service_names" {
@@ -1104,6 +1114,11 @@ resource "aws_shield_protection" "deploy_public_lb" {
   resource_arn = "${module.deploy_public_lb.lb_id}"
 }
 
+resource "aws_wafv2_web_acl_association" "deploy_public_web_acl" {
+  resource_arn = "${module.deploy_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
+}
+
 resource "aws_route53_record" "deploy_public_service_names" {
   count   = "${length(var.deploy_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
@@ -1179,6 +1194,11 @@ module "draft_cache_public_lb" {
 resource "aws_shield_protection" "draft_cache_public_lb" {
   name         = "${var.stackname}-draft-cache-public-lb_shield"
   resource_arn = "${module.draft_cache_public_lb.lb_id}"
+}
+
+resource "aws_wafv2_web_acl_association" "draft_cache_public_web_acl" {
+  resource_arn = "${module.draft_cache_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "draft_cache_public_service_names" {
@@ -1313,6 +1333,11 @@ resource "aws_shield_protection" "email_alert_api_public_lb" {
   resource_arn = "${module.email_alert_api_public_lb.lb_id}"
 }
 
+resource "aws_wafv2_web_acl_association" "email_alert_api_public_web_acl" {
+  resource_arn = "${module.email_alert_api_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
+}
+
 resource "aws_route53_record" "email_alert_api_public_service_names" {
   count   = "${length(var.email_alert_api_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
@@ -1420,6 +1445,11 @@ resource "aws_shield_protection" "graphite_public_lb" {
   resource_arn = "${module.graphite_public_lb.lb_id}"
 }
 
+resource "aws_wafv2_web_acl_association" "graphite_public_web_acl" {
+  resource_arn = "${module.graphite_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
+}
+
 #
 # Prometheus
 #
@@ -1456,6 +1486,11 @@ module "prometheus_public_lb" {
 resource "aws_shield_protection" "prometheus_public_lb" {
   name         = "${var.stackname}-prometheus-public-lb_shield"
   resource_arn = "${module.prometheus_public_lb.lb_id}"
+}
+
+resource "aws_wafv2_web_acl_association" "prometheus_public_web_acl" {
+  resource_arn = "${module.prometheus_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "prometheus_public_service_names" {
@@ -1686,9 +1721,9 @@ resource "aws_shield_protection" "licensify_frontend_public_lb" {
   resource_arn = "${module.licensify_frontend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "licensify_frontend_public_lb" {
+resource "aws_wafv2_web_acl_association" "licensify_frontend_web_acl" {
   resource_arn = "${module.licensify_frontend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "licensify_frontend_public_service_names" {
@@ -1801,9 +1836,9 @@ resource "aws_shield_protection" "licensify_backend_public_lb" {
   resource_arn = "${module.licensify_backend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "licensify_backend_public_lb" {
+resource "aws_wafv2_web_acl_association" "licensify_backend_public_web_acl" {
   resource_arn = "${module.licensify_backend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "licensify_backend_public_service_names" {
@@ -1942,6 +1977,11 @@ module "monitoring_public_lb" {
 resource "aws_shield_protection" "monitoring_public_lb" {
   name         = "${var.stackname}-monitoring-public-lb_shield"
   resource_arn = "${module.monitoring_public_lb.lb_id}"
+}
+
+resource "aws_wafv2_web_acl_association" "monitoring_public_web_acl" {
+  resource_arn = "${module.monitoring_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "monitoring_public_service_names" {
@@ -2116,6 +2156,11 @@ resource "aws_shield_protection" "sidekiq_monitoring_public_lb" {
   resource_arn = "${module.sidekiq_monitoring_public_lb.lb_id}"
 }
 
+resource "aws_wafv2_web_acl_association" "sidekiq_monitoring_public_web_acl" {
+  resource_arn = "${module.sidekiq_monitoring_public_lb.lb_id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
+}
+
 resource "aws_route53_record" "sidekiq_monitoring_public_service_names" {
   count   = "${length(var.sidekiq_monitoring_public_service_names)}"
   zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
@@ -2196,9 +2241,9 @@ resource "aws_shield_protection" "whitehall_backend_public_lb" {
   resource_arn = "${module.whitehall_backend_public_lb.lb_id}"
 }
 
-resource "aws_wafregional_web_acl_association" "whitehall_backend_public_lb" {
+resource "aws_wafv2_web_acl_association" "whitehall_backend_public_web_acl" {
   resource_arn = "${module.whitehall_backend_public_lb.lb_id}"
-  web_acl_id   = "${aws_wafregional_web_acl.default.id}"
+  web_acl_arn  = "${aws_wafv2_web_acl.default.arn}"
 }
 
 resource "aws_route53_record" "whitehall_backend_public_service_names" {
