@@ -15,28 +15,28 @@
 *
 */
 variable "name_prefix" {
-  type        = "string"
+  type        = string
   description = "The alarm name prefix."
 }
 
 variable "alarm_actions" {
-  type        = "list"
+  type        = list(any)
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "cache_cluster_id" {
-  type        = "string"
+  type        = string
   description = "The ID of the cache cluster that we want to monitor."
 }
 
 variable "cpuutilization_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the CPUUtilization metric is compared, in percent."
   default     = "80"
 }
 
 variable "freeablememory_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the FreeableMemory metric is compared, in Bytes."
   default     = "2147483648"
 }
@@ -51,13 +51,13 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_cpuutilization" {
   namespace           = "AWS/ElastiCache"
   period              = "60"
   statistic           = "Average"
-  threshold           = "${var.cpuutilization_threshold}"
+  threshold           = var.cpuutilization_threshold
   actions_enabled     = true
   alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the percentage of CPU utilization."
 
   dimensions = {
-    CacheClusterId = "${var.cache_cluster_id}"
+    CacheClusterId = var.cache_cluster_id
   }
 }
 
@@ -69,7 +69,7 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_freeablememory" {
   namespace           = "AWS/ElastiCache"
   period              = "60"
   statistic           = "Average"
-  threshold           = "${var.freeablememory_threshold}"
+  threshold           = var.freeablememory_threshold
   actions_enabled     = true
   alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the amount of free memory available on the host."
@@ -84,12 +84,12 @@ resource "aws_cloudwatch_metric_alarm" "elasticache_freeablememory" {
 
 // The ID of the ElastiCache CPUUtilization health check.
 output "alarm_elasticache_cpuutilization_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elasticache_cpuutilization.id}"
+  value       = aws_cloudwatch_metric_alarm.elasticache_cpuutilization.id
   description = "The ID of the ElastiCache CPUUtilization health check."
 }
 
 // The ID of the ElastiCache FreeableMemory health check.
 output "alarm_elasticache_freeablememory_id" {
-  value       = "${aws_cloudwatch_metric_alarm.elasticache_freeablememory.id}"
+  value       = aws_cloudwatch_metric_alarm.elasticache_freeablememory.id
   description = "The ID of the ElastiCache FreeableMemory health check."
 }
