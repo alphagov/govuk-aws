@@ -19,7 +19,7 @@ Infrastructure security settings:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.74.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.25 |
 | <a name="provider_time"></a> [time](#provider\_time) | 0.7.2 |
 
 ## Modules
