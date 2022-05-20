@@ -442,7 +442,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [for role, arn in module.gds_role_admin.roles_and_arns : arn]
+      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
     }
   }
 
@@ -461,7 +461,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [for role, arn in module.gds_role_admin.roles_and_arns : arn]
+      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
     }
   }
 
@@ -478,7 +478,7 @@ data "aws_iam_policy_document" "kms_sops_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = [for role, arn in module.gds_role_admin.roles_and_arns : arn]
+      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
     }
   }
 }
@@ -494,15 +494,16 @@ See issues:
 2. https://discuss.hashicorp.com/t/terraform-malformed-policy/11281/2
 */
 resource "time_sleep" "wait_30_seconds" {
-  depends_on = [module.gds_role_admin]
-
   create_duration = "30s"
+
+  triggers = {
+    gds_admin_roles_and_arns = jsonencode([for role, arn in module.gds_role_admin.roles_and_arns : arn])
+  }
 }
 
 resource "aws_kms_key" "sops" {
   description = "Encryption key for govuk-aws-data"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
-  depends_on  = [time_sleep.wait_30_seconds]
 }
 
 resource "aws_kms_alias" "sops" {
@@ -513,13 +514,11 @@ resource "aws_kms_alias" "sops" {
 resource "aws_kms_key" "licensify_documentdb" {
   description = "Encryption key for Licensify DocumentDB"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
-  depends_on  = [time_sleep.wait_30_seconds]
 }
 
 resource "aws_kms_key" "shared_documentdb" {
   description = "Encryption key for Shared DocumentDB"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
-  depends_on  = [time_sleep.wait_30_seconds]
 }
 
 # Outputs
