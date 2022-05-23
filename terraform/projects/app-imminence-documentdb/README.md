@@ -69,3 +69,4 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_imminence_documentdb_endpoint"></a> [imminence\_documentdb\_endpoint](#output\_imminence\_documentdb\_endpoint) | The endpoint of the Imminence DocumentDB |
+| <a name="output_service_dns_name"></a> [service\_dns\_name](#output\_service\_dns\_name) | DNS name to access the node service |

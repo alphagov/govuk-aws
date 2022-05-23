@@ -142,7 +142,7 @@ resource "aws_docdb_cluster" "cluster" {
   backup_retention_period         = var.backup_retention_period
   db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.parameter_group.name
   kms_key_id                      = data.terraform_remote_state.infra_security.outputs.imminence_documentdb_kms_key_arn
-  vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_imminence_documentdb_id}"]
+  vpc_security_group_ids          = [data.terraform_remote_state.infra_security_groups.outputs.sg_imminence_documentdb_id]
 
   # enabled_cloudwatch_logs_exports is ["profiler"] if profiling is enabled, otherwise [].
   enabled_cloudwatch_logs_exports = var.profiler == "enabled" ? ["profiler"] : []
@@ -160,7 +160,7 @@ resource "aws_route53_record" "share-documentdb_internal_service_cname" {
   name    = "imminence-documentdb.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
-  records = ["${aws_docdb_cluster.cluster.endpoint}"]
+  records = [aws_docdb_cluster.cluster.endpoint]
 }
 
 # Outputs
@@ -171,6 +171,6 @@ output "imminence_documentdb_endpoint" {
 }
 
 output "service_dns_name" {
-  value       = aws_route53_record.service_record.fqdn
+  value       = aws_route53_record.documentdb_internal_service_cname.fqdn
   description = "DNS name to access the node service"
 }
