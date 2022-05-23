@@ -112,7 +112,7 @@ resource "aws_docdb_subnet_group" "cluster_subnet" {
 }
 
 resource "aws_docdb_cluster_parameter_group" "parameter_group" {
-  family      = "docdb3.6"
+  family      = "docdb4.0"
   name        = "imminence-documentdb-parameter-group"
   description = "Imminence DocumentDB cluster parameter group"
 
