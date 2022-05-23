@@ -169,3 +169,8 @@ output "imminence_documentdb_endpoint" {
   value       = aws_docdb_cluster.cluster.endpoint
   description = "The endpoint of the Imminence DocumentDB"
 }
+
+output "service_dns_name" {
+  value       = aws_route53_record.service_record.fqdn
+  description = "DNS name to access the node service"
+}
