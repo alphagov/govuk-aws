@@ -386,6 +386,11 @@ variable "graphite_internal_service_names" {
   default = []
 }
 
+variable "imminence_documentdb_internal_service_names" {
+  type    = "list"
+  default = []
+}
+
 variable "prometheus_internal_service_names" {
   type    = "list"
   default = []
@@ -1567,6 +1572,19 @@ resource "aws_route53_record" "graphite_internal_service_names" {
   name    = "${element(var.graphite_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
   type    = "CNAME"
   records = ["${element(var.graphite_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  ttl     = "300"
+}
+
+#
+# imminence-documentdb
+#
+
+resource "aws_route53_record" "imminence_documentdb_internal_service_names" {
+  count   = "${length(var.imminence_documentdb_internal_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
+  name    = "${element(var.imminence_documentdb_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.imminence_documentdb_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
   ttl     = "300"
 }
 

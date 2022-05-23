@@ -120,6 +120,7 @@ This project adds global resources for app components:
 | [aws_route53_record.frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.graphite_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.graphite_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.imminence_documentdb_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.jumpbox_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.licensify_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.licensify_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
@@ -280,6 +281,7 @@ This project adds global resources for app components:
 | <a name="input_frontend_internal_service_names"></a> [frontend\_internal\_service\_names](#input\_frontend\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_graphite_internal_service_names"></a> [graphite\_internal\_service\_names](#input\_graphite\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_graphite_public_service_names"></a> [graphite\_public\_service\_names](#input\_graphite\_public\_service\_names) | n/a | `list` | `[]` | no |
+| <a name="input_imminence_documentdb_internal_service_names"></a> [imminence\_documentdb\_internal\_service\_names](#input\_imminence\_documentdb\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_jumpbox_public_service_names"></a> [jumpbox\_public\_service\_names](#input\_jumpbox\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_licensify_backend_elb_public_certname"></a> [licensify\_backend\_elb\_public\_certname](#input\_licensify\_backend\_elb\_public\_certname) | Domain name (CN) of the ACM cert to use for licensify\_backend. | `string` | n/a | yes |
 | <a name="input_licensify_backend_public_service_names"></a> [licensify\_backend\_public\_service\_names](#input\_licensify\_backend\_public\_service\_names) | n/a | `list` | `[]` | no |
