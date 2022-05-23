@@ -155,7 +155,7 @@ resource "aws_docdb_cluster" "cluster" {
   }
 }
 
-resource "aws_route53_record" "share-documentdb_internal_service_cname" {
+resource "aws_route53_record" "imminence_documentdb_internal_service_cname" {
   zone_id = data.aws_route53_zone.internal.zone_id
   name    = "imminence-documentdb.${var.internal_domain_name}"
   type    = "CNAME"
@@ -171,6 +171,6 @@ output "imminence_documentdb_endpoint" {
 }
 
 output "service_dns_name" {
-  value       = aws_route53_record.documentdb_internal_service_cname.fqdn
+  value       = aws_route53_record.imminence_documentdb_internal_service_cname.fqdn
   description = "DNS name to access the node service"
 }
