@@ -52,6 +52,7 @@ Infrastructure security settings:
 | [aws_iam_role_policy_attachment.shield-response-team-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_key_pair.govuk-infra-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_kms_alias.sops](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
+| [aws_kms_key.authenticating_proxy_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_key.licensify_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_key.shared_documentdb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_kms_key.sops](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
@@ -90,6 +91,7 @@ Infrastructure security settings:
 | Name | Description |
 |------|-------------|
 | <a name="output_admin_roles_and_arns"></a> [admin\_roles\_and\_arns](#output\_admin\_roles\_and\_arns) | Map of '$username-admin' to role ARN, for the *-admin roles. e.g. {'joe.bloggs-admin': 'arn:aws:iam::123467890123:role/joe.bloggs-admin'} |
+| <a name="output_authenticating_proxy_documentdb_kms_key_arn"></a> [authenticating\_proxy\_documentdb\_kms\_key\_arn](#output\_authenticating\_proxy\_documentdb\_kms\_key\_arn) | The ARN of the Authenticating Proxy DocumentDB KMS key |
 | <a name="output_licensify_documentdb_kms_key_arn"></a> [licensify\_documentdb\_kms\_key\_arn](#output\_licensify\_documentdb\_kms\_key\_arn) | The ARN of the Licensify DocumentDB KMS key |
 | <a name="output_poweruser_roles_and_arns"></a> [poweruser\_roles\_and\_arns](#output\_poweruser\_roles\_and\_arns) | Map of '$username-poweruser' to role ARN, for the *-poweruser roles. e.g. {'joe.bloggs-poweruser': 'arn:aws:iam::123467890123:role/joe.bloggs-poweruser'} |
 | <a name="output_shared_documentdb_kms_key_arn"></a> [shared\_documentdb\_kms\_key\_arn](#output\_shared\_documentdb\_kms\_key\_arn) | The ARN of the Shared DocumentDB KMS key |
