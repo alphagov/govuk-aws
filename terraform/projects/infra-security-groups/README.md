@@ -39,6 +39,7 @@ No modules.
 | [aws_security_group.apt_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.asset-master](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.asset-master-efs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.authenticating-proxy-documentdb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.backend-redis](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.backend_elb_external](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -207,6 +208,8 @@ No modules.
 | [aws_security_group_rule.asset-master-efs_ingress_asset-master_nfs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.asset-master-efs_ingress_backend_nfs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.asset-master-efs_ingress_whitehall-backend_nfs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.authenticating-proxy-documentdb_ingress_backend_authenticating_proxy_apps](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.authenticating-proxy-documentdb_ingress_db-admin_mongodb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.backend-elb-external_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.backend-elb-external_ingress_public_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.backend-elb-internal_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -616,6 +619,7 @@ No modules.
 | <a name="output_sg_apt_internal_elb_id"></a> [sg\_apt\_internal\_elb\_id](#output\_sg\_apt\_internal\_elb\_id) | n/a |
 | <a name="output_sg_asset-master-efs_id"></a> [sg\_asset-master-efs\_id](#output\_sg\_asset-master-efs\_id) | n/a |
 | <a name="output_sg_asset-master_id"></a> [sg\_asset-master\_id](#output\_sg\_asset-master\_id) | n/a |
+| <a name="output_sg_authenticating_proxy_documentdb_id"></a> [sg\_authenticating\_proxy\_documentdb\_id](#output\_sg\_authenticating\_proxy\_documentdb\_id) | n/a |
 | <a name="output_sg_aws-vpn_id"></a> [sg\_aws-vpn\_id](#output\_sg\_aws-vpn\_id) | n/a |
 | <a name="output_sg_backend-redis_id"></a> [sg\_backend-redis\_id](#output\_sg\_backend-redis\_id) | n/a |
 | <a name="output_sg_backend_elb_external_id"></a> [sg\_backend\_elb\_external\_id](#output\_sg\_backend\_elb\_external\_id) | n/a |

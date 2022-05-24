@@ -34,6 +34,10 @@ output "sg_apt_internal_elb_id" {
   value = "${aws_security_group.apt_internal_elb.id}"
 }
 
+output "sg_authenticating_proxy_documentdb_id" {
+  value = "${aws_security_group.authenticating-proxy-documentdb.id}"
+}
+
 output "sg_backend_elb_internal_id" {
   value = "${aws_security_group.backend_elb_internal.id}"
 }
