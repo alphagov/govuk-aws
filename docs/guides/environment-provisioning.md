@@ -484,6 +484,7 @@ Be aware that both RDS and Elasticache can take some time to deploy.
 
 The following applications are core to the GOV.UK stack:
 
+`app-authenticating-proxy-documentdb`
 `app-cache`
 `app-content-store`
 `app-draft-cache`
