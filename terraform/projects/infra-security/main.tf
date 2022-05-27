@@ -326,6 +326,8 @@ data "aws_iam_policy_document" "data-science-access-sagemaker" {
       "sagemaker:StartNotebookInstance",
       "sagemaker:StopNotebookInstance",
       "sagemaker:UpdateNotebookInstance",
+      "s3:*",
+      "ec2:*"
     ]
 
     effect    = "Allow"
