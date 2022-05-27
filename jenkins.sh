@@ -49,8 +49,9 @@ git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alpha
 
 case $COMMAND in
   'apply') EXTRA='-auto-approve';;
-  'plan (destroy)') COMMAND='plan'; EXTRA='-destroy';;
+  'plan (destroy)') COMMAND='plan'; EXTRA='-detailed-exitcode -destroy';;
   'destroy') EXTRA='-force';;
+  'plan') EXTRA='-detailed-exitcode';;
 esac
 
 tools/build-terraform-project.sh -d './govuk-aws-data/data' \
