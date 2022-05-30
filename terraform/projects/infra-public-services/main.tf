@@ -2347,3 +2347,86 @@ resource "aws_route53_record" "draft_content_store_public_service_names" {
   records = ["${element(var.draft_content_store_public_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
   ttl     = "300"
 }
+
+# Outputs
+# ---------------------
+
+output "kinesis_firehose_splunk_arn" {
+  value       = "${aws_kinesis_firehose_delivery_stream.splunk.arn}"
+  description = "The ARN of the splunk endpoint of the kinesis firehose stream"
+}
+
+output "account_public_lb_id" {
+  value       = "${module.account_public_lb.lb_id}"
+  description = "The ID of the account_public load balancer"
+}
+
+output "backend_public_lb_id" {
+  value       = "${module.backend_public_lb.lb_id}"
+  description = "The ID of the backend_public load balancer"
+}
+
+output "bouncer_public_lb_id" {
+  value       = "${module.bouncer_public_lb.lb_id}"
+  description = "The ID of the bouncer_public load balancer"
+}
+
+output "cache_public_lb_id" {
+  value       = "${module.cache_public_lb.lb_id}"
+  description = "The ID of the cache_public load balancer"
+}
+
+output "ckan_public_lb_id" {
+  value       = "${module.ckan_public_lb.lb_id}"
+  description = "The ID of the ckan_public load balancer"
+}
+
+output "deploy_public_lb_id" {
+  value       = "${module.deploy_public_lb.lb_id}"
+  description = "The ID of the deploy_public load balancer"
+}
+
+output "draft_cache_public_lb_id" {
+  value       = "${module.draft_cache_public_lb.lb_id}"
+  description = "The ID of the draft_cache_public load balancer"
+}
+
+output "email_alert_api_public_lb_id" {
+  value       = "${module.email_alert_api_public_lb.lb_id}"
+  description = "The ID of the email_alert_api_public load balancer"
+}
+
+output "graphite_public_lb_id" {
+  value       = "${module.graphite_public_lb.lb_id}"
+  description = "The ID of the graphite_public load balancer"
+}
+
+output "prometheus_public_lb_id" {
+  value       = "${module.prometheus_public_lb.lb_id}"
+  description = "The ID of the prometheus_public load balancer"
+}
+
+output "licensify_frontend_public_lb_id" {
+  value       = "${module.licensify_frontend_public_lb.lb_id}"
+  description = "The ID of the licensify_frontend_public_lb load balancer"
+}
+
+output "licensify_backend_public_lb_id" {
+  value       = "${module.licensify_backend_public_lb.lb_id}"
+  description = "The ID of the licensify_backend_public load balancer"
+}
+
+output "monitoring_public_lb_id" {
+  value       = "${module.monitoring_public_lb.lb_id}"
+  description = "The ID of the monitoring_public load balancer"
+}
+
+output "sidekiq_monitoring_public_lb_id" {
+  value       = "${module.sidekiq_monitoring_public_lb.lb_id}"
+  description = "The ID of the sidekiq_monitoring_public_lb load balancer"
+}
+
+output "whitehall_backend_public_lb_id" {
+  value       = "${module.whitehall_backend_public_lb.lb_id}"
+  description = "The ID of the whitehall_backend_public load balancer"
+}
