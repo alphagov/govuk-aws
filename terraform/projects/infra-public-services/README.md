@@ -325,4 +325,21 @@ This project adds global resources for app components:
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_account_public_lb_id"></a> [account\_public\_lb\_id](#output\_account\_public\_lb\_id) | The ID of the account\_public load balancer |
+| <a name="output_backend_public_lb_id"></a> [backend\_public\_lb\_id](#output\_backend\_public\_lb\_id) | The ID of the backend\_public load balancer |
+| <a name="output_bouncer_public_lb_id"></a> [bouncer\_public\_lb\_id](#output\_bouncer\_public\_lb\_id) | The ID of the bouncer\_public load balancer |
+| <a name="output_cache_public_lb_id"></a> [cache\_public\_lb\_id](#output\_cache\_public\_lb\_id) | The ID of the cache\_public load balancer |
+| <a name="output_ckan_public_lb_id"></a> [ckan\_public\_lb\_id](#output\_ckan\_public\_lb\_id) | The ID of the ckan\_public load balancer |
+| <a name="output_deploy_public_lb_id"></a> [deploy\_public\_lb\_id](#output\_deploy\_public\_lb\_id) | The ID of the deploy\_public load balancer |
+| <a name="output_draft_cache_public_lb_id"></a> [draft\_cache\_public\_lb\_id](#output\_draft\_cache\_public\_lb\_id) | The ID of the draft\_cache\_public load balancer |
+| <a name="output_email_alert_api_public_lb_id"></a> [email\_alert\_api\_public\_lb\_id](#output\_email\_alert\_api\_public\_lb\_id) | The ID of the email\_alert\_api\_public load balancer |
+| <a name="output_graphite_public_lb_id"></a> [graphite\_public\_lb\_id](#output\_graphite\_public\_lb\_id) | The ID of the graphite\_public load balancer |
+| <a name="output_kinesis_firehose_splunk_arn"></a> [kinesis\_firehose\_splunk\_arn](#output\_kinesis\_firehose\_splunk\_arn) | The ARN of the splunk endpoint of the kinesis firehose stream |
+| <a name="output_licensify_backend_public_lb_id"></a> [licensify\_backend\_public\_lb\_id](#output\_licensify\_backend\_public\_lb\_id) | The ID of the licensify\_backend\_public load balancer |
+| <a name="output_licensify_frontend_public_lb_id"></a> [licensify\_frontend\_public\_lb\_id](#output\_licensify\_frontend\_public\_lb\_id) | The ID of the licensify\_frontend\_public\_lb load balancer |
+| <a name="output_monitoring_public_lb_id"></a> [monitoring\_public\_lb\_id](#output\_monitoring\_public\_lb\_id) | The ID of the monitoring\_public load balancer |
+| <a name="output_prometheus_public_lb_id"></a> [prometheus\_public\_lb\_id](#output\_prometheus\_public\_lb\_id) | The ID of the prometheus\_public load balancer |
+| <a name="output_sidekiq_monitoring_public_lb_id"></a> [sidekiq\_monitoring\_public\_lb\_id](#output\_sidekiq\_monitoring\_public\_lb\_id) | The ID of the sidekiq\_monitoring\_public\_lb load balancer |
+| <a name="output_whitehall_backend_public_lb_id"></a> [whitehall\_backend\_public\_lb\_id](#output\_whitehall\_backend\_public\_lb\_id) | The ID of the whitehall\_backend\_public load balancer |
