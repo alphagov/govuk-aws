@@ -149,10 +149,6 @@ This project adds global resources for app components:
 | [aws_route53_record.whitehall_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.whitehall_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.aws_waf_logs](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/s3_bucket) | resource |
-| [aws_wafv2_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_regex_pattern_set) | resource |
-| [aws_wafv2_rule_group.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_rule_group) | resource |
-| [aws_wafv2_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl) | resource |
-| [aws_wafv2_web_acl_logging_configuration.public_cache_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [archive_file.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_autoscaling_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
 | [aws_autoscaling_group.backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_group) | data source |
