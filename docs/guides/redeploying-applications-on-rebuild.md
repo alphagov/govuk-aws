@@ -63,7 +63,6 @@ feedback
 frontend
 government-frontend
 info-frontend
-manuals-frontend
 service-manual-frontend
 static
 ```
@@ -83,7 +82,6 @@ collections
 email-alert-frontend
 frontend
 government-frontend
-manuals-frontend
 service-manual-frontend
 static
 ```
