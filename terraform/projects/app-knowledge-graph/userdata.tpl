@@ -11,16 +11,8 @@ echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC77d30YoXpAluaF5hYEPiMQvs7FCa4i2HZoA
 instance_id="$(curl http://169.254.169.254/latest/meta-data/instance-id)"
 aws elb register-instances-with-load-balancer --load-balancer-name ${elb_name} --instances $instance_id --region eu-west-1
 
-sudo locale-gen en_GB.UTF-8
-
-sudo apt install -y python-pip
-pip install awscli==1.19.112
-
-sudo apt install -y libpq-dev
-sudo apt install -y libicu-dev
-
-# Install zip and unzip utilities
-sudo apt install -y zip unzip
+# Install aws cli
+python -m pip install awscli==1.19.112
 
 sudo su - ubuntu
 
