@@ -53,5 +53,5 @@ touch /var/tmp/data_generation_process.log
 ################################################################################
 # Copy build logs across to S3 for debugging
 date_today=$(date '+%F')
-aws s3 cp /var/tmp/data_generation_process.log "s3://${data_infrastructure_bucket_name}/knowledge-graph/${date_today}/data_generation_process.log"
-aws s3 cp /var/log/cloud-init-output.log "s3://${data_infrastructure_bucket_name}/knowledge-graph/${date_today}/cloud-init-output.log"
+aws s3 cp /var/tmp/data_generation_process.log "s3://${data_infrastructure_bucket_name}/knowledge-graph/$${date_today}/data_generation_process.log"
+aws s3 cp /var/log/cloud-init-output.log "s3://${data_infrastructure_bucket_name}/knowledge-graph/$${date_today}/cloud-init-output.log"
