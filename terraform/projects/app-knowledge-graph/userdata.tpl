@@ -9,7 +9,7 @@ echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC77d30YoXpAluaF5hYEPiMQvs7FCa4i2HZoA
 
 # Register instance with load balancer
 instance_id="$(curl http://169.254.169.254/latest/meta-data/instance-id)"
-aws elb register-instances-with-load-balancer --load-balancer-name ${elb_name} --instances $instance_id --region eu-west-1
+aws elb register-instances-with-load-balancer --load-balancer-name "${elb_name}" --instances "${instance_id}" --region eu-west-1
 
 # Install aws cli
 python -m pip install awscli==1.19.112
@@ -27,7 +27,7 @@ cd /var/data
 chmod 600 kg_id_rsa
 
 # Add Github deploy key to ssh agent
-eval `ssh-agent -s`
+eval "$(ssh-agent -s)"
 ssh-add /var/data/kg_id_rsa
 
 # Accept Github SSH fingerprint
@@ -43,4 +43,4 @@ cd govuk-knowledge-graph
 chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
-./provision_knowledge_graph -i $instance_id -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name}
+./provision_knowledge_graph -i "$instance_id" -d "${data_infrastructure_bucket_name}" -r "${related_links_bucket_name}"
