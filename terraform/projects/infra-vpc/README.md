@@ -53,5 +53,6 @@ and resources to export these logs to S3
 |------|-------------|
 | <a name="output_internet_gateway_id"></a> [internet\_gateway\_id](#output\_internet\_gateway\_id) | The ID of the Internet Gateway |
 | <a name="output_route_table_public_id"></a> [route\_table\_public\_id](#output\_route\_table\_public\_id) | The ID of the public routing table |
+| <a name="output_s3_gateway_id"></a> [s3\_gateway\_id](#output\_s3\_gateway\_id) | The ID of the VPC gateway to use with S3 |
 | <a name="output_vpc_cidr"></a> [vpc\_cidr](#output\_vpc\_cidr) | The CIDR block of the VPC |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The ID of the VPC |

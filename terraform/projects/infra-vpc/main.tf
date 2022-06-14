@@ -130,6 +130,11 @@ output "internet_gateway_id" {
   description = "The ID of the Internet Gateway"
 }
 
+output "s3_gateway_id" {
+  value       = "${module.vpc.s3_gateway_id}"
+  description = "The ID of the VPC gateway to use with S3"
+}
+
 output "route_table_public_id" {
   value       = "${module.vpc.route_table_public_id}"
   description = "The ID of the public routing table"

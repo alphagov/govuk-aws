@@ -56,12 +56,14 @@ No modules.
 | [aws_route_table.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table_association.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_subnet.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_vpc_endpoint_route_table_association.private_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint_route_table_association) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map` | `{}` | no |
+| <a name="input_s3_gateway_id"></a> [s3\_gateway\_id](#input\_s3\_gateway\_id) | The ID of the AWS VPC Endpoint to use to communicate with S3 | `string` | n/a | yes |
 | <a name="input_subnet_availability_zones"></a> [subnet\_availability\_zones](#input\_subnet\_availability\_zones) | A map of which AZs the subnets should be created in. | `map` | n/a | yes |
 | <a name="input_subnet_cidrs"></a> [subnet\_cidrs](#input\_subnet\_cidrs) | A map of the CIDRs for the subnets being created. | `map` | n/a | yes |
 | <a name="input_subnet_nat_gateways"></a> [subnet\_nat\_gateways](#input\_subnet\_nat\_gateways) | A map containing the NAT gateway IDs for the subnets being created. | `map` | `{}` | no |
