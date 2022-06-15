@@ -26,9 +26,14 @@ resource "aws_eip" "nat" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
 resource "aws_shield_protection" "aws_eip" {
-  name         = "${var.stackname}-aws-eip_shield"
-  resource_arn = "${module.aws_eip.lb_id}"
+  count        = "${length(aws_eip.nat.*.id)}"
+  name         = "${element(aws_eip.nat.*.id, count.index)}_shield"
+  resource_arn = "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:eip-allocation/${element(aws_eip.nat.*.id, count.index)}"
 }
 
 resource "aws_nat_gateway" "nat" {
