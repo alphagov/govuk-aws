@@ -150,8 +150,9 @@ resource "aws_lb_listener_rule" "routing" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
+    host_header {
+      values = ["${var.rules_host[count.index]}.${var.rules_host_domain}"]
+    }
   }
 
   depends_on = [
