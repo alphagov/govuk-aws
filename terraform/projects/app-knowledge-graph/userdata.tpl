@@ -10,7 +10,7 @@ echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC77d30YoXpAluaF5hYEPiMQvs7FCa4i2HZoA
 
 # Register instance with load balancer
 instance_id="$(curl http://169.254.169.254/latest/meta-data/instance-id)"
-aws elb register-instances-with-load-balancer --load-balancer-name "${elb_name}" --instances $instance_id --region eu-west-1
+aws elb register-instances-with-load-balancer --load-balancer-name "${elb_name}" --instances $${instance_id} --region eu-west-1
 
 sudo locale-gen en_GB.UTF-8
 sudo apt install -y python-pip
@@ -47,4 +47,4 @@ cd govuk-knowledge-graph
 chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
-./provision_knowledge_graph -i ${instance_id} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name} 2>&1
+./provision_knowledge_graph -i $${instance_id} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name} 2>&1
