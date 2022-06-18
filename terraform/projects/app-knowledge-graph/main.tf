@@ -57,7 +57,7 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
   bucket = "${local.data_infrastructure_bucket_name}"
 
   versioning {
-    enabled = true
+    enabled = false
   }
 
   tags {
