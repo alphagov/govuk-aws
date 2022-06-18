@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo apt-get update -y
-sudo apt-get install -y htop jq awscli
+sudo apt-get install -y htop jq
 
 
 # Allow SSH access
@@ -13,6 +13,8 @@ instance_id="$(curl http://169.254.169.254/latest/meta-data/instance-id)"
 aws elb register-instances-with-load-balancer --load-balancer-name "${elb_name}" --instances $instance_id --region eu-west-1
 
 sudo locale-gen en_GB.UTF-8
+sudo apt install -y python-pip
+pip install awscli==1.19.112
 
 # Create data dir
 sudo mkdir /var/data
@@ -25,7 +27,7 @@ cd /var/data
 
 
 # This is a private repo so we need a github ssh key for cloning
-aws ssm get-parameter --name govuk_knowledge_graph_github_deploy_key --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.' > kg_id_rsa
+/usr/local/bin/aws ssm get-parameter --name govuk_knowledge_graph_github_deploy_key --query "Parameter.Value" --region eu-west-1 --with-decryption | jq -r '.' > kg_id_rsa
 chmod 600 kg_id_rsa
 
 # Add Github deploy key to ssh agent
