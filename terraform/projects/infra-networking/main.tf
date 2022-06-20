@@ -189,6 +189,7 @@ module "infra_private_subnet" {
   subnet_availability_zones  = "${var.private_subnet_availability_zones}"
   subnet_nat_gateways        = "${zipmap(keys(var.private_subnet_nat_gateway_association), data.template_file.nat_gateway_association_nat_id.*.rendered)}"
   subnet_nat_gateways_length = "${length(keys(var.private_subnet_nat_gateway_association))}"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
 }
 
 module "infra_private_subnet_elasticache" {
@@ -198,6 +199,7 @@ module "infra_private_subnet_elasticache" {
   subnet_cidrs               = "${var.private_subnet_elasticache_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_elasticache_availability_zones}"
   subnet_nat_gateways_length = "0"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
 }
 
 module "infra_private_subnet_rds" {
@@ -207,6 +209,7 @@ module "infra_private_subnet_rds" {
   subnet_cidrs               = "${var.private_subnet_rds_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_rds_availability_zones}"
   subnet_nat_gateways_length = "0"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
 }
 
 module "infra_private_subnet_reserved_ips" {
@@ -216,6 +219,7 @@ module "infra_private_subnet_reserved_ips" {
   subnet_cidrs               = "${var.private_subnet_reserved_ips_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_reserved_ips_availability_zones}"
   subnet_nat_gateways_length = "0"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
 }
 
 module "infra_private_subnet_elasticsearch" {
@@ -225,6 +229,7 @@ module "infra_private_subnet_elasticsearch" {
   subnet_cidrs               = "${var.private_subnet_elasticsearch_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_elasticsearch_availability_zones}"
   subnet_nat_gateways_length = "0"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
 }
 
 module "infra_alarms_natgateway" {

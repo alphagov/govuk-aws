@@ -22,6 +22,8 @@ variable "cidr" {
 # Resources
 #--------------------------------------------------------------
 
+data "aws_region" "current" {}
+
 resource "aws_vpc" "vpc" {
   cidr_block           = "${var.cidr}"
   enable_dns_support   = true
@@ -51,6 +53,11 @@ resource "aws_route_table" "public" {
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }
 
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = "${aws_vpc.vpc.id}"
+  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+}
+
 # Outputs
 #--------------------------------------------------------------
 
@@ -67,6 +74,11 @@ output "vpc_cidr" {
 output "internet_gateway_id" {
   value       = "${aws_internet_gateway.public.id}"
   description = "The ID of the Internet Gateway."
+}
+
+output "s3_gateway_id" {
+  value       = "${aws_vpc_endpoint.s3.id}"
+  description = "The ID of the VPC gateway to use with S3"
 }
 
 output "route_table_public_id" {

@@ -57,6 +57,11 @@ variable "subnet_availability_zones" {
   description = "A map of which AZs the subnets should be created in."
 }
 
+variable "s3_gateway_id" {
+  type        = "string"
+  description = "The ID of the AWS VPC Endpoint to use to communicate with S3"
+}
+
 variable "subnet_nat_gateways" {
   type        = "map"
   description = "A map containing the NAT gateway IDs for the subnets being created."
@@ -109,6 +114,12 @@ resource "aws_route" "nat" {
   route_table_id         = "${lookup(zipmap(aws_route_table.private.*.tags.Name, aws_route_table.private.*.id), element(keys(var.subnet_nat_gateways), count.index))}"
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = "${element(values(var.subnet_nat_gateways), count.index)}"
+}
+
+resource "aws_vpc_endpoint_route_table_association" "private_s3" {
+  count           = "${length(keys(var.subnet_cidrs))}"
+  vpc_endpoint_id = "${var.s3_gateway_id}"
+  route_table_id  = "${element(aws_route_table.private.*.id, count.index)}"
 }
 
 # Outputs
