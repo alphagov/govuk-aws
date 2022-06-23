@@ -45,4 +45,4 @@ cd govuk-knowledge-graph
 chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
-./provision_knowledge_graph -i ${instance_id} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name} 2>&1
+./provision_knowledge_graph -i $${instance_id} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name} 2>&1
