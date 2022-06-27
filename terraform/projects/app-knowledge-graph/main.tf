@@ -164,6 +164,7 @@ data "aws_iam_policy_document" "knowledge-graph_register_instance_with_elb_polic
 
     resources = [
       "${aws_elb.knowledge-graph_elb_external.arn}",
+      "${aws_elb.knowledge-graph-dev_elb_external.arn}",
     ]
   }
 }
@@ -240,6 +241,11 @@ resource "aws_iam_role" "knowledge-graph_role" {
 data "template_file" "ec2_assume_policy_template" {
   template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
 }
+
+# PRODUCTION Knowledge graph
+# This is for the user-facing knowledge graph, or its dependent applications
+# It's not "production" in the sense that it's in the production GOV.UK stack, as it still sits in integration
+# ------------------------------------------------------------------------------------------------------------
 
 data "template_file" "knowledge-graph_userdata" {
   template = "${file("${path.module}/userdata.tpl")}"
@@ -332,7 +338,7 @@ resource "aws_route53_record" "knowledge_graph_service_record_external" {
 }
 
 resource "aws_elb" "knowledge-graph_elb_external" {
-  name                = "${var.stackname}-knowledge-graph-external"
+  name                = "${var.stackname}-knowledge-graph-elb_external"
   internal            = false
   connection_draining = true
 
@@ -384,6 +390,155 @@ resource "aws_elb" "knowledge-graph_elb_external" {
 
   tags {
     Name = "${var.stackname}-knowledge-graph-external"
+  }
+}
+
+# DEV Knowledge Graph - Meant for testing new features before going to production
+# -------------------------------------------------------------------------------
+
+data "template_file" "knowledge-graph-dev_userdata" {
+  template = "${file("${path.module}/userdata-dev.tpl")}"
+
+  vars {
+    elb_name                        = "${aws_elb.knowledge-graph-dev_elb_external.name}"
+    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+    data_infrastructure_bucket_name = "${aws_s3_bucket.data_infrastructure_bucket.id}"
+    related_links_bucket_name       = "govuk-related-links-${var.aws_environment}"
+  }
+}
+
+resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
+  name     = "knowledge-graph-dev_launch-template"
+  image_id = "${data.aws_ami.neo4j_community_ami.id}"
+
+  instance_type = "r4.2xlarge"
+
+  vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}"]
+
+  iam_instance_profile {
+    name = "${aws_iam_instance_profile.knowledge-graph_instance_profile.name}"
+  }
+
+  instance_initiated_shutdown_behavior = "terminate"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size = 32
+    }
+  }
+
+  user_data = "${base64encode(data.template_file.knowledge-graph-dev_userdata.rendered)}"
+}
+
+resource "aws_autoscaling_group" "knowledge-graph-dev_asg" {
+  name             = "${var.stackname}_knowledge-graph-dev"
+  min_size         = 0
+  max_size         = 1
+  desired_capacity = 0
+
+  launch_template {
+    id      = "${aws_launch_template.knowledge-graph-dev_launch_template.id}"
+    version = "$Latest"
+  }
+
+  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+
+  tag {
+    key                 = "Name"
+    value               = "${var.stackname}_knowledge-graph-dev"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_autoscaling_schedule" "knowledge-graph-dev_schedule-spin-up" {
+  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-dev_asg.name}"
+  scheduled_action_name  = "knowledge-graph-dev_schedule-spin-up"
+  recurrence             = "30 7 * * MON-FRI"
+  min_size               = -1
+  max_size               = -1
+  desired_capacity       = 1
+}
+
+resource "aws_autoscaling_schedule" "knowledge-graph-dev_schedule-spin-down" {
+  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-dev_asg.name}"
+  scheduled_action_name  = "knowledge-graph-dev_schedule-spin-down"
+  recurrence             = "29 19 * * MON-FRI"
+  min_size               = -1
+  max_size               = -1
+  desired_capacity       = 0
+}
+
+resource "aws_route53_record" "knowledge_graph_lab_service_record_external" {
+  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  name    = "knowledge-graph-dev.${var.external_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.knowledge-graph-dev_elb_external.dns_name}"
+    zone_id                = "${aws_elb.knowledge-graph-dev_elb_external.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_elb" "knowledge-graph-dev_elb_external" {
+  name                = "${var.stackname}-knowledge-graph-dev-elb_external"
+  internal            = false
+  connection_draining = true
+
+  listener {
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
+  }
+
+  listener {
+    instance_port      = 3000
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  listener {
+    instance_port      = 7473
+    instance_protocol  = "https"
+    lb_port            = 7473
+    lb_protocol        = "https"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  listener {
+    instance_port      = 7687
+    instance_protocol  = "ssl"
+    lb_port            = 7687
+    lb_protocol        = "ssl"
+    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    target              = "TCP:7687"
+    interval            = 30
+    timeout             = 10
+  }
+
+  subnets = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+
+  security_groups = [
+    "${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_elb_external_id}",
+    "${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}",
+  ]
+
+  tags {
+    Name = "${var.stackname}-knowledge-graph-dev-external"
   }
 }
 
