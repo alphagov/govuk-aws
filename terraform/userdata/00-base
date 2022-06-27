@@ -44,6 +44,16 @@ apt-get -y upgrade
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: install AWS cli ..."
 apt-get install -y awscli jq
 
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: install ubuntu-advantage-tools ..."
+apt-get install -y ubuntu-advantage-tools
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] setup the esm repo ..."
+ubuntu-advantage attach ESM_TRUSTY_TOKEN
+
+echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: ensure the packages are up to date ..."
+apt-get update -qq
+apt-get -y upgrade
+
 echo "[$(date '+%H:%M:%S %d-%m-%Y')] base: install LVM ..."
 apt-get install -y lvm2
 
