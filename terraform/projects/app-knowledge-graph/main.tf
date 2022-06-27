@@ -338,7 +338,7 @@ resource "aws_route53_record" "knowledge_graph_service_record_external" {
 }
 
 resource "aws_elb" "knowledge-graph_elb_external" {
-  name                = "${var.stackname}-knowledge-graph-elb_external"
+  name                = "${var.stackname}-knowledge-graph-elb-ex"
   internal            = false
   connection_draining = true
 
@@ -487,7 +487,7 @@ resource "aws_route53_record" "knowledge_graph_lab_service_record_external" {
 }
 
 resource "aws_elb" "knowledge-graph-dev_elb_external" {
-  name                = "${var.stackname}-knowledge-graph-dev-elb_external"
+  name                = "${var.stackname}-knowledge-graph-dev-elb-ex"
   internal            = false
   connection_draining = true
 
