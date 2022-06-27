@@ -227,6 +227,27 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
   }
 
   statement {
+    sid     = "S3NATGatewayReadBucket"
+    actions = ["s3:GetObject"]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.govuk-mirror-replica.id}",
+      "arn:aws:s3:::${aws_s3_bucket.govuk-mirror-replica.id}/*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceVpce"
+      values   = ["${data.terraform_remote_state.infra_vpc.s3_gateway_id}"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+
+  statement {
     sid    = "CrossAccountAccess"
     effect = "Allow"
 
