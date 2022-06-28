@@ -474,7 +474,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph-dev_schedule-spin-down" {
   desired_capacity       = 0
 }
 
-resource "aws_route53_record" "knowledge_graph_lab_service_record_external" {
+resource "aws_route53_record" "knowledge_graph_dev_service_record_external" {
   zone_id = "${data.aws_route53_zone.external.zone_id}"
   name    = "knowledge-graph-dev.${var.external_domain_name}"
   type    = "A"

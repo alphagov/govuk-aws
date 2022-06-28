@@ -6,7 +6,7 @@ sudo apt-get install -y htop jq zip unzip
 # From https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 echo "Installing AWS CLI"
 echo "- uninstalling old version"
-sudo apt-get remove -y aws # First uninstall the version already installed in this AMI
+sudo apt-get remove -y awscli # First uninstall the version already installed in this AMI
 which -a aws && echo "aws binary found after uninstalling. Something's wrong."
 echo "- downloaded new version"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
