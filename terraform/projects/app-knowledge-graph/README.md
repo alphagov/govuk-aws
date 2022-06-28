@@ -47,7 +47,7 @@ No modules.
 | [aws_iam_role_policy_attachment.read_write_data_infrastructure_bucket_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.knowledge-graph-dev_launch_template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) | resource |
 | [aws_launch_template.knowledge-graph_launch_template](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/launch_template) | resource |
-| [aws_route53_record.knowledge_graph_lab_service_record_external](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.knowledge_graph_dev_service_record_external](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.knowledge_graph_service_record_external](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.data_infrastructure_bucket](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/s3_bucket) | resource |
 | [aws_acm_certificate.elb_external_cert](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/acm_certificate) | data source |
