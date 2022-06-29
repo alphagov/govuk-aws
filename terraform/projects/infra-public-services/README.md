@@ -38,7 +38,6 @@ This project adds global resources for app components:
 | <a name="module_email_alert_api_public_lb"></a> [email\_alert\_api\_public\_lb](#module\_email\_alert\_api\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_graphite_public_lb"></a> [graphite\_public\_lb](#module\_graphite\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_licensify_backend_public_lb"></a> [licensify\_backend\_public\_lb](#module\_licensify\_backend\_public\_lb) | ../../modules/aws/lb | n/a |
-| <a name="module_licensify_frontend_public_lb"></a> [licensify\_frontend\_public\_lb](#module\_licensify\_frontend\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_monitoring_public_lb"></a> [monitoring\_public\_lb](#module\_monitoring\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_prometheus_public_lb"></a> [prometheus\_public\_lb](#module\_prometheus\_public\_lb) | ../../modules/aws/lb | n/a |
 | <a name="module_sidekiq_monitoring_public_lb"></a> [sidekiq\_monitoring\_public\_lb](#module\_sidekiq\_monitoring\_public\_lb) | ../../modules/aws/lb | n/a |
@@ -58,7 +57,6 @@ This project adds global resources for app components:
 | [aws_autoscaling_attachment.graphite_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.jumpbox_asg_attachment_elb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.licensify_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
-| [aws_autoscaling_attachment.licensify_frontend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.monitoring_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.prometheus_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
 | [aws_autoscaling_attachment.sidekiq_monitoring_backend_asg_attachment_alb](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/autoscaling_attachment) | resource |
@@ -70,7 +68,6 @@ This project adds global resources for app components:
 | [aws_kinesis_firehose_delivery_stream.splunk](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/kinesis_firehose_delivery_stream) | resource |
 | [aws_lambda_function.aws_waf_log_trimmer](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lambda_function) | resource |
 | [aws_lb_listener.licensify_backend_http_80](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lb_listener) | resource |
-| [aws_lb_listener.licensify_frontend_public_http_80](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lb_listener) | resource |
 | [aws_lb_listener_rule.backend_alb_blocked_host_headers](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/lb_listener_rule) | resource |
 | [aws_route53_record.account_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.account_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
@@ -124,8 +121,6 @@ This project adds global resources for app components:
 | [aws_route53_record.licensify_backend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.licensify_frontend_internal_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.licensify_frontend_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_frontend_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.licensify_frontend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.locations_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.locations_api_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mapit_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
@@ -304,7 +299,6 @@ This project adds global resources for app components:
 | <a name="output_graphite_public_lb_id"></a> [graphite\_public\_lb\_id](#output\_graphite\_public\_lb\_id) | The ID of the graphite\_public load balancer |
 | <a name="output_kinesis_firehose_splunk_arn"></a> [kinesis\_firehose\_splunk\_arn](#output\_kinesis\_firehose\_splunk\_arn) | The ARN of the splunk endpoint of the kinesis firehose stream |
 | <a name="output_licensify_backend_public_lb_id"></a> [licensify\_backend\_public\_lb\_id](#output\_licensify\_backend\_public\_lb\_id) | The ID of the licensify\_backend\_public load balancer |
-| <a name="output_licensify_frontend_public_lb_id"></a> [licensify\_frontend\_public\_lb\_id](#output\_licensify\_frontend\_public\_lb\_id) | The ID of the licensify\_frontend\_public\_lb load balancer |
 | <a name="output_monitoring_public_lb_id"></a> [monitoring\_public\_lb\_id](#output\_monitoring\_public\_lb\_id) | The ID of the monitoring\_public load balancer |
 | <a name="output_prometheus_public_lb_id"></a> [prometheus\_public\_lb\_id](#output\_prometheus\_public\_lb\_id) | The ID of the prometheus\_public load balancer |
 | <a name="output_sidekiq_monitoring_public_lb_id"></a> [sidekiq\_monitoring\_public\_lb\_id](#output\_sidekiq\_monitoring\_public\_lb\_id) | The ID of the sidekiq\_monitoring\_public\_lb load balancer |
