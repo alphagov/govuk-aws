@@ -6,7 +6,7 @@ sudo apt-get install -y htop jq zip unzip
 # From https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 echo "Installing AWS CLI"
 echo "- uninstalling old version"
-sudo apt-get remove -y awscli # First uninstall the version already installed in this AMI
+sudo apt-get remove -y aws # First uninstall the version already installed in this AMI
 which -a aws && echo "aws binary found after uninstalling. Something's wrong."
 echo "- downloaded new version"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -36,6 +36,7 @@ sudo chown -R ubuntu:ubuntu /var/data
 sudo chmod g+s /var/data
 cd /var/data
 
+
 ################################################################################
 # Get Knowledge graph repository to launch the data pipeline
 
@@ -58,6 +59,7 @@ git clone git@github.com:alphagov/govuk-knowledge-graph.git
 
 # Set correct permissions for provisioning script
 cd govuk-knowledge-graph
+git checkout dev
 chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
