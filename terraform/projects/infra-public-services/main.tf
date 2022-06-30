@@ -1579,6 +1579,70 @@ module "alarms-elb-jumpbox-public" {
 # Licensify
 #
 
+module "licensify_frontend_public_lb" {
+  source                                     = "../../modules/aws/lb"
+  name                                       = "${var.stackname}-licensify-frontend-public"
+  internal                                   = false
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  access_logs_bucket_prefix                  = "elb/${var.stackname}-licensify-frontend-public-elb"
+  listener_certificate_domain_name           = "${var.elb_public_certname}"
+  listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
+  target_group_health_check_path             = "/api/licences"
+
+  listener_action = {
+    "HTTPS:443" = "HTTP:80"
+  }
+
+  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-frontend_external_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+
+  default_tags = {
+    Project         = "${var.stackname}"
+    aws_migration   = "licensify-frontend"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_lb_listener" "licensify_frontend_public_http_80" {
+  load_balancer_arn = "${module.licensify_frontend_public_lb.lb_id}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_route53_record" "licensify_frontend_public_service_names" {
+  count   = "${length(var.licensify_frontend_public_service_names)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.licensify_frontend_public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${module.licensify_frontend_public_lb.lb_dns_name}"
+    zone_id                = "${module.licensify_frontend_public_lb.lb_zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "licensify_frontend_public_service_cnames" {
+  count   = "${length(var.licensify_frontend_public_service_cnames)}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
+  name    = "${element(var.licensify_frontend_public_service_cnames, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  type    = "CNAME"
+  records = ["${element(var.licensify_frontend_public_service_names, 0)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
+  ttl     = "300"
+}
+
 data "aws_autoscaling_groups" "licensify_frontend" {
   filter {
     name   = "key"
@@ -1589,6 +1653,12 @@ data "aws_autoscaling_groups" "licensify_frontend" {
     name   = "value"
     values = ["blue-licensify-frontend"]
   }
+}
+
+resource "aws_autoscaling_attachment" "licensify_frontend_asg_attachment_alb" {
+  count                  = "${length(data.aws_autoscaling_groups.licensify_frontend.names) > 0 ? 1 : 0}"
+  autoscaling_group_name = "${element(data.aws_autoscaling_groups.licensify_frontend.names, 0)}"
+  alb_target_group_arn   = "${element(module.licensify_frontend_public_lb.target_group_arns, 0)}"
 }
 
 resource "aws_route53_record" "licensify_frontend_internal_service_names" {
@@ -2184,6 +2254,11 @@ output "graphite_public_lb_id" {
 output "prometheus_public_lb_id" {
   value       = "${module.prometheus_public_lb.lb_id}"
   description = "The ID of the prometheus_public load balancer"
+}
+
+output "licensify_frontend_public_lb_id" {
+  value       = "${module.licensify_frontend_public_lb.lb_id}"
+  description = "The ID of the licensify_frontend_public_lb load balancer"
 }
 
 output "licensify_backend_public_lb_id" {
