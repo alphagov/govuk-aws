@@ -1578,6 +1578,8 @@ module "alarms-elb-jumpbox-public" {
 #
 # Licensify
 #
+# uploadlicence.publishing.service.gov.uk uses the licensify-frontend public lb
+# and is still in use
 
 module "licensify_frontend_public_lb" {
   source                                     = "../../modules/aws/lb"
