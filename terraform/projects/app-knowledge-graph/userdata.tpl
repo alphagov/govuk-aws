@@ -1,4 +1,7 @@
 #!/bin/bash
+
+DEPLOYMENT_TYPE=production # can also be "dev" for testing
+
 sudo apt-get update -y
 sudo apt-get install -y htop jq zip unzip
 
@@ -54,11 +57,18 @@ ssh -T git@github.com -o StrictHostKeyChecking=no
 # Download knowledge graph repo
 mkdir /var/data/github
 cd /var/data/github
-git clone git@github.com:alphagov/govuk-knowledge-graph.git
+
+## The branch checked out depends on
+## whether this is a production or a dev deployment
+if [ "$DEPLOYMENT_TYPE" == "dev" ]; then
+    git clone -b dev git@github.com:alphagov/govuk-knowledge-graph.git
+else
+    git clone git@github.com:alphagov/govuk-knowledge-graph.git
+fi
 
 # Set correct permissions for provisioning script
 cd govuk-knowledge-graph
 chmod +x ./provision_knowledge_graph
 
 # Run provisioning script
-./provision_knowledge_graph -i $${instance_id} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name} 2>&1
+./provision_knowledge_graph -t $${DEPLOYMENT_TYPE} -i $${instance_id} -d ${data_infrastructure_bucket_name} -r ${related_links_bucket_name} 2>&1

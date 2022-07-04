@@ -79,7 +79,6 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
       expired_object_delete_marker = true
     }
   }
-
   lifecycle_rule {
     id      = "knowledge-graph-lifecycle-rule"
     enabled = true
@@ -90,7 +89,6 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
       expired_object_delete_marker = true
     }
   }
-
   lifecycle_rule {
     id      = "structural-network-lifecycle-rule"
     enabled = true
@@ -135,7 +133,6 @@ resource "aws_iam_instance_profile" "knowledge-graph_instance_profile" {
 }
 
 data "aws_caller_identity" "current" {}
-
 
 # Secrets and parameters used, stored in AWS SSM
 
@@ -186,6 +183,8 @@ data "aws_iam_policy_document" "read_write_data_infrastructure_bucket_policy_doc
       "arn:aws:s3:::${local.data_infrastructure_bucket_name}",
     ]
   }
+
+  # We'll be uploading our generated data files to S3
 
   statement {
     actions = [
@@ -254,7 +253,6 @@ data "template_file" "ec2_assume_policy_template" {
 # It's not "production" in the sense that it's in the production GOV.UK stack, as it still sits in integration
 # ------------------------------------------------------------------------------------------------------------
 
-
 data "template_file" "knowledge-graph_userdata" {
   # userdata.tpl is a bash script that's run when the instance starts and that
   # creates and starts the knowledge graph
@@ -269,7 +267,7 @@ data "template_file" "knowledge-graph_userdata" {
   }
 }
 
-# Definition of the instance the Knowledge Graph template creates when instructed
+# Definition of the instance the Knowledge Graph launch template creates when instructed
 # by the auto-scaling group below
 resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
@@ -299,7 +297,6 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
 
   user_data = "${base64encode(data.template_file.knowledge-graph_userdata.rendered)}"
 }
-
 
 # The auto-scaling group sets the date/time the launch template is run
 resource "aws_autoscaling_group" "knowledge-graph_asg" {
@@ -472,24 +469,6 @@ resource "aws_autoscaling_group" "knowledge-graph-dev_asg" {
     value               = "${var.stackname}_knowledge-graph-dev"
     propagate_at_launch = true
   }
-}
-
-resource "aws_autoscaling_schedule" "knowledge-graph-dev_schedule-spin-up" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-dev_asg.name}"
-  scheduled_action_name  = "knowledge-graph-dev_schedule-spin-up"
-  recurrence             = "30 7 * * MON-FRI"
-  min_size               = -1
-  max_size               = -1
-  desired_capacity       = 1
-}
-
-resource "aws_autoscaling_schedule" "knowledge-graph-dev_schedule-spin-down" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph-dev_asg.name}"
-  scheduled_action_name  = "knowledge-graph-dev_schedule-spin-down"
-  recurrence             = "29 19 * * MON-FRI"
-  min_size               = -1
-  max_size               = -1
-  desired_capacity       = 0
 }
 
 resource "aws_route53_record" "knowledge_graph_dev_service_record_external" {
