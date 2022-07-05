@@ -59,7 +59,7 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
   bucket = "${local.data_infrastructure_bucket_name}"
 
   versioning {
-    enabled = true
+    enabled = false
   }
 
   tags {
@@ -99,16 +99,6 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
     expiration {
       days                         = 30
       expired_object_delete_marker = true
-    }
-  }
-
-  lifecycle_rule {
-    id      = "lambdas-lifecycle-rule"
-    enabled = true
-    prefix  = "lambdas/"
-
-    noncurrent_version_expiration {
-      days = 30
     }
   }
 }
@@ -379,15 +369,6 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     lb_protocol       = "tcp"
   }
 
-  # The visualisation app
-  listener {
-    instance_port      = 3000
-    instance_protocol  = "http"
-    lb_port            = 443
-    lb_protocol        = "https"
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
-  }
-
   # Neo4j brower UI
   listener {
     instance_port      = 7473
@@ -533,14 +514,6 @@ resource "aws_elb" "knowledge-graph-dev_elb_external" {
     instance_protocol = "tcp"
     lb_port           = 22
     lb_protocol       = "tcp"
-  }
-
-  listener {
-    instance_port      = 3000
-    instance_protocol  = "http"
-    lb_port            = 443
-    lb_protocol        = "https"
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
   listener {
