@@ -53,6 +53,8 @@ provider "aws" {
   version = "1.40.0"
 }
 
+# configuration of the S3 bucket used by app-knowledge graph and data-sdcience-data
+
 resource "aws_s3_bucket" "data_infrastructure_bucket" {
   bucket = "${local.data_infrastructure_bucket_name}"
 
@@ -64,6 +66,8 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
     aws_environment = "${var.aws_environment}"
     Name            = "${local.data_infrastructure_bucket_name}"
   }
+
+  # Lifecycle rules: expire files in the folders with prefixes specified below
 
   lifecycle_rule {
     id      = "functional-network-lifecycle-rule"
@@ -109,6 +113,9 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
   }
 }
 
+# The AWS image to use to host the knowledge graph
+# Here, a community AMI with neo4j 3 pre-installed
+
 data "aws_ami" "neo4j_community_ami" {
   owners = ["679593333241"]
 
@@ -117,6 +124,8 @@ data "aws_ami" "neo4j_community_ami" {
     values = ["ami-094ccb4dbb8650bdf"]
   }
 }
+
+# Give our knowledge graph a URL with certificate
 
 data "aws_route53_zone" "external" {
   name         = "${var.external_zone_name}"
@@ -128,12 +137,17 @@ data "aws_acm_certificate" "elb_external_cert" {
   statuses = ["ISSUED"]
 }
 
+# IAM settings
+
 resource "aws_iam_instance_profile" "knowledge-graph_instance_profile" {
   name = "${var.stackname}-knowledge-graph"
   role = "${aws_iam_role.knowledge-graph_role.name}"
 }
 
 data "aws_caller_identity" "current" {}
+
+
+# Secrets and parameters used, stored in AWS SSM
 
 data "aws_iam_policy_document" "knowledge-graph_read_ssm_policy_document" {
   statement {
@@ -155,6 +169,9 @@ data "aws_iam_policy_document" "knowledge-graph_read_ssm_policy_document" {
     ]
   }
 }
+
+# What IAM access rights the KG is bestowed with: register with load balancer,
+# use the data infrastructure S3 bucket, etc.
 
 data "aws_iam_policy_document" "knowledge-graph_register_instance_with_elb_policy_document" {
   statement {
@@ -242,14 +259,18 @@ data "template_file" "ec2_assume_policy_template" {
   template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
 }
 
-# PRODUCTION Knowledge graph
+# PRODUCTION Knowledge graph settings
 # This is for the user-facing knowledge graph, or its dependent applications
 # It's not "production" in the sense that it's in the production GOV.UK stack, as it still sits in integration
 # ------------------------------------------------------------------------------------------------------------
 
+
 data "template_file" "knowledge-graph_userdata" {
+  # userdata.tpl is a bash script that's run when the instance starts and that
+  # creates and starts the knowledge graph
   template = "${file("${path.module}/userdata.tpl")}"
 
+  # Variables passed top the userdata.tpl script
   vars {
     elb_name                        = "${aws_elb.knowledge-graph_elb_external.name}"
     database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
@@ -258,6 +279,8 @@ data "template_file" "knowledge-graph_userdata" {
   }
 }
 
+# Definition of the instance the Knowledge Graph template creates when instructed
+# by the auto-scaling group below
 resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
   image_id = "${data.aws_ami.neo4j_community_ami.id}"
@@ -287,6 +310,8 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
   user_data = "${base64encode(data.template_file.knowledge-graph_userdata.rendered)}"
 }
 
+
+# The auto-scaling group sets the date/time the launch template is run
 resource "aws_autoscaling_group" "knowledge-graph_asg" {
   name             = "${var.stackname}_knowledge-graph"
   min_size         = 0
@@ -307,6 +332,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
   }
 }
 
+# Start the KG at 07:30 on weekdays
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-up"
@@ -316,6 +342,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
   desired_capacity       = 1
 }
 
+# Stop the KG at 19:29 on weekdays
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
   scheduled_action_name  = "knowledge-graph_schedule-spin-down"
@@ -325,6 +352,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
   desired_capacity       = 0
 }
 
+# Sets the hostname
 resource "aws_route53_record" "knowledge_graph_service_record_external" {
   zone_id = "${data.aws_route53_zone.external.zone_id}"
   name    = "knowledge-graph.${var.external_domain_name}"
@@ -337,11 +365,13 @@ resource "aws_route53_record" "knowledge_graph_service_record_external" {
   }
 }
 
+# Sets the load balancer in front of the instance
 resource "aws_elb" "knowledge-graph_elb_external" {
   name                = "${var.stackname}-knowledge-graph-elb-ex"
   internal            = false
   connection_draining = true
 
+  # To ssh in the KG VM
   listener {
     instance_port     = 22
     instance_protocol = "tcp"
@@ -349,6 +379,7 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     lb_protocol       = "tcp"
   }
 
+  # The visualisation app
   listener {
     instance_port      = 3000
     instance_protocol  = "http"
@@ -357,6 +388,7 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
+  # Neo4j brower UI
   listener {
     instance_port      = 7473
     instance_protocol  = "https"
@@ -365,6 +397,7 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
+  # Neo4j API
   listener {
     instance_port      = 7687
     instance_protocol  = "ssl"
@@ -373,6 +406,7 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
   }
 
+  # When/How to check if the VM is healthy
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
@@ -394,6 +428,9 @@ resource "aws_elb" "knowledge-graph_elb_external" {
 }
 
 # DEV Knowledge Graph - Meant for testing new features before going to production
+# Almost the same as the production settings but with a different hostname and
+# userdata startup script. See the comments in the production settings above for
+# brief descriptions of each section
 # -------------------------------------------------------------------------------
 
 data "template_file" "knowledge-graph-dev_userdata" {
@@ -542,7 +579,7 @@ resource "aws_elb" "knowledge-graph-dev_elb_external" {
   }
 }
 
-# Outputs
+# Where to store the outputs
 # --------------------------------------------------------------
 
 output "data-infrastructure-bucket_name" {
