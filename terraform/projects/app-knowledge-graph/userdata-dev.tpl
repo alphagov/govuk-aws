@@ -2,6 +2,12 @@
 
 DEPLOYMENT_TYPE=dev # can also be "production"
 
+# Allow SSH access
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC1v8UTV0pOjSjZXnvQaWH/m5sOluCQGxeLU8NAbMa20lcazUDhEnQqjQ8SFvfMC06Zu8LWRMMPj3bIdS9I9G7ETWIq4Q8NdHEuOpgBJTcKsiL76hBVyQGWD682xfl4WhAHygsyN6qRGJg8YvkC5sAhYd7nu/9sfI8erc1S7mFt2zzT/4N4ULlI2vHgWGhePPJOfRz7cGi1nxe/WzlYNURVfR0YQfYsxI4vRwjSM0xDelTwKDbb5D1PgcTYx3c2bnrMcQ4FSA7iAyvJJnLSRCcxaCF8XjokR8gBg7Dp9tims0Amjee4J/S1v4ty3Pi8Hm590ZrmuvyVC8KEajCmUnD4JvUAPM7hZYKtLbUsHtR5rF43Ot9gadGV1FF8xEmcMvI0NuqiSuTRV/GPjHxPh+5U5uxrNqODUeTiLHH6m2+Cb55ud5aJJGkbg6nCM2LsWuTN3vbaIwlCxheEdZtp0HLi1XSo6WRiUPKuUpO4a/EX8h9zP+Nd1yeT/9xcyMMFAeieufV3PUjr/7TtG4KpgqzL0C9blWLaYUu9fa7/xT9jJg3yJIFvtidEXtiYvf56tfIr6wWxPkNNYIS5SEarCwI6AoMgMG0geicgzwmPBczovX62IN3lUDskLT0LGo8eliadEeaYCnQ1E3NS2rYwluTdPDYpqIYPH1Vb6MwGajmQBw== kelvin.gan@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDvuBdxXkJ2Htbt47fm/CV7+uQLOu//OJ7tJv4mlyM0nChhvvI56ZjfYRCdcZNH+eFXzUDUDh1/HK9J8tA2J/ZTg/OqS+UMylQPdc4+LxPHDenhZjvCigf0Uf4ISJdprTCPJj11I/wc7bq1m6C3HGwK5DWAmSIOh7rqLDhuDIZIKdlx3nz8DEAmUFutcA//3sCfHSd8n3B6Rvpzhw5wqqJhG1nS7upJir3lew+XHt+anu6J17iGHTKKuSlZ9ZgXP7poQPizIjIK7sAkI6S45gLcKtJpbMd5pt8Ze80GcH5qoycylz93kUhy8jQJUAR97eDxh7odaFOX0y+Am2EcDJ33PsjDu9QCqJOQu0NiXWLobRIyqtDo08cdDg7yBYgAg5GuPAska/lCG9SFI1gYe7DNRB3LLvBZ4zKwhbiaQ2wdS4K0o4P1OAXdHq2Jp2XcG0jFERdI677v3uUcVEAuQ7GLVHoVKLpdj6+6IbWnh6j5WxVBLaXY2wLMC+dU60M2F1F19ixDEHNb2TUU7f5WIQuJH0N1u+lM3cDjba5cRQuMXDzlaHEwl8XjmHRGC1nwCdTtiNNAbmRe9sX8myXtbnYG0MgUcLkzd0YjVNQXv5jmmvvrRR80Zj2etTQmLQcOKwFkMScQCT9PJenj8RCm+DeCyT+TpRigxmD/6ztr8lHFzw== max.froumentin@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC77d30YoXpAluaF5hYEPiMQvs7FCa4i2HZoAzKnpKVABYtKioAqrQ5zWg6oB77WBidKU1+0igNIlAzR/zVo9ld8YwDjex78hSql9jsVBdITKuArU7K4WdjcMIhmZwNyNZzMpgQN3PFgETOj2JIF/bGebTmAGHx7W1/nSwWz/BZO665O2cYG1eCr6XCB4Cl9aao77V5INQzSDkP51yBMBPWXXFRcTI7X8nyyim68Fs7VSh8rLHUSqgprvAq+1Lae10Lb050c+J7Gxg8GDjKwWD9WAET6JYcjLYbIpeLSROZfwF6uob8CLF8ojoNTyTJk7vX/o/tIGIWlED6/W0l1WUjnGcuArgd14v6cHekWA9dWWZGVIp+SkiGi2qsu2eO+Q8du92QH1aneKGyJewRWf3f4XB86W/p4DpRmAYnrhlEis3i0rbBxdwNGNHyF4blsPG5iy3b5tcs3y/zlyxcldWpZUeois2Z4SLTEY3YXts96JyHI0Gd0Efn0ekuNSm/1KR5zUrakgSDixayP9g4HH5kxsOiq1Q3E1Pc7ouinjcv88/ogzUw5XDjfWB62sEW9Zw7Ec7cTHLY8IK7Wrd1Wkaj0Gyuq7d+LTEcT5SwzYIls/z8CxwDfEKGm3G6EjNFTttbrVDaEGeEDAgeEYlt3gOEQvIvlj6etoG9xLwVgpvAgQ== duncan.garmonsway@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
+
+
 sudo apt-get update -y
 sudo apt-get install -y htop jq zip unzip
 
@@ -22,10 +28,6 @@ else
     echo "No aws found at /usr/local/bin/aws. Something's wrong."
 fi
 
-# Allow SSH access
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC1v8UTV0pOjSjZXnvQaWH/m5sOluCQGxeLU8NAbMa20lcazUDhEnQqjQ8SFvfMC06Zu8LWRMMPj3bIdS9I9G7ETWIq4Q8NdHEuOpgBJTcKsiL76hBVyQGWD682xfl4WhAHygsyN6qRGJg8YvkC5sAhYd7nu/9sfI8erc1S7mFt2zzT/4N4ULlI2vHgWGhePPJOfRz7cGi1nxe/WzlYNURVfR0YQfYsxI4vRwjSM0xDelTwKDbb5D1PgcTYx3c2bnrMcQ4FSA7iAyvJJnLSRCcxaCF8XjokR8gBg7Dp9tims0Amjee4J/S1v4ty3Pi8Hm590ZrmuvyVC8KEajCmUnD4JvUAPM7hZYKtLbUsHtR5rF43Ot9gadGV1FF8xEmcMvI0NuqiSuTRV/GPjHxPh+5U5uxrNqODUeTiLHH6m2+Cb55ud5aJJGkbg6nCM2LsWuTN3vbaIwlCxheEdZtp0HLi1XSo6WRiUPKuUpO4a/EX8h9zP+Nd1yeT/9xcyMMFAeieufV3PUjr/7TtG4KpgqzL0C9blWLaYUu9fa7/xT9jJg3yJIFvtidEXtiYvf56tfIr6wWxPkNNYIS5SEarCwI6AoMgMG0geicgzwmPBczovX62IN3lUDskLT0LGo8eliadEeaYCnQ1E3NS2rYwluTdPDYpqIYPH1Vb6MwGajmQBw== kelvin.gan@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDvuBdxXkJ2Htbt47fm/CV7+uQLOu//OJ7tJv4mlyM0nChhvvI56ZjfYRCdcZNH+eFXzUDUDh1/HK9J8tA2J/ZTg/OqS+UMylQPdc4+LxPHDenhZjvCigf0Uf4ISJdprTCPJj11I/wc7bq1m6C3HGwK5DWAmSIOh7rqLDhuDIZIKdlx3nz8DEAmUFutcA//3sCfHSd8n3B6Rvpzhw5wqqJhG1nS7upJir3lew+XHt+anu6J17iGHTKKuSlZ9ZgXP7poQPizIjIK7sAkI6S45gLcKtJpbMd5pt8Ze80GcH5qoycylz93kUhy8jQJUAR97eDxh7odaFOX0y+Am2EcDJ33PsjDu9QCqJOQu0NiXWLobRIyqtDo08cdDg7yBYgAg5GuPAska/lCG9SFI1gYe7DNRB3LLvBZ4zKwhbiaQ2wdS4K0o4P1OAXdHq2Jp2XcG0jFERdI677v3uUcVEAuQ7GLVHoVKLpdj6+6IbWnh6j5WxVBLaXY2wLMC+dU60M2F1F19ixDEHNb2TUU7f5WIQuJH0N1u+lM3cDjba5cRQuMXDzlaHEwl8XjmHRGC1nwCdTtiNNAbmRe9sX8myXtbnYG0MgUcLkzd0YjVNQXv5jmmvvrRR80Zj2etTQmLQcOKwFkMScQCT9PJenj8RCm+DeCyT+TpRigxmD/6ztr8lHFzw== max.froumentin@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC77d30YoXpAluaF5hYEPiMQvs7FCa4i2HZoAzKnpKVABYtKioAqrQ5zWg6oB77WBidKU1+0igNIlAzR/zVo9ld8YwDjex78hSql9jsVBdITKuArU7K4WdjcMIhmZwNyNZzMpgQN3PFgETOj2JIF/bGebTmAGHx7W1/nSwWz/BZO665O2cYG1eCr6XCB4Cl9aao77V5INQzSDkP51yBMBPWXXFRcTI7X8nyyim68Fs7VSh8rLHUSqgprvAq+1Lae10Lb050c+J7Gxg8GDjKwWD9WAET6JYcjLYbIpeLSROZfwF6uob8CLF8ojoNTyTJk7vX/o/tIGIWlED6/W0l1WUjnGcuArgd14v6cHekWA9dWWZGVIp+SkiGi2qsu2eO+Q8du92QH1aneKGyJewRWf3f4XB86W/p4DpRmAYnrhlEis3i0rbBxdwNGNHyF4blsPG5iy3b5tcs3y/zlyxcldWpZUeois2Z4SLTEY3YXts96JyHI0Gd0Efn0ekuNSm/1KR5zUrakgSDixayP9g4HH5kxsOiq1Q3E1Pc7ouinjcv88/ogzUw5XDjfWB62sEW9Zw7Ec7cTHLY8IK7Wrd1Wkaj0Gyuq7d+LTEcT5SwzYIls/z8CxwDfEKGm3G6EjNFTttbrVDaEGeEDAgeEYlt3gOEQvIvlj6etoG9xLwVgpvAgQ== duncan.garmonsway@digital.cabinet-office.gov.uk" >> /home/ubuntu/.ssh/authorized_keys
 
 # Register instance with load balancer
 instance_id="$(curl http://169.254.169.254/latest/meta-data/instance-id)"
@@ -39,6 +41,31 @@ sudo chown -R ubuntu:ubuntu /var/data
 sudo chmod g+s /var/data
 cd /var/data
 
+
+########################################################################################
+# Install Neo4j
+
+sudo add-apt-repository universe -y
+sudo apt install openjdk-11-jre-headless -y
+
+wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
+echo 'deb https://debian.neo4j.com stable 4.4' | sudo tee -a /etc/apt/sources.list.d/neo4j.list
+sudo apt-get update -y
+sudo apt-get install neo4j=1:4.4.8 -y
+
+# Install the Graph Data Science plugin
+sudo apt-get install -y unzip
+cd /tmp
+curl -O https://graphdatascience.ninja/neo4j-graph-data-science-2.1.2.zip
+unzip neo4j-graph-data-science-2.1.2.zip
+sudo mv neo4j-graph-data-science-2.1.2.jar /var/lib/neo4j/plugins
+
+sudo -u neo4j mkdir /var/lib/neo4j/conf
+sudo -u neo4j touch /var/lib/neo4j/conf/neo4j.conf
+echo "dbms.security.procedures.unrestricted=gds.*" | sudo -u neo4j tee /var/lib/neo4j/conf/neo4j.conf
+echo "dbms.security.procedures.allowlist=gds.*" | sudo -u neo4j tee -a /var/lib/neo4j/conf/neo4j.conf
+
+sudo service neo4j start
 
 ################################################################################
 # Get Knowledge graph repository to launch the data pipeline
