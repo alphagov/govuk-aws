@@ -134,11 +134,6 @@ module "jumpbox" {
   root_block_device_volume_size = "64"
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_access_cloudwatch_policy_iam_role_policy_attachment" {
-  role       = "${module.jumpbox.instance_iam_role_name}"
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-}
-
 locals {
   surgequeuelength_threshold = "${var.create_external_elb ? 200 : 0}"
   healthyhostcount_threshold = "${var.create_external_elb ? 1 : 0}"
