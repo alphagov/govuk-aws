@@ -339,19 +339,3 @@ resource "aws_autoscaling_group" "data-science-data-dev_asg" {
     propagate_at_launch = true
   }
 }
-
-# Security groups
-
-data "aws_security_group" "publishing-api-rds" {
-  name = "blue_publishing-api_rds_access"
-}
-
-resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data-dev_postgres" {
-  type      = "ingress"
-  from_port = 5432
-  to_port   = 5432
-  protocol  = "tcp"
-
-  security_group_id        = "${data.aws_security_group.publishing-api-rds.0.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_data-science-data-dev_id}"
-}
