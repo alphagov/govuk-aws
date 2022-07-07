@@ -1,4 +1,7 @@
 #!/bin/bash
+
+DEPLOYMENT_TYPE=production # can also be "dev" for testing
+
 sudo apt-get update -y
 sudo apt-get install -y htop jq awscli
 
@@ -36,7 +39,14 @@ ssh -T git@github.com -o StrictHostKeyChecking=no
 # Download knowledge graph repo
 mkdir /var/data/github
 cd /var/data/github
-git clone git@github.com:alphagov/govuk-knowledge-graph.git
+
+## The branch checked out depends on
+## whether this is a production or a dev deployment
+if [ "$DEPLOYMENT_TYPE" == "dev" ]; then
+    git clone -b dev git@github.com:alphagov/govuk-knowledge-graph.git
+else
+    git clone git@github.com:alphagov/govuk-knowledge-graph.git
+fi
 
 # Set correct permissions for build data script
 cd govuk-knowledge-graph
@@ -47,7 +57,7 @@ chmod +x ./build_knowledge_graph_data
 # Run knowledge graph build script
 
 touch /var/tmp/data_generation_process.log
-./build_knowledge_graph_data -d "${data_infrastructure_bucket_name}" -b "${database_backups_bucket_name}" > /var/tmp/data_generation_process.log 2>&1
+./build_knowledge_graph_data -t $${DEPLOYMENT_TYPE} -d "${data_infrastructure_bucket_name}" -b "${database_backups_bucket_name}" > /var/tmp/data_generation_process.log 2>&1
 
 
 ################################################################################

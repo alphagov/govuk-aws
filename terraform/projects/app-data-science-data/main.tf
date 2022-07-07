@@ -36,6 +36,9 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "1.40.0"
+
+  # The AWS image to use to host the app
+  # Here, standard ubuntu 18.04
 }
 
 data "aws_ami" "ubuntu_bionic" {
@@ -50,12 +53,16 @@ data "aws_ami" "ubuntu_bionic" {
   }
 }
 
+# IAM settings
+
 resource "aws_iam_instance_profile" "data-science-data_instance_profile" {
   name = "${var.stackname}-data-science-data"
   role = "${aws_iam_role.data-science-data_role.name}"
 }
 
 data "aws_caller_identity" "current" {}
+
+# Secrets and parameters used, stored in AWS SSM
 
 data "aws_secretsmanager_secret" "secret_big_query_service_account_key" {
   name = "related_links-BIG_QUERY_SERVICE_ACCOUNT_KEY"
@@ -77,6 +84,9 @@ data "aws_iam_policy_document" "data-science-data_read_ssm_policy_document" {
     ]
   }
 }
+
+# What IAM access rights the KG is bestowed with: register with load balancer,
+# use the data infrastructure S3 bucket, etc.
 
 data "aws_iam_policy_document" "data-science-data_read_secrets_from_secrets_manager_policy_document" {
   statement {
@@ -156,15 +166,25 @@ data "template_file" "ec2_assume_policy_template" {
   template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
 }
 
+# PRODUCTION Data Science Data settings
+# This is for the data users will need
+# It's not "production" in the sense that it's in the production GOV.UK stack, as it still sits in integration
+# ------------------------------------------------------------------------------------------------------------
+
 data "template_file" "data-science-data_userdata" {
+  # userdata.tpl is a bash script that's run when the instance starts and that
+  # creates and starts the knowledge graph
   template = "${file("${path.module}/userdata.tpl")}"
 
+  # Variables passed top the userdata.tpl script
   vars {
     database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
     data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
   }
 }
 
+# Definition of the instance the launch template creates when instructed
+# by the auto-scaling group below
 resource "aws_launch_template" "data-science-data_launch_template" {
   name     = "data-science-data_launch-template"
   image_id = "${data.aws_ami.ubuntu_bionic.id}"
@@ -194,6 +214,7 @@ resource "aws_launch_template" "data-science-data_launch_template" {
   user_data = "${base64encode(data.template_file.data-science-data_userdata.rendered)}"
 }
 
+# The auto-scaling group sets the date/time the launch template is run
 resource "aws_autoscaling_group" "data-science-data_asg" {
   name             = "${var.stackname}_data-science-data"
   min_size         = 0
@@ -214,6 +235,7 @@ resource "aws_autoscaling_group" "data-science-data_asg" {
   }
 }
 
+# Start every day at 3:29am
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
   autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
   scheduled_action_name  = "data-science-data_schedule-spin-up"
@@ -223,6 +245,8 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
   desired_capacity       = 1
 }
 
+# Kill the instance at 07:29am -- as of this writing the data generation lasts
+# about an hour, so there's room for manoeuver before reaching the 4h window this defines
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
   autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
   scheduled_action_name  = "data-science-data_schedule-spin-down"
@@ -231,6 +255,8 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
   max_size               = -1
   desired_capacity       = 0
 }
+
+# Security groups
 
 data "aws_security_group" "publishing-api-rds" {
   name = "blue_publishing-api_rds_access"
@@ -244,4 +270,72 @@ resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data
 
   security_group_id        = "${data.aws_security_group.publishing-api-rds.0.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"
+}
+
+# DEV Data Science Data settings
+# This is for testing new features
+# ------------------------------------------------------------------------------------------------------------
+
+data "template_file" "data-science-data-dev_userdata" {
+  # userdata.tpl is a bash script that's run when the instance starts and that
+  # creates and starts the knowledge graph
+  template = "${file("${path.module}/userdata-dev.tpl")}"
+
+  # Variables passed top the userdata.tpl script
+  vars {
+    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+    data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
+  }
+}
+
+# Definition of the instance the launch template creates when instructed
+# by the auto-scaling group below
+resource "aws_launch_template" "data-science-data-dev_launch_template" {
+  name     = "data-science-data_launch-dev-template"
+  image_id = "${data.aws_ami.ubuntu_bionic.id}"
+
+  instance_type = "r4.4xlarge"
+
+  vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"]
+
+  iam_instance_profile {
+    name = "${aws_iam_instance_profile.data-science-data_instance_profile.name}"
+  }
+
+  instance_initiated_shutdown_behavior = "terminate"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size = 64
+    }
+  }
+
+  user_data = "${base64encode(data.template_file.data-science-data-dev_userdata.rendered)}"
+}
+
+# The auto-scaling group sets the date/time the launch template is run
+resource "aws_autoscaling_group" "data-science-data-dev_asg" {
+  name             = "${var.stackname}_data-science-data-dev"
+  min_size         = 0
+  max_size         = 1
+  desired_capacity = 0
+
+  launch_template {
+    id      = "${aws_launch_template.data-science-data-dev_launch_template.id}"
+    version = "$Latest"
+  }
+
+  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
+
+  tag {
+    key                 = "Name"
+    value               = "${var.stackname}_data-science-data-dev"
+    propagate_at_launch = true
+  }
 }

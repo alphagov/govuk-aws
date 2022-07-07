@@ -29,8 +29,6 @@ No modules.
 |------|------|
 | [aws_autoscaling_group.knowledge-graph-dev_asg](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_group) | resource |
 | [aws_autoscaling_group.knowledge-graph_asg](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_group) | resource |
-| [aws_autoscaling_schedule.knowledge-graph-dev_schedule-spin-down](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_schedule) | resource |
-| [aws_autoscaling_schedule.knowledge-graph-dev_schedule-spin-up](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_schedule) | resource |
 | [aws_autoscaling_schedule.knowledge-graph_schedule-spin-down](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_schedule) | resource |
 | [aws_autoscaling_schedule.knowledge-graph_schedule-spin-up](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/autoscaling_schedule) | resource |
 | [aws_elb.knowledge-graph-dev_elb_external](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/elb) | resource |
