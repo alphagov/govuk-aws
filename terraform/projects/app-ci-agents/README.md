@@ -113,6 +113,7 @@ CI agents
 | <a name="input_ebs_encrypted"></a> [ebs\_encrypted](#input\_ebs\_encrypted) | whether or not the EBS volume is encrypted | `string` | `"true"` | no |
 | <a name="input_ebs_volume_type"></a> [ebs\_volume\_type](#input\_ebs\_volume\_type) | Volume type to use for data and Docker EBS volumes; see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html | `string` | `"gp3"` | no |
 | <a name="input_elb_internal_certname"></a> [elb\_internal\_certname](#input\_elb\_internal\_certname) | The ACM cert domain name to find the ARN of | `string` | n/a | yes |
+| <a name="input_esm_trusty_token"></a> [esm\_trusty\_token](#input\_esm\_trusty\_token) | n/a | `string` | n/a | yes |
 | <a name="input_instance_ami_filter_name"></a> [instance\_ami\_filter\_name](#input\_instance\_ami\_filter\_name) | Name to use to find AMI images | `string` | `""` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance type used for EC2 resources | `string` | `"m5.2xlarge"` | no |
 | <a name="input_internal_app_service_records"></a> [internal\_app\_service\_records](#input\_internal\_app\_service\_records) | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
