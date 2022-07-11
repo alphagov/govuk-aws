@@ -188,31 +188,31 @@ resource "fastly_service_v1" "datagovuk" {
     timestamp_format   = ""
   }
 
-  # The next four blocks handle the www.data.gov.uk -> data.gov.uk redirect
+  # The next four blocks handle the data.gov.uk -> www.data.gov.uk redirect
   condition {
-    name      = "www.${var.domain} to ${var.domain} redirect request condition"
-    statement = "req.http.host == \"www.${var.domain}\""
+    name      = "${var.domain} to www.${var.domain} redirect request condition"
+    statement = "req.http.host == \"${var.domain}\""
     type      = "REQUEST"
   }
 
   response_object {
-    name              = "www.${var.domain} to ${var.domain} redirect synthetic response"
+    name              = "${var.domain} to www.${var.domain} redirect synthetic response"
     status            = 301
-    request_condition = "www.${var.domain} to ${var.domain} redirect request condition"
+    request_condition = "${var.domain} to www.${var.domain} redirect request condition"
   }
 
   condition {
-    name      = "www.${var.domain} to ${var.domain} redirect response condition"
-    statement = "req.http.host == \"www.${var.domain}\" && resp.status == 301"
+    name      = "${var.domain} to www.${var.domain} redirect response condition"
+    statement = "req.http.host == \"${var.domain}\" && resp.status == 301"
     type      = "RESPONSE"
   }
 
   header {
-    name               = "www.${var.domain} to ${var.domain} redirect location header"
+    name               = "${var.domain} to www.${var.domain} redirect location header"
     action             = "set"
     type               = "response"
     destination        = "http.Location"
-    source             = "\"https://${var.domain}\" + req.url"
-    response_condition = "www.${var.domain} to ${var.domain} redirect response condition"
+    source             = "\"https://www.${var.domain}\" + req.url"
+    response_condition = "${var.domain} to www.${var.domain} redirect response condition"
   }
 }
