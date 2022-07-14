@@ -49,6 +49,7 @@ Run resource intensive scripts for data science purposes.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-2"` | no |
+| <a name="input_esm_trusty_token"></a> [esm\_trusty\_token](#input\_esm\_trusty\_token) | n/a | `string` | n/a | yes |
 | <a name="input_instance_ami_filter_name"></a> [instance\_ami\_filter\_name](#input\_instance\_ami\_filter\_name) | Name to use to find AMI images | `string` | `""` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance type used for EC2 resources | `string` | `"c5.4xlarge"` | no |
 | <a name="input_machine_learning_instance_type"></a> [machine\_learning\_instance\_type](#input\_machine\_learning\_instance\_type) | Instance type used for EC2 resources | `string` | `"p3.8xlarge"` | no |

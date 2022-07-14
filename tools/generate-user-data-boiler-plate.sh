@@ -32,7 +32,7 @@ resource "null_resource" "user_data" {
   count = "${length(var.user_data_snippets)}"
 
   triggers {
-    snippet = "${file("../../userdata/${element(var.user_data_snippets, count.index)}")}"
+    snippet = "${replace(file("../../userdata/${element(var.user_data_snippets, count.index)}"),"ESM_TRUSTY_TOKEN","${var.esm_trusty_token}")}"
   }
 }
 EOT

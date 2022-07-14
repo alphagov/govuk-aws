@@ -65,6 +65,7 @@ DATA_DIR="../../../${DATA_DIR}"
 COMMON_DATA_DIR="${DATA_DIR}/common/${ENVIRONMENT}"
 
 COMMON_DATA="${COMMON_DATA_DIR}/common.tfvars"
+SECRET_COMMON_DATA="${COMMON_DATA_DIR}/common.secret.tfvars"
 STACK_COMMON_DATA="${COMMON_DATA_DIR}/${STACKNAME}.tfvars"
 
 PROJECT_DATA_DIR="${DATA_DIR}/${PROJECT}/${ENVIRONMENT}"
@@ -144,6 +145,7 @@ function init() {
 TO_RUN="init && terraform $CMD"
 # Append which ever tfvar files exist
 for TFVAR_FILE in "$COMMON_DATA" \
+                  "$SECRET_COMMON_DATA" \
                   "$STACK_COMMON_DATA" \
                   "$COMMON_PROJECT_DATA" \
                   "$SECRET_COMMON_PROJECT_DATA" \
@@ -152,6 +154,7 @@ for TFVAR_FILE in "$COMMON_DATA" \
 do
   if [[ -f $TFVAR_FILE ]] &&
      {
+      [[ "$TFVAR_FILE" == "$SECRET_COMMON_DATA" ]] ||
       [[ "$TFVAR_FILE" == "$SECRET_PROJECT_DATA" ]] ||
       [[ "$TFVAR_FILE" == "$SECRET_COMMON_PROJECT_DATA" ]]
      } ; then
