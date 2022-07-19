@@ -275,7 +275,10 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
 
   instance_type = "r4.2xlarge"
 
-  vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}"]
+  vpc_security_group_ids = [
+    "${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}",
+    "${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}",
+  ]
 
   iam_instance_profile {
     name = "${aws_iam_instance_profile.knowledge-graph_instance_profile.name}"
@@ -440,7 +443,10 @@ resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
 
   instance_type = "r4.2xlarge"
 
-  vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}"]
+  vpc_security_group_ids = [
+    "${data.terraform_remote_state.infra_security_groups.sg_knowledge-graph_id}",
+    "${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}",
+  ]
 
   iam_instance_profile {
     name = "${aws_iam_instance_profile.knowledge-graph_instance_profile.name}"
