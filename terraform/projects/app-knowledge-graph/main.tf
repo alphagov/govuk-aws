@@ -259,6 +259,7 @@ data "template_file" "knowledge-graph_userdata" {
 # Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
 data "aws_ami" "ubuntu_server_22" {
   owners = ["099720109477"]
+
   filter {
     name   = "image-id"
     values = ["ami-0d75513e7706cf2d9"]
