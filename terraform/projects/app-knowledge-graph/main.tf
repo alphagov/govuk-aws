@@ -256,14 +256,12 @@ data "template_file" "knowledge-graph_userdata" {
 }
 
 # The AWS image to use to host the knowledge graph
-# Here, a community AMI with neo4j 3 pre-installed
-
-data "aws_ami" "neo4j_community_ami" {
-  owners = ["679593333241"]
-
+# Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
+data "aws_ami" "ubuntu_server_22" {
+  owners = ["099720109477"]
   filter {
     name   = "image-id"
-    values = ["ami-094ccb4dbb8650bdf"]
+    values = ["ami-0d75513e7706cf2d9"]
   }
 }
 
@@ -271,7 +269,7 @@ data "aws_ami" "neo4j_community_ami" {
 # by the auto-scaling group below
 resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
-  image_id = "${data.aws_ami.neo4j_community_ami.id}"
+  image_id = "${data.aws_ami.ubuntu_server_22.id}"
 
   instance_type = "r4.2xlarge"
 
@@ -422,18 +420,6 @@ data "template_file" "knowledge-graph-dev_userdata" {
     database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
     data_infrastructure_bucket_name = "${aws_s3_bucket.data_infrastructure_bucket.id}"
     related_links_bucket_name       = "govuk-related-links-${var.aws_environment}"
-  }
-}
-
-# The AWS image to use to host the knowledge graph
-# Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
-
-data "aws_ami" "ubuntu_server_22" {
-  owners = ["099720109477"]
-
-  filter {
-    name   = "image-id"
-    values = ["ami-0d75513e7706cf2d9"]
   }
 }
 
