@@ -42,6 +42,7 @@ jobs:
 
       - name: terraform install
         run: |
+          brew install grep
           brew install tfenv
 
           # Install default terraform version
