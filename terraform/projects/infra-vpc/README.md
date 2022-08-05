@@ -28,6 +28,7 @@ and resources to export these logs to S3
 | Name | Type |
 |------|------|
 | [aws_cloudwatch_log_group.log](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_log_group) | resource |
+| [aws_eip.licensify_reservation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/eip) | resource |
 | [aws_flow_log.vpc_flow_log](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/flow_log) | resource |
 | [aws_iam_policy.vpc_flow_logs_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_role.vpc_flow_logs_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
@@ -38,6 +39,7 @@ and resources to export these logs to S3
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_cloudwatch_log_retention"></a> [cloudwatch\_log\_retention](#input\_cloudwatch\_log\_retention) | Number of days to retain Cloudwatch logs for | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |

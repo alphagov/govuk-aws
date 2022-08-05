@@ -11,6 +11,11 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
+variable "aws_environment" {
+  type        = "string"
+  description = "AWS Environment"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -110,6 +115,21 @@ resource "aws_iam_policy" "vpc_flow_logs_policy" {
 resource "aws_iam_role_policy_attachment" "vpc_flow_logs_policy_attachment" {
   role       = "${aws_iam_role.vpc_flow_logs_role.name}"
   policy_arn = "${aws_iam_policy.vpc_flow_logs_policy.arn}"
+}
+
+resource "aws_eip" "licensify_reservation" {
+  # Only allocate these EIPs in production and staging, since we don't
+  # need to call the Civica API in integration and unused EIPs cost money
+  count = "${var.aws_environment == "production" || var.aws_environment == "staging" ? 3 : 0}"
+
+  vpc = true
+
+  tags {
+    Name    = "licensify-reservation-${count.index}"
+    Comment = "Reserved for future use by the Licensify service when that moves into another VPC / account. This IP address will be allow-listed by Civica, and assigned to a NAT Gateway instance in the VPC where Licensing ultimately ends up running."
+    Project = "infra-vpc"
+    Stack   = "${var.stackname}"
+  }
 }
 
 # Outputs
