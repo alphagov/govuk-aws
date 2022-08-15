@@ -38,7 +38,7 @@ resource "aws_wafv2_web_acl" "default" {
   }
 }
 
-resource "aws_wafv2_web_acl_logging_configuration" "public_cache_web_acl_logging" {
+resource "aws_wafv2_web_acl_logging_configuration" "default_web_acl_logging" {
   log_destination_configs = [data.terraform_remote_state.infra_public_services.outputs.kinesis_firehose_splunk_arn]
   resource_arn            = aws_wafv2_web_acl.default.arn
 }
