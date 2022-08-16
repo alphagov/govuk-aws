@@ -71,7 +71,7 @@ resource "aws_wafv2_ip_set" "nat_gateway_ips" {
   description        = "The IP addresses used by our infra to talk to the public internet."
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
-  addresses          = data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list
+  addresses          = formatlist("%s/32", data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list)
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "public_cache_web_acl_logging" {
