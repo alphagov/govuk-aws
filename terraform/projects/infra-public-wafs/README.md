@@ -35,6 +35,7 @@ No modules.
 | [aws_shield_protection.prometheus_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
 | [aws_shield_protection.sidekiq_monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
 | [aws_shield_protection.whitehall_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
+| [aws_wafv2_ip_set.nat_gateway_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_regex_pattern_set) | resource |
 | [aws_wafv2_rule_group.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_rule_group) | resource |
 | [aws_wafv2_web_acl.cache_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
