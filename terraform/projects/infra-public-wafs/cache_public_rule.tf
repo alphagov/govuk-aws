@@ -59,6 +59,40 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
   }
 
+  # allow Fastly healthchecks to pass unhindered
+  rule {
+    name     = "allow-fastly-healthchecks"
+    priority = 3
+
+    action {
+      allow {}
+    }
+
+    statement {
+      byte_match_statement {
+        field_to_match {
+          single_header {
+            name = "rate-limit-token"
+          }
+        }
+
+        positional_constraint = "EXACTLY"
+        search_string         = var.fastly_rate_limit_token
+
+        text_transformation {
+          priority = 1
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "fastly-healthcheck-requests"
+      sampled_requests_enabled   = false
+    }
+  }
+
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = "cache-public-web-acl"

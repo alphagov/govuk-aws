@@ -38,3 +38,9 @@ data "terraform_remote_state" "infra_public_services" {
     region = var.aws_region
   }
 }
+
+variable "fastly_rate_limit_token" {
+  type        = string
+  description = "Token used by the CDN to skip rate limiting"
+  default     = ""
+}
