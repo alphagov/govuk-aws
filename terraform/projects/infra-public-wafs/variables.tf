@@ -44,3 +44,8 @@ variable "fastly_rate_limit_token" {
   description = "Token used by the CDN to skip rate limiting"
   default     = ""
 }
+
+variable "cache_public_base_rate_limit" {
+  type        = number
+  description = "Number of requests to allow in a 5 minute period before rate limiting is applied."
+}
