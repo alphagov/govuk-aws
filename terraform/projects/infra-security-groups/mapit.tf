@@ -12,7 +12,7 @@
 
 resource "aws_security_group" "mapit" {
   name        = "${var.stackname}_mapit_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the mapit host from its ELB"
 
   tags {
@@ -22,7 +22,7 @@ resource "aws_security_group" "mapit" {
 
 resource "aws_security_group" "mapit_cache" {
   name        = "${var.stackname}_mapit_cache_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the mapit cache from mapit"
 
   tags {
@@ -37,10 +37,10 @@ resource "aws_security_group_rule" "mapit_ingress_mapit_cache_memcached" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.mapit_cache.id}"
+  security_group_id = aws_security_group.mapit_cache.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.mapit.id}"
+  source_security_group_id = aws_security_group.mapit.id
 }
 
 resource "aws_security_group_rule" "mapit_ingress_mapit-elb_http" {
@@ -50,15 +50,15 @@ resource "aws_security_group_rule" "mapit_ingress_mapit-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.mapit.id}"
+  security_group_id = aws_security_group.mapit.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.mapit_elb.id}"
+  source_security_group_id = aws_security_group.mapit_elb.id
 }
 
 resource "aws_security_group" "mapit_elb" {
   name        = "${var.stackname}_mapit_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the mapit Internal ELB"
 
   tags {
@@ -72,8 +72,8 @@ resource "aws_security_group_rule" "mapit-elb_ingress_management_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.mapit_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.mapit_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "mapit-elb_egress_any_any" {
@@ -82,7 +82,7 @@ resource "aws_security_group_rule" "mapit-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.mapit_elb.id}"
+  security_group_id = aws_security_group.mapit_elb.id
 }
 
 resource "aws_security_group_rule" "mapit_ingress_mapit-carrenza-alb_http" {
@@ -92,17 +92,17 @@ resource "aws_security_group_rule" "mapit_ingress_mapit-carrenza-alb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.mapit.id}"
+  security_group_id = aws_security_group.mapit.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+  source_security_group_id = aws_security_group.mapit_carrenza_alb.id
 }
 
 # Security resources for ALB set up for Carrenza access to AWS Mapit
 
 resource "aws_security_group" "mapit_carrenza_alb" {
   name        = "${var.stackname}_mapit_carrenza_alb"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the mapit Carrenza ALB "
 
   tags {
@@ -111,14 +111,14 @@ resource "aws_security_group" "mapit_carrenza_alb" {
 }
 
 resource "aws_security_group_rule" "mapit-carrenza-alb_ingress_443_carrenza" {
-  count     = "${length(var.carrenza_env_ips) > 0 ? 1 : 0}"
+  count     = length(var.carrenza_env_ips) > 0 ? 1 : 0
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
   cidr_blocks       = ["${var.carrenza_env_ips}"]
-  security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+  security_group_id = aws_security_group.mapit_carrenza_alb.id
 }
 
 resource "aws_security_group_rule" "mapit-carrenza-alb_egress_any_any" {
@@ -127,15 +127,15 @@ resource "aws_security_group_rule" "mapit-carrenza-alb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+  security_group_id = aws_security_group.mapit_carrenza_alb.id
 }
 
 resource "aws_security_group_rule" "ithc_ingress_mapit_https" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 443
   from_port         = 443
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.mapit_carrenza_alb.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.mapit_carrenza_alb.id
 }

@@ -6,18 +6,18 @@
 * Generates reports for the Accessibility Team, using the govuk-accessibility-reports repo
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS environment"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
@@ -30,12 +30,12 @@ locals {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "1.40.0"
 }
 
@@ -68,26 +68,26 @@ data "aws_iam_policy_document" "accessibility-reports_read_ssm_policy_document" 
 
 resource "aws_iam_policy" "accessibility-reports_read_ssm_policy" {
   name   = "accessibility-reports_read_ssm_policy"
-  policy = "${data.aws_iam_policy_document.accessibility-reports_read_ssm_policy_document.json}"
+  policy = data.aws_iam_policy_document.accessibility-reports_read_ssm_policy_document.json
 }
 
 data "template_file" "ec2_assume_policy_template" {
-  template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
+  template = file("${path.module}/../../policies/ec2_assume_policy.tpl")
 }
 
 resource "aws_iam_role" "govuk-accessibility-reports-data-reader_role" {
   name               = "govuk-accessibility-reports-data-reader"
-  assume_role_policy = "${data.template_file.ec2_assume_policy_template.rendered}"
+  assume_role_policy = data.template_file.ec2_assume_policy_template.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "accessibility-reports_read_ssm_role_attachment" {
-  role       = "${aws_iam_role.govuk-accessibility-reports-data-reader_role.name}"
-  policy_arn = "${aws_iam_policy.accessibility-reports_read_ssm_policy.arn}"
+  role       = aws_iam_role.govuk-accessibility-reports-data-reader_role.name
+  policy_arn = aws_iam_policy.accessibility-reports_read_ssm_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "read_write_data_infrastructure_bucket_role_attachment" {
-  role       = "${aws_iam_role.govuk-accessibility-reports-data-reader_role.name}"
-  policy_arn = "${data.terraform_remote_state.app_knowledge_graph.read_write_data_infrastructure_bucket_policy_arn}"
+  role       = aws_iam_role.govuk-accessibility-reports-data-reader_role.name
+  policy_arn = data.terraform_remote_state.app_knowledge_graph.read_write_data_infrastructure_bucket_policy_arn
 }
 
 data "aws_iam_policy_document" "accessibility-reports_read_s3_mirror_bucket_policy_document" {
@@ -120,42 +120,42 @@ data "aws_iam_policy_document" "accessibility-reports_read_s3_mirror_replica_buc
 
 resource "aws_iam_policy" "accessibility-reports_read_s3_mirror_bucket_policy" {
   name   = "accessibility-reports_read_s3_mirror_bucket_policy"
-  policy = "${data.aws_iam_policy_document.accessibility-reports_read_s3_mirror_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.accessibility-reports_read_s3_mirror_bucket_policy_document.json
 }
 
 resource "aws_iam_policy" "accessibility-reports_read_s3_mirror_replica_bucket_policy" {
   name   = "accessibility-reports_read_s3_mirror_replica_bucket_policy"
-  policy = "${data.aws_iam_policy_document.accessibility-reports_read_s3_mirror_replica_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.accessibility-reports_read_s3_mirror_replica_bucket_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "accessibility-reports_read_s3_mirror_bucket_role_attachment" {
-  role       = "${aws_iam_role.govuk-accessibility-reports-data-reader_role.name}"
-  policy_arn = "${aws_iam_policy.accessibility-reports_read_s3_mirror_bucket_policy.arn}"
+  role       = aws_iam_role.govuk-accessibility-reports-data-reader_role.name
+  policy_arn = aws_iam_policy.accessibility-reports_read_s3_mirror_bucket_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "accessibility-reports_read_s3_mirror_replica_bucket_role_attachment" {
-  role       = "${aws_iam_role.govuk-accessibility-reports-data-reader_role.name}"
-  policy_arn = "${aws_iam_policy.accessibility-reports_read_s3_mirror_replica_bucket_policy.arn}"
+  role       = aws_iam_role.govuk-accessibility-reports-data-reader_role.name
+  policy_arn = aws_iam_policy.accessibility-reports_read_s3_mirror_replica_bucket_policy.arn
 }
 
 resource "aws_iam_instance_profile" "accessibility-reports_instance-profile" {
   name = "accessibility-reports_instance-profile"
-  role = "${aws_iam_role.govuk-accessibility-reports-data-reader_role.name}"
+  role = aws_iam_role.govuk-accessibility-reports-data-reader_role.name
 }
 
 data "template_file" "accessibility-reports_userdata" {
-  template = "${file("${path.module}/userdata.tpl")}"
+  template = file("${path.module}/userdata.tpl")
 
   vars {
-    data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
+    data_infrastructure_bucket_name = data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name
     mirror_bucket_name              = "govuk-${var.aws_environment}-mirror-replica"
-    data_science_base               = "${file("../../userdata/90-data-science-base")}"
+    data_science_base               = file("../../userdata/90-data-science-base")
   }
 }
 
 resource "aws_launch_template" "accessibility-reports_launch-template" {
   name          = "accessibility-reports_launch-template"
-  image_id      = "${data.aws_ami.ubuntu_bionic.id}"
+  image_id      = data.aws_ami.ubuntu_bionic.id
   instance_type = "r4.2xlarge"
 
   vpc_security_group_ids = [
@@ -163,7 +163,7 @@ resource "aws_launch_template" "accessibility-reports_launch-template" {
   ]
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.accessibility-reports_instance-profile.name}"
+    name = aws_iam_instance_profile.accessibility-reports_instance-profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -180,7 +180,7 @@ resource "aws_launch_template" "accessibility-reports_launch-template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.accessibility-reports_userdata.rendered)}"
+  user_data = base64encode(data.template_file.accessibility-reports_userdata.rendered)
 }
 
 resource "aws_autoscaling_group" "accessibility-reports-asg" {
@@ -190,7 +190,7 @@ resource "aws_autoscaling_group" "accessibility-reports-asg" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.accessibility-reports_launch-template.id}"
+    id      = aws_launch_template.accessibility-reports_launch-template.id
     version = "$Latest"
   }
 

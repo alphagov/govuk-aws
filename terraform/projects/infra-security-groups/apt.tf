@@ -15,7 +15,7 @@
 
 resource "aws_security_group" "apt" {
   name        = "${var.stackname}_apt_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the apt host from its ELB"
 
   tags {
@@ -30,10 +30,10 @@ resource "aws_security_group_rule" "apt_ingress_apt-external-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.apt.id}"
+  security_group_id = aws_security_group.apt.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.apt_external_elb.id}"
+  source_security_group_id = aws_security_group.apt_external_elb.id
 }
 
 resource "aws_security_group_rule" "apt_ingress_apt-internal-elb_http" {
@@ -43,15 +43,15 @@ resource "aws_security_group_rule" "apt_ingress_apt-internal-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.apt.id}"
+  security_group_id = aws_security_group.apt.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.apt_internal_elb.id}"
+  source_security_group_id = aws_security_group.apt_internal_elb.id
 }
 
 resource "aws_security_group" "apt_external_elb" {
   name        = "${var.stackname}_apt_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the apt External ELB"
 
   tags {
@@ -65,18 +65,18 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_office_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.apt_external_elb.id}"
+  security_group_id = aws_security_group.apt_external_elb.id
   cidr_blocks       = ["${var.office_ips}"]
 }
 
 resource "aws_security_group_rule" "apt-external-elb_ingress_carrenza_production_https" {
-  count     = "${var.aws_environment == "production" ? 1 : 0}"
+  count     = var.aws_environment == "production" ? 1 : 0
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.apt_external_elb.id}"
+  security_group_id = aws_security_group.apt_external_elb.id
   cidr_blocks       = ["${var.carrenza_production_ips}"]
 }
 
@@ -86,7 +86,7 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.apt_external_elb.id}"
+  security_group_id = aws_security_group.apt_external_elb.id
   cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
 }
 
@@ -96,7 +96,7 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_http" {
   to_port   = 80
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.apt_external_elb.id}"
+  security_group_id = aws_security_group.apt_external_elb.id
   cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
 }
 
@@ -106,12 +106,12 @@ resource "aws_security_group_rule" "apt-external-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.apt_external_elb.id}"
+  security_group_id = aws_security_group.apt_external_elb.id
 }
 
 resource "aws_security_group" "apt_internal_elb" {
   name        = "${var.stackname}_apt_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the apt Internal ELB"
 
   tags {
@@ -125,8 +125,8 @@ resource "aws_security_group_rule" "apt-internal-elb_ingress_management_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.apt_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.apt_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "apt-internal-elb_ingress_management_http" {
@@ -135,8 +135,8 @@ resource "aws_security_group_rule" "apt-internal-elb_ingress_management_http" {
   to_port   = 80
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.apt_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.apt_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "apt-internal-elb_egress_any_any" {
@@ -145,13 +145,13 @@ resource "aws_security_group_rule" "apt-internal-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.apt_internal_elb.id}"
+  security_group_id = aws_security_group.apt_internal_elb.id
 }
 
 resource "aws_security_group" "apt_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_apt_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -160,11 +160,11 @@ resource "aws_security_group" "apt_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_apt_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.apt_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.apt_ithc_access.id
 }

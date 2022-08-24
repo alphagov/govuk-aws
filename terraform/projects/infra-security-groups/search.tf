@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "search" {
   name        = "${var.stackname}_search_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the search host from its ELB"
 
   tags {
@@ -28,15 +28,15 @@ resource "aws_security_group_rule" "search_ingress_search-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.search.id}"
+  security_group_id = aws_security_group.search.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search_elb.id}"
+  source_security_group_id = aws_security_group.search_elb.id
 }
 
 resource "aws_security_group" "search_elb" {
   name        = "${var.stackname}_search_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the search ELB"
 
   tags {
@@ -51,10 +51,10 @@ resource "aws_security_group_rule" "search-api_ingress_elb_external_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.search.id}"
+  security_group_id = aws_security_group.search.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search-api_external_elb.id}"
+  source_security_group_id = aws_security_group.search-api_external_elb.id
 }
 
 # TODO: Audit
@@ -64,8 +64,8 @@ resource "aws_security_group_rule" "search-elb_ingress_management_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.search_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.search_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "search-elb_egress_any_any" {
@@ -74,13 +74,13 @@ resource "aws_security_group_rule" "search-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.search_elb.id}"
+  security_group_id = aws_security_group.search_elb.id
 }
 
 resource "aws_security_group" "search_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_search_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -89,11 +89,11 @@ resource "aws_security_group" "search_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_search_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.search_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.search_ithc_access.id
 }

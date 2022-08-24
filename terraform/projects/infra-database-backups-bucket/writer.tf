@@ -9,7 +9,7 @@
 
 resource "aws_iam_policy" "mongo_api_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-mongo-api_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.mongo_api_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.mongo_api_database_backups_writer.json
   description = "Allows writing of the mongo-api database_backups bucket"
 }
 
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "mongo_api_database_backups_writer" {
 
 resource "aws_iam_policy" "mongo_router_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-mongo-router_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.mongo_router_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.mongo_router_database_backups_writer.json
   description = "Allows writing of the router_backend database_backups bucket"
 }
 
@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "mongo_router_database_backups_writer" {
 
 resource "aws_iam_policy" "mongodb_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-mongodb_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.mongodb_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.mongodb_database_backups_writer.json
   description = "Allows writing of the mongodb database_backups bucket"
 }
 
@@ -179,7 +179,7 @@ data "aws_iam_policy_document" "mongodb_database_backups_writer" {
 
 resource "aws_iam_policy" "elasticsearch_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-elasticsearch_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.elasticsearch_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.elasticsearch_database_backups_writer.json
   description = "Allows writing of the elasticsearch database_backups bucket"
 }
 
@@ -235,7 +235,7 @@ data "aws_iam_policy_document" "elasticsearch_database_backups_writer" {
 
 resource "aws_iam_policy" "dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-dbadmin_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.dbadmin_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.dbadmin_database_backups_writer.json
   description = "Allows writing of the DBAdmin database_backups bucket"
 }
 
@@ -299,7 +299,7 @@ data "aws_iam_policy_document" "dbadmin_database_backups_writer" {
 
 resource "aws_iam_policy" "content_data_api_dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-content_data_api_dbadmin_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.content_data_api_dbadmin_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.content_data_api_dbadmin_database_backups_writer.json
   description = "Allows writing Content Data API backups to the database_backups bucket"
 }
 
@@ -359,7 +359,7 @@ data "aws_iam_policy_document" "content_data_api_dbadmin_database_backups_writer
 
 resource "aws_iam_policy" "transition_dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-transition_dbadmin_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.transition_dbadmin_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.transition_dbadmin_database_backups_writer.json
   description = "Allows writing of the TransitionDBAdmin database_backups bucket"
 }
 
@@ -416,7 +416,7 @@ data "aws_iam_policy_document" "transition_dbadmin_database_backups_writer" {
 
 resource "aws_iam_policy" "publishing-api_dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-publishing-api_dbadmin_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.publishing-api_dbadmin_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.publishing-api_dbadmin_database_backups_writer.json
   description = "Allows writing of the publishing-apiDBAdmin database_backups bucket"
 }
 
@@ -473,7 +473,7 @@ data "aws_iam_policy_document" "publishing-api_dbadmin_database_backups_writer" 
 
 resource "aws_iam_policy" "email-alert-api_dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-email-alert-api_dbadmin_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.email-alert-api_dbadmin_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.email-alert-api_dbadmin_database_backups_writer.json
   description = "Allows writing of the email-alert-api DBAdmin database_backups bucket"
 }
 
@@ -530,7 +530,7 @@ data "aws_iam_policy_document" "email-alert-api_dbadmin_database_backups_writer"
 
 resource "aws_iam_policy" "account_dbadmin_database_backups_writer" {
   name        = "govuk-${var.aws_environment}-account_dbadmin_database_backups-writer-policy"
-  policy      = "${data.aws_iam_policy_document.account_dbadmin_database_backups_writer.json}"
+  policy      = data.aws_iam_policy_document.account_dbadmin_database_backups_writer.json
   description = "Allows writing of the account DBAdmin database_backups bucket"
 }
 
@@ -586,51 +586,51 @@ data "aws_iam_policy_document" "account_dbadmin_database_backups_writer" {
 }
 
 output "mongo_api_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.mongo_api_database_backups_writer.arn}"
+  value       = aws_iam_policy.mongo_api_database_backups_writer.arn
   description = "ARN of the mongo-api write database_backups-bucket policy"
 }
 
 output "mongo_router_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.mongo_router_database_backups_writer.arn}"
+  value       = aws_iam_policy.mongo_router_database_backups_writer.arn
   description = "ARN of the router_backend write database_backups-bucket policy"
 }
 
 output "mongodb_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.mongodb_database_backups_writer.arn}"
+  value       = aws_iam_policy.mongodb_database_backups_writer.arn
   description = "ARN of the mongodb write database_backups-bucket policy"
 }
 
 output "elasticsearch_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.elasticsearch_database_backups_writer.arn}"
+  value       = aws_iam_policy.elasticsearch_database_backups_writer.arn
   description = "ARN of the elasticsearch write database_backups-bucket policy"
 }
 
 output "dbadmin_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.dbadmin_database_backups_writer.arn}"
+  value       = aws_iam_policy.dbadmin_database_backups_writer.arn
   description = "ARN of the DBAdmin write database_backups-bucket policy"
 }
 
 output "content_data_api_dbadmin_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.content_data_api_dbadmin_database_backups_writer.arn}"
+  value       = aws_iam_policy.content_data_api_dbadmin_database_backups_writer.arn
   description = "ARN of the Content Data API DBAdmin database_backups bucket writer policy"
 }
 
 output "transition_dbadmin_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.transition_dbadmin_database_backups_writer.arn}"
+  value       = aws_iam_policy.transition_dbadmin_database_backups_writer.arn
   description = "ARN of the TransitionDBAdmin write database_backups-bucket policy"
 }
 
 output "publishing-api_dbadmin_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.publishing-api_dbadmin_database_backups_writer.arn}"
+  value       = aws_iam_policy.publishing-api_dbadmin_database_backups_writer.arn
   description = "ARN of the publishing-apiDBAdmin write database_backups-bucket policy"
 }
 
 output "email-alert-api_dbadmin_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.email-alert-api_dbadmin_database_backups_writer.arn}"
+  value       = aws_iam_policy.email-alert-api_dbadmin_database_backups_writer.arn
   description = "ARN of the EmailAlertAPIDBAdmin write database_backups-bucket policy"
 }
 
 output "account_dbadmin_write_database_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.account_dbadmin_database_backups_writer.arn}"
+  value       = aws_iam_policy.account_dbadmin_database_backups_writer.arn
   description = "ARN of the AccountDBAdmin write database_backups-bucket policy"
 }

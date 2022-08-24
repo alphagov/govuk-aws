@@ -6,8 +6,8 @@
 */
 
 resource "aws_s3_bucket_policy" "database_backups_cross_account_access" {
-  bucket = "${aws_s3_bucket.database_backups.id}"
-  policy = "${data.aws_iam_policy_document.database_backups_cross_account_access.json}"
+  bucket = aws_s3_bucket.database_backups.id
+  policy = data.aws_iam_policy_document.database_backups_cross_account_access.json
 }
 
 data "aws_iam_policy_document" "database_backups_cross_account_access" {

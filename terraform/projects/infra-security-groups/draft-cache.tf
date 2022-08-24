@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "draft-cache" {
   name        = "${var.stackname}_draft-cache_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the draft-cache host from its ELB"
 
   tags {
@@ -28,10 +28,10 @@ resource "aws_security_group_rule" "draft-cache_ingress_draft-cache-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.draft-cache.id}"
+  security_group_id = aws_security_group.draft-cache.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.draft-cache_elb.id}"
+  source_security_group_id = aws_security_group.draft-cache_elb.id
 }
 
 resource "aws_security_group_rule" "draft-cache_ingress_draft-cache-external-elb_http" {
@@ -41,10 +41,10 @@ resource "aws_security_group_rule" "draft-cache_ingress_draft-cache-external-elb
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.draft-cache.id}"
+  security_group_id = aws_security_group.draft-cache.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.draft-cache_external_elb.id}"
+  source_security_group_id = aws_security_group.draft-cache_external_elb.id
 }
 
 # We need to allow draft-cache instances to speak to their own to reload router
@@ -56,15 +56,15 @@ resource "aws_security_group_rule" "draft-cache_ingress_draft-cache_router" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.draft-cache.id}"
+  security_group_id = aws_security_group.draft-cache.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.draft-cache.id}"
+  source_security_group_id = aws_security_group.draft-cache.id
 }
 
 resource "aws_security_group" "draft-cache_elb" {
   name        = "${var.stackname}_draft-cache_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the draft-cache ELB"
 
   tags {
@@ -81,10 +81,10 @@ resource "aws_security_group_rule" "draft-cache-elb_ingress_cache_https" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.draft-cache_elb.id}"
+  security_group_id = aws_security_group.draft-cache_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.draft-cache.id}"
+  source_security_group_id = aws_security_group.draft-cache.id
 }
 
 # Allow Jenkins to speak to ELB to make /healthcheck requests
@@ -95,15 +95,15 @@ resource "aws_security_group_rule" "draft-cache-elb_ingress_management_https" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.draft-cache_elb.id}"
+  security_group_id = aws_security_group.draft-cache_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.management.id}"
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group" "draft-cache_external_elb" {
   name        = "${var.stackname}_draft-cache_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the draft-cache external ELB"
 
   tags {
@@ -116,7 +116,7 @@ resource "aws_security_group_rule" "draft-cache-external-elb_ingress_public_http
   to_port           = 443
   from_port         = 443
   protocol          = "tcp"
-  security_group_id = "${aws_security_group.draft-cache_external_elb.id}"
+  security_group_id = aws_security_group.draft-cache_external_elb.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
@@ -128,10 +128,10 @@ resource "aws_security_group_rule" "draft-cache-elb_ingress_draft-content-store_
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.draft-cache_elb.id}"
+  security_group_id = aws_security_group.draft-cache_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.draft-content-store.id}"
+  source_security_group_id = aws_security_group.draft-content-store.id
 }
 
 resource "aws_security_group_rule" "draft-cache-elb_egress_any_any" {
@@ -140,7 +140,7 @@ resource "aws_security_group_rule" "draft-cache-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.draft-cache_elb.id}"
+  security_group_id = aws_security_group.draft-cache_elb.id
 }
 
 resource "aws_security_group_rule" "draft-cache-external-elb_egress_any_any" {
@@ -149,13 +149,13 @@ resource "aws_security_group_rule" "draft-cache-external-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.draft-cache_external_elb.id}"
+  security_group_id = aws_security_group.draft-cache_external_elb.id
 }
 
 resource "aws_security_group" "draft-cache_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_draft-cache_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -164,11 +164,11 @@ resource "aws_security_group" "draft-cache_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_draft-cache_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.draft-cache_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.draft-cache_ithc_access.id
 }

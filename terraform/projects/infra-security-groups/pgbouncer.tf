@@ -15,10 +15,10 @@ resource "aws_security_group_rule" "db-admin_ingress_account_pgbouncer" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin_elb.id}"
+  security_group_id = aws_security_group.db-admin_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.account.id}"
+  source_security_group_id = aws_security_group.account.id
 }
 
 resource "aws_security_group_rule" "db-admin_ingress_backend_pgbouncer" {
@@ -28,10 +28,10 @@ resource "aws_security_group_rule" "db-admin_ingress_backend_pgbouncer" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin_elb.id}"
+  security_group_id = aws_security_group.db-admin_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.backend.id}"
+  source_security_group_id = aws_security_group.backend.id
 }
 
 resource "aws_security_group_rule" "db-admin_ingress_ckan_pgbouncer" {
@@ -41,10 +41,10 @@ resource "aws_security_group_rule" "db-admin_ingress_ckan_pgbouncer" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin_elb.id}"
+  security_group_id = aws_security_group.db-admin_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.ckan.id}"
+  source_security_group_id = aws_security_group.ckan.id
 }
 
 resource "aws_security_group_rule" "db-admin_ingress_email-alert-api_pgbouncer" {
@@ -54,10 +54,10 @@ resource "aws_security_group_rule" "db-admin_ingress_email-alert-api_pgbouncer" 
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin_elb.id}"
+  security_group_id = aws_security_group.db-admin_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.email-alert-api.id}"
+  source_security_group_id = aws_security_group.email-alert-api.id
 }
 
 resource "aws_security_group_rule" "db-admin_ingress_publishing-api_pgbouncer" {
@@ -67,8 +67,8 @@ resource "aws_security_group_rule" "db-admin_ingress_publishing-api_pgbouncer" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin_elb.id}"
+  security_group_id = aws_security_group.db-admin_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.publishing-api.id}"
+  source_security_group_id = aws_security_group.publishing-api.id
 }

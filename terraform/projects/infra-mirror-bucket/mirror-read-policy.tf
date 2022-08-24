@@ -5,7 +5,7 @@ provider "fastly" {
 }
 
 variable "aws_integration_account_root_arn" {
-  type        = "string"
+  type        = string
   description = "AWS account root ARN for the Integration account"
 }
 
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${split(",",data.external.pingdom.result.pingdom_probe_ips)}"]
+      values   = ["${split(",", data.external.pingdom.result.pingdom_probe_ips)}"]
     }
 
     principals {
@@ -175,7 +175,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${split(",",data.external.pingdom.result.pingdom_probe_ips)}"]
+      values   = ["${split(",", data.external.pingdom.result.pingdom_probe_ips)}"]
     }
 
     principals {

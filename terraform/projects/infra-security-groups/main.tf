@@ -5,7 +5,7 @@
 */
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
@@ -13,12 +13,12 @@ variable "aws_environment" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
@@ -41,8 +41,8 @@ data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
-    region = "${var.aws_region}"
+    region = var.aws_region
   }
 }

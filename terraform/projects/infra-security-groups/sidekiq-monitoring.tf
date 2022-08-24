@@ -11,7 +11,7 @@
 
 resource "aws_security_group" "sidekiq-monitoring_external_elb" {
   name        = "${var.stackname}_sidekiq-monitoring_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the sidekiq-monitoring external ELB"
 
   tags {
@@ -25,7 +25,7 @@ resource "aws_security_group_rule" "sidekiq-monitoring_ingress_external-elb_http
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.sidekiq-monitoring_external_elb.id}"
+  security_group_id = aws_security_group.sidekiq-monitoring_external_elb.id
   cidr_blocks       = ["${var.office_ips}"]
 }
 
@@ -35,5 +35,5 @@ resource "aws_security_group_rule" "sidekiq-monitoring_egress_external_elb_any_a
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.sidekiq-monitoring_external_elb.id}"
+  security_group_id = aws_security_group.sidekiq-monitoring_external_elb.id
 }

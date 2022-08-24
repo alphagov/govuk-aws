@@ -4,110 +4,110 @@
 * Mapit node
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS environment"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "ebs_encrypted" {
-  type        = "string"
+  type        = string
   description = "Whether or not the EBS volume is encrypted"
 }
 
 variable "instance_ami_filter_name" {
-  type        = "string"
+  type        = string
   description = "Name to use to find AMI images"
   default     = ""
 }
 
 variable "mapit_subnet_a" {
-  type        = "string"
+  type        = string
   description = "Name of the subnet to place the first third of mapit instances and EBS volumes"
 }
 
 variable "mapit_subnet_b" {
-  type        = "string"
+  type        = string
   description = "Name of the subnet to place the second third of mapit instances and EBS volumes"
 }
 
 variable "mapit_subnet_c" {
-  type        = "string"
+  type        = string
   description = "Name of the subnet to place the last third of mapit instances and EBS volumes"
 }
 
 variable "elb_internal_certname" {
-  type        = "string"
+  type        = string
   description = "The ACM cert domain name to find the ARN of"
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type used for EC2 resources"
   default     = "c5.2xlarge"
 }
 
 variable "memcached_instance_type" {
-  type    = "string"
+  type    = string
   default = "cache.m6g.large" # Standard Graviton2 ($0.164/hour as of 2021)
 
   description = "Instance type used for the shared Elasticache Memcached instances"
 }
 
 variable "internal_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains internal records"
 }
 
 variable "internal_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
 variable "lc_create_ebs_volume" {
-  type        = "string"
+  type        = string
   description = "Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1"
 }
 
 variable "ebs_device_volume_size" {
-  type        = "string"
+  type        = string
   description = "Size of additional ebs volume in GB"
   default     = "20"
 }
 
 variable "ebs_device_name" {
-  type        = "string"
+  type        = string
   description = "Name of the block device to mount on the instance, e.g. xvdf"
 }
 
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
+  name         = var.internal_zone_name
   private_zone = true
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
-  domain   = "${var.elb_internal_certname}"
+  domain   = var.elb_internal_certname
   statuses = ["ISSUED"]
 }
 
@@ -118,7 +118,7 @@ resource "aws_elb" "mapit_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     bucket_prefix = "elb/${var.stackname}-mapit-internal-elb"
     interval      = 60
   }
@@ -129,7 +129,7 @@ resource "aws_elb" "mapit_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_internal_cert.arn
   }
 
   health_check {
@@ -146,17 +146,17 @@ resource "aws_elb" "mapit_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-mapit-internal", "Project", var.stackname, "aws_migration", "mapit", "aws_environment", var.aws_environment)}"
+  tags = map("Name", "${var.stackname}-mapit-internal", "Project", var.stackname, "aws_migration", "mapit", "aws_environment", var.aws_environment)
 }
 
 resource "aws_route53_record" "mapit_service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "mapit.${var.internal_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.mapit_elb.dns_name}"
-    zone_id                = "${aws_elb.mapit_elb.zone_id}"
+    name                   = aws_elb.mapit_elb.dns_name
+    zone_id                = aws_elb.mapit_elb.zone_id
     evaluate_target_health = true
   }
 }
@@ -172,16 +172,16 @@ resource "aws_elasticache_cluster" "memcached" {
   engine          = "memcached"
   engine_version  = "1.6.6"
   port            = 11211
-  node_type       = "${var.memcached_instance_type}"
+  node_type       = var.memcached_instance_type
   num_cache_nodes = 1
 
   parameter_group_name = "default.memcached1.6"
-  subnet_group_name    = "${aws_elasticache_subnet_group.memcached.name}"
+  subnet_group_name    = aws_elasticache_subnet_group.memcached.name
   security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_cache_id}"]
 }
 
 resource "aws_route53_record" "memcached_cname" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "mapit-memcached.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
@@ -189,180 +189,180 @@ resource "aws_route53_record" "memcached_cname" {
 }
 
 module "mapit-1" {
-  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  lc_create_ebs_volume          = var.lc_create_ebs_volume
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-1"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-1")
+  instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_type                 = var.instance_type
+  instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  instance_ami_filter_name      = var.instance_ami_filter_name
+  asg_notification_topic_arn    = data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn
   root_block_device_volume_size = "20"
-  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
-  ebs_encrypted                 = "${var.ebs_encrypted}"
-  ebs_device_name               = "${var.ebs_device_name}"
+  ebs_device_volume_size        = var.ebs_device_volume_size
+  ebs_encrypted                 = var.ebs_encrypted
+  ebs_device_name               = var.ebs_device_name
 }
 
 resource "aws_ebs_volume" "mapit-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
-  encrypted         = "${var.ebs_encrypted}"
+  availability_zone = lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)
+  encrypted         = var.ebs_encrypted
   size              = 20
   type              = "gp2"
 
   tags {
     Name            = "${var.stackname}-mapit"
-    Project         = "${var.stackname}"
+    Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "mapit-1"
     aws_migration   = "mapit"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
 module "mapit-2" {
-  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  lc_create_ebs_volume          = var.lc_create_ebs_volume
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-2"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-2")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_b))}"
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-2")
+  instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_b))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_type                 = var.instance_type
+  instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  instance_ami_filter_name      = var.instance_ami_filter_name
+  asg_notification_topic_arn    = data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn
   root_block_device_volume_size = "20"
-  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
-  ebs_encrypted                 = "${var.ebs_encrypted}"
-  ebs_device_name               = "${var.ebs_device_name}"
+  ebs_device_volume_size        = var.ebs_device_volume_size
+  ebs_encrypted                 = var.ebs_encrypted
+  ebs_device_name               = var.ebs_device_name
 }
 
 resource "aws_ebs_volume" "mapit-2" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_b)}"
-  encrypted         = "${var.ebs_encrypted}"
+  availability_zone = lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_b)
+  encrypted         = var.ebs_encrypted
   size              = 20
   type              = "gp2"
 
   tags {
     Name            = "${var.stackname}-mapit"
-    Project         = "${var.stackname}"
+    Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "mapit-2"
     aws_migration   = "mapit"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
 module "mapit-3" {
-  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  lc_create_ebs_volume          = var.lc_create_ebs_volume
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-3"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-3")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_c))}"
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-3")
+  instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_c))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_type                 = var.instance_type
+  instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  instance_ami_filter_name      = var.instance_ami_filter_name
+  asg_notification_topic_arn    = data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn
   root_block_device_volume_size = "20"
-  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
-  ebs_encrypted                 = "${var.ebs_encrypted}"
-  ebs_device_name               = "${var.ebs_device_name}"
+  ebs_device_volume_size        = var.ebs_device_volume_size
+  ebs_encrypted                 = var.ebs_encrypted
+  ebs_device_name               = var.ebs_device_name
 }
 
 resource "aws_ebs_volume" "mapit-3" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)}"
-  encrypted         = "${var.ebs_encrypted}"
+  availability_zone = lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_c)
+  encrypted         = var.ebs_encrypted
   size              = 20
   type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-mapit"
-    Project         = "${var.stackname}"
+    Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "mapit-3"
     aws_migration   = "mapit"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
 module "mapit-4" {
-  lc_create_ebs_volume          = "${var.lc_create_ebs_volume}"
+  lc_create_ebs_volume          = var.lc_create_ebs_volume
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mapit-4"
-  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-4")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))}"
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mapit", "aws_hostname", "mapit-4")
+  instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mapit_subnet_a))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mapit_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_type                 = var.instance_type
+  instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.mapit_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  instance_ami_filter_name      = var.instance_ami_filter_name
+  asg_notification_topic_arn    = data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn
   root_block_device_volume_size = "20"
-  ebs_device_volume_size        = "${var.ebs_device_volume_size}"
-  ebs_encrypted                 = "${var.ebs_encrypted}"
-  ebs_device_name               = "${var.ebs_device_name}"
+  ebs_device_volume_size        = var.ebs_device_volume_size
+  ebs_encrypted                 = var.ebs_encrypted
+  ebs_device_name               = var.ebs_device_name
 }
 
 resource "aws_ebs_volume" "mapit-4" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)}"
-  encrypted         = "${var.ebs_encrypted}"
+  availability_zone = lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mapit_subnet_a)
+  encrypted         = var.ebs_encrypted
   size              = 20
   type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-mapit"
-    Project         = "${var.stackname}"
+    Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "mapit-4"
     aws_migration   = "mapit"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
 resource "aws_iam_policy" "mapit_iam_policy" {
   name   = "${var.stackname}-mapit-additional"
   path   = "/"
-  policy = "${file("${path.module}/additional_policy.json")}"
+  policy = file("${path.module}/additional_policy.json")
 }
 
 resource "aws_iam_role_policy_attachment" "mapit_1_iam_role_policy_attachment" {
-  role       = "${module.mapit-1.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+  role       = module.mapit-1.instance_iam_role_name
+  policy_arn = aws_iam_policy.mapit_iam_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "mapit_2_iam_role_policy_attachment" {
-  role       = "${module.mapit-2.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+  role       = module.mapit-2.instance_iam_role_name
+  policy_arn = aws_iam_policy.mapit_iam_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "mapit_3_iam_role_policy_attachment" {
-  role       = "${module.mapit-3.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+  role       = module.mapit-3.instance_iam_role_name
+  policy_arn = aws_iam_policy.mapit_iam_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "mapit_4_iam_role_policy_attachment" {
-  role       = "${module.mapit-4.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.mapit_iam_policy.arn}"
+  role       = module.mapit-4.instance_iam_role_name
+  policy_arn = aws_iam_policy.mapit_iam_policy.arn
 }
 
 module "alarms-elb-mapit-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-mapit-internal"
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.mapit_elb.name}"
+  elb_name                       = aws_elb.mapit_elb.name
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
   httpcode_elb_4xx_threshold     = "0"
@@ -375,6 +375,6 @@ module "alarms-elb-mapit-internal" {
 # --------------------------------------------------------------
 
 output "mapit_service_dns_name" {
-  value       = "${aws_route53_record.mapit_service_record.fqdn}"
+  value       = aws_route53_record.mapit_service_record.fqdn
   description = "DNS name to access the mapit internal service"
 }

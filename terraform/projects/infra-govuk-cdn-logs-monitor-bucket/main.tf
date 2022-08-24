@@ -9,30 +9,30 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
@@ -41,11 +41,11 @@ resource "aws_s3_bucket" "cdn_logs_monitor" {
 
   tags {
     Name            = "govuk-${var.aws_environment}-cdn-logs-monitor-archive"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-cdn-logs-monitor-archive/"
   }
 }

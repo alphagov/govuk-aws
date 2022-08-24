@@ -10,7 +10,7 @@
 
 resource "aws_security_group" "shared-documentdb" {
   name        = "${var.stackname}_shared_documentdb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to Shared Documentdb from its clients"
 
   tags {
@@ -25,10 +25,10 @@ resource "aws_security_group_rule" "shared-documentdb_ingress_db-admin_mongodb" 
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.shared-documentdb.id}"
+  security_group_id = aws_security_group.shared-documentdb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.db-admin.id}"
+  source_security_group_id = aws_security_group.db-admin.id
 }
 
 # Allow asset manager on backend machines to access the shared documentdb cluster
@@ -39,8 +39,8 @@ resource "aws_security_group_rule" "shared-documentdb_ingress_backend_asset_mana
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.shared-documentdb.id}"
+  security_group_id = aws_security_group.shared-documentdb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.backend.id}"
+  source_security_group_id = aws_security_group.backend.id
 }

@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "rate-limit-redis" {
   name        = "${var.stackname}_rate-limit-redis_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to rate-limit-redis from its clients"
 
   tags {
@@ -28,8 +28,8 @@ resource "aws_security_group_rule" "rate-limit-redis_ingress_frontend_redis" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.rate-limit-redis.id}"
+  security_group_id = aws_security_group.rate-limit-redis.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.frontend.id}"
+  source_security_group_id = aws_security_group.frontend.id
 }

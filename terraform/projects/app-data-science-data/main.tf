@@ -6,35 +6,35 @@
 * A central place where data is generated on a daily basis to be used by multiple data science projects, including related links and the knowledge graph.
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS environment"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 locals {
-  data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
+  data_infrastructure_bucket_name = data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name
 }
 
 # Resources
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "1.40.0"
 
   # The AWS image to use to host the app
@@ -57,7 +57,7 @@ data "aws_ami" "ubuntu_bionic" {
 
 resource "aws_iam_instance_profile" "data-science-data_instance_profile" {
   name = "${var.stackname}-data-science-data"
-  role = "${aws_iam_role.data-science-data_role.name}"
+  role = aws_iam_role.data-science-data_role.name
 }
 
 data "aws_caller_identity" "current" {}
@@ -114,56 +114,56 @@ data "aws_iam_policy_document" "invoke_sagemaker_govner_endpoint_policy_document
 
 resource "aws_iam_policy" "data-science-data_read_ssm_policy" {
   name   = "data-science-data_read_ssm_policy"
-  policy = "${data.aws_iam_policy_document.data-science-data_read_ssm_policy_document.json}"
+  policy = data.aws_iam_policy_document.data-science-data_read_ssm_policy_document.json
 }
 
 resource "aws_iam_policy" "data-science-data_read_secrets_from_secrets_manager_policy" {
   name   = "data-science-data_read_secrets_from_secrets_manager_policy"
-  policy = "${data.aws_iam_policy_document.data-science-data_read_secrets_from_secrets_manager_policy_document.json}"
+  policy = data.aws_iam_policy_document.data-science-data_read_secrets_from_secrets_manager_policy_document.json
 }
 
 resource "aws_iam_policy" "invoke_sagemaker_govner_endpoint_policy" {
   name   = "invoke_sagemaker_govner_endpoint_policy"
-  policy = "${data.aws_iam_policy_document.invoke_sagemaker_govner_endpoint_policy_document.json}"
+  policy = data.aws_iam_policy_document.invoke_sagemaker_govner_endpoint_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "data-science-data_read_ssm_role_attachment" {
-  role       = "${aws_iam_role.data-science-data_role.name}"
-  policy_arn = "${aws_iam_policy.data-science-data_read_ssm_policy.arn}"
+  role       = aws_iam_role.data-science-data_role.name
+  policy_arn = aws_iam_policy.data-science-data_read_ssm_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "data-science-data_read_secrets_from_secrets_manager_role_attachment" {
-  role       = "${aws_iam_role.data-science-data_role.name}"
-  policy_arn = "${aws_iam_policy.data-science-data_read_secrets_from_secrets_manager_policy.arn}"
+  role       = aws_iam_role.data-science-data_role.name
+  policy_arn = aws_iam_policy.data-science-data_read_secrets_from_secrets_manager_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "invoke_sagemaker_govner_endpoint_role_attachment" {
-  role       = "${aws_iam_role.data-science-data_role.name}"
-  policy_arn = "${aws_iam_policy.invoke_sagemaker_govner_endpoint_policy.arn}"
+  role       = aws_iam_role.data-science-data_role.name
+  policy_arn = aws_iam_policy.invoke_sagemaker_govner_endpoint_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "read_write_data_infrastructure_bucket_role_attachment" {
-  role       = "${aws_iam_role.data-science-data_role.name}"
-  policy_arn = "${data.terraform_remote_state.app_knowledge_graph.read_write_data_infrastructure_bucket_policy_arn}"
+  role       = aws_iam_role.data-science-data_role.name
+  policy_arn = data.terraform_remote_state.app_knowledge_graph.read_write_data_infrastructure_bucket_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "data-science-data_read_content_store_backups_bucket_role_attachment" {
-  role       = "${aws_iam_role.data-science-data_role.name}"
-  policy_arn = "${data.terraform_remote_state.app_related_links.policy_read_content_store_backups_bucket_policy_arn}"
+  role       = aws_iam_role.data-science-data_role.name
+  policy_arn = data.terraform_remote_state.app_related_links.policy_read_content_store_backups_bucket_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "data-science-data_read_related_links_bucket_role_attachment" {
-  role       = "${aws_iam_role.data-science-data_role.name}"
-  policy_arn = "${data.terraform_remote_state.app_related_links.policy_read_write_related_links_bucket_policy_arn}"
+  role       = aws_iam_role.data-science-data_role.name
+  policy_arn = data.terraform_remote_state.app_related_links.policy_read_write_related_links_bucket_policy_arn
 }
 
 resource "aws_iam_role" "data-science-data_role" {
   name               = "${var.stackname}-data-science-data"
-  assume_role_policy = "${data.template_file.ec2_assume_policy_template.rendered}"
+  assume_role_policy = data.template_file.ec2_assume_policy_template.rendered
 }
 
 data "template_file" "ec2_assume_policy_template" {
-  template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
+  template = file("${path.module}/../../policies/ec2_assume_policy.tpl")
 }
 
 # PRODUCTION Data Science Data settings
@@ -174,12 +174,12 @@ data "template_file" "ec2_assume_policy_template" {
 data "template_file" "data-science-data_userdata" {
   # userdata.tpl is a bash script that's run when the instance starts and that
   # creates and starts the knowledge graph
-  template = "${file("${path.module}/userdata.tpl")}"
+  template = file("${path.module}/userdata.tpl")
 
   # Variables passed top the userdata.tpl script
   vars {
-    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
-    data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
+    database_backups_bucket_name    = data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name
+    data_infrastructure_bucket_name = data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name
   }
 }
 
@@ -187,14 +187,14 @@ data "template_file" "data-science-data_userdata" {
 # by the auto-scaling group below
 resource "aws_launch_template" "data-science-data_launch_template" {
   name     = "data-science-data_launch-template"
-  image_id = "${data.aws_ami.ubuntu_bionic.id}"
+  image_id = data.aws_ami.ubuntu_bionic.id
 
   instance_type = "r4.4xlarge"
 
   vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"]
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.data-science-data_instance_profile.name}"
+    name = aws_iam_instance_profile.data-science-data_instance_profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -211,7 +211,7 @@ resource "aws_launch_template" "data-science-data_launch_template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.data-science-data_userdata.rendered)}"
+  user_data = base64encode(data.template_file.data-science-data_userdata.rendered)
 }
 
 # The auto-scaling group sets the date/time the launch template is run
@@ -222,7 +222,7 @@ resource "aws_autoscaling_group" "data-science-data_asg" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.data-science-data_launch_template.id}"
+    id      = aws_launch_template.data-science-data_launch_template.id
     version = "$Latest"
   }
 
@@ -237,7 +237,7 @@ resource "aws_autoscaling_group" "data-science-data_asg" {
 
 # Start every day at 3:29am
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
-  autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
+  autoscaling_group_name = aws_autoscaling_group.data-science-data_asg.name
   scheduled_action_name  = "data-science-data_schedule-spin-up"
   recurrence             = "29 3 * * MON-SUN"
   min_size               = -1
@@ -248,7 +248,7 @@ resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-up" {
 # Kill the instance at 07:29am -- as of this writing the data generation lasts
 # about an hour, so there's room for manoeuver before reaching the 4h window this defines
 resource "aws_autoscaling_schedule" "data-science-data_schedule-spin-down" {
-  autoscaling_group_name = "${aws_autoscaling_group.data-science-data_asg.name}"
+  autoscaling_group_name = aws_autoscaling_group.data-science-data_asg.name
   scheduled_action_name  = "data-science-data_schedule-spin-down"
   recurrence             = "29 07 * * MON-SUN"
   min_size               = -1
@@ -268,8 +268,8 @@ resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${data.aws_security_group.publishing-api-rds.0.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"
+  security_group_id        = data.aws_security_group.publishing-api-rds.0.id
+  source_security_group_id = data.terraform_remote_state.infra_security_groups.sg_data-science-data_id
 }
 
 # DEV Data Science Data settings
@@ -279,12 +279,12 @@ resource "aws_security_group_rule" "publishing-api-rds_ingress_data-science-data
 data "template_file" "data-science-data-dev_userdata" {
   # userdata.tpl is a bash script that's run when the instance starts and that
   # creates and starts the knowledge graph
-  template = "${file("${path.module}/userdata-dev.tpl")}"
+  template = file("${path.module}/userdata-dev.tpl")
 
   # Variables passed top the userdata.tpl script
   vars {
-    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
-    data_infrastructure_bucket_name = "${data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name}"
+    database_backups_bucket_name    = data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name
+    data_infrastructure_bucket_name = data.terraform_remote_state.app_knowledge_graph.data-infrastructure-bucket_name
   }
 }
 
@@ -292,14 +292,14 @@ data "template_file" "data-science-data-dev_userdata" {
 # by the auto-scaling group below
 resource "aws_launch_template" "data-science-data-dev_launch_template" {
   name     = "data-science-data_launch-dev-template"
-  image_id = "${data.aws_ami.ubuntu_bionic.id}"
+  image_id = data.aws_ami.ubuntu_bionic.id
 
   instance_type = "r4.4xlarge"
 
   vpc_security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_data-science-data_id}"]
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.data-science-data_instance_profile.name}"
+    name = aws_iam_instance_profile.data-science-data_instance_profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -316,7 +316,7 @@ resource "aws_launch_template" "data-science-data-dev_launch_template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.data-science-data-dev_userdata.rendered)}"
+  user_data = base64encode(data.template_file.data-science-data-dev_userdata.rendered)
 }
 
 # The auto-scaling group sets the date/time the launch template is run
@@ -327,7 +327,7 @@ resource "aws_autoscaling_group" "data-science-data-dev_asg" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.data-science-data-dev_launch_template.id}"
+    id      = aws_launch_template.data-science-data-dev_launch_template.id
     version = "$Latest"
   }
 

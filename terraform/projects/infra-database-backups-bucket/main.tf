@@ -8,52 +8,52 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_backup_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-2"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "remote_state_bucket" {
-  type        = "string"
+  type        = string
   description = "S3 bucket we store our terraform state in"
 }
 
 variable "remote_state_infra_monitoring_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override stackname path to infra_monitoring remote state "
   default     = ""
 }
 
 # Set up the backend & provider for each region
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 provider "aws" {
   alias   = "eu-london"
-  region  = "${var.aws_backup_region}"
+  region  = var.aws_backup_region
   version = "2.46.0"
 }
 
@@ -61,23 +61,23 @@ data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
-    region = "${var.aws_region}"
+    region = var.aws_region
   }
 }
 
 resource "aws_s3_bucket" "database_backups" {
   bucket = "govuk-${var.aws_environment}-database-backups"
-  region = "${var.aws_region}"
+  region = var.aws_region
 
   tags {
     Name            = "govuk-${var.aws_environment}-database-backups"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-database-backups/"
   }
 
@@ -91,7 +91,7 @@ resource "aws_s3_bucket" "database_backups" {
   lifecycle_rule {
     # Use a long retention period in production
     id      = "long_retention_period"
-    enabled = "${var.aws_environment == "production"}"
+    enabled = var.aws_environment == "production"
 
     # Ideally everything would go in the Standard (Infrequent Access) storage class when created.
     # But newly created objects always go into Standard, and can only move into IA after at least 30 days.
@@ -125,7 +125,7 @@ resource "aws_s3_bucket" "database_backups" {
   lifecycle_rule {
     # Use a short retention period in integration and staging
     id      = "short_retention_period"
-    enabled = "${var.aws_environment != "production"}"
+    enabled = var.aws_environment != "production"
 
     expiration {
       days = "3"
@@ -137,14 +137,14 @@ resource "aws_s3_bucket" "database_backups" {
   }
 
   replication_configuration {
-    role = "${aws_iam_role.backup_replication_role.arn}"
+    role = aws_iam_role.backup_replication_role.arn
 
     rules {
       id     = "main_replication_rule"
       status = "Enabled"
 
       destination {
-        bucket        = "${aws_s3_bucket.database_backups_replica.arn}"
+        bucket        = aws_s3_bucket.database_backups_replica.arn
         storage_class = "STANDARD_IA"
       }
     }
@@ -154,12 +154,12 @@ resource "aws_s3_bucket" "database_backups" {
 # Bucket in the second region (Backup of the backup)
 resource "aws_s3_bucket" "database_backups_replica" {
   bucket   = "govuk-${var.aws_environment}-database-backups-replica"
-  region   = "${var.aws_backup_region}"
+  region   = var.aws_backup_region
   provider = "aws.eu-london"
 
   tags {
     Name            = "govuk-${var.aws_environment}-database-backups-replica"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   versioning {
@@ -171,7 +171,7 @@ resource "aws_s3_bucket" "database_backups_replica" {
   lifecycle_rule {
     # Use a long retention period in production
     id      = "long_retention_period"
-    enabled = "${var.aws_environment == "production"}"
+    enabled = var.aws_environment == "production"
 
     transition {
       storage_class = "STANDARD_IA"
@@ -195,7 +195,7 @@ resource "aws_s3_bucket" "database_backups_replica" {
   lifecycle_rule {
     # Use a short retention period in integration and staging
     id      = "short_retention_period"
-    enabled = "${var.aws_environment != "production"}"
+    enabled = var.aws_environment != "production"
 
     expiration {
       days = "3"
@@ -209,29 +209,29 @@ resource "aws_s3_bucket" "database_backups_replica" {
 
 # S3 backup replica role configuration
 data "template_file" "s3_backup_replica_assume_role_template" {
-  template = "${file("${path.module}/../../policies/s3_backup_replica_role.tpl")}"
+  template = file("${path.module}/../../policies/s3_backup_replica_role.tpl")
 }
 
 # Adding backup replication role
 resource "aws_iam_role" "backup_replication_role" {
   name               = "${var.stackname}-backup-bucket-replication-role"
-  assume_role_policy = "${data.template_file.s3_backup_replica_assume_role_template.rendered}"
+  assume_role_policy = data.template_file.s3_backup_replica_assume_role_template.rendered
 }
 
 # S3 backup replica policy configuration
 data "template_file" "s3_backup_replica_policy_template" {
-  template = "${file("${path.module}/../../policies/s3_backup_replica_policy.json")}"
+  template = file("${path.module}/../../policies/s3_backup_replica_policy.json")
 
   vars {
-    govuk_s3_bucket = "${aws_s3_bucket.database_backups.arn}"
-    govuk_s3_backup = "${aws_s3_bucket.database_backups_replica.arn}"
+    govuk_s3_bucket = aws_s3_bucket.database_backups.arn
+    govuk_s3_backup = aws_s3_bucket.database_backups_replica.arn
   }
 }
 
 # Adding backup replication policy
 resource "aws_iam_policy" "backup_replication_policy" {
   name        = "govuk-${var.aws_environment}-backup-bucket-replication-policy"
-  policy      = "${data.template_file.s3_backup_replica_policy_template.rendered}"
+  policy      = data.template_file.s3_backup_replica_policy_template.rendered
   description = "Allows replication of the backup buckets"
 }
 
@@ -239,13 +239,13 @@ resource "aws_iam_policy" "backup_replication_policy" {
 resource "aws_iam_policy_attachment" "backup_replication_policy_attachment" {
   name       = "s3-backup-replication-policy-attachment"
   roles      = ["${aws_iam_role.backup_replication_role.name}"]
-  policy_arn = "${aws_iam_policy.backup_replication_policy.arn}"
+  policy_arn = aws_iam_policy.backup_replication_policy.arn
 }
 
 # Outputs
 #--------------------------------------------------------------
 
 output "s3_database_backups_bucket_name" {
-  value       = "${aws_s3_bucket.database_backups.id}"
+  value       = aws_s3_bucket.database_backups.id
   description = "The name of the database backups bucket"
 }

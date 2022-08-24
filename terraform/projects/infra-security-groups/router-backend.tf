@@ -14,7 +14,7 @@
 #
 resource "aws_security_group" "router-backend" {
   name        = "${var.stackname}_router-backend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to router-backend"
 
   tags {
@@ -30,10 +30,10 @@ resource "aws_security_group_rule" "router-backend_ingress_router-backend_mongo"
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.router-backend.id}"
+  security_group_id = aws_security_group.router-backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.router-backend.id}"
+  source_security_group_id = aws_security_group.router-backend.id
 }
 
 resource "aws_security_group_rule" "router-backend_ingress_router-api-elb_http" {
@@ -43,10 +43,10 @@ resource "aws_security_group_rule" "router-backend_ingress_router-api-elb_http" 
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.router-backend.id}"
+  security_group_id = aws_security_group.router-backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.router-api_elb.id}"
+  source_security_group_id = aws_security_group.router-api_elb.id
 }
 
 resource "aws_security_group_rule" "router-backend_ingress_draft-cache_mongo" {
@@ -55,9 +55,9 @@ resource "aws_security_group_rule" "router-backend_ingress_draft-cache_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.router-backend.id}"
+  security_group_id = aws_security_group.router-backend.id
 
-  source_security_group_id = "${aws_security_group.draft-cache.id}"
+  source_security_group_id = aws_security_group.draft-cache.id
 }
 
 resource "aws_security_group_rule" "router-backend_ingress_cache_mongo" {
@@ -66,14 +66,14 @@ resource "aws_security_group_rule" "router-backend_ingress_cache_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.router-backend.id}"
+  security_group_id = aws_security_group.router-backend.id
 
-  source_security_group_id = "${aws_security_group.cache.id}"
+  source_security_group_id = aws_security_group.cache.id
 }
 
 resource "aws_security_group" "router-api_elb" {
   name        = "${var.stackname}_router-api_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to router-api"
 
   tags {
@@ -88,9 +88,9 @@ resource "aws_security_group_rule" "router-api-elb_ingress_management_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.router-api_elb.id}"
+  security_group_id = aws_security_group.router-api_elb.id
 
-  source_security_group_id = "${aws_security_group.management.id}"
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "router-api-elb_egress_any_any" {
@@ -99,13 +99,13 @@ resource "aws_security_group_rule" "router-api-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.router-api_elb.id}"
+  security_group_id = aws_security_group.router-api_elb.id
 }
 
 resource "aws_security_group" "router-backend_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_router-backend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -114,11 +114,11 @@ resource "aws_security_group" "router-backend_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_router-backend_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.router-backend_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.router-backend_ithc_access.id
 }

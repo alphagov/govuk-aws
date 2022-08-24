@@ -5,23 +5,23 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "expiration_time" {
-  type        = "string"
+  type        = string
   description = "Expiration time in days of S3 Objects"
   default     = "7"
 }
@@ -29,26 +29,26 @@ variable "expiration_time" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 resource "aws_s3_bucket" "graphite_backups" {
   bucket = "govuk-${var.aws_environment}-graphite-backups"
-  region = "${var.aws_region}"
+  region = var.aws_region
 
   tags {
     Name            = "govuk-${var.aws_environment}-graphite-backups"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-graphite-backups/"
   }
 
@@ -56,14 +56,14 @@ resource "aws_s3_bucket" "graphite_backups" {
     enabled = true
 
     expiration {
-      days = "${var.expiration_time}"
+      days = var.expiration_time
     }
   }
 }
 
 resource "aws_iam_policy" "graphite_backups_access" {
   name        = "govuk-${var.aws_environment}-graphite-backups-access-policy"
-  policy      = "${data.aws_iam_policy_document.graphite_backups_access.json}"
+  policy      = data.aws_iam_policy_document.graphite_backups_access.json
   description = "Allows read/write access to the graphite_backups bucket"
 }
 
@@ -111,11 +111,11 @@ data "aws_iam_policy_document" "graphite_backups_access" {
 #--------------------------------------------------------------
 
 output "s3_graphite_backups_bucket_name" {
-  value       = "${aws_s3_bucket.graphite_backups.id}"
+  value       = aws_s3_bucket.graphite_backups.id
   description = "The name of the graphite backups bucket"
 }
 
 output "access_graphite_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.graphite_backups_access.arn}"
+  value       = aws_iam_policy.graphite_backups_access.arn
   description = "ARN of the access graphite-backups-bucket policy"
 }

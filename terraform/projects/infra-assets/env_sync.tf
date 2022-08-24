@@ -1,7 +1,7 @@
 resource "aws_s3_bucket_policy" "cross_account_access" {
-  count  = "${var.aws_environment != "production" ? 1 : 0}"
-  bucket = "${aws_s3_bucket.assets.id}"
-  policy = "${data.aws_iam_policy_document.cross_account_access.json}"
+  count  = var.aws_environment != "production" ? 1 : 0
+  bucket = aws_s3_bucket.assets.id
+  policy = data.aws_iam_policy_document.cross_account_access.json
 }
 
 data "aws_iam_policy_document" "cross_account_access" {

@@ -21,111 +21,111 @@
 *
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "elasticsearch6_instance_type" {
-  type        = "string"
+  type        = string
   description = "The instance type of the individual ElasticSearch nodes, only instances which allow EBS volumes are supported"
   default     = "r4.xlarge.elasticsearch"
 }
 
 variable "elasticsearch6_instance_count" {
-  type        = "string"
+  type        = string
   description = "The number of ElasticSearch nodes"
   default     = "6"
 }
 
 variable "elasticsearch6_dedicated_master_enabled" {
-  type        = "string"
+  type        = string
   description = "Indicates whether dedicated master nodes are enabled for the cluster"
   default     = "true"
 }
 
 variable "elasticsearch6_master_instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type of the dedicated master nodes in the cluster"
   default     = "c4.large.elasticsearch"
 }
 
 # TODO: change the default to 3 after the first deploy
 variable "elasticsearch6_master_instance_count" {
-  type        = "string"
+  type        = string
   description = "Number of dedicated master nodes in the cluster"
   default     = "2"
 }
 
 variable "elasticsearch6_ebs_encrypt" {
-  type        = "string"
+  type        = string
   description = "Whether to encrypt the EBS volume at rest"
 }
 
 variable "elasticsearch6_ebs_type" {
-  type        = "string"
+  type        = string
   description = "The type of EBS storage to attach"
   default     = "gp2"
 }
 
 variable "elasticsearch6_ebs_size" {
-  type        = "string"
+  type        = string
   description = "The amount of EBS storage to attach"
   default     = 32
 }
 
 variable "elasticsearch6_snapshot_start_hour" {
-  type        = "string"
+  type        = string
   description = "The hour in which the daily snapshot is taken"
   default     = 1
 }
 
 variable "elasticsearch_subnet_names" {
-  type        = "list"
+  type        = list(string)
   description = "Names of the subnets to place the ElasticSearch domain in"
 }
 
 variable "cloudwatch_log_retention" {
-  type        = "string"
+  type        = string
   description = "Number of days to retain Cloudwatch logs for"
   default     = 90
 }
 
 variable "elasticsearch6_manual_snapshot_bucket_arns" {
-  type        = "list"
+  type        = list(string)
   description = "Bucket ARNs this domain can read/write for manual snapshots"
   default     = []
 }
 
 variable "internal_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains internal records"
 }
 
 variable "internal_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
@@ -151,28 +151,28 @@ data "aws_iam_policy_document" "elasticsearch6_log_publishing_policy" {
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
+  name         = var.internal_zone_name
   private_zone = true
 }
 
 resource "aws_cloudwatch_log_group" "elasticsearch6_application_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch6-domain/es6-application-logs"
-  retention_in_days = "${var.cloudwatch_log_retention}"
+  retention_in_days = var.cloudwatch_log_retention
 }
 
 resource "aws_cloudwatch_log_group" "elasticsearch6_search_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch6-domain/es6-search-logs"
-  retention_in_days = "${var.cloudwatch_log_retention}"
+  retention_in_days = var.cloudwatch_log_retention
 }
 
 resource "aws_cloudwatch_log_group" "elasticsearch6_index_log_group" {
   name              = "/aws/aes/domains/${var.stackname}-elasticsearch6-domain/es6-index-logs"
-  retention_in_days = "${var.cloudwatch_log_retention}"
+  retention_in_days = var.cloudwatch_log_retention
 }
 
 resource "aws_cloudwatch_log_resource_policy" "elasticsearch6_log_resource_policy" {
   policy_name     = "elasticsearch6_log_resource_policy"
-  policy_document = "${data.aws_iam_policy_document.elasticsearch6_log_publishing_policy.json}"
+  policy_document = data.aws_iam_policy_document.elasticsearch6_log_publishing_policy.json
 }
 
 resource "aws_iam_service_linked_role" "role" {
@@ -184,22 +184,22 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
   elasticsearch_version = "6.7"
 
   cluster_config {
-    instance_type            = "${var.elasticsearch6_instance_type}"
-    instance_count           = "${var.elasticsearch6_instance_count}"
-    dedicated_master_enabled = "${var.elasticsearch6_dedicated_master_enabled}"
-    dedicated_master_type    = "${var.elasticsearch6_master_instance_type}"
-    dedicated_master_count   = "${var.elasticsearch6_master_instance_count}"
+    instance_type            = var.elasticsearch6_instance_type
+    instance_count           = var.elasticsearch6_instance_count
+    dedicated_master_enabled = var.elasticsearch6_dedicated_master_enabled
+    dedicated_master_type    = var.elasticsearch6_master_instance_type
+    dedicated_master_count   = var.elasticsearch6_master_instance_count
     zone_awareness_enabled   = true
   }
 
   ebs_options {
     ebs_enabled = true
-    volume_type = "${var.elasticsearch6_ebs_type}"
-    volume_size = "${var.elasticsearch6_ebs_size}"
+    volume_type = var.elasticsearch6_ebs_type
+    volume_size = var.elasticsearch6_ebs_size
   }
 
   encrypt_at_rest {
-    enabled = "${var.elasticsearch6_ebs_encrypt}"
+    enabled = var.elasticsearch6_ebs_encrypt
   }
 
   vpc_options {
@@ -208,21 +208,21 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
   }
 
   snapshot_options {
-    automated_snapshot_start_hour = "${var.elasticsearch6_snapshot_start_hour}"
+    automated_snapshot_start_hour = var.elasticsearch6_snapshot_start_hour
   }
 
   log_publishing_options {
-    cloudwatch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch6_application_log_group.arn}"
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.elasticsearch6_application_log_group.arn
     log_type                 = "ES_APPLICATION_LOGS"
   }
 
   log_publishing_options {
-    cloudwatch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch6_search_log_group.arn}"
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.elasticsearch6_search_log_group.arn
     log_type                 = "SEARCH_SLOW_LOGS"
   }
 
   log_publishing_options {
-    cloudwatch_log_group_arn = "${aws_cloudwatch_log_group.elasticsearch6_index_log_group.arn}"
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.elasticsearch6_index_log_group.arn
     log_type                 = "INDEX_SLOW_LOGS"
   }
 
@@ -248,9 +248,9 @@ CONFIG
 
   tags {
     Name            = "${var.stackname}-elasticsearch6"
-    Project         = "${var.stackname}"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    Project         = var.stackname
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
   }
 
   depends_on = [
@@ -259,7 +259,7 @@ CONFIG
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "elasticsearch6.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
@@ -270,22 +270,22 @@ resource "aws_route53_record" "service_record" {
 # need to live in their own bucket.
 resource "aws_s3_bucket" "manual_snapshots" {
   bucket = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots"
-  region = "${var.aws_region}"
+  region = var.aws_region
 
   tags {
     Name            = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-elasticsearch6-manual-snapshots/"
   }
 }
 
 resource "aws_s3_bucket_policy" "manual_snapshots_cross_account_access" {
-  bucket = "${aws_s3_bucket.manual_snapshots.id}"
-  policy = "${data.aws_iam_policy_document.manual_snapshots_cross_account_access.json}"
+  bucket = aws_s3_bucket.manual_snapshots.id
+  policy = data.aws_iam_policy_document.manual_snapshots_cross_account_access.json
 }
 
 data "aws_iam_policy_document" "manual_snapshots_cross_account_access" {
@@ -368,13 +368,13 @@ data "aws_iam_policy_document" "manual_snapshot_bucket_policy" {
 
 resource "aws_iam_policy" "manual_snapshot_bucket_policy" {
   name   = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshot-bucket-policy"
-  policy = "${data.aws_iam_policy_document.manual_snapshot_bucket_policy.json}"
+  policy = data.aws_iam_policy_document.manual_snapshot_bucket_policy.json
 }
 
 resource "aws_iam_policy_attachment" "manual_snapshot_role_policy_attachment" {
   name       = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshot-bucket-policy-attachment"
   roles      = ["${aws_iam_role.manual_snapshot_role.name}"]
-  policy_arn = "${aws_iam_policy.manual_snapshot_bucket_policy.arn}"
+  policy_arn = aws_iam_policy.manual_snapshot_bucket_policy.arn
 }
 
 # policy used (by a human!) to configure the elasticsearch domain to use the snapshot bucket, see:
@@ -405,21 +405,21 @@ POLICY
 # --------------------------------------------------------------
 
 output "service_endpoint" {
-  value       = "${aws_elasticsearch_domain.elasticsearch6.endpoint}"
+  value       = aws_elasticsearch_domain.elasticsearch6.endpoint
   description = "Endpoint to submit index, search, and upload requests"
 }
 
 output "service_dns_name" {
-  value       = "${aws_route53_record.service_record.fqdn}"
+  value       = aws_route53_record.service_record.fqdn
   description = "DNS name to access the Elasticsearch internal service"
 }
 
 output "domain_configuration_policy_arn" {
-  value       = "${aws_iam_policy.manual_snapshot_domain_configuration_policy.arn}"
+  value       = aws_iam_policy.manual_snapshot_domain_configuration_policy.arn
   description = "ARN of the policy used to configure the elasticsearch domain"
 }
 
 output "manual_snapshots_bucket_arn" {
-  value       = "${aws_s3_bucket.manual_snapshots.arn}"
+  value       = aws_s3_bucket.manual_snapshots.arn
   description = "ARN of the bucket to store manual snapshots"
 }

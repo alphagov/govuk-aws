@@ -13,7 +13,7 @@
 #
 resource "aws_security_group" "mongo" {
   name        = "${var.stackname}_mongo_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to mongo"
 
   tags {
@@ -29,10 +29,10 @@ resource "aws_security_group_rule" "mongo_ingress_mongo_mongo" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.mongo.id}"
+  security_group_id = aws_security_group.mongo.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.mongo.id}"
+  source_security_group_id = aws_security_group.mongo.id
 }
 
 resource "aws_security_group_rule" "mongo_ingress_frontend_mongo" {
@@ -41,9 +41,9 @@ resource "aws_security_group_rule" "mongo_ingress_frontend_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.mongo.id}"
+  security_group_id = aws_security_group.mongo.id
 
-  source_security_group_id = "${aws_security_group.frontend.id}"
+  source_security_group_id = aws_security_group.frontend.id
 }
 
 resource "aws_security_group_rule" "mongo_ingress_calculators-frontend_mongo" {
@@ -52,9 +52,9 @@ resource "aws_security_group_rule" "mongo_ingress_calculators-frontend_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.mongo.id}"
+  security_group_id = aws_security_group.mongo.id
 
-  source_security_group_id = "${aws_security_group.calculators-frontend.id}"
+  source_security_group_id = aws_security_group.calculators-frontend.id
 }
 
 resource "aws_security_group_rule" "mongo_ingress_backend_mongo" {
@@ -63,9 +63,9 @@ resource "aws_security_group_rule" "mongo_ingress_backend_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.mongo.id}"
+  security_group_id = aws_security_group.mongo.id
 
-  source_security_group_id = "${aws_security_group.backend.id}"
+  source_security_group_id = aws_security_group.backend.id
 }
 
 resource "aws_security_group_rule" "mongo_ingress_content-store_mongo" {
@@ -74,9 +74,9 @@ resource "aws_security_group_rule" "mongo_ingress_content-store_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.mongo.id}"
+  security_group_id = aws_security_group.mongo.id
 
-  source_security_group_id = "${aws_security_group.content-store.id}"
+  source_security_group_id = aws_security_group.content-store.id
 }
 
 resource "aws_security_group_rule" "mongo_ingress_draft-content-store_mongo" {
@@ -85,7 +85,7 @@ resource "aws_security_group_rule" "mongo_ingress_draft-content-store_mongo" {
   to_port   = 27017
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.mongo.id}"
+  security_group_id = aws_security_group.mongo.id
 
-  source_security_group_id = "${aws_security_group.draft-content-store.id}"
+  source_security_group_id = aws_security_group.draft-content-store.id
 }

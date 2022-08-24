@@ -6,33 +6,33 @@
 * The central knowledge graph which can be used to ask questions of GOV.UK content.
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS environment"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "external_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains external records"
 }
 
 variable "external_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the external DNS records, it could be different from the zone name"
 }
 
 variable "elb_external_certname" {
-  type        = "string"
+  type        = string
   description = "The ACM cert domain name to find the ARN of"
 }
 
@@ -44,27 +44,27 @@ locals {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "1.40.0"
 }
 
 # configuration of the S3 bucket used by app-knowledge graph and data-sdcience-data
 
 resource "aws_s3_bucket" "data_infrastructure_bucket" {
-  bucket = "${local.data_infrastructure_bucket_name}"
+  bucket = local.data_infrastructure_bucket_name
 
   versioning {
     enabled = false
   }
 
   tags {
-    aws_environment = "${var.aws_environment}"
-    Name            = "${local.data_infrastructure_bucket_name}"
+    aws_environment = var.aws_environment
+    Name            = local.data_infrastructure_bucket_name
   }
 
   # Lifecycle rules: expire files in the folders with prefixes specified below
@@ -116,12 +116,12 @@ data "aws_ami" "neo4j_community_ami" {
 # Give our knowledge graph a URL with certificate
 
 data "aws_route53_zone" "external" {
-  name         = "${var.external_zone_name}"
+  name         = var.external_zone_name
   private_zone = false
 }
 
 data "aws_acm_certificate" "elb_external_cert" {
-  domain   = "${var.elb_external_certname}"
+  domain   = var.elb_external_certname
   statuses = ["ISSUED"]
 }
 
@@ -129,7 +129,7 @@ data "aws_acm_certificate" "elb_external_cert" {
 
 resource "aws_iam_instance_profile" "knowledge-graph_instance_profile" {
   name = "${var.stackname}-knowledge-graph"
-  role = "${aws_iam_role.knowledge-graph_role.name}"
+  role = aws_iam_role.knowledge-graph_role.name
 }
 
 data "aws_caller_identity" "current" {}
@@ -201,51 +201,51 @@ data "aws_iam_policy_document" "read_write_data_infrastructure_bucket_policy_doc
 
 resource "aws_iam_policy" "knowledge-graph_register_instance_with_elb_policy" {
   name   = "knowledge-graph_register_instance_with_elb_policy"
-  policy = "${data.aws_iam_policy_document.knowledge-graph_register_instance_with_elb_policy_document.json}"
+  policy = data.aws_iam_policy_document.knowledge-graph_register_instance_with_elb_policy_document.json
 }
 
 resource "aws_iam_policy" "knowledge-graph_read_ssm_policy" {
   name   = "knowledge-graph_read_ssm_policy"
-  policy = "${data.aws_iam_policy_document.knowledge-graph_read_ssm_policy_document.json}"
+  policy = data.aws_iam_policy_document.knowledge-graph_read_ssm_policy_document.json
 }
 
 resource "aws_iam_policy" "read_write_data_infrastructure_bucket_policy" {
   name   = "read_write_data_infrastructure_bucket_policy"
-  policy = "${data.aws_iam_policy_document.read_write_data_infrastructure_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.read_write_data_infrastructure_bucket_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "knowledge-graph_register_instance_with_elb_role_attachment" {
-  role       = "${aws_iam_role.knowledge-graph_role.name}"
-  policy_arn = "${aws_iam_policy.knowledge-graph_register_instance_with_elb_policy.arn}"
+  role       = aws_iam_role.knowledge-graph_role.name
+  policy_arn = aws_iam_policy.knowledge-graph_register_instance_with_elb_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "knowledge-graph_read_ssm_role_attachment" {
-  role       = "${aws_iam_role.knowledge-graph_role.name}"
-  policy_arn = "${aws_iam_policy.knowledge-graph_read_ssm_policy.arn}"
+  role       = aws_iam_role.knowledge-graph_role.name
+  policy_arn = aws_iam_policy.knowledge-graph_read_ssm_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "read_write_data_infrastructure_bucket_role_attachment" {
-  role       = "${aws_iam_role.knowledge-graph_role.name}"
-  policy_arn = "${aws_iam_policy.read_write_data_infrastructure_bucket_policy.arn}"
+  role       = aws_iam_role.knowledge-graph_role.name
+  policy_arn = aws_iam_policy.read_write_data_infrastructure_bucket_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "knowledge-graph_read_content_store_backups_bucket_role_attachment" {
-  role       = "${aws_iam_role.knowledge-graph_role.name}"
-  policy_arn = "${data.terraform_remote_state.app_related_links.policy_read_content_store_backups_bucket_policy_arn}"
+  role       = aws_iam_role.knowledge-graph_role.name
+  policy_arn = data.terraform_remote_state.app_related_links.policy_read_content_store_backups_bucket_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "knowledge-graph_read_related_links_bucket_role_attachment" {
-  role       = "${aws_iam_role.knowledge-graph_role.name}"
-  policy_arn = "${data.terraform_remote_state.app_related_links.policy_read_write_related_links_bucket_policy_arn}"
+  role       = aws_iam_role.knowledge-graph_role.name
+  policy_arn = data.terraform_remote_state.app_related_links.policy_read_write_related_links_bucket_policy_arn
 }
 
 resource "aws_iam_role" "knowledge-graph_role" {
   name               = "${var.stackname}-knowledge-graph"
-  assume_role_policy = "${data.template_file.ec2_assume_policy_template.rendered}"
+  assume_role_policy = data.template_file.ec2_assume_policy_template.rendered
 }
 
 data "template_file" "ec2_assume_policy_template" {
-  template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
+  template = file("${path.module}/../../policies/ec2_assume_policy.tpl")
 }
 
 # PRODUCTION Knowledge graph settings
@@ -256,13 +256,13 @@ data "template_file" "ec2_assume_policy_template" {
 data "template_file" "knowledge-graph_userdata" {
   # userdata.tpl is a bash script that's run when the instance starts and that
   # creates and starts the knowledge graph
-  template = "${file("${path.module}/userdata.tpl")}"
+  template = file("${path.module}/userdata.tpl")
 
   # Variables passed top the userdata.tpl script
   vars {
-    elb_name                        = "${aws_elb.knowledge-graph_elb_external.name}"
-    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
-    data_infrastructure_bucket_name = "${aws_s3_bucket.data_infrastructure_bucket.id}"
+    elb_name                        = aws_elb.knowledge-graph_elb_external.name
+    database_backups_bucket_name    = data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name
+    data_infrastructure_bucket_name = aws_s3_bucket.data_infrastructure_bucket.id
     related_links_bucket_name       = "govuk-related-links-${var.aws_environment}"
   }
 }
@@ -271,7 +271,7 @@ data "template_file" "knowledge-graph_userdata" {
 # by the auto-scaling group below
 resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
-  image_id = "${data.aws_ami.neo4j_community_ami.id}"
+  image_id = data.aws_ami.neo4j_community_ami.id
 
   instance_type = "r4.2xlarge"
 
@@ -281,7 +281,7 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
   ]
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.knowledge-graph_instance_profile.name}"
+    name = aws_iam_instance_profile.knowledge-graph_instance_profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -298,7 +298,7 @@ resource "aws_launch_template" "knowledge-graph_launch_template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.knowledge-graph_userdata.rendered)}"
+  user_data = base64encode(data.template_file.knowledge-graph_userdata.rendered)
 }
 
 # The auto-scaling group sets the date/time the launch template is run
@@ -309,7 +309,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.knowledge-graph_launch_template.id}"
+    id      = aws_launch_template.knowledge-graph_launch_template.id
     version = "$Latest"
   }
 
@@ -324,7 +324,7 @@ resource "aws_autoscaling_group" "knowledge-graph_asg" {
 
 # Start the KG at 07:30 on weekdays
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
+  autoscaling_group_name = aws_autoscaling_group.knowledge-graph_asg.name
   scheduled_action_name  = "knowledge-graph_schedule-spin-up"
   recurrence             = "30 7 * * MON-FRI"
   min_size               = -1
@@ -334,7 +334,7 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-up" {
 
 # Stop the KG at 19:29 on weekdays
 resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
-  autoscaling_group_name = "${aws_autoscaling_group.knowledge-graph_asg.name}"
+  autoscaling_group_name = aws_autoscaling_group.knowledge-graph_asg.name
   scheduled_action_name  = "knowledge-graph_schedule-spin-down"
   recurrence             = "29 19 * * MON-FRI"
   min_size               = -1
@@ -344,13 +344,13 @@ resource "aws_autoscaling_schedule" "knowledge-graph_schedule-spin-down" {
 
 # Sets the hostname
 resource "aws_route53_record" "knowledge_graph_service_record_external" {
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  zone_id = data.aws_route53_zone.external.zone_id
   name    = "knowledge-graph.${var.external_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.knowledge-graph_elb_external.dns_name}"
-    zone_id                = "${aws_elb.knowledge-graph_elb_external.zone_id}"
+    name                   = aws_elb.knowledge-graph_elb_external.dns_name
+    zone_id                = aws_elb.knowledge-graph_elb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -375,7 +375,7 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     instance_protocol  = "https"
     lb_port            = 7473
     lb_protocol        = "https"
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_external_cert.arn
   }
 
   # Neo4j API
@@ -384,7 +384,7 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     instance_protocol  = "ssl"
     lb_port            = 7687
     lb_protocol        = "ssl"
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_external_cert.arn
   }
 
   # When/How to check if the VM is healthy
@@ -415,19 +415,19 @@ resource "aws_elb" "knowledge-graph_elb_external" {
 # -------------------------------------------------------------------------------
 
 data "template_file" "knowledge-graph-dev_userdata" {
-  template = "${file("${path.module}/userdata-dev.tpl")}"
+  template = file("${path.module}/userdata-dev.tpl")
 
   vars {
-    elb_name                        = "${aws_elb.knowledge-graph-dev_elb_external.name}"
-    database_backups_bucket_name    = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
-    data_infrastructure_bucket_name = "${aws_s3_bucket.data_infrastructure_bucket.id}"
+    elb_name                        = aws_elb.knowledge-graph-dev_elb_external.name
+    database_backups_bucket_name    = data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name
+    data_infrastructure_bucket_name = aws_s3_bucket.data_infrastructure_bucket.id
     related_links_bucket_name       = "govuk-related-links-${var.aws_environment}"
   }
 }
 
 resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
   name     = "knowledge-graph-dev_launch-template"
-  image_id = "${data.aws_ami.neo4j_community_ami.id}"
+  image_id = data.aws_ami.neo4j_community_ami.id
 
   instance_type = "r4.2xlarge"
 
@@ -437,7 +437,7 @@ resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
   ]
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.knowledge-graph_instance_profile.name}"
+    name = aws_iam_instance_profile.knowledge-graph_instance_profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -454,7 +454,7 @@ resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.knowledge-graph-dev_userdata.rendered)}"
+  user_data = base64encode(data.template_file.knowledge-graph-dev_userdata.rendered)
 }
 
 resource "aws_autoscaling_group" "knowledge-graph-dev_asg" {
@@ -464,7 +464,7 @@ resource "aws_autoscaling_group" "knowledge-graph-dev_asg" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.knowledge-graph-dev_launch_template.id}"
+    id      = aws_launch_template.knowledge-graph-dev_launch_template.id
     version = "$Latest"
   }
 
@@ -478,13 +478,13 @@ resource "aws_autoscaling_group" "knowledge-graph-dev_asg" {
 }
 
 resource "aws_route53_record" "knowledge_graph_dev_service_record_external" {
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  zone_id = data.aws_route53_zone.external.zone_id
   name    = "knowledge-graph-dev.${var.external_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.knowledge-graph-dev_elb_external.dns_name}"
-    zone_id                = "${aws_elb.knowledge-graph-dev_elb_external.zone_id}"
+    name                   = aws_elb.knowledge-graph-dev_elb_external.dns_name
+    zone_id                = aws_elb.knowledge-graph-dev_elb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -506,7 +506,7 @@ resource "aws_elb" "knowledge-graph-dev_elb_external" {
     instance_protocol  = "https"
     lb_port            = 7473
     lb_protocol        = "https"
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_external_cert.arn
   }
 
   listener {
@@ -514,7 +514,7 @@ resource "aws_elb" "knowledge-graph-dev_elb_external" {
     instance_protocol  = "ssl"
     lb_port            = 7687
     lb_protocol        = "ssl"
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_external_cert.arn
   }
 
   health_check {
@@ -541,11 +541,11 @@ resource "aws_elb" "knowledge-graph-dev_elb_external" {
 # --------------------------------------------------------------
 
 output "data-infrastructure-bucket_name" {
-  value       = "${aws_s3_bucket.data_infrastructure_bucket.id}"
+  value       = aws_s3_bucket.data_infrastructure_bucket.id
   description = "Bucket to store data for data platform"
 }
 
 output "read_write_data_infrastructure_bucket_policy_arn" {
-  value       = "${aws_iam_policy.read_write_data_infrastructure_bucket_policy.arn}"
+  value       = aws_iam_policy.read_write_data_infrastructure_bucket_policy.arn
   description = "Policy ARN to read and write to the data-infrastructure-data bucket"
 }

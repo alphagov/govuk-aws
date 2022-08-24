@@ -7,53 +7,53 @@
 * https://github.com/alphagov/govuk-terraform-provisioning/tree/master/old-projects/mysql_xtrabackups
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "bucket_name" {
-  type    = "string"
+  type    = string
   default = "govuk-mysql-xtrabackups"
 }
 
 variable "team" {
-  type    = "string"
+  type    = string
   default = "Infrastructure"
 }
 
 variable "username" {
-  type    = "string"
+  type    = string
   default = "govuk-mysql-xtrabackups"
 }
 
 variable "versioning" {
-  type    = "string"
+  type    = string
   default = "false"
 }
 
 variable "lifecycle" {
-  type    = "string"
+  type    = string
   default = "true"
 }
 
 variable "days_to_keep" {
-  type    = "string"
+  type    = string
   default = 91
 }
 
 variable "create_env_sync_resources" {
-  type        = "string"
+  type        = string
   description = "Create users and policies used to sync data between environments."
   default     = false
 }
@@ -62,7 +62,7 @@ variable "create_env_sync_resources" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
@@ -71,17 +71,17 @@ resource "aws_s3_bucket" "bucket" {
   acl    = "private"
 
   tags {
-    Environment = "${var.aws_environment}"
-    Team        = "${var.team}"
+    Environment = var.aws_environment
+    Team        = var.team
   }
 
   versioning {
-    enabled = "${var.versioning}"
+    enabled = var.versioning
   }
 
   lifecycle_rule {
     prefix  = ""
-    enabled = "${var.lifecycle}"
+    enabled = var.lifecycle
 
     transition {
       storage_class = "STANDARD_IA"
@@ -94,7 +94,7 @@ resource "aws_s3_bucket" "bucket" {
     }
 
     expiration {
-      days                         = "${var.days_to_keep}"
+      days                         = var.days_to_keep
       expired_object_delete_marker = false
     }
   }
@@ -103,34 +103,34 @@ resource "aws_s3_bucket" "bucket" {
 resource "aws_iam_policy" "readwrite_policy" {
   name        = "${var.bucket_name}_${var.username}-policy"
   description = "${var.bucket_name} allows writes"
-  policy      = "${data.aws_iam_policy_document.readwrite_policy.json}"
+  policy      = data.aws_iam_policy_document.readwrite_policy.json
 }
 
 resource "aws_iam_user" "iam_user" {
-  name = "${var.username}"
+  name = var.username
 }
 
 resource "aws_iam_policy_attachment" "iam_policy_attachment" {
   name       = "${var.bucket_name}_${var.username}_attachment_policy"
   users      = ["${aws_iam_user.iam_user.name}"]
-  policy_arn = "${aws_iam_policy.readwrite_policy.arn}"
+  policy_arn = aws_iam_policy.readwrite_policy.arn
 }
 
 # env_sync resources
 # -----------------------------------------------
 
 resource "aws_iam_user" "env_sync_staging" {
-  count = "${var.create_env_sync_resources}"
+  count = var.create_env_sync_resources
   name  = "govuk-mysql-xtrabackups-env-sync-to-staging"
 }
 
 resource "aws_iam_user" "env_sync_integration" {
-  count = "${var.create_env_sync_resources}"
+  count = var.create_env_sync_resources
   name  = "govuk-mysql-xtrabackups-env-sync-to-integration"
 }
 
 resource "aws_iam_policy" "env_sync_policy" {
-  count       = "${var.create_env_sync_resources}"
+  count       = var.create_env_sync_resources
   name        = "govuk-mysql-xtrabackups_env-sync-policy"
   description = "Allows read-only access to Production bucket for environment sync"
 
@@ -154,7 +154,7 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "env_sync_policy_attachment" {
-  count = "${var.create_env_sync_resources}"
+  count = var.create_env_sync_resources
   name  = "env_sync_policy_attachment"
 
   users = [
@@ -162,5 +162,5 @@ resource "aws_iam_policy_attachment" "env_sync_policy_attachment" {
     "${aws_iam_user.env_sync_integration.name}",
   ]
 
-  policy_arn = "${aws_iam_policy.env_sync_policy.arn}"
+  policy_arn = aws_iam_policy.env_sync_policy.arn
 }

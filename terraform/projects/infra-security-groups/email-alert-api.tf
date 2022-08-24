@@ -16,7 +16,7 @@
 #
 resource "aws_security_group" "email-alert-api" {
   name        = "${var.stackname}_email-alert-api_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the email-alert-api host from its ELB"
 
   tags {
@@ -31,10 +31,10 @@ resource "aws_security_group_rule" "email-alert-api_ingress_email-alert-api-elb-
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.email-alert-api.id}"
+  security_group_id = aws_security_group.email-alert-api.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.email-alert-api_elb_internal.id}"
+  source_security_group_id = aws_security_group.email-alert-api_elb_internal.id
 }
 
 resource "aws_security_group_rule" "email-alert-api_ingress_email-alert-api-elb-external_http" {
@@ -44,15 +44,15 @@ resource "aws_security_group_rule" "email-alert-api_ingress_email-alert-api-elb-
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.email-alert-api.id}"
+  security_group_id = aws_security_group.email-alert-api.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.email-alert-api_elb_external.id}"
+  source_security_group_id = aws_security_group.email-alert-api_elb_external.id
 }
 
 resource "aws_security_group" "email-alert-api_elb_internal" {
   name        = "${var.stackname}_email-alert-api_elb_internal_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the email-alert-api ELB"
 
   tags {
@@ -68,10 +68,10 @@ resource "aws_security_group_rule" "email-alert-api-elb-internal_ingress_managem
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.email-alert-api_elb_internal.id}"
+  security_group_id = aws_security_group.email-alert-api_elb_internal.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.management.id}"
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "email-alert-api-elb-internal_egress_any_any" {
@@ -80,12 +80,12 @@ resource "aws_security_group_rule" "email-alert-api-elb-internal_egress_any_any"
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.email-alert-api_elb_internal.id}"
+  security_group_id = aws_security_group.email-alert-api_elb_internal.id
 }
 
 resource "aws_security_group" "email-alert-api_elb_external" {
   name        = "${var.stackname}_email-alert-api_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the email-alert-api ELB"
 
   tags {
@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "email-alert-api-elb-external_ingress_any_htt
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.email-alert-api_elb_external.id}"
+  security_group_id = aws_security_group.email-alert-api_elb_external.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
@@ -110,13 +110,13 @@ resource "aws_security_group_rule" "email-alert-api-elb-external_egress_any_any"
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.email-alert-api_elb_external.id}"
+  security_group_id = aws_security_group.email-alert-api_elb_external.id
 }
 
 resource "aws_security_group" "email-alert-api_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_email-alert-api_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -125,11 +125,11 @@ resource "aws_security_group" "email-alert-api_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_email-alert-api_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.email-alert-api_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.email-alert-api_ithc_access.id
 }

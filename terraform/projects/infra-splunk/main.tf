@@ -5,7 +5,7 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
@@ -13,12 +13,12 @@ variable "aws_region" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "1.2.8"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
@@ -44,7 +44,7 @@ EOF
 
 resource "aws_iam_role_policy" "splunk_aws_ro_policy" {
   name = "policy"
-  role = "${aws_iam_role.splunk_aws_ro_role.id}"
+  role = aws_iam_role.splunk_aws_ro_role.id
 
   policy = <<EOF
 {

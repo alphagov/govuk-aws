@@ -11,7 +11,7 @@
 #
 resource "aws_security_group" "asset-master" {
   name        = "${var.stackname}_asset-master_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Security group for asset-master"
 
   tags {
@@ -21,7 +21,7 @@ resource "aws_security_group" "asset-master" {
 
 resource "aws_security_group" "asset-master-efs" {
   name        = "${var.stackname}_asset-master-efs_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Security group for asset-master EFS share"
 
   tags {
@@ -37,10 +37,10 @@ resource "aws_security_group_rule" "asset-master-efs_ingress_asset-master_nfs" {
   protocol  = "all"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.asset-master-efs.id}"
+  security_group_id = aws_security_group.asset-master-efs.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.asset-master.id}"
+  source_security_group_id = aws_security_group.asset-master.id
 }
 
 # Allow both TCP and UDP for NFS
@@ -51,10 +51,10 @@ resource "aws_security_group_rule" "asset-master-efs_ingress_backend_nfs" {
   protocol  = "all"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.asset-master-efs.id}"
+  security_group_id = aws_security_group.asset-master-efs.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.backend.id}"
+  source_security_group_id = aws_security_group.backend.id
 }
 
 # Allow both TCP and UDP for NFS
@@ -65,8 +65,8 @@ resource "aws_security_group_rule" "asset-master-efs_ingress_whitehall-backend_n
   protocol  = "all"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.asset-master-efs.id}"
+  security_group_id = aws_security_group.asset-master-efs.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.whitehall-backend.id}"
+  source_security_group_id = aws_security_group.whitehall-backend.id
 }

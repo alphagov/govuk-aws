@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "whitehall-frontend" {
   name        = "${var.stackname}_whitehall-frontend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the whitehall-frontend host from its ELB"
 
   tags {
@@ -28,10 +28,10 @@ resource "aws_security_group_rule" "whitehall-frontend_ingress_whitehall-fronten
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.whitehall-frontend.id}"
+  security_group_id = aws_security_group.whitehall-frontend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.whitehall-frontend_elb.id}"
+  source_security_group_id = aws_security_group.whitehall-frontend_elb.id
 }
 
 resource "aws_security_group_rule" "whitehall-frontend_ingress_whitehall-frontend-external-elb_http" {
@@ -41,15 +41,15 @@ resource "aws_security_group_rule" "whitehall-frontend_ingress_whitehall-fronten
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.whitehall-frontend.id}"
+  security_group_id = aws_security_group.whitehall-frontend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.whitehall-frontend_external_elb.id}"
+  source_security_group_id = aws_security_group.whitehall-frontend_external_elb.id
 }
 
 resource "aws_security_group" "whitehall-frontend_elb" {
   name        = "${var.stackname}_whitehall-frontend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the whitehall-frontend ELB"
 
   tags {
@@ -64,8 +64,8 @@ resource "aws_security_group_rule" "whitehall-frontend-elb_ingress_management_44
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.whitehall-frontend_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.whitehall-frontend_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "whitehall-frontend-elb_egress_any_any" {
@@ -74,7 +74,7 @@ resource "aws_security_group_rule" "whitehall-frontend-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.whitehall-frontend_elb.id}"
+  security_group_id = aws_security_group.whitehall-frontend_elb.id
 }
 
 # whitehall-frontend-external-elb exists only to serve Worldwide API to apps in
@@ -82,7 +82,7 @@ resource "aws_security_group_rule" "whitehall-frontend-elb_egress_any_any" {
 # Router app to the internal-facing whitehall-frontend-internal-elb.)
 resource "aws_security_group" "whitehall-frontend_external_elb" {
   name        = "${var.stackname}_whitehall-frontend_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the whitehall-frontend external ELB, for Worldwide API clients in Carrenza."
 
   tags {
@@ -95,7 +95,7 @@ resource "aws_security_group_rule" "whitehall-frontend-external-elb_ingress_publ
   to_port           = 443
   from_port         = 443
   protocol          = "tcp"
-  security_group_id = "${aws_security_group.whitehall-frontend_external_elb.id}"
+  security_group_id = aws_security_group.whitehall-frontend_external_elb.id
   cidr_blocks       = ["${var.carrenza_env_ips}", "${var.office_ips}"]
 }
 
@@ -105,13 +105,13 @@ resource "aws_security_group_rule" "whitehall-frontend-external-elb_egress_any_a
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.whitehall-frontend_external_elb.id}"
+  security_group_id = aws_security_group.whitehall-frontend_external_elb.id
 }
 
 resource "aws_security_group" "whitehall-frontend_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_whitehall-frontend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -120,11 +120,11 @@ resource "aws_security_group" "whitehall-frontend_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_whitehall-frontend_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.whitehall-frontend_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.whitehall-frontend_ithc_access.id
 }

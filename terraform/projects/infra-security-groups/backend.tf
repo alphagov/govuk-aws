@@ -14,7 +14,7 @@
 
 resource "aws_security_group" "backend" {
   name        = "${var.stackname}_backend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access to the backend host from its ELB"
 
   tags {
@@ -29,10 +29,10 @@ resource "aws_security_group_rule" "backend_ingress_backend-elb-internal_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend.id}"
+  security_group_id = aws_security_group.backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.backend_elb_internal.id}"
+  source_security_group_id = aws_security_group.backend_elb_internal.id
 }
 
 resource "aws_security_group_rule" "backend_ingress_backend-elb-external_http" {
@@ -42,10 +42,10 @@ resource "aws_security_group_rule" "backend_ingress_backend-elb-external_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend.id}"
+  security_group_id = aws_security_group.backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.backend_elb_external.id}"
+  source_security_group_id = aws_security_group.backend_elb_external.id
 }
 
 resource "aws_security_group_rule" "support-api_ingress_elb_external_http" {
@@ -55,10 +55,10 @@ resource "aws_security_group_rule" "support-api_ingress_elb_external_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend.id}"
+  security_group_id = aws_security_group.backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.support-api_external_elb.id}"
+  source_security_group_id = aws_security_group.support-api_external_elb.id
 }
 
 resource "aws_security_group_rule" "sidekiq-monitoring_ingress_elb_external_http" {
@@ -68,15 +68,15 @@ resource "aws_security_group_rule" "sidekiq-monitoring_ingress_elb_external_http
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend.id}"
+  security_group_id = aws_security_group.backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.sidekiq-monitoring_external_elb.id}"
+  source_security_group_id = aws_security_group.sidekiq-monitoring_external_elb.id
 }
 
 resource "aws_security_group" "backend_elb_internal" {
   name        = "${var.stackname}_backend_elb_internal_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the backend ELB"
 
   tags {
@@ -91,13 +91,13 @@ resource "aws_security_group_rule" "backend-elb-internal_ingress_management_http
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.backend_elb_internal.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.backend_elb_internal.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group" "backend_elb_external" {
   name        = "${var.stackname}_backend_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Access the backend ELB"
 
   tags {
@@ -112,7 +112,7 @@ resource "aws_security_group_rule" "backend-elb-external_ingress_public_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.backend_elb_external.id}"
+  security_group_id = aws_security_group.backend_elb_external.id
   cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
 }
 
@@ -122,7 +122,7 @@ resource "aws_security_group_rule" "backend-elb-internal_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.backend_elb_internal.id}"
+  security_group_id = aws_security_group.backend_elb_internal.id
 }
 
 resource "aws_security_group_rule" "backend-elb-external_egress_any_any" {
@@ -131,13 +131,13 @@ resource "aws_security_group_rule" "backend-elb-external_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.backend_elb_external.id}"
+  security_group_id = aws_security_group.backend_elb_external.id
 }
 
 resource "aws_security_group" "backend_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_backend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.vpc_id
   description = "Control access to ITHC SSH"
 
   tags {
@@ -146,21 +146,21 @@ resource "aws_security_group" "backend_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_backend_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.backend_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.backend_ithc_access.id
 }
 
 resource "aws_security_group_rule" "ithc_ingress_backend_https" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 443
   from_port         = 443
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.backend_ithc_access.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.backend_ithc_access.id
 }
