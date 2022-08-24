@@ -450,7 +450,7 @@ resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
     device_name = "/dev/sda1"
 
     ebs {
-      volume_size = 32
+      volume_size = 64
     }
   }
 
