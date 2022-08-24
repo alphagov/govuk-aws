@@ -63,7 +63,7 @@ variable "redis_parameter_group_name" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.13.6"
+  required_version = "1.2.8"
 }
 
 provider "aws" {

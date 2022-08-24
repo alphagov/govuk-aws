@@ -63,7 +63,7 @@ variable "create_env_sync_resources" {
 
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.15"
+  required_version = "1.2.8"
 }
 
 resource "aws_s3_bucket" "bucket" {

@@ -40,7 +40,7 @@ variable "aws_replica_region" {
 
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.15"
+  required_version = "1.2.8"
 }
 
 provider "aws" {

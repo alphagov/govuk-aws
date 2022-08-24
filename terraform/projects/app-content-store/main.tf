@@ -76,7 +76,7 @@ variable "instance_type" {
 # --------------------------------------------------------------
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.15"
+  required_version = "1.2.8"
 }
 
 data "aws_route53_zone" "internal" {

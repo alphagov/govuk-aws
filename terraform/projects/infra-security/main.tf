@@ -102,7 +102,7 @@ variable "office_ips" {
 
 terraform {
   backend "s3" {}
-  required_version = "~> 1.1"
+  required_version = "1.2.8"
 
   required_providers {
     aws = {
