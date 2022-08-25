@@ -207,7 +207,7 @@ data "aws_ami" "node_ami_ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477", "898082745236"]
+  owners = ["099720109477", "898082745236", "696911096973"]
 }
 
 resource "aws_iam_role" "node_iam_role" {
