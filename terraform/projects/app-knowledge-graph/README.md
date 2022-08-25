@@ -49,7 +49,7 @@ No modules.
 | [aws_route53_record.knowledge_graph_service_record_external](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.data_infrastructure_bucket](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/resources/s3_bucket) | resource |
 | [aws_acm_certificate.elb_external_cert](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/acm_certificate) | data source |
-| [aws_ami.neo4j_community_ami](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/ami) | data source |
+| [aws_ami.ubuntu_server_22](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/ami) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.knowledge-graph_read_ssm_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.knowledge-graph_register_instance_with_elb_policy_document](https://registry.terraform.io/providers/hashicorp/aws/1.40.0/docs/data-sources/iam_policy_document) | data source |

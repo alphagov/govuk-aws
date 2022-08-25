@@ -101,18 +101,6 @@ resource "aws_s3_bucket" "data_infrastructure_bucket" {
   }
 }
 
-# The AWS image to use to host the knowledge graph
-# Here, a community AMI with neo4j 3 pre-installed
-
-data "aws_ami" "neo4j_community_ami" {
-  owners = ["679593333241"]
-
-  filter {
-    name   = "image-id"
-    values = ["ami-094ccb4dbb8650bdf"]
-  }
-}
-
 # Give our knowledge graph a URL with certificate
 
 data "aws_route53_zone" "external" {
@@ -267,11 +255,22 @@ data "template_file" "knowledge-graph_userdata" {
   }
 }
 
+# The AWS image to use to host the knowledge graph
+# Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
+data "aws_ami" "ubuntu_server_22" {
+  owners = ["099720109477"]
+
+  filter {
+    name   = "image-id"
+    values = ["ami-0d75513e7706cf2d9"]
+  }
+}
+
 # Definition of the instance the Knowledge Graph launch template creates when instructed
 # by the auto-scaling group below
 resource "aws_launch_template" "knowledge-graph_launch_template" {
   name     = "knowledge-graph_launch-template"
-  image_id = "${data.aws_ami.neo4j_community_ami.id}"
+  image_id = "${data.aws_ami.ubuntu_server_22.id}"
 
   instance_type = "r4.2xlarge"
 
@@ -427,7 +426,7 @@ data "template_file" "knowledge-graph-dev_userdata" {
 
 resource "aws_launch_template" "knowledge-graph-dev_launch_template" {
   name     = "knowledge-graph-dev_launch-template"
-  image_id = "${data.aws_ami.neo4j_community_ami.id}"
+  image_id = "${data.aws_ami.ubuntu_server_22.id}"
 
   instance_type = "r4.2xlarge"
 
