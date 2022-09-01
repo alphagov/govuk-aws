@@ -49,3 +49,8 @@ variable "cache_public_base_rate_limit" {
   type        = number
   description = "Number of requests to allow in a 5 minute period before rate limiting is applied."
 }
+
+variable "traffic_replay_ips" {
+  type        = list(string)
+  description = "An array of CIDR blocks that will replay traffic against an environment"
+}
