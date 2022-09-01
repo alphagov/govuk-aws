@@ -24,9 +24,9 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "x-always-block-rule-group"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = true
     }
   }
 
@@ -53,9 +53,9 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "govuk-infra-cache-requests"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = true
     }
   }
 
@@ -87,9 +87,9 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "fastly-healthcheck-requests"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = true
     }
   }
 
