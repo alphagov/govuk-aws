@@ -533,3 +533,7 @@ output "sg_data-science-data_id" {
 output "sg_accessibility-reports_id" {
   value = "${aws_security_group.accessibility-reports.id}"
 }
+
+output "office_ips" {
+  value = "${var.office_ips}"
+}
