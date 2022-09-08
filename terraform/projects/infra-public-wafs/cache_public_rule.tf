@@ -24,9 +24,9 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "x-always-block-rule-group"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = true
     }
   }
 
@@ -42,7 +42,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
 
     statement {
       ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.nat_gateway_ips.arn
+        arn = aws_wafv2_ip_set.govuk_requesting_ips.arn
 
         ip_set_forwarded_ip_config {
           fallback_behavior = "NO_MATCH"
@@ -53,9 +53,9 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "govuk-infra-cache-requests"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = true
     }
   }
 
@@ -87,9 +87,9 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
 
     visibility_config {
-      cloudwatch_metrics_enabled = false
+      cloudwatch_metrics_enabled = true
       metric_name                = "fastly-healthcheck-requests"
-      sampled_requests_enabled   = false
+      sampled_requests_enabled   = true
     }
   }
 
@@ -131,12 +131,26 @@ resource "aws_wafv2_web_acl" "cache_public" {
   }
 }
 
+# Can be deleted once the new set has been associated with the rule and applied
 resource "aws_wafv2_ip_set" "nat_gateway_ips" {
   name               = "nat_gateway_ips"
   description        = "The IP addresses used by our infra to talk to the public internet."
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = formatlist("%s/32", data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list)
+}
+
+locals {
+  # formatting into a CIDR block as expected by the aws_wafv2_ip_set below
+  nat_gateway_ips = formatlist("%s/32", data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list)
+}
+
+resource "aws_wafv2_ip_set" "govuk_requesting_ips" {
+  name               = "govuk_requesting_ips"
+  description        = "The IP addresses used by our infra to make requests that hit the cache LB."
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = concat(var.traffic_replay_ips, local.nat_gateway_ips)
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "public_cache_web_acl_logging" {
