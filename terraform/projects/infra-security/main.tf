@@ -400,6 +400,61 @@ resource "aws_iam_role_policy_attachment" "shield-response-team-access" {
   policy_arn = aws_iam_policy.shield-response-team-access.arn
 }
 
+data "aws_iam_policy_document" "google_s3_mirror" {
+  count = var.aws_environment == "integration" ? 1 : 0
+
+  statement {
+    sid = "GoogleReadBucket"
+
+    actions = [
+      "s3:Get*",
+      "s3:List*",
+    ]
+
+    # Need access to the top level of the tree.
+    resources = [
+      "arn:aws:s3:::govuk-integration-database-backups",
+      "arn:aws:s3:::govuk-integration-database-backups/*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "google-s3-mirror" {
+  count       = var.aws_environment == "integration" ? 1 : 0
+  name        = "google-s3-mirror"
+  description = "Allows a Google Cloud Platform project to mirror S3 buckets."
+  policy      = data.aws_iam_policy_document.google_s3_mirror[0].json
+}
+
+resource "aws_iam_role" "google-s3-mirror" {
+  count = var.aws_environment == "integration" ? 1 : 0
+  name  = "google-s3-mirror"
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "accounts.google.com"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "accounts.google.com:sub" : "107768730699967087212"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "google-s3-mirror-access" {
+  count      = var.aws_environment == "integration" ? 1 : 0
+  role       = aws_iam_role.google-s3-mirror[0].name
+  policy_arn = aws_iam_policy.google-s3-mirror[0].arn
+}
+
 # SOPS KMS key
 
 data "aws_iam_policy_document" "kms_sops_policy" {
