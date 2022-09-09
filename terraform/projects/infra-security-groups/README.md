@@ -607,6 +607,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_office_ips"></a> [office\_ips](#output\_office\_ips) | n/a |
 | <a name="output_sg_accessibility-reports_id"></a> [sg\_accessibility-reports\_id](#output\_sg\_accessibility-reports\_id) | n/a |
 | <a name="output_sg_account_elb_external_id"></a> [sg\_account\_elb\_external\_id](#output\_sg\_account\_elb\_external\_id) | n/a |
 | <a name="output_sg_account_elb_internal_id"></a> [sg\_account\_elb\_internal\_id](#output\_sg\_account\_elb\_internal\_id) | n/a |
