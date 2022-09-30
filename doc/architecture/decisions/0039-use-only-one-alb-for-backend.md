@@ -10,6 +10,7 @@ Accepted
 
 This is the initial infrastructure that was planned for backend in AWS:
 
+```
  +-----+                  +-----+
  |     |                  |     |
  | ALB |                  | ALB |
@@ -29,6 +30,7 @@ This is the initial infrastructure that was planned for backend in AWS:
 |  ASG                             |
 |                                  |
 +----------------------------------+
+```
 
 Three backend servers are part of an autoscaling group.
 External traffic is coming through an ALB with a public IP.
@@ -43,6 +45,7 @@ AWS has a hard limit of 50 target groups per ASG.
 
 In order to get the total number of target groups under the limit of 50, we use only one ALB.
 
+```
      +--------+
      |        |
      |  ALB   |
@@ -62,6 +65,7 @@ In order to get the total number of target groups under the limit of 50, we use 
 |  ASG                             |
 |                                  |
 +----------------------------------+
+```
 
 This way we only need one target group per app to be associated to the ASG, which is under the limit of 50.
 
