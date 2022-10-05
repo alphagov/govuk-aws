@@ -368,7 +368,15 @@ resource "aws_elb" "knowledge-graph_elb_external" {
     lb_protocol       = "tcp"
   }
 
-  # Neo4j brower UI
+  # Neo4j http API
+  listener {
+    instance_port     = 7474
+    instance_protocol = "http"
+    lb_port           = 7474
+    lb_protocol       = "http"
+  }
+
+  # Neo4j browser UI
   listener {
     instance_port      = 7473
     instance_protocol  = "https"
