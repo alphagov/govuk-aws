@@ -81,7 +81,7 @@ resource "aws_ebs_volume" "mirrorer" {
   availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.mirrorer_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.mirrorer_ebs_size}"
-  type              = "gp2"
+  type              = "gp3"
 
   tags {
     Name            = "${var.stackname}-mirrorer"
