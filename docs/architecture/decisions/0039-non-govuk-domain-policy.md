@@ -13,7 +13,6 @@ This proposal uses the [RFC2119](https://www.ietf.org/rfc/rfc2119.txt) standard 
 Definitions:
 
 - "Authenticated": through an authentication method such as Signon, through [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), or similar
-- "Privately Routable": not routable over public internet. Requires being on a VPN or similar.
 - "Non-GOV.UK domain": a domain that does not end in `gov.uk`, such as `govuk.digital` or `govuk-internal.digital`. Note that `assets.publishing.service.gov.uk` is considered a GOV.UK domain.
 
 ## Context
@@ -29,7 +28,7 @@ At best, this would be an inconvenience, perhaps making it difficult to access i
 
 ## Proposal
 
-Any web page that lives on a Non-GOV.UK domain, and that is designed to look like a page or service on GOV.UK, MUST either be Authenticated or Privately Routable.
+Any web page that lives on a Non-GOV.UK domain, and that is designed to look like a page or service on GOV.UK, MUST either be Authenticated or Unavailable to the Public Internet.
 
 Additionally, the serving of any GOV.UK web page or assets MUST NOT use a Non-GOV.UK domain in any publicly detectable part of the request. Some examples of things to avoid:
 
@@ -40,7 +39,11 @@ To be clear, a Non-GOV.UK domain MAY be used in serving GOV.UK pages or assets, 
 
 ## Consequences
 
-The Signon EKS domain on Integration is currently in violation of this proposal, and MUST either be made Authenticated, Privately Routable, or else moved to a GOV.UK domain.
+A number of Signon domains are currently in violation of this proposal. They MUST either be made Authenticated, Unavailable to the Public Internet, or else moved to a GOV.UK domain.
+
+- https://signon.integration.govuk.digital/
+- https://signon.staging.govuk.digital/
+- https://signon.production.govuk.digital/
 
 We should consider what automated tests can be written to enforce this proposal GOV.UK-wide, e.g. in Smokey.
 
