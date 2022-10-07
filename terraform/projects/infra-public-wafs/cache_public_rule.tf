@@ -153,7 +153,41 @@ resource "aws_wafv2_ip_set" "govuk_requesting_ips" {
   addresses          = concat(var.traffic_replay_ips, local.nat_gateway_ips)
 }
 
-resource "aws_wafv2_web_acl_logging_configuration" "public_cache_web_acl_logging" {
-  log_destination_configs = [data.terraform_remote_state.infra_public_services.outputs.kinesis_firehose_splunk_arn]
+resource "aws_cloudwatch_log_group" "public_cache_waf" {
+  # the name must start with aws-waf-logs
+  # https://docs.aws.amazon.com/waf/latest/developerguide/logging-cw-logs.html#logging-cw-logs-naming
+  name              = "aws-waf-logs-cache-public-${var.aws_environment}"
+  retention_in_days = var.waf_log_retention_days
+
+  tags = {
+    Project       = var.stackname
+    aws_stackname = var.stackname
+  }
+}
+
+resource "aws_wafv2_web_acl_logging_configuration" "public_cache_waf" {
+  log_destination_configs = [aws_cloudwatch_log_group.public_cache_waf.arn]
   resource_arn            = aws_wafv2_web_acl.cache_public.arn
+
+  logging_filter {
+    default_behavior = "DROP"
+
+    filter {
+      behavior = "KEEP"
+
+      condition {
+        action_condition {
+          action = "COUNT"
+        }
+      }
+
+      condition {
+        action_condition {
+          action = "BLOCK"
+        }
+      }
+
+      requirement = "MEETS_ANY"
+    }
+  }
 }
