@@ -1,10 +1,10 @@
 # 39. Non-GOV.UK domain policy
 
-Date: 2022-10-07
+Date: 2022-10-10
 
 ## Status
 
-Proposed
+Accepted
 
 ## Definitions
 
