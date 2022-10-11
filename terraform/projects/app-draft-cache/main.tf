@@ -311,6 +311,20 @@ module "alarms-elb-draft-cache-external" {
   healthyhostcount_threshold     = "0"
 }
 
+data "aws_security_group" "authenticating-proxy-rds" {
+  name = "${var.stackname}_authenticating-proxy_rds_access"
+}
+
+resource "aws_security_group_rule" "authenticating-proxy-rds_ingress_draft_cache_postgres" {
+  type      = "ingress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  security_group_id        = "${data.aws_security_group.authenticating-proxy-rds.0.id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_draft-cache_id}"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
