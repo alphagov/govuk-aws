@@ -20,6 +20,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_log_group.public_cache_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_shield_protection.account_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
 | [aws_shield_protection.backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
 | [aws_shield_protection.bouncer_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
@@ -57,7 +58,7 @@ No modules.
 | [aws_wafv2_web_acl_association.sidekiq_monitoring_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_association.whitehall_backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_logging_configuration.default_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
-| [aws_wafv2_web_acl_logging_configuration.public_cache_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
+| [aws_wafv2_web_acl_logging_configuration.public_cache_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [terraform_remote_state.infra_database_backups_bucket](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
@@ -84,6 +85,7 @@ No modules.
 | <a name="input_remote_state_infra_vpc_key_stack"></a> [remote\_state\_infra\_vpc\_key\_stack](#input\_remote\_state\_infra\_vpc\_key\_stack) | Override path to infra\_vpc remote state | `string` | `""` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | `"govuk"` | no |
 | <a name="input_traffic_replay_ips"></a> [traffic\_replay\_ips](#input\_traffic\_replay\_ips) | An array of CIDR blocks that will replay traffic against an environment | `list(string)` | n/a | yes |
+| <a name="input_waf_log_retention_days"></a> [waf\_log\_retention\_days](#input\_waf\_log\_retention\_days) | The number of days CloudWatch will retain WAF logs for. | `string` | `"30"` | no |
 
 ## Outputs
 

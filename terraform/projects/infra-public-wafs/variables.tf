@@ -54,3 +54,9 @@ variable "traffic_replay_ips" {
   type        = list(string)
   description = "An array of CIDR blocks that will replay traffic against an environment"
 }
+
+variable "waf_log_retention_days" {
+  type        = string
+  description = "The number of days CloudWatch will retain WAF logs for."
+  default     = "30"
+}
