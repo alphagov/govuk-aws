@@ -128,8 +128,6 @@ This project adds global resources for app components:
 | [aws_route53_record.licensify_frontend_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.locations_api_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.locations_api_public_service_cnames](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mapit_cache_name](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
-| [aws_route53_record.mapit_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.mongo_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.monitoring_internal_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.monitoring_public_service_names](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/resources/route53_record) | resource |
@@ -164,10 +162,6 @@ This project adds global resources for app components:
 | [aws_autoscaling_groups.jumpbox](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.licensify_backend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.licensify_frontend](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-1](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-2](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-3](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
-| [aws_autoscaling_groups.mapit-4](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.prometheus](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
 | [aws_autoscaling_groups.search](https://registry.terraform.io/providers/hashicorp/aws/2.69.0/docs/data-sources/autoscaling_groups) | data source |
@@ -255,7 +249,6 @@ This project adds global resources for app components:
 | <a name="input_licensify_frontend_public_service_names"></a> [licensify\_frontend\_public\_service\_names](#input\_licensify\_frontend\_public\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_locations_api_internal_service_names"></a> [locations\_api\_internal\_service\_names](#input\_locations\_api\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_locations_api_public_service_cnames"></a> [locations\_api\_public\_service\_cnames](#input\_locations\_api\_public\_service\_cnames) | n/a | `list` | `[]` | no |
-| <a name="input_mapit_internal_service_names"></a> [mapit\_internal\_service\_names](#input\_mapit\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_mongo_internal_service_names"></a> [mongo\_internal\_service\_names](#input\_mongo\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_monitoring_internal_service_names"></a> [monitoring\_internal\_service\_names](#input\_monitoring\_internal\_service\_names) | n/a | `list` | `[]` | no |
 | <a name="input_monitoring_internal_service_names_cname_dest"></a> [monitoring\_internal\_service\_names\_cname\_dest](#input\_monitoring\_internal\_service\_names\_cname\_dest) | This variable specifies the CNAME record destination to be associated with the service names defined in monitoring\_internal\_service\_names | `string` | `"alert"` | no |

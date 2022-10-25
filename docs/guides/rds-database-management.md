@@ -4,10 +4,7 @@ We're using [Amazon Relational Database Service (RDS)](https://aws.amazon.com/rd
 
 Please see the [related ADR](https://github.com/alphagov/govuk-aws/blob/master/docs/architecture/decisions/0018-use-rds-instead-of-provisioned-ec2-databases.md) for context on this decision.
 
-There are two exceptions to this:
-
-  - PuppetDB is using a local PostgreSQL instance
-  - Mapit uses a local PostgreSQL on each instance
+PuppetDB is the one exception to this (it is using a local PostgreSQL instance)
 
 ## Administering RDS databases
 
