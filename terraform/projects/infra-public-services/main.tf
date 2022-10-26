@@ -391,11 +391,6 @@ variable "prometheus_internal_service_names" {
   default = []
 }
 
-variable "mapit_internal_service_names" {
-  type    = "list"
-  default = []
-}
-
 variable "mongo_internal_service_names" {
   type    = "list"
   default = []
@@ -1757,75 +1752,6 @@ resource "aws_autoscaling_attachment" "licensify_backend_asg_attachment_alb" {
   count                  = "${length(data.aws_autoscaling_groups.licensify_backend.names) > 0 ? 1 : 0}"
   autoscaling_group_name = "${element(data.aws_autoscaling_groups.licensify_backend.names, 0)}"
   alb_target_group_arn   = "${element(module.licensify_backend_public_lb.target_group_arns, 0)}"
-}
-
-#
-# Mapit
-#
-
-data "aws_autoscaling_groups" "mapit-1" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-mapit-1"]
-  }
-}
-
-data "aws_autoscaling_groups" "mapit-2" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-mapit-2"]
-  }
-}
-
-data "aws_autoscaling_groups" "mapit-3" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-mapit-3"]
-  }
-}
-
-data "aws_autoscaling_groups" "mapit-4" {
-  filter {
-    name   = "key"
-    values = ["Name"]
-  }
-
-  filter {
-    name   = "value"
-    values = ["blue-mapit-4"]
-  }
-}
-
-resource "aws_route53_record" "mapit_cache_name" {
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "mapit-memcached.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["mapit-memcached.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
-}
-
-resource "aws_route53_record" "mapit_internal_service_names" {
-  count   = "${length(var.mapit_internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.mapit_internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
-  type    = "CNAME"
-  records = ["${element(var.mapit_internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
-  ttl     = "300"
 }
 
 #

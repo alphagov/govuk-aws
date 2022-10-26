@@ -358,22 +358,6 @@ output "sg_locations-api_internal_lb_id" {
   value = "${aws_security_group.locations-api_internal_lb.id}"
 }
 
-output "sg_mapit_id" {
-  value = "${aws_security_group.mapit.id}"
-}
-
-output "sg_mapit_cache_id" {
-  value = "${aws_security_group.mapit_cache.id}"
-}
-
-output "sg_mapit_carrenza_alb_id" {
-  value = "${aws_security_group.mapit_carrenza_alb.id}"
-}
-
-output "sg_mapit_elb_id" {
-  value = "${aws_security_group.mapit_elb.id}"
-}
-
 output "sg_management_id" {
   value = "${aws_security_group.management.id}"
 }

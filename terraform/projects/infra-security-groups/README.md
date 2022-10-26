@@ -137,10 +137,6 @@ No modules.
 | [aws_security_group.locations-api_internal_lb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.locations_api_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.management](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mapit](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mapit_cache](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mapit_carrenza_alb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.mapit_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mirrorer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.mongo](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -413,7 +409,6 @@ No modules.
 | [aws_security_group_rule.ithc_ingress_licensify_backend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_licensify_frontend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_locations_api_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.ithc_ingress_mapit_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_publishing-api_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_router-backend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_search-api_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -469,13 +464,6 @@ No modules.
 | [aws_security_group_rule.management_ingress_monitoring_ping](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.management_ingress_prometheus_node_exporter](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.mangement_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit-carrenza-alb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit-carrenza-alb_ingress_443_carrenza](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit_ingress_mapit-carrenza-alb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit_ingress_mapit-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.mapit_ingress_mapit_cache_memcached](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.mongo_ingress_backend_mongo](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.mongo_ingress_calculators-frontend_mongo](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.mongo_ingress_content-store_mongo](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -701,10 +689,6 @@ No modules.
 | <a name="output_sg_locations-api_id"></a> [sg\_locations-api\_id](#output\_sg\_locations-api\_id) | n/a |
 | <a name="output_sg_locations-api_internal_lb_id"></a> [sg\_locations-api\_internal\_lb\_id](#output\_sg\_locations-api\_internal\_lb\_id) | n/a |
 | <a name="output_sg_management_id"></a> [sg\_management\_id](#output\_sg\_management\_id) | n/a |
-| <a name="output_sg_mapit_cache_id"></a> [sg\_mapit\_cache\_id](#output\_sg\_mapit\_cache\_id) | n/a |
-| <a name="output_sg_mapit_carrenza_alb_id"></a> [sg\_mapit\_carrenza\_alb\_id](#output\_sg\_mapit\_carrenza\_alb\_id) | n/a |
-| <a name="output_sg_mapit_elb_id"></a> [sg\_mapit\_elb\_id](#output\_sg\_mapit\_elb\_id) | n/a |
-| <a name="output_sg_mapit_id"></a> [sg\_mapit\_id](#output\_sg\_mapit\_id) | n/a |
 | <a name="output_sg_mirrorer_id"></a> [sg\_mirrorer\_id](#output\_sg\_mirrorer\_id) | n/a |
 | <a name="output_sg_mongo_id"></a> [sg\_mongo\_id](#output\_sg\_mongo\_id) | n/a |
 | <a name="output_sg_monitoring_external_elb_id"></a> [sg\_monitoring\_external\_elb\_id](#output\_sg\_monitoring\_external\_elb\_id) | n/a |
