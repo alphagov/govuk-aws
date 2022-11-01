@@ -5,6 +5,12 @@
 * subnets provided.
 */
 
+variable "shield_protection_enabled" {
+  type        = "string"
+  description = "Whether or not to enable AWS Shield. Terraform 0.11 doesn't have booleans, so representing as string."
+  default     = "true"
+}
+
 variable "subnet_ids" {
   type        = "list"
   description = "List of public subnet IDs where you want to create a NAT Gateway"
@@ -31,7 +37,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_shield_protection" "aws_eip" {
-  count        = "${length(aws_eip.nat.*.id)}"
+  count        = "${var.shield_protection_enabled ? length(aws_eip.nat.*.id) : 0}"
   name         = "${element(aws_eip.nat.*.id, count.index)}_shield"
   resource_arn = "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:eip-allocation/${element(aws_eip.nat.*.id, count.index)}"
 }

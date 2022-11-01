@@ -60,6 +60,7 @@ This module governs the creation of full network stacks.
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_vpc_key_stack"></a> [remote\_state\_infra\_vpc\_key\_stack](#input\_remote\_state\_infra\_vpc\_key\_stack) | Override infra\_vpc remote state path | `string` | `""` | no |
+| <a name="input_shield_protection_enabled"></a> [shield\_protection\_enabled](#input\_shield\_protection\_enabled) | Whether or not to enable AWS Shield. Terraform 0.11 doesn't have booleans, so representing as string. | `string` | `"true"` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
 
 ## Outputs
