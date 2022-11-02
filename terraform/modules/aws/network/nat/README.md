@@ -31,6 +31,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_shield_protection_enabled"></a> [shield\_protection\_enabled](#input\_shield\_protection\_enabled) | Whether or not to enable AWS Shield. Terraform 0.11 doesn't have booleans, so representing as string. | `string` | `"true"` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of public subnet IDs where you want to create a NAT Gateway | `list` | n/a | yes |
 | <a name="input_subnet_ids_length"></a> [subnet\_ids\_length](#input\_subnet\_ids\_length) | Length of subnet\_ids variable | `string` | n/a | yes |
 

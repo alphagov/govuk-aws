@@ -26,6 +26,12 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "shield_protection_enabled" {
+  type        = "string"
+  description = "Whether or not to enable AWS Shield. Terraform 0.11 doesn't have booleans, so representing as string."
+  default     = "true"
+}
+
 variable "stackname" {
   type        = "string"
   description = "Stackname"
@@ -151,9 +157,10 @@ module "infra_public_subnet" {
 }
 
 module "infra_nat" {
-  source            = "../../modules/aws/network/nat"
-  subnet_ids        = "${matchkeys(values(module.infra_public_subnet.subnet_names_ids_map), keys(module.infra_public_subnet.subnet_names_ids_map), var.public_subnet_nat_gateway_enable)}"
-  subnet_ids_length = "${length(var.public_subnet_nat_gateway_enable)}"
+  shield_protection_enabled = "${var.shield_protection_enabled}"
+  source                    = "../../modules/aws/network/nat"
+  subnet_ids                = "${matchkeys(values(module.infra_public_subnet.subnet_names_ids_map), keys(module.infra_public_subnet.subnet_names_ids_map), var.public_subnet_nat_gateway_enable)}"
+  subnet_ids_length         = "${length(var.public_subnet_nat_gateway_enable)}"
 }
 
 # Intermediate variables in Terraform are not supported.
