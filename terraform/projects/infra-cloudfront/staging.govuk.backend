@@ -1,0 +1,3 @@
+key     = "govuk/infra-cloudfront.tfstate"
+encrypt = true
+region  = "eu-west-1"
