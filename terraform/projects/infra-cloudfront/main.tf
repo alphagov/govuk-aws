@@ -5,7 +5,6 @@
 * 
 **/
 
-
 variable "aws_region" {
   type        = "string"
   description = "AWS region where the cloudfront distribution is located"
@@ -97,6 +96,10 @@ data "aws_acm_certificate" "www" {
 # --------------------------------------------------------------
 # Set up the backend for CloudFront 
 
+terraform {
+  backend          "s3"             {}
+  required_version = "= 0.11.15"
+}
 
 provider "aws" {
   region  = "${var.aws_region}"
@@ -125,10 +128,10 @@ resource "aws_s3_bucket" "govuk-cloudfront-logs" {
     aws_environment = "${var.aws_environment}"
   }
 
-  logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    target_prefix = "s3/govuk-${var.aws_environment}-govuk-cloudfront-logs/"
-  }
+  # logging {
+  #   target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  #   target_prefix = "s3/govuk-${var.aws_environment}-govuk-cloudfront-logs/"
+  # }
 
   versioning {
     enabled = true
@@ -153,7 +156,7 @@ resource "aws_s3_bucket" "govuk-cloudfront-logs" {
 
 
 #
-# CloudFront with Application Load Balancer as Origin 
+# CloudFront (ALB Origin)  
 #
 
 resource "aws_cloudfront_distribution" "govuk_cdn_distribution" { 
@@ -244,17 +247,9 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
   }
 }
 
-
-
-# Cache Behavior
+# Ordered Cache Behavior
 # --------------------------------------------------------------
 # 
-
-  viewer_protocol_policy = "redirect-to-https"
-  min_ttl                = 0
-  default_ttl            = 86400
-  max_ttl                = 31536000
-  }
 
   # Precedence 0
   ordered_cache_behavior {
@@ -324,8 +319,6 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
-
-
 
   # Precedence 3
   ordered_cache_behavior {
