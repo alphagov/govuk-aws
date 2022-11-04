@@ -156,12 +156,12 @@ resource "aws_s3_bucket" "govuk-cloudfront-logs" {
 # CloudFront with Application Load Balancer as Origin 
 #
 
-resource "aws_cloudfront_distribution" "wwww_cdn_distribution" { 
+resource "aws_cloudfront_distribution" "govuk_cdn_distribution" { 
   count = "${var.cloudfront_create}"
 
   origin {
-    domain_name = "${data.terraform_remote_state.infra_public_services.cache_public_lb_id}"  #${aws_lb}
-    origin_id   = "wwww_${var.aws_environment}_cdn"  
+    domain_name = "${aws_lb.cache_public_lb_id}.${var.aws_region}.elb.amazonaws.com"
+    origin_id   = "${var.aws_environment}_GOV.UK"  
 
     custom_origin_config {
       http_port = 80
@@ -169,12 +169,17 @@ resource "aws_cloudfront_distribution" "wwww_cdn_distribution" {
       origin_protocol_policy = "https-only"
       origin_ssl_protocols = ["TLSv1.2"]
     }
+  
+    # custom_header {
+    #   name  = "x-amzn-waf-cdn"
+    #   value = random_id.xxx.b64
+    # }
   }
 
   default_cache_behavior {
   allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
   cached_methods   = ["GET", "HEAD"]
-  target_origin_id = "${data.terraform_remote_state.infra_public_services.cache_public_lb_id}"         # "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
+  target_origin_id = "${var.aws_environment}_GOV.UK"
 
   forwarded_values {
     query_string = true
@@ -183,7 +188,7 @@ resource "aws_cloudfront_distribution" "wwww_cdn_distribution" {
       forward = "all"
     }
 
-    headers = ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"]
+    headers = ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"] //add "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" here potentially 
   }
 
   aliases = ["${var.cloudfront_www_distribution_aliases}"]
@@ -191,9 +196,11 @@ resource "aws_cloudfront_distribution" "wwww_cdn_distribution" {
 
   enabled             = "${var.cloudfront_enable}"
   is_ipv6_enabled     = true
-  comment             = "wwww_cdn_${var.aws_environment}_distribution" #change name 
+  web_acl_id          = ""
+  comment             = "${var.aws_environment}_GOV.UK" #change name 
   default_root_object = ""
 
+  price_class = "PriceClass_All"
 
   restrictions {
     geo_restriction {
@@ -208,11 +215,11 @@ resource "aws_cloudfront_distribution" "wwww_cdn_distribution" {
   # }
  
 
-  viewer_certificate {
-    acm_certificate_arn      = ""    # "${data.aws_acm_certificate.assets.arn}"
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.1_2016"
-  }
+  # viewer_certificate {
+  #   acm_certificate_arn      = "" # "${data.aws_acm_certificate.XXXXXXXXXXXX.arn}" #find the correct arn for .staging.publishing.service.gov.uk + might create resource first 
+  #   ssl_support_method       = "sni-only"
+  #   minimum_protocol_version = "TLSv1.1_2016"
+  # }
 
 
   tags = {
@@ -230,7 +237,7 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     }
   }
   headers_config {
-    header_behavior = "All_viewer_heards"
+    header_behavior = "All_viewer_headers"
   }
   query_strings_config {
     query_string_behavior = "All"
