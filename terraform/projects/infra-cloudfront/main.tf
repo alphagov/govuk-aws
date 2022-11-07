@@ -6,29 +6,29 @@
 **/
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region where the cloudfront distribution is located"
   default     = "eu-west-1"
 }
 
 variable "aws_replica_region" {
-  type        = "string"
+  type        = string
   description = "AWS region where replica s3 bucket is located"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "remote_state_bucket" {
-  type        = "string"
+  type        = string
   description = "S3 bucket we store our terraform state in"
 }
 
@@ -43,52 +43,29 @@ variable "cloudfront_enable" {
 }
 
 variable "cloudfront_www_certificate_domain" {
-  type        = "string"
+  type        = string
   description = "The domain of the WWW CloudFront certificate to look up."
   default     = ""
 }
 
 variable "cloudfront_www_distribution_aliases" {
-  type        = "list"
+  type        = list
   description = "Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution."
   default     = [".staging.govuk.digital"]
 }
-
-variable "lifecycle_main" {
-  type        = "string"
-  description = "Number of days for the lifecycle rule for the mirror"
-  default     = "5"
-}
-
-variable "lifecycle_government_uploads" {
-  type        = "string"
-  description = "Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/"
-  default     = "8"
-}
-
 
 
 # Data
 # --------------------------------------------------------------
 #  
 
-data "terraform_remote_state" "infra_vpc" {
-  backend = "s3"
 
-  config {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
-    region = "${var.aws_replica_region}"
-  }
-}
-
-data "aws_acm_certificate" "www" {
-  count = "${var.cloudfront_create}"
-
-  domain   = "${var.cloudfront_www_certificate_domain}"
-  statuses = ["ISSUED"]
-  provider = "aws.aws_cloudfront_certificate"
-}
+# data "aws_acm_certificate" "www" {
+#   count = "${var.cloudfront_create}"
+#   domain   = "${var.cloudfront_www_certificate_domain}"
+#   statuses = ["ISSUED"]
+#   provider = "aws.aws_cloudfront_certificate"
+# }
 
 
 
@@ -98,12 +75,12 @@ data "aws_acm_certificate" "www" {
 
 terraform {
   backend          "s3"             {}
-  required_version = "= 0.11.15"
+  required_version = "= 1.3.4"
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.46.0"
+  version = "4.38.0"
 }
  
 
@@ -118,39 +95,26 @@ provider "aws" {
 
 
 # - S3 Buckets for Logs 
-resource "aws_s3_bucket" "govuk-cloudfront-logs" {
-  bucket   = "govuk-${var.aws_environment}-cloudfront-logs"
-  region   = "${var.aws_replica_region}"
-  provider = "aws.aws_replica"
+# resource "aws_s3_bucket" "govuk-cloudfront-logs" {
+#   bucket   = "govuk-${var.aws_environment}-cloudfront-logs"
+#   region   = "${var.aws_replica_region}"
+#   provider = aws.aws_replica
 
-  tags {
-    Name            = "govuk-${var.aws_environment}-cloudfront-logs"
-    aws_environment = "${var.aws_environment}"
-  }
+#   tags {
+#     Name            = "govuk-${var.aws_environment}-cloudfront-logs"
+#     aws_environment = "${var.aws_environment}"
+#   }
 
-  # logging {
-  #   target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-  #   target_prefix = "s3/govuk-${var.aws_environment}-govuk-cloudfront-logs/"
+#   logging {
+#     target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+#     target_prefix = "s3/govuk-${var.aws_environment}-govuk-cloudfront-logs/"
+#   }
+
+  # versioning {
+  #   enabled = true
   # }
 
-  versioning {
-    enabled = true
-  }
-
-  lifecycle_rule {
-    id      = "main"
-    enabled = true
-
-    prefix = ""
-
-    noncurrent_version_expiration {
-      days = "${var.lifecycle_main}"
-    }
-  }
-
-
 # - WAF 
-
 
 
 
@@ -196,7 +160,6 @@ resource "aws_cloudfront_distribution" "govuk_cdn_distribution" {
 
   aliases = ["${var.cloudfront_www_distribution_aliases}"]
 
-
   enabled             = "${var.cloudfront_enable}"
   is_ipv6_enabled     = true
   web_acl_id          = ""
@@ -224,13 +187,10 @@ resource "aws_cloudfront_distribution" "govuk_cdn_distribution" {
   #   minimum_protocol_version = "TLSv1.1_2016"
   # }
 
-
   tags = {
     Project         = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
-
-
 
 resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
   name    = "AllViewerHeaderCookies"
@@ -256,7 +216,7 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     path_pattern     = "/assets/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = "govuk-cache-public"
+    target_origin_id = "${var.aws_environment}_GOV.UK" 
 
     forwarded_values {
       query_string = false
@@ -279,7 +239,7 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     path_pattern     = "*.png"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id =  
+    target_origin_id = "${var.aws_environment}_GOV.UK" 
 
     forwarded_values {
       query_string = false
@@ -302,7 +262,7 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     path_pattern     = "*.jpg"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id =    # "govuk-cache-public"
+    target_origin_id = "${var.aws_environment}_GOV.UK" 
 
     forwarded_values {
       query_string = false
@@ -325,7 +285,7 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     path_pattern     = "*.jpeg"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id =    # "govuk-cache-public"
+    target_origin_id = "${var.aws_environment}_GOV.UK" 
 
     forwarded_values {
       query_string = false
