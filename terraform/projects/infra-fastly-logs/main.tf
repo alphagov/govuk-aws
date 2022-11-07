@@ -802,7 +802,7 @@ resource "aws_lambda_function" "transition_executor" {
   function_name = "govuk-${var.aws_environment}-transition"
   role          = "${aws_iam_role.transition_executor.arn}"
   handler       = "main.lambda_handler"
-  runtime       = "python3.6"
+  runtime       = "python3.7"
 
   environment {
     variables = {
@@ -876,4 +876,131 @@ resource "aws_lambda_permission" "cloudwatch_transition_executor_daily_permissio
 output "logs_writer_bucket_policy_arn" {
   value       = "${aws_iam_policy.logs_writer.arn}"
   description = "ARN of the logs writer bucket policy"
+}
+
+# Configuration for download-logs-analytics lambda function that uploads 
+# fastly asset logs to Google analytics
+
+data "aws_s3_bucket" "govuk-analytics-logs-production" {
+  bucket = "govuk-analytics-logs-production"
+}
+
+# We require a user for download-logs-analytics to read from S3 buckets
+resource "aws_iam_user" "download_logs_analytics" {
+  name = "govuk-${var.aws_environment}-download-logs-analytics"
+}
+
+resource "aws_iam_policy" "download_logs_analytics" {
+  name   = "fastly-logs-${var.aws_environment}-download-logs-analytics-policy"
+  policy = "${data.template_file.download_logs_analytics_policy_template.rendered}"
+}
+
+resource "aws_iam_policy_attachment" "download_logs_analyticsr" {
+  name       = "download-logs-analytics-policy-attachment"
+  users      = ["${aws_iam_user.download_logs_analytics.name}"]
+  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+}
+
+data "template_file" "download_logs_analytics_policy_template" {
+  template = "${file("${path.module}/../../policies/download_logs_analytics_policy.tpl")}"
+
+  vars {
+    bucket_arn = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
+  }
+}
+
+# Packaging the Lambda
+data "aws_caller_identity" "current" {}
+
+resource "aws_ecr_repository" "repo" {
+  name = "analytics-logs-lambda-container"
+}
+
+resource "null_resource" "ecr_image" {
+  triggers = {
+    python_file = "${path.module}/../../lambda/DownloadLogsAnalytics/main.py"
+    docker_file = "${path.module}/../../lambda/DownloadLogsAnalytics/Dockerfile"
+  }
+
+  provisioner "local-exec" {
+    command = <<EOF
+      docker login -u AWS -p $(aws ecr get-login-password --region ${var.aws_region}) ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com
+      cd ${path.module}/../../lambda/DownloadLogsAnalytics/
+      docker build -t ${aws_ecr_repository.repo.repository_url}:latest .
+      docker push ${aws_ecr_repository.repo.repository_url}:latest
+    EOF
+  }
+}
+
+data "aws_ecr_image" "lambda_image" {
+  depends_on = ["null_resource.ecr_image"]
+
+  repository_name = "analytics-logs-lambda-container"
+  image_tag       = "latest"
+}
+
+resource "aws_lambda_function" "download_logs_analytics" {
+  function_name = "govuk-${var.aws_environment}-download_logs_analytics"
+  role          = "${aws_iam_role.download_logs_analytics.arn}"
+  depends_on    = ["null_resource.ecr_image"]
+  image_uri     = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
+  package_type  = "Image"
+
+  environment {
+    variables = {
+      BUCKET_NAME = "${data.aws_s3_bucket.govuk-analytics-logs-production.bucket}"
+    }
+  }
+}
+
+resource "aws_iam_role" "download_logs_analytics" {
+  name = "AWSLambdaRole-download-logs-analytics"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "download_logs_analytics" {
+  role       = "${aws_iam_role.download_logs_analytics.name}"
+  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+}
+
+data "aws_iam_policy_document" "download_logs_analytics" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = [
+      "arn:aws:logs:*:*:*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "download_logs_analytics" {
+  role   = "${aws_iam_role.download_logs_analytics.id}"
+  policy = "${data.aws_iam_policy_document.download_logs_analytics.json}"
+}
+
+resource "aws_lambda_permission" "allow_download_logs_analytics" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.download_logs_analytics.function_name}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
 }
