@@ -122,6 +122,30 @@ output "sg_ci-agent-5_id" {
   value = ["${aws_security_group.ci-agent-5.*.id}"]
 }
 
+output "sg_ci-agent-6_elb_id" {
+  value = ["${aws_security_group.ci-agent-6_elb.*.id}"]
+}
+
+output "sg_ci-agent-6_id" {
+  value = ["${aws_security_group.ci-agent-6.*.id}"]
+}
+
+output "sg_ci-agent-7_elb_id" {
+  value = ["${aws_security_group.ci-agent-7_elb.*.id}"]
+}
+
+output "sg_ci-agent-7_id" {
+  value = ["${aws_security_group.ci-agent-7.*.id}"]
+}
+
+output "sg_ci-agent-8_elb_id" {
+  value = ["${aws_security_group.ci-agent-8_elb.*.id}"]
+}
+
+output "sg_ci-agent-8_id" {
+  value = ["${aws_security_group.ci-agent-8.*.id}"]
+}
+
 output "sg_ci-master_elb_id" {
   value = ["${aws_security_group.ci-master_elb.*.id}"]
 }

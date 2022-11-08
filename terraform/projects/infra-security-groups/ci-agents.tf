@@ -430,3 +430,255 @@ resource "aws_security_group_rule" "ci-agent-5-elb_egress_any_any" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.ci-agent-5_elb.id}"
 }
+
+/////////////////////ci-agent-6/////////////////////////////////////////////////
+
+resource "aws_security_group" "ci-agent-6" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "${var.stackname}_ci-agent-6_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to the ci-agent-6 host from its ELB"
+
+  tags {
+    Name = "${var.stackname}_ci-agent-6_access"
+  }
+}
+
+resource "aws_security_group_rule" "ci-agent-6_ingress_ci-agent-6-elb_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-6.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-agent-6_elb.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-6_ingress_ci-agent-6-ci_master_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-6.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-master.id}"
+}
+
+resource "aws_security_group" "ci-agent-6_elb" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "${var.stackname}_ci-agent-6_elb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the CI agent 6 ELB"
+
+  tags {
+    Name = "${var.stackname}_ci-agent-6_elb_access"
+  }
+}
+
+resource "aws_security_group_rule" "ci-agent-6-elb_ingress_management_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-6_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-6-elb_ingress_ci-master_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 0
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-6_elb.id}"
+  source_security_group_id = "${aws_security_group.ci-master.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-6-elb_egress_any_any" {
+  count             = "${var.aws_environment == "integration" ? 1 : 0}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.ci-agent-6_elb.id}"
+}
+
+/////////////////////ci-agent-7/////////////////////////////////////////////////
+
+resource "aws_security_group" "ci-agent-7" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "${var.stackname}_ci-agent-7_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to the ci-agent-7 host from its ELB"
+
+  tags {
+    Name = "${var.stackname}_ci-agent-7_access"
+  }
+}
+
+resource "aws_security_group_rule" "ci-agent-7_ingress_ci-agent-7-elb_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-7.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-agent-7_elb.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-7_ingress_ci-agent-7-ci_master_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-7.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-master.id}"
+}
+
+resource "aws_security_group" "ci-agent-7_elb" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "${var.stackname}_ci-agent-7_elb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the CI agent 7 ELB"
+
+  tags {
+    Name = "${var.stackname}_ci-agent-7_elb_access"
+  }
+}
+
+resource "aws_security_group_rule" "ci-agent-7-elb_ingress_management_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-7_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-7-elb_ingress_ci-master_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 0
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-7_elb.id}"
+  source_security_group_id = "${aws_security_group.ci-master.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-7-elb_egress_any_any" {
+  count             = "${var.aws_environment == "integration" ? 1 : 0}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.ci-agent-7_elb.id}"
+}
+
+/////////////////////ci-agent-8/////////////////////////////////////////////////
+
+resource "aws_security_group" "ci-agent-8" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "${var.stackname}_ci-agent-8_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access to the ci-agent-8 host from its ELB"
+
+  tags {
+    Name = "${var.stackname}_ci-agent-8_access"
+  }
+}
+
+resource "aws_security_group_rule" "ci-agent-8_ingress_ci-agent-8-elb_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-8.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-agent-8_elb.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-8_ingress_ci-agent-8-ci_master_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  # Which security group is the rule assigned to
+  security_group_id = "${aws_security_group.ci-agent-8.id}"
+
+  # Which security group can use this rule
+  source_security_group_id = "${aws_security_group.ci-master.id}"
+}
+
+resource "aws_security_group" "ci-agent-8_elb" {
+  count       = "${var.aws_environment == "integration" ? 1 : 0}"
+  name        = "${var.stackname}_ci-agent-8_elb_access"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  description = "Access the CI agent 8 ELB"
+
+  tags {
+    Name = "${var.stackname}_ci-agent-8_elb_access"
+  }
+}
+
+resource "aws_security_group_rule" "ci-agent-8-elb_ingress_management_https" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-8_elb.id}"
+  source_security_group_id = "${aws_security_group.management.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-8-elb_ingress_ci-master_ssh_tcp" {
+  count     = "${var.aws_environment == "integration" ? 1 : 0}"
+  type      = "ingress"
+  from_port = 0
+  to_port   = 22
+  protocol  = "tcp"
+
+  security_group_id        = "${aws_security_group.ci-agent-8_elb.id}"
+  source_security_group_id = "${aws_security_group.ci-master.id}"
+}
+
+resource "aws_security_group_rule" "ci-agent-8-elb_egress_any_any" {
+  count             = "${var.aws_environment == "integration" ? 1 : 0}"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.ci-agent-8_elb.id}"
+}
