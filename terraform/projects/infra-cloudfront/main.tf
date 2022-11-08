@@ -14,7 +14,7 @@ variable "aws_region" {
 variable "aws_replica_region" {
   type        = string
   description = "AWS region where replica s3 bucket is located"
-  default     = "eu-west-2"
+  default     = "eu-west-1"
 }
 
 variable "aws_environment" {
@@ -44,6 +44,12 @@ variable "remote_state_bucket" {
   description = "S3 bucket we store our terraform state in"
 }
 
+variable "remote_state_infra_cloudfront_key_stack" {
+  type        = string
+  description = "Override stackname path to infra_cloudfront remote state "
+  default     = ""
+}
+
 variable "cloudfront_create" {
   description = "Create Cloudfront resources."
   default     = false
@@ -59,7 +65,6 @@ variable "certificate_arn" {
   description = "Amazon Resource Name (arn) for the site's certificate"
 }
 
-
 variable "cloudfront_certificate_domain" {
   type        = string
   description = "The domain of the CloudFront certificate to look up."
@@ -73,10 +78,19 @@ variable "cloudfront_distribution_aliases" {
 }
 
 
-# Data
+# Data
 # --------------------------------------------------------------
 #  
 
+data "terraform_remote_state" "infra_cloudfront" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_cloudfront_key_stack, var.stackname)}/infra-cloudfront.tfstate"
+    region = "${var.aws_replica_region}"
+  }
+}
 
 # data "aws_acm_certificate" "www" {
 #   count = "${var.cloudfront_create}"
