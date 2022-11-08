@@ -14,7 +14,7 @@ variable "aws_region" {
 variable "aws_replica_region" {
   type        = string
   description = "AWS region where replica s3 bucket is located"
-  default     = "eu-west-1"
+  default     = "eu-west-2"
 }
 
 variable "aws_environment" {
@@ -25,6 +25,18 @@ variable "aws_environment" {
 variable "stackname" {
   type        = string
   description = "Stackname"
+}
+
+variable "lifecycle_main" {
+  type        = string
+  description = "Number of days for the lifecycle rule for the mirror"
+  default     = "5"
+}
+
+variable "lifecycle_government_uploads" {
+  type        = string
+  description = "Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/"
+  default     = "8"
 }
 
 variable "remote_state_bucket" {
@@ -42,16 +54,22 @@ variable "cloudfront_enable" {
   default     = false
 }
 
-variable "cloudfront_www_certificate_domain" {
+variable "certificate_arn" {
   type        = string
-  description = "The domain of the WWW CloudFront certificate to look up."
+  description = "Amazon Resource Name (arn) for the site's certificate"
+}
+
+
+variable "cloudfront_certificate_domain" {
+  type        = string
+  description = "The domain of the CloudFront certificate to look up."
   default     = ""
 }
 
-variable "cloudfront_www_distribution_aliases" {
+variable "cloudfront_distribution_aliases" {
   type        = list
-  description = "Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution."
-  default     = [".staging.govuk.digital"]
+  description = "Extra CNAMEs (alternate domain names), if any, for the CloudFront distribution."
+  default     = [""]
 }
 
 
@@ -62,7 +80,7 @@ variable "cloudfront_www_distribution_aliases" {
 
 # data "aws_acm_certificate" "www" {
 #   count = "${var.cloudfront_create}"
-#   domain   = "${var.cloudfront_www_certificate_domain}"
+#   domain   = "${var.cloudfront_certificate_domain}"
 #   statuses = ["ISSUED"]
 #   provider = "aws.aws_cloudfront_certificate"
 # }
@@ -83,39 +101,120 @@ provider "aws" {
   version = "4.38.0"
 }
  
-
-# - ACM certificate
-
-# resource "aws_acm_certificate" "cert" {
-#   domain_name               = ""
-#   subject_alternative_names = ""
-#   validation_method         = ""
-#   tags                      = ""
-# }
+provider "aws" {
+  region  = "${var.aws_replica_region}"
+  alias   = "aws_replica"
+  version = "2.46.0"
+}
 
 
-# - S3 Buckets for Logs 
-# resource "aws_s3_bucket" "govuk-cloudfront-logs" {
-#   bucket   = "govuk-${var.aws_environment}-cloudfront-logs"
-#   region   = "${var.aws_replica_region}"
-#   provider = aws.aws_replica
+# ACM certificate
+# --------------------------------------------------------------
+# Generates ACM cert for domain
 
-#   tags {
-#     Name            = "govuk-${var.aws_environment}-cloudfront-logs"
-#     aws_environment = "${var.aws_environment}"
-#   }
-
-#   logging {
-#     target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-#     target_prefix = "s3/govuk-${var.aws_environment}-govuk-cloudfront-logs/"
-#   }
-
-  # versioning {
-  #   enabled = true
-  # }
+resource "aws_acm_certificate" "cert" {
+  domain_name               = cloudront-certificate- //change  
+  subject_alternative_names = ["${var.cloudfront_certificate_domain}"]
+  validation_method         = "DNS"
+  tags                      = "${var.stackname}"
+}
 
 
-# - WAF 
+
+# S3 Bucket
+# --------------------------------------------------------------
+# Creates S3 Buckets for CloudFront logs 
+
+resource "aws_s3_bucket" "govuk-cloudfront-logs" {
+  bucket   = "govuk-${var.aws_environment}-cloudfront-logs"
+  region   = "${var.aws_replica_region}"
+  provider = "aws.aws_replica"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-cloudfront-logs"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-govuk-cloudfront-logs/"
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    id      = "main"
+    enabled = true
+
+    prefix = ""
+
+    noncurrent_version_expiration {
+      days = "${var.lifecycle_main}"
+    }
+  }
+
+  lifecycle_rule {
+    id      = "government_uploads"
+    enabled = true
+
+    prefix = "www.gov.uk/government/uploads/"
+
+    noncurrent_version_expiration {
+      days = "${var.lifecycle_government_uploads}"
+    }
+  }
+
+}
+
+resource "aws_s3_bucket" "govuk-cloudfront-logs-replica" {
+  bucket   = "govuk-${var.aws_environment}-mirror-replica"
+  region   = "${var.aws_replica_region}"
+  provider = "aws.aws_replica"
+
+  tags {
+    Name            = "govuk-${var.aws_environment}-mirror-replica"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-${var.aws_environment}-mirror-replica/"
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    id      = "main"
+    enabled = true
+
+    prefix = ""
+
+    noncurrent_version_expiration {
+      days = "${var.lifecycle_main}"
+    }
+  }
+
+  lifecycle_rule {
+    id      = "government_uploads"
+    enabled = true
+
+    prefix = "www.gov.uk/government/uploads/"
+
+    noncurrent_version_expiration {
+      days = "${var.lifecycle_government_uploads}"
+    }
+  }
+}
+
+# WAF 
+# --------------------------------------------------------------
+# Generates WAF for domain
+
+
 
 
 
@@ -128,7 +227,7 @@ resource "aws_cloudfront_distribution" "govuk_cdn_distribution" {
   count = "${var.cloudfront_create}"
 
   origin {
-    domain_name = "${aws_lb.cache_public_lb_id}.${var.aws_region}.elb.amazonaws.com"
+    domain_name = "${aws_lb.cache_public_lb_id}.${var.aws_environment}.elb.amazonaws.com"
     origin_id   = "${var.aws_environment}_GOV.UK"  
 
     custom_origin_config {
@@ -157,9 +256,10 @@ resource "aws_cloudfront_distribution" "govuk_cdn_distribution" {
     }
 
     headers = ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"] //add "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" here potentially 
+    }
   }
 
-  aliases = ["${var.cloudfront_www_distribution_aliases}"]
+  aliases = ["${var.cloudfront_distribution_aliases}"]
 
   enabled             = "${var.cloudfront_enable}"
   is_ipv6_enabled     = true
@@ -175,31 +275,33 @@ resource "aws_cloudfront_distribution" "govuk_cdn_distribution" {
     }
   }
 
-  # logging_config {
-  #   include_cookies = false
-  #   bucket          = ""             # "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
-  #   prefix          = "cloudfront/"
-  # }
+  logging_config {
+    include_cookies = false
+    bucket          = "aws_s3_bucket.govuk-cloudfront-logs"             // "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
+    prefix          = "cloudfront/"
+  }
  
 
-  # viewer_certificate {
-  #   acm_certificate_arn      = "" # "${data.aws_acm_certificate.XXXXXXXXXXXX.arn}" #find the correct arn for .staging.publishing.service.gov.uk + might create resource first 
-  #   ssl_support_method       = "sni-only"
-  #   minimum_protocol_version = "TLSv1.1_2016"
-  # }
+  viewer_certificate {
+    acm_certificate_arn      = "${var.aws_acm_certificate.cert.arn}" // var.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.1_2016"
+  }
 
   tags = {
     Project         = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
 
+
 resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
+
   name    = "AllViewerHeaderCookies"
   comment = "Policy will forward all parameters in viewer requests to origin"
   cookies_config {
     cookie_behavior = "All"
     }
-  }
+
   headers_config {
     header_behavior = "All_viewer_headers"
   }
@@ -207,6 +309,7 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     query_string_behavior = "All"
   }
 }
+
 
 # Ordered Cache Behavior
 # --------------------------------------------------------------
@@ -303,5 +406,4 @@ resource "aws_cloudfront_origin_request_policy" "AllViewerHeaderCookies" {
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
-
 }
