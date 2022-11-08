@@ -112,6 +112,24 @@ variable "ci_agent_5_subnet" {
   default     = "govuk_private_b"
 }
 
+variable "ci_agent_6_subnet" {
+  type        = "string"
+  description = "subnet to deploy EC2 and EBS of CI agent 6"
+  default     = "govuk_private_c"
+}
+
+variable "ci_agent_7_subnet" {
+  type        = "string"
+  description = "subnet to deploy EC2 and EBS of CI agent 7"
+  default     = "govuk_private_a"
+}
+
+variable "ci_agent_8_subnet" {
+  type        = "string"
+  description = "subnet to deploy EC2 and EBS of CI agent 8"
+  default     = "govuk_private_b"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -746,6 +764,366 @@ module "alarms-elb-ci-agent-5-internal" {
   healthyhostcount_threshold     = "0"
 }
 
+/////////////////////ci-agent-6/////////////////////////////////////////////////
+
+resource "aws_elb" "ci-agent-6_elb" {
+  name            = "${var.stackname}-ci-agent-6"
+  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_6_subnet))}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-6_elb_id}"]
+  internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-ci-agent-6-internal-elb"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:22"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-ci-agent-6", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent")}"
+}
+
+resource "aws_route53_record" "ci-agent-6_service_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "ci-agent-6.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.ci-agent-6_elb.dns_name}"
+    zone_id                = "${aws_elb.ci-agent-6_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+module "ci-agent-6" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-ci-agent-6"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-6")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_6_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-6_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.ci-agent-6_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_max_size                  = "1"
+  asg_min_size                  = "1"
+  asg_desired_capacity          = "1"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "${var.root_block_device_volume_size}"
+}
+
+resource "aws_ebs_volume" "ci-agent-6-data" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_6_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = "${var.data_block_device_volume_size}"
+  type              = "${var.ebs_volume_type}"
+
+  tags {
+    Name            = "${var.stackname}-ci-agent-6-data"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "ci-agent-6"
+    aws_migration   = "ci_agent"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_ebs_volume" "ci-agent-6-docker" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_6_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = "${var.docker_block_device_volume_size}"
+  type              = "${var.ebs_volume_type}"
+
+  tags {
+    Name            = "${var.stackname}-ci-agent-6-docker"
+    Project         = "${var.stackname}"
+    Device          = "xvdg"
+    aws_hostname    = "ci-agent-6"
+    aws_migration   = "ci_agent"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ci-agent-6_iam_role_policy_attachment" {
+  role       = "${module.ci-agent-6.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.ci-agent_iam_policy.arn}"
+}
+
+module "alarms-elb-ci-agent-6-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-ci-agent-6-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  elb_name                       = "${aws_elb.ci-agent-6_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
+/////////////////////ci-agent-7/////////////////////////////////////////////////
+
+resource "aws_elb" "ci-agent-7_elb" {
+  name            = "${var.stackname}-ci-agent-7"
+  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_7_subnet))}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-7_elb_id}"]
+  internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-ci-agent-7-internal-elb"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:22"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-ci-agent-7", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent")}"
+}
+
+resource "aws_route53_record" "ci-agent-7_service_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "ci-agent-7.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.ci-agent-7_elb.dns_name}"
+    zone_id                = "${aws_elb.ci-agent-7_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+module "ci-agent-7" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-ci-agent-7"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-7")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_7_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-7_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.ci-agent-7_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_max_size                  = "1"
+  asg_min_size                  = "1"
+  asg_desired_capacity          = "1"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "${var.root_block_device_volume_size}"
+}
+
+resource "aws_ebs_volume" "ci-agent-7-data" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_7_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = "${var.data_block_device_volume_size}"
+  type              = "${var.ebs_volume_type}"
+
+  tags {
+    Name            = "${var.stackname}-ci-agent-7-data"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "ci-agent-7"
+    aws_migration   = "ci_agent"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_ebs_volume" "ci-agent-7-docker" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_7_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = "${var.docker_block_device_volume_size}"
+  type              = "${var.ebs_volume_type}"
+
+  tags {
+    Name            = "${var.stackname}-ci-agent-7-docker"
+    Project         = "${var.stackname}"
+    Device          = "xvdg"
+    aws_hostname    = "ci-agent-7"
+    aws_migration   = "ci_agent"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ci-agent-7_iam_role_policy_attachment" {
+  role       = "${module.ci-agent-7.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.ci-agent_iam_policy.arn}"
+}
+
+module "alarms-elb-ci-agent-7-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-ci-agent-7-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  elb_name                       = "${aws_elb.ci-agent-7_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
+/////////////////////ci-agent-8/////////////////////////////////////////////////
+
+resource "aws_elb" "ci-agent-8_elb" {
+  name            = "${var.stackname}-ci-agent-8"
+  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_8_subnet))}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-8_elb_id}"]
+  internal        = "true"
+
+  access_logs {
+    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket_prefix = "elb/${var.stackname}-ci-agent-8-internal-elb"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = 22
+    instance_protocol = "tcp"
+    lb_port           = 22
+    lb_protocol       = "tcp"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+
+    target   = "TCP:22"
+    interval = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = "${map("Name", "${var.stackname}-ci-agent-8", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent")}"
+}
+
+resource "aws_route53_record" "ci-agent-8_service_record" {
+  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  name    = "ci-agent-8.${var.internal_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.ci-agent-8_elb.dns_name}"
+    zone_id                = "${aws_elb.ci-agent-8_elb.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+module "ci-agent-8" {
+  source                        = "../../modules/aws/node_group"
+  name                          = "${var.stackname}-ci-agent-8"
+  default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-8")}"
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_8_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-8_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_type                 = "${var.instance_type}"
+  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_elb_ids_length       = "1"
+  instance_elb_ids              = ["${aws_elb.ci-agent-8_elb.id}"]
+  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  asg_max_size                  = "1"
+  asg_min_size                  = "1"
+  asg_desired_capacity          = "1"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  root_block_device_volume_size = "${var.root_block_device_volume_size}"
+}
+
+resource "aws_ebs_volume" "ci-agent-8-data" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_8_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = "${var.data_block_device_volume_size}"
+  type              = "${var.ebs_volume_type}"
+
+  tags {
+    Name            = "${var.stackname}-ci-agent-8-data"
+    Project         = "${var.stackname}"
+    Device          = "xvdf"
+    aws_hostname    = "ci-agent-8"
+    aws_migration   = "ci_agent"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_ebs_volume" "ci-agent-8-docker" {
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_8_subnet)}"
+  encrypted         = "${var.ebs_encrypted}"
+  size              = "${var.docker_block_device_volume_size}"
+  type              = "${var.ebs_volume_type}"
+
+  tags {
+    Name            = "${var.stackname}-ci-agent-8-docker"
+    Project         = "${var.stackname}"
+    Device          = "xvdg"
+    aws_hostname    = "ci-agent-8"
+    aws_migration   = "ci_agent"
+    aws_stackname   = "${var.stackname}"
+    aws_environment = "${var.aws_environment}"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ci-agent-8_iam_role_policy_attachment" {
+  role       = "${module.ci-agent-8.instance_iam_role_name}"
+  policy_arn = "${aws_iam_policy.ci-agent_iam_policy.arn}"
+}
+
+module "alarms-elb-ci-agent-8-internal" {
+  source                         = "../../modules/aws/alarms/elb"
+  name_prefix                    = "${var.stackname}-ci-agent-8-internal"
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  elb_name                       = "${aws_elb.ci-agent-8_elb.name}"
+  httpcode_backend_4xx_threshold = "0"
+  httpcode_backend_5xx_threshold = "50"
+  httpcode_elb_4xx_threshold     = "0"
+  httpcode_elb_5xx_threshold     = "50"
+  surgequeuelength_threshold     = "0"
+  healthyhostcount_threshold     = "0"
+}
+
 # Outputs
 # --------------------------------------------------------------
 
@@ -797,4 +1175,34 @@ output "ci-agent-5_elb_dns_name" {
 output "ci-agent-5_service_dns_name" {
   value       = "${aws_route53_record.ci-agent-5_service_record.name}"
   description = "DNS name to access the CI agent 5 service"
+}
+
+output "ci-agent-6_elb_dns_name" {
+  value       = "${aws_elb.ci-agent-6_elb.dns_name}"
+  description = "DNS name to access the CI agent 6 service"
+}
+
+output "ci-agent-6_service_dns_name" {
+  value       = "${aws_route53_record.ci-agent-6_service_record.name}"
+  description = "DNS name to access the CI agent 6 service"
+}
+
+output "ci-agent-7_elb_dns_name" {
+  value       = "${aws_elb.ci-agent-7_elb.dns_name}"
+  description = "DNS name to access the CI agent 7 service"
+}
+
+output "ci-agent-7_service_dns_name" {
+  value       = "${aws_route53_record.ci-agent-7_service_record.name}"
+  description = "DNS name to access the CI agent 7 service"
+}
+
+output "ci-agent-8_elb_dns_name" {
+  value       = "${aws_elb.ci-agent-8_elb.dns_name}"
+  description = "DNS name to access the CI agent 8 service"
+}
+
+output "ci-agent-8_service_dns_name" {
+  value       = "${aws_route53_record.ci-agent-8_service_record.name}"
+  description = "DNS name to access the CI agent 8 service"
 }

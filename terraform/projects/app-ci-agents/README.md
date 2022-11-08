@@ -26,11 +26,17 @@ CI agents
 | <a name="module_alarms-elb-ci-agent-3-internal"></a> [alarms-elb-ci-agent-3-internal](#module\_alarms-elb-ci-agent-3-internal) | ../../modules/aws/alarms/elb | n/a |
 | <a name="module_alarms-elb-ci-agent-4-internal"></a> [alarms-elb-ci-agent-4-internal](#module\_alarms-elb-ci-agent-4-internal) | ../../modules/aws/alarms/elb | n/a |
 | <a name="module_alarms-elb-ci-agent-5-internal"></a> [alarms-elb-ci-agent-5-internal](#module\_alarms-elb-ci-agent-5-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-6-internal"></a> [alarms-elb-ci-agent-6-internal](#module\_alarms-elb-ci-agent-6-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-7-internal"></a> [alarms-elb-ci-agent-7-internal](#module\_alarms-elb-ci-agent-7-internal) | ../../modules/aws/alarms/elb | n/a |
+| <a name="module_alarms-elb-ci-agent-8-internal"></a> [alarms-elb-ci-agent-8-internal](#module\_alarms-elb-ci-agent-8-internal) | ../../modules/aws/alarms/elb | n/a |
 | <a name="module_ci-agent-1"></a> [ci-agent-1](#module\_ci-agent-1) | ../../modules/aws/node_group | n/a |
 | <a name="module_ci-agent-2"></a> [ci-agent-2](#module\_ci-agent-2) | ../../modules/aws/node_group | n/a |
 | <a name="module_ci-agent-3"></a> [ci-agent-3](#module\_ci-agent-3) | ../../modules/aws/node_group | n/a |
 | <a name="module_ci-agent-4"></a> [ci-agent-4](#module\_ci-agent-4) | ../../modules/aws/node_group | n/a |
 | <a name="module_ci-agent-5"></a> [ci-agent-5](#module\_ci-agent-5) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-6"></a> [ci-agent-6](#module\_ci-agent-6) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-7"></a> [ci-agent-7](#module\_ci-agent-7) | ../../modules/aws/node_group | n/a |
+| <a name="module_ci-agent-8"></a> [ci-agent-8](#module\_ci-agent-8) | ../../modules/aws/node_group | n/a |
 
 ## Resources
 
@@ -46,11 +52,20 @@ CI agents
 | [aws_ebs_volume.ci-agent-4-docker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
 | [aws_ebs_volume.ci-agent-5-data](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
 | [aws_ebs_volume.ci-agent-5-docker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.ci-agent-6-data](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.ci-agent-6-docker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.ci-agent-7-data](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.ci-agent-7-docker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.ci-agent-8-data](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
+| [aws_ebs_volume.ci-agent-8-docker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ebs_volume) | resource |
 | [aws_elb.ci-agent-1_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
 | [aws_elb.ci-agent-2_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
 | [aws_elb.ci-agent-3_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
 | [aws_elb.ci-agent-4_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
 | [aws_elb.ci-agent-5_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
+| [aws_elb.ci-agent-6_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
+| [aws_elb.ci-agent-7_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
+| [aws_elb.ci-agent-8_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/elb) | resource |
 | [aws_iam_policy.ci-agent-2_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.ci-agent_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_role_policy_attachment.ci-agent-1_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
@@ -58,11 +73,17 @@ CI agents
 | [aws_iam_role_policy_attachment.ci-agent-3_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.ci-agent-4_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.ci-agent-5_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.ci-agent-6_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.ci-agent-7_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.ci-agent-8_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_route53_record.ci-agent-1_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.ci-agent-2_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.ci-agent-3_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.ci-agent-4_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [aws_route53_record.ci-agent-5_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ci-agent-6_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ci-agent-7_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_route53_record.ci-agent-8_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
 | [null_resource.user_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_acm_certificate.elb_cert](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
 | [aws_route53_zone.internal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) | data source |
@@ -84,6 +105,9 @@ CI agents
 | <a name="input_ci_agent_3_subnet"></a> [ci\_agent\_3\_subnet](#input\_ci\_agent\_3\_subnet) | subnet to deploy EC2 and EBS of CI agent 3 | `string` | `"govuk_private_c"` | no |
 | <a name="input_ci_agent_4_subnet"></a> [ci\_agent\_4\_subnet](#input\_ci\_agent\_4\_subnet) | subnet to deploy EC2 and EBS of CI agent 4 | `string` | `"govuk_private_a"` | no |
 | <a name="input_ci_agent_5_subnet"></a> [ci\_agent\_5\_subnet](#input\_ci\_agent\_5\_subnet) | subnet to deploy EC2 and EBS of CI agent 5 | `string` | `"govuk_private_b"` | no |
+| <a name="input_ci_agent_6_subnet"></a> [ci\_agent\_6\_subnet](#input\_ci\_agent\_6\_subnet) | subnet to deploy EC2 and EBS of CI agent 6 | `string` | `"govuk_private_c"` | no |
+| <a name="input_ci_agent_7_subnet"></a> [ci\_agent\_7\_subnet](#input\_ci\_agent\_7\_subnet) | subnet to deploy EC2 and EBS of CI agent 7 | `string` | `"govuk_private_a"` | no |
+| <a name="input_ci_agent_8_subnet"></a> [ci\_agent\_8\_subnet](#input\_ci\_agent\_8\_subnet) | subnet to deploy EC2 and EBS of CI agent 8 | `string` | `"govuk_private_b"` | no |
 | <a name="input_data_block_device_volume_size"></a> [data\_block\_device\_volume\_size](#input\_data\_block\_device\_volume\_size) | Size of the data volume in GB | `string` | `"130"` | no |
 | <a name="input_docker_block_device_volume_size"></a> [docker\_block\_device\_volume\_size](#input\_docker\_block\_device\_volume\_size) | Size of the Docker volume in GB | `string` | `"130"` | no |
 | <a name="input_ebs_encrypted"></a> [ebs\_encrypted](#input\_ebs\_encrypted) | whether or not the EBS volume is encrypted | `string` | `"true"` | no |
@@ -120,3 +144,9 @@ CI agents
 | <a name="output_ci-agent-4_service_dns_name"></a> [ci-agent-4\_service\_dns\_name](#output\_ci-agent-4\_service\_dns\_name) | DNS name to access the CI agent 4 service |
 | <a name="output_ci-agent-5_elb_dns_name"></a> [ci-agent-5\_elb\_dns\_name](#output\_ci-agent-5\_elb\_dns\_name) | DNS name to access the CI agent 5 service |
 | <a name="output_ci-agent-5_service_dns_name"></a> [ci-agent-5\_service\_dns\_name](#output\_ci-agent-5\_service\_dns\_name) | DNS name to access the CI agent 5 service |
+| <a name="output_ci-agent-6_elb_dns_name"></a> [ci-agent-6\_elb\_dns\_name](#output\_ci-agent-6\_elb\_dns\_name) | DNS name to access the CI agent 6 service |
+| <a name="output_ci-agent-6_service_dns_name"></a> [ci-agent-6\_service\_dns\_name](#output\_ci-agent-6\_service\_dns\_name) | DNS name to access the CI agent 6 service |
+| <a name="output_ci-agent-7_elb_dns_name"></a> [ci-agent-7\_elb\_dns\_name](#output\_ci-agent-7\_elb\_dns\_name) | DNS name to access the CI agent 7 service |
+| <a name="output_ci-agent-7_service_dns_name"></a> [ci-agent-7\_service\_dns\_name](#output\_ci-agent-7\_service\_dns\_name) | DNS name to access the CI agent 7 service |
+| <a name="output_ci-agent-8_elb_dns_name"></a> [ci-agent-8\_elb\_dns\_name](#output\_ci-agent-8\_elb\_dns\_name) | DNS name to access the CI agent 8 service |
+| <a name="output_ci-agent-8_service_dns_name"></a> [ci-agent-8\_service\_dns\_name](#output\_ci-agent-8\_service\_dns\_name) | DNS name to access the CI agent 8 service |

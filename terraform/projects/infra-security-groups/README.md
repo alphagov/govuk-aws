@@ -65,6 +65,12 @@ No modules.
 | [aws_security_group.ci-agent-4_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.ci-agent-5](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.ci-agent-5_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.ci-agent-6](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.ci-agent-6_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.ci-agent-7](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.ci-agent-7_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.ci-agent-8](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
+| [aws_security_group.ci-agent-8_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.ci-master](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.ci-master_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.ci-master_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -264,6 +270,21 @@ No modules.
 | [aws_security_group_rule.ci-agent-5-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-agent-5_ingress_ci-agent-5-ci_master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-agent-5_ingress_ci-agent-5-elb_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-6-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-6-elb_ingress_ci-master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-6-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-6_ingress_ci-agent-6-ci_master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-6_ingress_ci-agent-6-elb_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-7-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-7-elb_ingress_ci-master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-7-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-7_ingress_ci-agent-7-ci_master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-7_ingress_ci-agent-7-elb_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-8-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-8-elb_ingress_ci-master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-8-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-8_ingress_ci-agent-8-ci_master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.ci-agent-8_ingress_ci-agent-8-elb_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-elb_ingress_carrenza_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-elb_ingress_github_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -607,6 +628,12 @@ No modules.
 | <a name="output_sg_ci-agent-4_id"></a> [sg\_ci-agent-4\_id](#output\_sg\_ci-agent-4\_id) | n/a |
 | <a name="output_sg_ci-agent-5_elb_id"></a> [sg\_ci-agent-5\_elb\_id](#output\_sg\_ci-agent-5\_elb\_id) | n/a |
 | <a name="output_sg_ci-agent-5_id"></a> [sg\_ci-agent-5\_id](#output\_sg\_ci-agent-5\_id) | n/a |
+| <a name="output_sg_ci-agent-6_elb_id"></a> [sg\_ci-agent-6\_elb\_id](#output\_sg\_ci-agent-6\_elb\_id) | n/a |
+| <a name="output_sg_ci-agent-6_id"></a> [sg\_ci-agent-6\_id](#output\_sg\_ci-agent-6\_id) | n/a |
+| <a name="output_sg_ci-agent-7_elb_id"></a> [sg\_ci-agent-7\_elb\_id](#output\_sg\_ci-agent-7\_elb\_id) | n/a |
+| <a name="output_sg_ci-agent-7_id"></a> [sg\_ci-agent-7\_id](#output\_sg\_ci-agent-7\_id) | n/a |
+| <a name="output_sg_ci-agent-8_elb_id"></a> [sg\_ci-agent-8\_elb\_id](#output\_sg\_ci-agent-8\_elb\_id) | n/a |
+| <a name="output_sg_ci-agent-8_id"></a> [sg\_ci-agent-8\_id](#output\_sg\_ci-agent-8\_id) | n/a |
 | <a name="output_sg_ci-master_elb_id"></a> [sg\_ci-master\_elb\_id](#output\_sg\_ci-master\_elb\_id) | n/a |
 | <a name="output_sg_ci-master_id"></a> [sg\_ci-master\_id](#output\_sg\_ci-master\_id) | n/a |
 | <a name="output_sg_ci-master_internal_elb_id"></a> [sg\_ci-master\_internal\_elb\_id](#output\_sg\_ci-master\_internal\_elb\_id) | n/a |
