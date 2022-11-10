@@ -877,3 +877,98 @@ output "logs_writer_bucket_policy_arn" {
   value       = "${aws_iam_policy.logs_writer.arn}"
   description = "ARN of the logs writer bucket policy"
 }
+
+# Configuration for download-logs-analytics lambda function that uploads 
+# fastly asset logs to Google analytics
+
+# We require a user for download-logs-analytics to read from S3 buckets
+resource "aws_iam_user" "download_logs_analytics" {
+  name = "govuk-${var.aws_environment}-download-logs-analytics"
+}
+
+resource "aws_iam_policy" "download_logs_analytics" {
+  name   = "fastly-logs-${var.aws_environment}-download-logs-analytics-policy"
+  policy = "${data.template_file.download_logs_analytics_policy_template.rendered}"
+}
+
+resource "aws_iam_policy_attachment" "download_logs_analyticsr" {
+  name       = "download-logs-analytics-policy-attachment"
+  users      = ["${aws_iam_user.download_logs_analytics.name}"]
+  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+}
+
+data "template_file" "download_logs_analytics_policy_template" {
+  template = "${file("${path.module}/../../policies/download_logs_analytics_policy.tpl")}"
+
+  vars {
+    bucket_arn = "${aws_s3_bucket.fastly_logs.arn}"
+  }
+}
+
+data "archive_file" "download_logs_analytics" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/DownloadLogsAnalytics/main.py"
+  output_path = "${path.module}/../../lambda/DownloadLogsAnalytics/DownloadLogsAnalytics.zip"
+}
+
+resource "aws_lambda_function" "download_logs_analytics" {
+  filename         = "${data.archive_file.download_logs_analytics.output_path}"
+  source_code_hash = "${data.archive_file.download_logs_analytics.output_base64sha256}"
+
+  function_name = "govuk-${var.aws_environment}-download_logs_analytics"
+  role          = "${aws_iam_role.download_logs_analytics.arn}"
+  handler       = "main.lambda_handler"
+  runtime       = "python3.7"
+
+  environment {
+    variables = {
+      BUCKET_NAME = "${aws_s3_bucket.fastly_logs.bucket}"
+    }
+  }
+}
+
+resource "aws_iam_role" "download_logs_analytics" {
+  name = "AWSLambdaRole-download-logs-analytics"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "download_logs_analytics" {
+  role       = "${aws_iam_role.download_logs_analytics.name}"
+  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+}
+
+resource "aws_cloudwatch_event_rule" "download_logs_analytics_daily" {
+  name                = "download_logs_analytics_daily"
+  schedule_expression = "cron(30 0 * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "download_logs_analytics_daily" {
+  rule = "${aws_cloudwatch_event_rule.download_logs_analytics_daily.name}"
+  arn  = "${aws_lambda_function.download_logs_analytics.arn}"
+}
+
+resource "aws_lambda_permission" "cloudwatch_download_logs_analytics_daily_permission" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.download_logs_analytics.function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.download_logs_analytics_daily.arn}"
+}
+
+# Need to add trigger
+
