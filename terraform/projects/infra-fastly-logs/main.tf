@@ -881,6 +881,28 @@ output "logs_writer_bucket_policy_arn" {
 # Configuration for download-logs-analytics lambda function that uploads 
 # fastly asset logs to Google analytics
 
+resource "aws_s3_bucket" "govuk-analytics-logs-production" {
+  bucket = "govuk-analytics-logs-production"
+
+  tags {
+    Name            = "govuk-analytics-logs-production"
+    aws_environment = "${var.aws_environment}"
+  }
+
+  logging {
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_prefix = "s3/govuk-analytics-logs-production/"
+  }
+
+  lifecycle_rule {
+    enabled = true
+
+    expiration {
+      days = 30
+    }
+  }
+}
+
 # We require a user for download-logs-analytics to read from S3 buckets
 resource "aws_iam_user" "download_logs_analytics" {
   name = "govuk-${var.aws_environment}-download-logs-analytics"
@@ -901,10 +923,11 @@ data "template_file" "download_logs_analytics_policy_template" {
   template = "${file("${path.module}/../../policies/download_logs_analytics_policy.tpl")}"
 
   vars {
-    bucket_arn = "${aws_s3_bucket.fastly_logs.arn}"
+    bucket_arn = "${aws_s3_bucket.govuk-analytics-logs-production.arn}"
   }
 }
 
+# AWS Lambda
 data "archive_file" "download_logs_analytics" {
   type        = "zip"
   source_file = "${path.module}/../../lambda/DownloadLogsAnalytics/main.py"
@@ -922,7 +945,7 @@ resource "aws_lambda_function" "download_logs_analytics" {
 
   environment {
     variables = {
-      BUCKET_NAME = "${aws_s3_bucket.fastly_logs.bucket}"
+      BUCKET_NAME = "${aws_s3_bucket.govuk-analytics-logs-production.bucket}"
     }
   }
 }
@@ -952,23 +975,21 @@ resource "aws_iam_role_policy_attachment" "download_logs_analytics" {
   policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
 }
 
-resource "aws_cloudwatch_event_rule" "download_logs_analytics_daily" {
-  name                = "download_logs_analytics_daily"
-  schedule_expression = "cron(30 0 * * ? *)"
-}
-
-resource "aws_cloudwatch_event_target" "download_logs_analytics_daily" {
-  rule = "${aws_cloudwatch_event_rule.download_logs_analytics_daily.name}"
-  arn  = "${aws_lambda_function.download_logs_analytics.arn}"
-}
-
-resource "aws_lambda_permission" "cloudwatch_download_logs_analytics_daily_permission" {
-  statement_id  = "AllowExecutionFromCloudWatch"
+resource "aws_lambda_permission" "allow_download_logs_analytics" {
+  statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.download_logs_analytics.function_name}"
-  principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.download_logs_analytics_daily.arn}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "${aws_s3_bucket.govuk-analytics-logs-production.arn}"
 }
 
-# Need to add trigger
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket     = "${aws_s3_bucket.govuk-analytics-logs-production.id}"
+  depends_on = ["aws_lambda_permission.allow_download_logs_analytics"]
 
+  lambda_function {
+    lambda_function_arn = "${aws_lambda_function.download_logs_analytics.arn}"
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "assets/"
+  }
+}

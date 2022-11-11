@@ -28,9 +28,7 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_athena_named_query.transition_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/athena_named_query) | resource |
-| [aws_cloudwatch_event_rule.download_logs_analytics_daily](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_event_rule) | resource |
 | [aws_cloudwatch_event_rule.transition_executor_daily](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_event_rule) | resource |
-| [aws_cloudwatch_event_target.download_logs_analytics_daily](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_event_target.transition_executor_daily](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_event_target) | resource |
 | [aws_glue_catalog_database.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_catalog_database) | resource |
 | [aws_glue_catalog_table.bouncer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_catalog_table) | resource |
@@ -61,11 +59,13 @@ No modules.
 | [aws_iam_user.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
 | [aws_lambda_function.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
 | [aws_lambda_function.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
-| [aws_lambda_permission.cloudwatch_download_logs_analytics_daily_permission](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
+| [aws_lambda_permission.allow_download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.cloudwatch_transition_executor_daily_permission](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
 | [aws_s3_bucket.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.fastly_logs_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.govuk-analytics-logs-production](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.transition_fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_notification.bucket_notification](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_notification) | resource |
 | [archive_file.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [archive_file.transition_executor](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [template_file.athena_monitoring_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
