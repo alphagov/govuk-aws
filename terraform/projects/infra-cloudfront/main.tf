@@ -92,43 +92,27 @@ data "terraform_remote_state" "infra_cloudfront" {
   }
 }
 
-# data "aws_acm_certificate" "www" {
-#   count = "${var.cloudfront_create}"
-#   domain   = "${var.cloudfront_certificate_domain}"
-#   statuses = ["ISSUED"]
-#   provider = "aws.aws_cloudfront_certificate"
-# }
-
-
 
 # Resources
 # --------------------------------------------------------------
 # Set up the backend for CloudFront 
 
-# terraform {
-#   required_providers {
-#     aws = {
-#       source  = "hashicorp/aws"
-#       version = ">= 1.0"
-#     }
-#   }
-#   backend "local" {
-#   path = "~/govuk-aws/terraform/projects/infra-cloudfront/terraform.tfstate"
-#   }
-# }
-
-
 terraform {
-  backend          "s3"             {}
   required_version = "= 1.3.4"
+  backend          "s3"             {}
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.38.0"
+    }
+  }
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "4.38.0"
+  region  = var.aws_region
 }
  
-
 # ACM certificate
 # --------------------------------------------------------------
 # Generates ACM cert for domain
@@ -141,15 +125,14 @@ resource "aws_acm_certificate" "cert" {
 }
 
 
-
 # S3 Bucket
 # --------------------------------------------------------------
 # Creates S3 Buckets for CloudFront logs 
 
 resource "aws_s3_bucket" "govuk-cloudfront-logs" {
   bucket   = "govuk-${var.aws_environment}-cloudfront-logs"
-  region   = "${var.aws_replica_region}"
-  provider = aws.aws_replica
+  region   = "${var.aws_region}"
+  # provider = aws.aws_replica
 
   tags {
     Name            = "govuk-${var.aws_environment}-cloudfront-logs"
@@ -189,51 +172,10 @@ resource "aws_s3_bucket" "govuk-cloudfront-logs" {
 
 }
 
-resource "aws_s3_bucket" "govuk-cloudfront-logs-replica" {
-  bucket   = "govuk-${var.aws_environment}-mirror-replica"
-  region   = "${var.aws_replica_region}"
-  provider = aws.aws_replica
-
-  tags {
-    Name            = "govuk-${var.aws_environment}-mirror-replica"
-    aws_environment = "${var.aws_environment}"
-  }
-
-  logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    target_prefix = "s3/govuk-${var.aws_environment}-mirror-replica/"
-  }
-
-  versioning {
-    enabled = true
-  }
-
-  lifecycle_rule {
-    id      = "main"
-    enabled = true
-
-    prefix = ""
-
-    noncurrent_version_expiration {
-      days = "${var.lifecycle_main}"
-    }
-  }
-
-  lifecycle_rule {
-    id      = "government_uploads"
-    enabled = true
-
-    prefix = "www.gov.uk/government/uploads/"
-
-    noncurrent_version_expiration {
-      days = "${var.lifecycle_government_uploads}"
-    }
-  }
-}
-
 # WAF 
 # --------------------------------------------------------------
 # Generates WAF for domain - TBD
+
 
 
 
