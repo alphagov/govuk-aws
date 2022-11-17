@@ -161,7 +161,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     cached_methods           = ["GET", "HEAD"]
     target_origin_id         = "cache cdn lb"
     compress                 = "true"
-    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    cache_policy_id          = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     origin_request_policy_id = "b33a356b-8c7e-46a6-bb6d-7fec3a3488d7"
 
     viewer_protocol_policy = "redirect-to-https"
