@@ -123,7 +123,7 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_cloudfront_distribution" "www_distribution" {
 
-  aliases = ["www2.staging.publishing.service.gov.uk"]
+  aliases = ["www.staging.publishing.service.gov.uk"]
   web_acl_id = "arn:aws:wafv2:us-east-1:696911096973:global/webacl/cdn_poc_govuk/8fcb1569-44ff-4dd8-b634-748ca3e2b255"
   origin {
     domain_name = "govuk-cache-public-cdn-504820716.eu-west-1.elb.amazonaws.com"
