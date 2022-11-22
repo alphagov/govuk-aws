@@ -37,6 +37,7 @@ Backend node
 | [aws_security_group_rule.content-data-admin-rds_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.content-publisher-rds_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.content-tagger-rds_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.imminence-rds_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.link-checker-api-rds_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.local-links-manager-rds_ingress_backend_postgres](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.release-rds_ingress_backend_mysql](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -52,6 +53,7 @@ Backend node
 | [aws_security_group.content-data-admin-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
 | [aws_security_group.content-publisher-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
 | [aws_security_group.content-tagger-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
+| [aws_security_group.imminence-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
 | [aws_security_group.link-checker-api-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
 | [aws_security_group.local-links-manager-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
 | [aws_security_group.release-rds](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/security_group) | data source |
