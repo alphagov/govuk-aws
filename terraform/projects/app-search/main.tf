@@ -441,7 +441,7 @@ data "aws_ami" "ubuntu_focal" {
   most_recent = true
 
   # canonical
-  owners = ["099720109477"]
+  owners = ["099720109477", "696911096973"]
 
   filter {
     name   = "name"

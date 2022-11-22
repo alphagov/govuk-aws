@@ -258,7 +258,7 @@ data "template_file" "knowledge-graph_userdata" {
 # The AWS image to use to host the knowledge graph
 # Ubuntu Server 22.04 LTS (HVM), SSD Volume Type
 data "aws_ami" "ubuntu_server_22" {
-  owners = ["099720109477"]
+  owners = ["099720109477", "696911096973"]
 
   filter {
     name   = "image-id"
