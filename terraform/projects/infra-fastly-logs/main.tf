@@ -881,26 +881,8 @@ output "logs_writer_bucket_policy_arn" {
 # Configuration for download-logs-analytics lambda function that uploads 
 # fastly asset logs to Google analytics
 
-resource "aws_s3_bucket" "govuk-analytics-logs-production" {
+data "aws_s3_bucket" "govuk-analytics-logs-production" {
   bucket = "govuk-analytics-logs-production"
-
-  tags {
-    Name            = "govuk-analytics-logs-production"
-    aws_environment = "${var.aws_environment}"
-  }
-
-  logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
-    target_prefix = "s3/govuk-analytics-logs-production/"
-  }
-
-  lifecycle_rule {
-    enabled = true
-
-    expiration {
-      days = 30
-    }
-  }
 }
 
 # We require a user for download-logs-analytics to read from S3 buckets
@@ -923,7 +905,7 @@ data "template_file" "download_logs_analytics_policy_template" {
   template = "${file("${path.module}/../../policies/download_logs_analytics_policy.tpl")}"
 
   vars {
-    bucket_arn = "${aws_s3_bucket.govuk-analytics-logs-production.arn}"
+    bucket_arn = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
   }
 }
 
@@ -945,7 +927,7 @@ resource "aws_lambda_function" "download_logs_analytics" {
 
   environment {
     variables = {
-      BUCKET_NAME = "${aws_s3_bucket.govuk-analytics-logs-production.bucket}"
+      BUCKET_NAME = "${data.aws_s3_bucket.govuk-analytics-logs-production.bucket}"
     }
   }
 }
@@ -980,11 +962,11 @@ resource "aws_lambda_permission" "allow_download_logs_analytics" {
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.download_logs_analytics.function_name}"
   principal     = "s3.amazonaws.com"
-  source_arn    = "${aws_s3_bucket.govuk-analytics-logs-production.arn}"
+  source_arn    = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket     = "${aws_s3_bucket.govuk-analytics-logs-production.id}"
+  bucket     = "${data.aws_s3_bucket.govuk-analytics-logs-production.id}"
   depends_on = ["aws_lambda_permission.allow_download_logs_analytics"]
 
   lambda_function {
