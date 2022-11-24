@@ -909,10 +909,21 @@ data "template_file" "download_logs_analytics_policy_template" {
   }
 }
 
-# AWS Lambda
+# Packaging the Lambda
+resource "null_resource" "install_dependencies" {
+  triggers = {
+    requirements = "${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt"
+  }
+
+  provisioner "local-exec" {
+    command = "pip install -r ${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt -t ${path.module}/../../lambda/DownloadLogsAnalytics/"
+  }
+}
+
 data "archive_file" "download_logs_analytics" {
+  depends_on  = ["null_resource.install_dependencies"]
   type        = "zip"
-  source_file = "${path.module}/../../lambda/DownloadLogsAnalytics/main.py"
+  source_dir  = "${path.module}/../../lambda/DownloadLogsAnalytics/"
   output_path = "${path.module}/../../lambda/DownloadLogsAnalytics/DownloadLogsAnalytics.zip"
 }
 
