@@ -93,7 +93,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
   }
 
-rule {
+  rule {
     name     = "allow-external-partners"
     priority = 4
 
