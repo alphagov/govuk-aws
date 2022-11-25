@@ -911,10 +911,6 @@ data "template_file" "download_logs_analytics_policy_template" {
 
 # Packaging the Lambda
 resource "null_resource" "install_dependencies" {
-  triggers = {
-    requirements = "${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt"
-  }
-
   provisioner "local-exec" {
     command = "pip install -r ${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt -t ${path.module}/../../lambda/DownloadLogsAnalytics/"
   }
