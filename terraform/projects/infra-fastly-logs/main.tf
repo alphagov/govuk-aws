@@ -910,27 +910,38 @@ data "template_file" "download_logs_analytics_policy_template" {
 }
 
 # Packaging the Lambda
-resource "null_resource" "install_dependencies" {
+resource "null_resource" "install_python_dependencies" {
+  triggers = {
+    requirements = "${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt"
+  }
+
   provisioner "local-exec" {
-    command = "pip install -r ${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt -t ${path.module}/../../lambda/DownloadLogsAnalytics/"
+    command = "bash ${path.module}/../../lambda/DownloadLogsAnalytics/scripts/create_pkg.sh"
+
+    environment = {
+      function_name = "download_logs_analytics"
+      runtime       = "python3.7"
+      path_cwd      = "${path.module}/../../lambda/DownloadLogsAnalytics"
+    }
   }
 }
 
-data "archive_file" "download_logs_analytics" {
-  depends_on  = ["null_resource.install_dependencies"]
+data "archive_file" "download_logs_analytics_pkg" {
+  depends_on  = ["null_resource.install_python_dependencies"]
   type        = "zip"
   source_dir  = "${path.module}/../../lambda/DownloadLogsAnalytics/"
   output_path = "${path.module}/../../lambda/DownloadLogsAnalytics/DownloadLogsAnalytics.zip"
 }
 
 resource "aws_lambda_function" "download_logs_analytics" {
-  filename         = "${data.archive_file.download_logs_analytics.output_path}"
-  source_code_hash = "${data.archive_file.download_logs_analytics.output_base64sha256}"
+  filename         = "${data.archive_file.download_logs_analytics_pkg.output_path}"
+  source_code_hash = "${data.archive_file.download_logs_analytics_pkg.output_base64sha256}"
 
   function_name = "govuk-${var.aws_environment}-download_logs_analytics"
   role          = "${aws_iam_role.download_logs_analytics.arn}"
   handler       = "main.lambda_handler"
   runtime       = "python3.7"
+  depends_on    = ["null_resource.install_python_dependencies"]
 
   environment {
     variables = {
