@@ -968,6 +968,25 @@ resource "aws_iam_role_policy_attachment" "download_logs_analytics" {
   policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
 }
 
+data "aws_iam_policy_document" "download_logs_analytics" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = [
+      "arn:aws:logs:*:*:*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "download_logs_analytics" {
+  role   = "${aws_iam_role.download_logs_analytics.id}"
+  policy = "${data.aws_iam_policy_document.download_logs_analytics.json}"
+}
+
 resource "aws_lambda_permission" "allow_download_logs_analytics" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
