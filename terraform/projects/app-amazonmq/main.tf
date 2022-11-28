@@ -1,3 +1,12 @@
+/**
+ * ## Project: app-backend
+ * 
+ * Module app-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
+ * It uses remote state from the infra-vpc and infra-security-groups modules.
+ *
+ * The Terraform provider will only allow us to create a single user, so all 
+ * other users must be added from the RabbitMQ web admin UI.
+ */
 terraform {
   backend "s3" {}
   required_version = ">= 1.1.0"
