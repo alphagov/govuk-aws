@@ -16,6 +16,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.0"
     }
+    local = {
+      version = "~> 2.2.3"
+    }
   }
 }
 
