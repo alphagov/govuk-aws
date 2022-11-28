@@ -117,7 +117,7 @@ resource "aws_route53_record" "amazonmq_internal_domain_name" {
   type    = "CNAME"
   # records = [aws_mq_broker.publishing_amazonmq.instances.0.ip_address]
   ttl     = 300
-  records = [regex(".+://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]]
+  records = [regex("://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]]
 
 }
 
