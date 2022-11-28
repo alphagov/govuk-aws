@@ -28,7 +28,7 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   subnet_ids = [data.terraform_remote_state.infra_networking.outputs.private_subnet_ids[0]]
 
   # The Terraform provider will only allow us to create a single user
-  # All other users must be added from the web UI 
+  # All other users must be added from the web UI or REST API
   user {
     console_access = true
     username       = "root"
@@ -121,3 +121,25 @@ resource "aws_route53_record" "amazonmq_internal_root_domain_name" {
   ttl     = 300
   records = [aws_route53_record.amazonmq_internal_domain_name.fqdn]
 }
+
+
+# Write the decrypted definitions from govuk-aws-data to a local file
+resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
+  filename = "/tmp/amazonmq_rabbitmq_definitions.json"
+  content  = var.amazonmq_definitions
+}
+
+# POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
+resource "null_resource" "upload_definitions" {
+  triggers = {
+    # make this run on every apply
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    environment = {
+      AMAZONMQ_USER     = "root"
+      AMAZONMQ_PASSWORD = var.amazonmq_root_password
+    }
+    command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
+  }
+} 
