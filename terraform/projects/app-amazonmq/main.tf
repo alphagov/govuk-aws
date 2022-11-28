@@ -111,21 +111,12 @@ data "aws_route53_zone" "internal" {
 }
 
 # internal_domain_name is ${var.stackname}.${internal_root_domain_name}
-resource "aws_route53_record" "amazonmq_internal_domain_name" {
-  zone_id = data.aws_route53_zone.internal.zone_id
-  name    = "${aws_mq_broker.publishing_amazonmq.broker_name}.${var.internal_domain_name}"
+resource "aws_route53_record" "amazonmq_internal_root_domain_name" {
+  zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
+  name    = "${aws_mq_broker.publishing_amazonmq.broker_name}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "CNAME"
   # records = [aws_mq_broker.publishing_amazonmq.instances.0.ip_address]
   ttl     = 300
   records = [regex("://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]]
 
-}
-
-# then we alias an internal root domain record to that, so we are stack-independent 
-resource "aws_route53_record" "amazonmq_internal_root_domain_name" {
-  zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
-  name    = "${aws_mq_broker.publishing_amazonmq.broker_name}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
-  type    = "CNAME"
-  ttl     = 300
-  records = [aws_route53_record.amazonmq_internal_domain_name.fqdn]
 }
