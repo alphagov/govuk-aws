@@ -63,7 +63,7 @@ resource "aws_security_group_rule" "amazonmq_ingress_management_https" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+  security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
 }
 
