@@ -32,7 +32,7 @@ provider "aws" {
 
 # --------------------------------------------------------------
 resource "aws_mq_broker" "publishing_amazonmq" {
-  broker_name         = var.publishing_amazonmq_broker_name
+  broker_name = var.publishing_amazonmq_broker_name
 
   engine_type         = var.engine_type
   engine_version      = var.engine_version
