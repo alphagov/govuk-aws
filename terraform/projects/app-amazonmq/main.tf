@@ -57,10 +57,11 @@ resource "aws_mq_broker" "publishing_amazonmq" {
 # Allow HTTPS access to AmazonMQ from anything in the 'management' SG
 # (i.e. all EC2 instances)
 resource "aws_security_group_rule" "amazonmq_ingress_management_https" {
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  description = "HTTPS ingress for AmazonMQ"
 
   # Which security group is the rule assigned to
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
@@ -69,10 +70,11 @@ resource "aws_security_group_rule" "amazonmq_ingress_management_https" {
 # existing RabbitMQ runs on port 5672, this AmazonMQ will be on port 5671
 # so we need to allow that through the SG
 resource "aws_security_group_rule" "amazonmq_ingress_management_amqps" {
-  type      = "ingress"
-  from_port = 5671
-  to_port   = 5671
-  protocol  = "tcp"
+  type        = "ingress"
+  from_port   = 5671
+  to_port     = 5671
+  protocol    = "tcp"
+  description = "AMQPS ingress for AmazonMQ"
 
   # Which security group is the rule assigned to
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
