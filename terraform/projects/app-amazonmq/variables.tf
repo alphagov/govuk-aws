@@ -74,7 +74,7 @@ variable "amazonmq_definitions" {
 variable "publishing_amazonmq_broker_name" {
   type        = string
   description = "Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces)."
-  default     = "publishing-amazonmq"
+  default     = "PublishingMQ"
 }
 
 locals {
