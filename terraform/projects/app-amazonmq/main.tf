@@ -1,11 +1,15 @@
 /**
- * ## Project: app-backend
+ * ## Project: app-amazonmq
  * 
  * Module app-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
  * It uses remote state from the infra-vpc and infra-security-groups modules.
  *
  * The Terraform provider will only allow us to create a single user, so all 
- * other users must be added from the RabbitMQ web admin UI.
+ * other users must be added from the RabbitMQ web admin UI or REST API.
+ * 
+ * DO NOT USE IN PRODUCTION YET - this version is integration-only, as it
+ * implicitly assumes a single instance, and will need reworking for a 
+ * highly-available cluster setup 
  */
 terraform {
   backend "s3" {}
@@ -118,8 +122,12 @@ resource "aws_route53_record" "amazonmq_internal_root_domain_name" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
   name    = "${aws_mq_broker.publishing_amazonmq.broker_name}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "CNAME"
-  # records = [aws_mq_broker.publishing_amazonmq.instances.0.ip_address]
   ttl     = 300
+  # TODO: this version will only work with a single instance, as on integration. 
+  # For staging/production, we'll have a highly-available cluster, at which point
+  # we'll need to repoint this Route53 record at a Network Load Balancer that balances
+  # between the instances. See Amazon's article about how to do that here:
+  # https://aws.amazon.com/blogs/compute/creating-static-custom-domain-endpoints-with-amazon-mq-for-rabbitmq/
   records = [regex("://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]]
 
 }
