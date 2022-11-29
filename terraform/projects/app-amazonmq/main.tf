@@ -41,8 +41,8 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   publicly_accessible = var.publicly_accessible
   # use the existing RabbitMQ security group. We can move it
   # over to this module at the point of migration
-  security_groups     = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
-  subnet_ids          = var.deployment_mode == "SINGLE_INSTANCE" ? [data.terraform_remote_state.infra_networking.outputs.private_subnet_ids[0]] : data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
+  subnet_ids      = var.deployment_mode == "SINGLE_INSTANCE" ? [data.terraform_remote_state.infra_networking.outputs.private_subnet_ids[0]] : data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 
   # The Terraform provider will only allow us to create a single user
   # All other users must be added from the web UI 
