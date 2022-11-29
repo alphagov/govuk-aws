@@ -32,7 +32,7 @@ provider "aws" {
 
 # --------------------------------------------------------------
 resource "aws_mq_broker" "publishing_amazonmq" {
-  broker_name = "PublishingMQ"
+  broker_name         = var.publishing_amazonmq_broker_name
 
   engine_type         = var.engine_type
   engine_version      = var.engine_version
@@ -120,7 +120,7 @@ data "aws_route53_zone" "internal" {
 # internal_domain_name is ${var.stackname}.${internal_root_domain_name}
 resource "aws_route53_record" "amazonmq_internal_root_domain_name" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
-  name    = "${aws_mq_broker.publishing_amazonmq.broker_name}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
+  name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "CNAME"
   ttl     = 300
   # TODO: this version will only work with a single instance, as on integration. 

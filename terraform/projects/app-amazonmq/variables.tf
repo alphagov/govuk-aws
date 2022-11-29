@@ -71,6 +71,12 @@ variable "amazonmq_definitions" {
   description = "JSON definitions exported from existing RabbitMQ web management UI. The root user definition should be removed before use."
 }
 
+variable "publishing_amazonmq_broker_name" {
+  type        = string
+  description = "Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces)."
+  default     = "publishing-amazonmq"
+}
+
 locals {
   tags = {
     Project         = var.stackname
