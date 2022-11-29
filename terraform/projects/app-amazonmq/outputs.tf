@@ -8,7 +8,7 @@ output "console_url" {
   value       = aws_mq_broker.publishing_amazonmq.instances.0.console_url
 }
 
-output "endpoint" {
+output "amqp_endpoint" {
   description = "AMQP URL for connecting a client app to the broker"
   value       = aws_mq_broker.publishing_amazonmq.instances.0.endpoints.0
 }

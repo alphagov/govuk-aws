@@ -1,10 +1,14 @@
-## Project: app-backend
+## Project: app-amazonmq
 
 Module app-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
 It uses remote state from the infra-vpc and infra-security-groups modules.
 
 The Terraform provider will only allow us to create a single user, so all
-other users must be added from the RabbitMQ web admin UI.
+other users must be added from the RabbitMQ web admin UI or REST API.
+
+DO NOT USE IN PRODUCTION YET - this version is integration-only, as it
+implicitly assumes a single instance, and will need reworking for a
+highly-available cluster setup
 
 ## Requirements
 
@@ -73,6 +77,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_amqp_endpoint"></a> [amqp\_endpoint](#output\_amqp\_endpoint) | AMQP URL for connecting a client app to the broker |
 | <a name="output_broker_id"></a> [broker\_id](#output\_broker\_id) | AWS-generated unique identifier for the broker |
 | <a name="output_console_url"></a> [console\_url](#output\_console\_url) | URL of the RabbitMQ web management UI |
-| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | AMQP URL for connecting a client app to the broker |
