@@ -2,6 +2,14 @@ variable "office_ips" {
   type = "string"
 }
 
+variable "vpc_id" {
+  type = "string"
+}
+
+variable "eip_allocation_id" {
+  type = "string"
+}
+
 data "aws_ami" "jammy" {
   most_recent = true
 
@@ -24,12 +32,12 @@ resource "aws_key_pair" "this" {
 }
 
 resource "aws_security_group" "temp_towers_allow_ssh" {
-  vpc_id      = "${module.vpc.vpc_id}"
+  vpc_id      = var.vpc_id
   name_prefix = "temp_towers_allow_ssh_"
   description = "Allow SSH"
 
   ingress {
-    cidr_blocks = ["${var.office_ips}"]
+    cidr_blocks = [var.office_ips]
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -41,7 +49,7 @@ resource "aws_security_group" "temp_towers_allow_ssh" {
 }
 
 resource "aws_security_group" "temp_towers_allow_egress" {
-  vpc_id      = aws_vpc.this.id
+  vpc_id      = var.vpc_id
   name_prefix = "temp_towers_allow_egress_"
   description = "Allow Egress to the entire internet"
 
@@ -58,15 +66,15 @@ resource "aws_security_group" "temp_towers_allow_egress" {
 }
 
 resource "aws_instance" "this" {
-  ami           = "${data.aws_ami.jammy.id}"
+  ami           = data.aws_ami.jammy.id
   instance_type = "t3.nano"
-  key_name      = "${aws_key_pair.this.key_name}"
+  key_name      = aws_key_pair.this.key_name
 
-  subnet_id                   = "${aws_subnet.this.id}"
+  subnet_id                   = aws_subnet.this.id
   associate_public_ip_address = true
   vpc_security_group_ids = [
-    "${aws_security_group.temp_towers_allow_ssh.id}",
-    "${aws_security_group.temp_towers_allow_egress.id}",
+    aws_security_group.temp_towers_allow_ssh.id,
+    aws_security_group.temp_towers_allow_egress.id,
   ]
 
   tags = {
@@ -75,11 +83,11 @@ resource "aws_instance" "this" {
 }
 
 resource "aws_eip_association" "this" {
-  instance_id   = "${aws_instance.this.id}"
-  allocation_id = "eipalloc-0c15477b55906cc2c" # staging licensify-reservation-0
+  instance_id   = aws_instance.this.id
+  allocation_id = var.eip_allocation_id
 }
 
 output "public_ip" {
-  value = "${aws_instance.this.public_ip}"
+  value = aws_instance.this.public_ip
 }
 
