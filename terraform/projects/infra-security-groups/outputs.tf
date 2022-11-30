@@ -478,22 +478,6 @@ output "sg_related-links_id" {
   value = "${aws_security_group.related-links.id}"
 }
 
-output "sg_knowledge-graph_id" {
-  value = "${aws_security_group.knowledge-graph.id}"
-}
-
-output "sg_knowledge-graph_elb_external_id" {
-  value = "${aws_security_group.knowledge-graph_elb_external.id}"
-}
-
-output "sg_data-science-data_id" {
-  value = "${aws_security_group.data-science-data.id}"
-}
-
-output "sg_accessibility-reports_id" {
-  value = "${aws_security_group.accessibility-reports.id}"
-}
-
 output "office_ips" {
   value = "${var.office_ips}"
 }
