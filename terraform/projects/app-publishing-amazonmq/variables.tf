@@ -61,12 +61,12 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
-variable "amazonmq_root_password" {
+variable "publishing_amazonmq_root_password" {
   type      = string
   sensitive = true
 }
 
-variable "amazonmq_definitions" {
+variable "publishing_amazonmq_definitions" {
   type        = string
   description = "JSON definitions exported from existing RabbitMQ web management UI. The root user definition should be removed before use."
 }

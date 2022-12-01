@@ -1,7 +1,7 @@
 /**
- * ## Project: app-amazonmq
+ * ## Project: app-publishing-amazonmq
  * 
- * Module app-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
+ * Module app-publishing-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
  * It uses remote state from the infra-vpc and infra-security-groups modules.
  *
  * The Terraform provider will only allow us to create a single user, so all 
@@ -49,19 +49,19 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   user {
     console_access = true
     username       = "root"
-    password       = var.amazonmq_root_password
+    password       = var.publishing_amazonmq_root_password
   }
 
 }
 
-# Allow HTTPS access to AmazonMQ from anything in the 'management' SG
+# Allow HTTPS access to Publishing's AmazonMQ from anything in the 'management' SG
 # (i.e. all EC2 instances)
-resource "aws_security_group_rule" "amazonmq_ingress_management_https" {
+resource "aws_security_group_rule" "publishing_amazonmq_ingress_management_https" {
   type        = "ingress"
   from_port   = 443
   to_port     = 443
   protocol    = "tcp"
-  description = "HTTPS ingress for AmazonMQ"
+  description = "HTTPS ingress for Publishing AmazonMQ"
 
   # Which security group is the rule assigned to
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
@@ -69,12 +69,12 @@ resource "aws_security_group_rule" "amazonmq_ingress_management_https" {
 }
 # existing RabbitMQ runs on port 5672, this AmazonMQ will be on port 5671
 # so we need to allow that through the SG
-resource "aws_security_group_rule" "amazonmq_ingress_management_amqps" {
+resource "aws_security_group_rule" "publishing_amazonmq_ingress_management_amqps" {
   type        = "ingress"
   from_port   = 5671
   to_port     = 5671
   protocol    = "tcp"
-  description = "AMQPS ingress for AmazonMQ"
+  description = "AMQPS ingress for Publishing AmazonMQ"
 
   # Which security group is the rule assigned to
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
@@ -89,7 +89,7 @@ data "aws_route53_zone" "internal" {
 }
 
 # internal_domain_name is ${var.stackname}.${internal_root_domain_name}
-resource "aws_route53_record" "amazonmq_internal_root_domain_name" {
+resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
   name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "CNAME"
