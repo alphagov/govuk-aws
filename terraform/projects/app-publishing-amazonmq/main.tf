@@ -56,7 +56,7 @@ resource "aws_mq_broker" "publishing_amazonmq" {
 
 # Allow HTTPS access to Publishing's AmazonMQ from anything in the 'management' SG
 # (i.e. all EC2 instances)
-resource "aws_security_group_rule" "publishing_amazonmq_ingress_management_https" {
+resource "aws_security_group_rule" "publishingamazonmq_ingress_management_https" {
   type        = "ingress"
   from_port   = 443
   to_port     = 443
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "publishing_amazonmq_ingress_management_https
 }
 # existing RabbitMQ runs on port 5672, this AmazonMQ will be on port 5671
 # so we need to allow that through the SG
-resource "aws_security_group_rule" "publishing_amazonmq_ingress_management_amqps" {
+resource "aws_security_group_rule" "publishingamazonmq_ingress_management_amqps" {
   type        = "ingress"
   from_port   = 5671
   to_port     = 5671
