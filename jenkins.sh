@@ -50,7 +50,6 @@ git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alpha
 case $COMMAND in
   'apply') EXTRA='-auto-approve';;
   'plan (destroy)') COMMAND='plan'; EXTRA='-detailed-exitcode -destroy';;
-  # The -force flag has been deprecated since TF v1.0, supplying it causes errors in TF v1.0+ 
   'destroy') EXTRA='-auto-approve';;
   'plan') EXTRA='-detailed-exitcode';;
 esac
