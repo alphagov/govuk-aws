@@ -61,7 +61,7 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
-variable "amazonmq_root_password" {
+variable "publishing_amazonmq_root_password" {
   type      = string
   sensitive = true
 }
