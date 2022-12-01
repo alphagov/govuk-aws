@@ -910,38 +910,41 @@ data "template_file" "download_logs_analytics_policy_template" {
 }
 
 # Packaging the Lambda
-resource "null_resource" "install_python_dependencies" {
+data "aws_caller_identity" "current" {}
+
+resource "aws_ecr_repository" "repo" {
+  name = "analytics-logs-lambda-container"
+}
+
+resource "null_resource" "ecr_image" {
   triggers = {
-    requirements = "${path.module}/../../lambda/DownloadLogsAnalytics/requirements.txt"
+    python_file = "${path.module}/../../lambda/DownloadLogsAnalytics/main.py"
+    docker_file = "${path.module}/../../lambda/DownloadLogsAnalytics/Dockerfile"
   }
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/../../lambda/DownloadLogsAnalytics/scripts/create_pkg.sh"
-
-    environment = {
-      function_name = "download_logs_analytics"
-      runtime       = "python3.7"
-      path_cwd      = "${path.module}/../../lambda/DownloadLogsAnalytics"
-    }
+    command = <<EOF
+      docker login -u AWS -p $(aws ecr get-login-password --region ${var.aws_region}) ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com
+      cd ${path.module}/../../lambda/DownloadLogsAnalytics/
+      docker build -t ${aws_ecr_repository.repo.repository_url}:latest .
+      docker push ${aws_ecr_repository.repo.repository_url}:latest
+    EOF
   }
 }
 
-data "archive_file" "download_logs_analytics_pkg" {
-  depends_on  = ["null_resource.install_python_dependencies"]
-  type        = "zip"
-  source_dir  = "${path.module}/../../lambda/DownloadLogsAnalytics/"
-  output_path = "${path.module}/../../lambda/DownloadLogsAnalytics/DownloadLogsAnalytics.zip"
+data "aws_ecr_image" "lambda_image" {
+  depends_on = ["null_resource.ecr_image"]
+
+  repository_name = "analytics-logs-lambda-container"
+  image_tag       = "latest"
 }
 
 resource "aws_lambda_function" "download_logs_analytics" {
-  filename         = "${data.archive_file.download_logs_analytics_pkg.output_path}"
-  source_code_hash = "${data.archive_file.download_logs_analytics_pkg.output_base64sha256}"
-
   function_name = "govuk-${var.aws_environment}-download_logs_analytics"
   role          = "${aws_iam_role.download_logs_analytics.arn}"
-  handler       = "main.lambda_handler"
-  runtime       = "python3.7"
-  depends_on    = ["null_resource.install_python_dependencies"]
+  depends_on    = ["null_resource.ecr_image"]
+  image_uri     = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
+  package_type  = "Image"
 
   environment {
     variables = {
