@@ -50,7 +50,7 @@ git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alpha
 case $COMMAND in
   'apply') EXTRA='-auto-approve';;
   'plan (destroy)') COMMAND='plan'; EXTRA='-detailed-exitcode -destroy';;
-  'destroy') EXTRA='-force';;
+  'destroy') EXTRA='-auto-approve';;
   'plan') EXTRA='-detailed-exitcode';;
 esac
 
