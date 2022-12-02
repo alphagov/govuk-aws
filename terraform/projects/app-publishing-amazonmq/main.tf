@@ -23,6 +23,9 @@ terraform {
     local = {
       version = "~> 2.2.3"
     }
+    null = {
+      version = "~> 3.2.1"
+    }
   }
 }
 
