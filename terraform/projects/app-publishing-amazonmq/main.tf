@@ -106,4 +106,33 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 }
 
 
+# --------------------------------------------------------------
+# POST full RabbitMQ config to the management API
+data "template_params" {
+  type = map
+  value = {
+    publishing_amazonmq_passwords   = var.publishing_amazonmq_passwords
+    publishing_amazonmq_broker_name = var.publishing_amazonmq_broker_name
+  }
+}
 
+# Write the decrypted definitions from govuk-aws-data to a local file
+resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
+  filename = "/tmp/amazonmq_rabbitmq_definitions-${timestamp()}.json"
+  content  = templatefile("${path.cwd}/publishing-rabbitmq-schema.json.tpl", data.template_params)
+}
+
+# POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
+resource "null_resource" "upload_definitions" {
+  triggers = {
+    # make this run on every apply
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    environment = {
+      AMAZONMQ_USER     = "root"
+      AMAZONMQ_PASSWORD = var.publishing_amazonmq_passwords["root"]
+    }
+    command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
+  }
+} 
