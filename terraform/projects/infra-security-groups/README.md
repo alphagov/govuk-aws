@@ -28,7 +28,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_security_group.accessibility-reports](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.account](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.account_elb_external](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.account_elb_internal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -79,7 +78,6 @@ No modules.
 | [aws_security_group.content-store](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.content-store_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.content-store_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.data-science-data](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.db-admin](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.db-admin_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.deploy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -114,8 +112,6 @@ No modules.
 | [aws_security_group.graphite_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.graphite_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.jumpbox](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.knowledge-graph](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group.knowledge-graph_elb_external](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.licensify-backend](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.licensify-backend_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.licensify-backend_internal_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
@@ -176,8 +172,6 @@ No modules.
 | [aws_security_group.whitehall-frontend_external_elb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.whitehall-frontend_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.whitehall_ithc_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
-| [aws_security_group_rule.accessibility-reports_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.accessibility-reports_ingress_office_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.account-elb-external_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.account-elb-external_ingress_any_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.account-elb-internal_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -287,8 +281,6 @@ No modules.
 | [aws_security_group_rule.content-store-internal-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.content-store_ingress_content-store-external-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.content-store_ingress_content-store-internal-elb_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.data-science-data_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.data-science-data_ingress_office_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.db-admin-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.db-admin-elb_ingress_management_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.db-admin_ingress_account_pgbouncer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -394,17 +386,6 @@ No modules.
 | [aws_security_group_rule.ithc_ingress_whitehall-frontend_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ithc_ingress_whitehall_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.jumpbox_ingress_offsite-ssh_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_egress_any_bolt](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_egress_any_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_egress_any_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_ingress_office_bolt](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_ingress_office_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_ingress_office_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph-elb-external_ingress_paas_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph_ingress_knowledge-graph-elb_bolt](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph_ingress_knowledge-graph-elb_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.knowledge-graph_ingress_knowledge-graph-elb_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.licensify-backend-external-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.licensify-backend-external-elb_ingress_public_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.licensify-backend-external-elb_ingress_public_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -575,7 +556,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_office_ips"></a> [office\_ips](#output\_office\_ips) | n/a |
-| <a name="output_sg_accessibility-reports_id"></a> [sg\_accessibility-reports\_id](#output\_sg\_accessibility-reports\_id) | n/a |
 | <a name="output_sg_account_elb_external_id"></a> [sg\_account\_elb\_external\_id](#output\_sg\_account\_elb\_external\_id) | n/a |
 | <a name="output_sg_account_elb_internal_id"></a> [sg\_account\_elb\_internal\_id](#output\_sg\_account\_elb\_internal\_id) | n/a |
 | <a name="output_sg_account_id"></a> [sg\_account\_id](#output\_sg\_account\_id) | n/a |
@@ -618,7 +598,6 @@ No modules.
 | <a name="output_sg_content-store_external_elb_id"></a> [sg\_content-store\_external\_elb\_id](#output\_sg\_content-store\_external\_elb\_id) | n/a |
 | <a name="output_sg_content-store_id"></a> [sg\_content-store\_id](#output\_sg\_content-store\_id) | n/a |
 | <a name="output_sg_content-store_internal_elb_id"></a> [sg\_content-store\_internal\_elb\_id](#output\_sg\_content-store\_internal\_elb\_id) | n/a |
-| <a name="output_sg_data-science-data_id"></a> [sg\_data-science-data\_id](#output\_sg\_data-science-data\_id) | n/a |
 | <a name="output_sg_db-admin_elb_id"></a> [sg\_db-admin\_elb\_id](#output\_sg\_db-admin\_elb\_id) | n/a |
 | <a name="output_sg_db-admin_id"></a> [sg\_db-admin\_id](#output\_sg\_db-admin\_id) | n/a |
 | <a name="output_sg_deploy_elb_id"></a> [sg\_deploy\_elb\_id](#output\_sg\_deploy\_elb\_id) | n/a |
@@ -648,8 +627,6 @@ No modules.
 | <a name="output_sg_graphite_id"></a> [sg\_graphite\_id](#output\_sg\_graphite\_id) | n/a |
 | <a name="output_sg_graphite_internal_elb_id"></a> [sg\_graphite\_internal\_elb\_id](#output\_sg\_graphite\_internal\_elb\_id) | n/a |
 | <a name="output_sg_jumpbox_id"></a> [sg\_jumpbox\_id](#output\_sg\_jumpbox\_id) | n/a |
-| <a name="output_sg_knowledge-graph_elb_external_id"></a> [sg\_knowledge-graph\_elb\_external\_id](#output\_sg\_knowledge-graph\_elb\_external\_id) | n/a |
-| <a name="output_sg_knowledge-graph_id"></a> [sg\_knowledge-graph\_id](#output\_sg\_knowledge-graph\_id) | n/a |
 | <a name="output_sg_licensify-backend_external_elb_id"></a> [sg\_licensify-backend\_external\_elb\_id](#output\_sg\_licensify-backend\_external\_elb\_id) | n/a |
 | <a name="output_sg_licensify-backend_id"></a> [sg\_licensify-backend\_id](#output\_sg\_licensify-backend\_id) | n/a |
 | <a name="output_sg_licensify-backend_internal_elb_id"></a> [sg\_licensify-backend\_internal\_elb\_id](#output\_sg\_licensify-backend\_internal\_elb\_id) | n/a |

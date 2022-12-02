@@ -93,6 +93,33 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
   }
 
+  rule {
+    name     = "allow-external-partners"
+    priority = 4
+
+    action {
+      allow {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = aws_wafv2_ip_set.external_partner_ips.arn
+
+        ip_set_forwarded_ip_config {
+          fallback_behavior = "NO_MATCH"
+          header_name       = "true-client-ip"
+          position          = "FIRST"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "external-partner-cache-requests"
+      sampled_requests_enabled   = true
+    }
+  }
+
   # set a base rate limit per IP looking back over the last 5 minutes
   # this is checked every 30s
   rule {
@@ -151,6 +178,14 @@ resource "aws_wafv2_ip_set" "govuk_requesting_ips" {
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = concat(var.traffic_replay_ips, local.nat_gateway_ips)
+}
+
+resource "aws_wafv2_ip_set" "external_partner_ips" {
+  name               = "external_partner_ips"
+  description        = "The IP addresses are used by our partners."
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = var.allow_external_ips
 }
 
 resource "aws_cloudwatch_log_group" "public_cache_waf" {

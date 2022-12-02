@@ -19,3 +19,7 @@ The `govuk-tools` account does not behave like a normal environment. It contains
 We're recording architecture decisions we make so we have a history and context on our implementation.
 
 Please see the [ADR documentation](docs/architecture/README.md) for further details.
+
+## Licence
+
+[MIT License](LICENCE)

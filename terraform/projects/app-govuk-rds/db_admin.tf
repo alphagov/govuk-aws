@@ -12,7 +12,7 @@ data "aws_ami" "node_ami_ubuntu" {
   }
 
   # this is the ID of the Amazon owner of the AMI we use
-  owners = ["099720109477"]
+  owners = ["099720109477", "696911096973"]
 }
 
 data "aws_iam_policy_document" "assume_node_role" {
