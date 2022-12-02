@@ -18,13 +18,13 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.45.0"
+      version = "~> 4.0"
     }
     local = {
-      version = "~> 2.2.3"
+      version = "~> 2.0"
     }
     null = {
-      version = "~> 3.2.1"
+      version = "~> 3.0"
     }
   }
 }
@@ -111,8 +111,9 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 
 # Write the decrypted definitions from govuk-aws-data to a local file
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
-  filename = "/tmp/amazonmq_rabbitmq_definitions.json"
-  content  = templatefile("${path.module}/publishing-rabbitmq-schema.json.tpl", var)
+  filename = "/tmp/amazonmq_rabbitmq_definitions-${timestamp()}.json"
+  # content  = templatefile("${path.module}/publishing-rabbitmq-schema.json.tpl", var)
+  content = "${path.module}/publishing-rabbitmq-schema.json.tpl", var)
 }
 
 # POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
