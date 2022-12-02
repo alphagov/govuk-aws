@@ -49,7 +49,6 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_amazonmq_root_password"></a> [amazonmq\_root\_password](#input\_amazonmq\_root\_password) | n/a | `string` | n/a | yes |
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_deployment_mode"></a> [deployment\_mode](#input\_deployment\_mode) | SINGLE\_INSTANCE, ACTIVE\_STANDBY\_MULTI\_AZ, or CLUSTER\_MULTI\_AZ | `string` | `"SINGLE_INSTANCE"` | no |
@@ -61,7 +60,6 @@ No modules.
 | <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list(any)` | n/a | yes |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Whether to enable connections from applications outside of the VPC that hosts the broker's subnets. Default false | `bool` | `false` | no |
 | <a name="input_publishing_amazonmq_broker_name"></a> [publishing\_amazonmq\_broker\_name](#input\_publishing\_amazonmq\_broker\_name) | Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces). | `string` | `"PublishingMQ"` | no |
-| <a name="input_publishing_amazonmq_definitions"></a> [publishing\_amazonmq\_definitions](#input\_publishing\_amazonmq\_definitions) | JSON definitions exported from existing RabbitMQ web management UI. The root user definition should be removed before use. | `string` | n/a | yes |
 | <a name="input_publishing_amazonmq_root_password"></a> [publishing\_amazonmq\_root\_password](#input\_publishing\_amazonmq\_root\_password) | n/a | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
