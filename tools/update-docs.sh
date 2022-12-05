@@ -8,5 +8,5 @@ if [[ ! $(command -v terraform-docs) ]]; then
 fi
 
 for i in $(find terraform/ -name main.tf |sed 's/\/main.tf//g'); do
-  terraform-docs md $i > $i/README.md
+  terraform-docs --lockfile=false md $i > $i/README.md
 done
