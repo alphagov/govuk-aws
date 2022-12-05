@@ -108,7 +108,7 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 
 # --------------------------------------------------------------
 # POST full RabbitMQ config to the management API
-data "template_params" {
+data "map" "template_params" {
   type = map
   value = {
     publishing_amazonmq_passwords   = var.publishing_amazonmq_passwords
