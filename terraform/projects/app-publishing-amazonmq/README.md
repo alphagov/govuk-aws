@@ -22,10 +22,8 @@ highly-available cluster setup
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.45.0 |
-| <a name="provider_local"></a> [local](#provider\_local) | 2.2.3 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.1 |
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
+
+# removing to try and fix docs issue
 
 ## Modules
 
