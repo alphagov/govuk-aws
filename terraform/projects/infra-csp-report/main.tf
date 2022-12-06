@@ -79,6 +79,41 @@ resource "aws_api_gateway_integration" "Post_Integration" {
   uri                     = aws_lambda_function.CspReportsToFirehose.invoke_arn
 }
 
+resource "aws_api_gateway_method" "any" {
+  rest_api_id   = aws_api_gateway_rest_api.csp_report.id
+  resource_id   = aws_api_gateway_resource.csp_report.id
+  http_method   = "ANY"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "Any_Integration" {
+  rest_api_id             = aws_api_gateway_rest_api.csp_report.id
+  resource_id             = aws_api_gateway_resource.csp_report.id
+  http_method             = aws_api_gateway_method.any.http_method
+  type                    = "MOCK"
+}
+
+resource "aws_api_gateway_method_response" "response_405" {
+  rest_api_id = aws_api_gateway_rest_api.csp_report.id
+  resource_id = aws_api_gateway_resource.csp_report.id
+  http_method = aws_api_gateway_method.any.http_method
+  status_code = "405"
+}
+
+resource "aws_api_gateway_integration_response" "response_405" {
+  rest_api_id = aws_api_gateway_rest_api.csp_report.id
+  resource_id = aws_api_gateway_resource.csp_report.id
+  http_method = aws_api_gateway_method.any.http_method
+  status_code = aws_api_gateway_method_response.response_405.status_code
+
+  response_templates = {
+    "application/json" = <<EOF
+#set($inputRoot = $input.path('$'))
+{ }
+EOF
+  }
+}
+
 # Lambda
 resource "aws_lambda_permission" "apigw_lambda" {
   statement_id  = "AllowExecutionFromAPIGateway"
