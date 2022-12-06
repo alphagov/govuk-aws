@@ -78,3 +78,50 @@ resource "aws_api_gateway_integration" "Post_Integration" {
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda.invoke_arn
 }
+
+# Lambda
+resource "aws_lambda_permission" "apigw_lambda" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.CspReportsToFirehose.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
+  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.resource.path}"
+}
+
+data "archive_file" "CspReportsToFirehose" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/CspReportsToFirehose/index.mjs"
+  output_path = "${path.module}/../../lambda/CspReportsToFirehose/CspReportsToFirehose.zip"
+}
+
+resource "aws_lambda_function" "CspReportsToFirehose" {
+  filename         = "${data.archive_file.CspReportsToFirehose.output_path}"
+  source_code_hash = "${data.archive_file.CspReportsToFirehose.output_base64sha256}"
+
+  function_name = "CspReportsToFirehose"
+  role          = "${aws_iam_role.CspReportsToFirehose_lambda_role.arn}"
+  handler       = "index.handler"
+  runtime       = "nodejs18.x"
+}
+
+resource "aws_iam_role" "CspReportsToFirehose_lambda_role" {
+  name = "CspToReportsFirehose"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+POLICY
+}
