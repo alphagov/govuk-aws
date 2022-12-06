@@ -44,7 +44,7 @@ if [[ "$GOVUK_AWS_DATA_BRANCH" == "" ]]; then
   GOVUK_AWS_DATA_BRANCH="main"
 fi
 
-echo "Cloning govuk-aws-data"
+echo "Cloning govuk-aws-data $GOVUK_AWS_DATA_BRANCH"
 git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alphagov/govuk-aws-data.git
 
 case $COMMAND in
