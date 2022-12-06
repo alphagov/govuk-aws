@@ -83,10 +83,7 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_management_amqps"
 
 
 # --------------------------------------------------------------  
-data "aws_route53_zone" "internal" {
-  name         = var.internal_zone_name
-  private_zone = true
-}
+# DNS Entry
 
 # internal_domain_name is ${var.stackname}.${internal_root_domain_name}
 resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
@@ -109,7 +106,7 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 # Write the decrypted definitions from govuk-aws-data to a local file
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   filename = "/tmp/amazonmq_rabbitmq_definitions.json"
-  content  = templatefile("${path.module}/publishing-rabbitmq-schema.json.tpl", {
+  content  = templatefile("${path.cwd}/publishing-rabbitmq-schema.json.tpl", {
     publishing_amazonmq_passwords   = var.publishing_amazonmq_passwords
     publishing_amazonmq_broker_name = var.publishing_amazonmq_broker_name 
   })
