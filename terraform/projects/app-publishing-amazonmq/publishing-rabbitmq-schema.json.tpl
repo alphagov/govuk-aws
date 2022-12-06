@@ -3,32 +3,32 @@
   "users": [
     {
       "name": "content_data_api",
-      "password": "${publishing_amazonmq_passwords['content_data_api']}",
+      "password": "${publishing_amazonmq_passwords["content_data_api"]}",
       "tags": ""
     },
     {
       "name": "publishing_api",
-      "password": "${publishing_amazonmq_passwords['publishing_api']}",
+      "password": "${publishing_amazonmq_passwords["publishing_api"]}",
       "tags": ""
     },
     {
       "name": "email_alert_service",
-      "password": "${publishing_amazonmq_passwords['email_alert_service']}",
+      "password": "${publishing_amazonmq_passwords["email_alert_service"]}",
       "tags": ""
     },
     {
       "name": "cache_clearing_service",
-      "password": "${publishing_amazonmq_passwords['cache_clearing_service']}",
+      "password": "${publishing_amazonmq_passwords["cache_clearing_service"]}",
       "tags": ""
     },
     {
       "name": "monitoring",
-      "password": "${publishing_amazonmq_passwords['monitoring']}",
+      "password": "${publishing_amazonmq_passwords["monitoring"]}",
       "tags": "monitoring"
     },
     {
       "name": "search-api",
-      "password": "${publishing_amazonmq_passwords['search-api']}",
+      "password": "${publishing_amazonmq_passwords["search-api"]}",
       "tags": ""
     }
   ],
