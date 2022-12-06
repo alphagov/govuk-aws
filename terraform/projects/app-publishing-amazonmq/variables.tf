@@ -51,21 +51,6 @@ variable "office_ips" {
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
-variable "internal_zone_name" {
-  type        = string
-  description = "The name of the Route53 zone that contains internal records"
-}
-
-variable "internal_domain_name" {
-  type        = string
-  description = "The domain name of the internal DNS records, it could be different from the zone name"
-}
-
-variable "publishing_amazonmq_root_password" {
-  type      = string
-  sensitive = true
-}
-
 variable "publishing_amazonmq_broker_name" {
   type        = string
   description = "Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces)."
