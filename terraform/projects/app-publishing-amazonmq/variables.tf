@@ -34,6 +34,11 @@ variable "deployment_mode" {
   default     = "SINGLE_INSTANCE"
 }
 
+variable "internal_zone_name" {
+  type        = string
+  description = "The name of the Route53 zone that contains internal records"
+}
+
 variable "host_instance_type" {
   type        = string
   description = "Broker's instance type. For example, mq.t3.micro, mq.m5.large"
@@ -56,6 +61,12 @@ variable "publishing_amazonmq_broker_name" {
   description = "Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces)."
   default     = "PublishingMQ"
 }
+
+variable "publishing_amazonmq_passwords" {
+  type        = map
+  description = "encrypted secrets in govuk-aws-data, in the form username = password"
+}
+
 
 locals {
   tags = {
