@@ -19,15 +19,8 @@ variable "stackname" {
   description = "Stackname"
 }
 
-variable "remote_state_bucket" {
+variable "aws_account_id" {
   type        = string
-  description = "S3 bucket we store our terraform state in"
-}
-
-variable "remote_state_infra_vpc_key_stack" {
-  type        = string
-  description = "Override infra_vpc remote state path"
-  default     = ""
 }
 
 # Resources
@@ -122,7 +115,7 @@ resource "aws_lambda_permission" "apigw_lambda" {
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.resource.path}"
+  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.csp_report.id}/*/${aws_api_gateway_method.post.http_method}${aws_api_gateway_resource.csp_report.path}"
 }
 
 data "archive_file" "CspReportsToFirehose" {
@@ -141,22 +134,32 @@ resource "aws_lambda_function" "CspReportsToFirehose" {
   runtime       = "nodejs18.x"
 }
 
+
 resource "aws_iam_role" "CspReportsToFirehose_lambda_role" {
   name = "CspToReportsFirehose"
 
-  assume_role_policy = <<POLICY
+  assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
       "Effect": "Allow",
-      "Sid": ""
+      "Principal": {
+        "Service": [
+          "lambda.amazonaws.com",
+          "edgelambda.amazonaws.com"
+        ]
+      },
+      "Action": "sts:AssumeRole"
     }
   ]
 }
-POLICY
+EOF
 }
+
+resource "aws_iam_policy_attachment" "CspReportsToFirehose_lambda_attach" {
+  name       = "CspReportsToFirehose-lambda-attachment"
+  roles      = ["${aws_iam_role.CspReportsToFirehose_lambda_role.name}"]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
