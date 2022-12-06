@@ -28,7 +28,7 @@
     },
     {
       "name": "search-api",
-      "password": "${publishing_amazonmq_passwords["search-api"]}",
+      "password": "${publishing_amazonmq_passwords["search_api"]}",
       "tags": ""
     }
   ],
