@@ -20,7 +20,7 @@ variable "stackname" {
 }
 
 variable "aws_account_id" {
-  type        = string
+  type = string
 }
 
 # Resources
@@ -28,12 +28,12 @@ variable "aws_account_id" {
 
 # Set up the backend & provider for each region
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 1.3.4"
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region = var.aws_region
 }
 
 provider "archive" {
@@ -80,10 +80,10 @@ resource "aws_api_gateway_method" "any" {
 }
 
 resource "aws_api_gateway_integration" "Any_Integration" {
-  rest_api_id             = aws_api_gateway_rest_api.csp_report.id
-  resource_id             = aws_api_gateway_resource.csp_report.id
-  http_method             = aws_api_gateway_method.any.http_method
-  type                    = "MOCK"
+  rest_api_id = aws_api_gateway_rest_api.csp_report.id
+  resource_id = aws_api_gateway_resource.csp_report.id
+  http_method = aws_api_gateway_method.any.http_method
+  type        = "MOCK"
 }
 
 resource "aws_api_gateway_method_response" "response_405" {
@@ -125,11 +125,11 @@ data "archive_file" "CspReportsToFirehose" {
 }
 
 resource "aws_lambda_function" "CspReportsToFirehose" {
-  filename         = "${data.archive_file.CspReportsToFirehose.output_path}"
-  source_code_hash = "${data.archive_file.CspReportsToFirehose.output_base64sha256}"
+  filename         = data.archive_file.CspReportsToFirehose.output_path
+  source_code_hash = data.archive_file.CspReportsToFirehose.output_base64sha256
 
   function_name = "CspReportsToFirehose"
-  role          = "${aws_iam_role.CspReportsToFirehose_lambda_role.arn}"
+  role          = aws_iam_role.CspReportsToFirehose_lambda_role.arn
   handler       = "index.handler"
   runtime       = "nodejs18.x"
 }
