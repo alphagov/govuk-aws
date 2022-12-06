@@ -34,11 +34,6 @@ variable "deployment_mode" {
   default     = "SINGLE_INSTANCE"
 }
 
-variable "internal_zone_name" {
-  type        = string
-  description = "The name of the Route53 zone that contains internal records"
-}
-
 variable "host_instance_type" {
   type        = string
   description = "Broker's instance type. For example, mq.t3.micro, mq.m5.large"
