@@ -11,6 +11,7 @@ resource "aws_apigatewayv2_integration" "csp_report" {
   description               = "Send CSP reports to firehose"
   integration_method        = "POST"
   integration_uri           = aws_lambda_function.lambda.invoke_arn
+  payload_format_version    = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "csp_report" {
