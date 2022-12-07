@@ -22,6 +22,7 @@ resource "aws_apigatewayv2_route" "csp_report" {
 }
 
 resource "aws_apigatewayv2_stage" "default" {
-  api_id = aws_apigatewayv2_api.csp_report.id
-  name   = "$default"
+  api_id     = aws_apigatewayv2_api.csp_report.id
+  name       = "$default"
+  autodeploy = true
 }
