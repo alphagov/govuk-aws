@@ -56,17 +56,3 @@ variable "publishing_amazonmq_broker_name" {
   description = "Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces)."
   default     = "PublishingMQ"
 }
-
-variable "publishing_amazonmq_passwords" {
-  type        = map(any)
-  description = "encrypted secrets in govuk-aws-data, in the form username = password"
-}
-
-
-locals {
-  tags = {
-    Project         = var.stackname
-    aws_stackname   = var.stackname
-    aws_environment = var.aws_environment
-  }
-}

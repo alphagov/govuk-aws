@@ -54,9 +54,9 @@ resource "random_password" "email_alert_service" {
 resource "random_password" "cache_clearing_service" {
   length = 16
 }
-variable "publishing_amazonmq_passwords" {
-  type = map(any)
-  value = {
+
+locals {
+  publishing_amazonmq_passwords = {
     root                   = random_password.root.result
     monitoring             = random_password.monitoring.result
     publishing_api         = random_password.publishing_api.result
@@ -64,6 +64,12 @@ variable "publishing_amazonmq_passwords" {
     content_data_api       = random_password.content_data_api.result
     email_alert_service    = random_password.email_alert_service.result
     cache_clearing_service = random_password.cache_clearing_service.result
+  }
+
+  tags = {
+    Project         = var.stackname
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
@@ -86,7 +92,7 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   user {
     console_access = true
     username       = "root"
-    password       = var.publishing_amazonmq_passwords["root"]
+    password       = local.publishing_amazonmq_passwords["root"]
   }
 
 }
@@ -144,7 +150,7 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   filename = "/tmp/amazonmq_rabbitmq_definitions.json"
   content = templatefile("${path.cwd}/publishing-rabbitmq-schema.json.tpl", {
-    publishing_amazonmq_passwords   = var.publishing_amazonmq_passwords
+    publishing_amazonmq_passwords   = local.publishing_amazonmq_passwords
     publishing_amazonmq_broker_name = var.publishing_amazonmq_broker_name
   })
 }
