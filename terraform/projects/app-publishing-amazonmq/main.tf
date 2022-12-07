@@ -164,7 +164,7 @@ resource "null_resource" "upload_definitions" {
   provisioner "local-exec" {
     environment = {
       AMAZONMQ_USER     = "root"
-      AMAZONMQ_PASSWORD = var.publishing_amazonmq_passwords["root"]
+      AMAZONMQ_PASSWORD = local.publishing_amazonmq_passwords["root"]
     }
     command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
   }
