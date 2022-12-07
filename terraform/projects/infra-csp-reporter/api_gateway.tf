@@ -1,3 +1,9 @@
+variable "certificate_arn" {
+  type        = string
+  description = "Certificate to use for the api gateway domain"
+}
+
+
 resource "aws_apigatewayv2_api" "csp_report" {
   name          = "CSP report"
   protocol_type = "HTTP"
@@ -31,7 +37,7 @@ resource "aws_apigatewayv2_domain_name" "csp_reporter" {
   domain_name = "csp-reporter.${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_domain_name}"
 
   domain_name_configuration {
-    certificate_arn = "${data.terraform_remote_state.infra_certificates.outputs.external_certificate_arn}"
+    certificate_arn = "${var.certificate_arn}"
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
