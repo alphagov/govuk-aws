@@ -31,6 +31,43 @@ provider "aws" {
 }
 
 # --------------------------------------------------------------
+# Generate passwords for the user accounts
+#
+resource "random_password" "root" {
+  length = 16
+}
+resource "random_password" "monitoring" {
+  length = 16
+}
+resource "random_password" "publishing_api" {
+  length = 16
+}
+resource "random_password" "search_api" {
+  length = 16
+}
+resource "random_password" "content_data_api" {
+  length = 16
+}
+resource "random_password" "email_alert_service" {
+  length = 16
+}
+resource "random_password" "cache_clearing_service" {
+  length = 16
+}
+variable "publishing_amazonmq_passwords" {
+  type = map(any)
+  value = {
+    root                   = random_password.root.result
+    monitoring             = random_password.monitoring.result
+    publishing_api         = random_password.publishing_api.result
+    search_api             = random_password.search_api.result
+    content_data_api       = random_password.content_data_api.result
+    email_alert_service    = random_password.email_alert_service.result
+    cache_clearing_service = random_password.cache_clearing_service.result
+  }
+}
+
+# --------------------------------------------------------------
 resource "aws_mq_broker" "publishing_amazonmq" {
   broker_name = var.publishing_amazonmq_broker_name
 
