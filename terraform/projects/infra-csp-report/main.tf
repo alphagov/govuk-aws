@@ -45,66 +45,31 @@ data "aws_caller_identity" "current" {}
 # Api gateway
 #
 
-resource "aws_api_gateway_rest_api" "csp_report" {
-  name        = "CSP report"
-  description = "Receive CSP reports"
+resource "aws_apigatewayv2_api" "csp_report" {
+  name          = "CSP report"
+  protocol_type = "HTTP"
+  description   = "Receive CSP reports"
 }
 
-resource "aws_api_gateway_resource" "csp_report" {
-  rest_api_id = aws_api_gateway_rest_api.csp_report.id
-  parent_id   = aws_api_gateway_rest_api.csp_report.root_resource_id
-  path_part   = "csp-report"
+resource "aws_apigatewayv2_integration" "csp_report" {
+  api_id           = aws_apigatewayv2_api.csp_report.id
+  integration_type = "AWS_PROXY"
+
+  description               = "Send CSP reports to firehose"
+  integration_method        = "POST"
+  integration_uri           = aws_lambda_function.CspReportsToFirehose.invoke_arn
 }
 
-resource "aws_api_gateway_method" "post" {
-  rest_api_id   = aws_api_gateway_rest_api.csp_report.id
-  resource_id   = aws_api_gateway_resource.csp_report.id
-  http_method   = "POST"
-  authorization = "NONE"
+resource "aws_apigatewayv2_route" "csp_report" {
+  api_id    = aws_apigatewayv2_api.csp_report.id
+  route_key = "POST /csp_report"
+
+  target = "integrations/${aws_apigatewayv2_integration.csp_report.id}"
 }
 
-resource "aws_api_gateway_integration" "Post_Integration" {
-  rest_api_id             = aws_api_gateway_rest_api.csp_report.id
-  resource_id             = aws_api_gateway_resource.csp_report.id
-  http_method             = aws_api_gateway_method.post.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.CspReportsToFirehose.invoke_arn
-}
-
-resource "aws_api_gateway_method" "any" {
-  rest_api_id   = aws_api_gateway_rest_api.csp_report.id
-  resource_id   = aws_api_gateway_resource.csp_report.id
-  http_method   = "ANY"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "Any_Integration" {
-  rest_api_id = aws_api_gateway_rest_api.csp_report.id
-  resource_id = aws_api_gateway_resource.csp_report.id
-  http_method = aws_api_gateway_method.any.http_method
-  type        = "MOCK"
-}
-
-resource "aws_api_gateway_method_response" "response_405" {
-  rest_api_id = aws_api_gateway_rest_api.csp_report.id
-  resource_id = aws_api_gateway_resource.csp_report.id
-  http_method = aws_api_gateway_method.any.http_method
-  status_code = "405"
-}
-
-resource "aws_api_gateway_integration_response" "response_405" {
-  rest_api_id = aws_api_gateway_rest_api.csp_report.id
-  resource_id = aws_api_gateway_resource.csp_report.id
-  http_method = aws_api_gateway_method.any.http_method
-  status_code = aws_api_gateway_method_response.response_405.status_code
-
-  response_templates = {
-    "application/json" = <<EOF
-#set($inputRoot = $input.path('$'))
-{ }
-EOF
-  }
+resource "aws_apigatewayv2_stage" "default" {
+  api_id = aws_apigatewayv2_api.csp_report.id
+  name   = "$default"
 }
 
 # Lambda
@@ -115,7 +80,7 @@ resource "aws_lambda_permission" "apigw_lambda" {
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.csp_report.id}/*/${aws_api_gateway_method.post.http_method}${aws_api_gateway_resource.csp_report.path}"
+  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_apigatewayv2_api.csp_report.id}/*/${aws_apigatewayv2_route.csp_report.route_key}"
 }
 
 data "archive_file" "CspReportsToFirehose" {
