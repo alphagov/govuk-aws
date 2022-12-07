@@ -58,7 +58,7 @@ variable "publishing_amazonmq_broker_name" {
 }
 
 variable "publishing_amazonmq_passwords" {
-  type        = map
+  type        = map(any)
   description = "encrypted secrets in govuk-aws-data, in the form username = password"
 }
 
