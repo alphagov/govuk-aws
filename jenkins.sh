@@ -44,12 +44,15 @@ if [[ "$GOVUK_AWS_DATA_BRANCH" == "" ]]; then
   GOVUK_AWS_DATA_BRANCH="main"
 fi
 
-echo "Cloning govuk-aws-data"
+echo "Cloning govuk-aws-data $GOVUK_AWS_DATA_BRANCH"
 git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alphagov/govuk-aws-data.git
 
 case $COMMAND in
   'apply') EXTRA='-auto-approve';;
   'plan (destroy)') COMMAND='plan'; EXTRA='-detailed-exitcode -destroy';;
+  # This flag must be -auto-approve for terraform v1.0+
+  # TODO: either also support -force for terraform v0.x, or update remaining
+  #       projects that require terraform v0.x 
   'destroy') EXTRA='-auto-approve';;
   'plan') EXTRA='-detailed-exitcode';;
 esac
