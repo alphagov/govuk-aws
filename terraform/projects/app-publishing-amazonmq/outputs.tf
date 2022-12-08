@@ -17,6 +17,7 @@ output "amqp_endpoint" {
 # These outputs are marked sensitive, so will not be shown in STDOUT 
 # by default. To retrieve them, use `terraform output -json`
 output "publishing_amazonmq_passwords" {
-  description = "Generated passwords for each RabbitMQ user account. Use terraform output -json to retrieve the values."
-  value = local.publishing_amazonmq_passwords
+  description = "Generated passwords for each RabbitMQ user account. Use `terraform output -json | jq '.publishing_amazonmq_passwords.value'` to retrieve the values."
+  sensitive   = true
+  value       = local.publishing_amazonmq_passwords
 }
