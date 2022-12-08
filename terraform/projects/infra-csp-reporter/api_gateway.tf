@@ -9,6 +9,27 @@ resource "aws_apigatewayv2_api" "csp_reporter" {
   }
 }
 
+resource "aws_apigatewayv2_domain_name" "csp_reporter" {
+  domain_name = var.domain_name
+
+  domain_name_configuration {
+    certificate_arn = var.certificate_arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+
+  tags = {
+    aws_environment = var.aws_environment
+    project         = local.project_name
+  }
+}
+
+resource "aws_apigatewayv2_api_mapping" "csp_reporter" {
+  api_id      = aws_apigatewayv2_api.csp_reporter.id
+  domain_name = aws_apigatewayv2_domain_name.csp_reporter.id
+  stage       = aws_apigatewayv2_stage.default.id
+}
+
 resource "aws_apigatewayv2_integration" "csp_reporter" {
   api_id           = aws_apigatewayv2_api.csp_reporter.id
   integration_type = "AWS_PROXY"
@@ -53,6 +74,18 @@ resource "aws_lambda_permission" "gateway_invoke_csp_reports_to_firehose_functio
   function_name = aws_lambda_function.lambda.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_apigatewayv2_api.csp_reporter.id}/*/*/report"
+}
+
+resource "aws_route53_record" "csp_reporter" {
+  name    = "csp-reporter.${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_domain_name}"
+  type    = "A"
+  zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_zone_id
+
+  alias {
+    name                   = aws_apigatewayv2_domain_name.csp_reporter.domain_name_configuration[0].target_domain_name
+    zone_id                = aws_apigatewayv2_domain_name.csp_reporter.domain_name_configuration[0].hosted_zone_id
+    evaluate_target_health = false
+  }
 }
 
 output "api_gateway_api_endpoint" {
