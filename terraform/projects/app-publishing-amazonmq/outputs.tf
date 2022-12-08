@@ -12,3 +12,11 @@ output "amqp_endpoint" {
   description = "AMQP URL for connecting a client app to the broker"
   value       = aws_mq_broker.publishing_amazonmq.instances.0.endpoints.0
 }
+
+#----------------------------------------------------------------------
+# These outputs are marked sensitive, so will not be shown in STDOUT 
+# by default. To retrieve them, use `terraform output -json`
+output "publishing_amazonmq_passwords" {
+  description = "Generated passwords for each RabbitMQ user account. Use terraform output -json to retrieve the values."
+  value = aws_mq_broker.publishing_amazonmq_passwords
+}
