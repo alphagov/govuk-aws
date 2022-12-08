@@ -18,6 +18,6 @@ output "amqp_endpoint" {
 # by default. To retrieve them, use `terraform output -json`
 output "publishing_amazonmq_passwords" {
   description = "Generated passwords for each RabbitMQ user account. Use `terraform output -json | jq '.publishing_amazonmq_passwords.value'` to retrieve the values."
-  sensitive = true
-  value = local.publishing_amazonmq_passwords
+  sensitive   = true
+  value       = local.publishing_amazonmq_passwords
 }
