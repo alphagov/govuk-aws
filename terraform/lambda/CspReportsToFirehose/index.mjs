@@ -1,5 +1,52 @@
 import { Firehose } from '@aws-sdk/client-firehose'
 
+// This collection can contain strings or regexs and prevents matches from
+// being logged in firehose. This is list is mostly comprised of browser
+// extension embeds and JS automatically inserted into web pages by apps
+// (e.g. Instagram). It will never be exhaustive, but can filter out a lot
+// of the noise.
+const BLOCKED_URIS_TO_FILTER = [
+  'eval',
+  'wasm-eval',
+  'data',
+  'blob',
+  'asset',
+  'self',
+  'null',
+  // these may be standalone or scheme prefixes
+  /^file/,
+  /^safari-web-extension/,
+  /^chrome-extension/,
+  /^moz-extension/,
+  // schemes
+  /^gsa:/,
+  /^ws:/, // GOV.UK doesn't currently use any websockets
+  // 3rd party embedded reosources, many are fonts
+  /^https:\/\/connect\.facebook\.net/,
+  /^https:\/\/[^.]*\.gstatic\.com/, // we tend to get www.gstatic.com and fonts.gstatic.com
+  /^https:\/\/fonts\.googleapis\.com/,
+  /^https:\/\/translate\.google(apis)?\.com/, // we get both google.com and googleapis.com
+  /^https:\/\/at\.alicdn\.com/,
+  /^https:\/\/www\.google\.com/,
+  /^https:\/\/pouch-global-font-assets\.s3/,
+  /^https:\/\/mozbar\.moz\.com/,
+  /^https:\/\/metrics2\.data\.hicloud\.com/,
+  /^https:\/\/use\.typekit\.net/,
+  /^https:\/\/cdn\.jsdelivr\.net/,
+  /^https:\/\/www\.slant\.co/,
+  /^https:\/\/fonts\.bunny\.net/,
+  /^https:\/\/github\.com/,
+  /^https:\/\/yastatic\.net/,
+  /^https:\/\/static3\.avast\.com/,
+  /^https:\/\/pwm-image\.trendmicro\.com/,
+  /^https:\/\/api\.ultimateaderaser\.com/,
+  /^https:\/\/api\.crystal-blocker\.com/,
+  /^https:\/\/solarspireconsulting\.com/,
+  /^https:\/\/solaranalyticscorp\.com/,
+  /^https:\/\/socialsolutionapp\.com/,
+  /^https:\/\/global-data-lab\.com/
+]
+
 function buildReport (json, sourceIp, userAgent) {
   const cspReport = json['csp-report'] || {}
   const now = new Date()
@@ -56,6 +103,12 @@ async function sendReportToFirehose (report) {
   await client.putRecord({ DeliveryStreamName: process.env.FIREHOSE_DELIVERY_STREAM, Record: { Data: Buffer.from(JSON.stringify(report)) } })
 }
 
+function filterBlockedUri (uri) {
+  return BLOCKED_URIS_TO_FILTER.some((filter) => {
+    return (filter instanceof RegExp) ? uri.match(filter) : uri === filter
+  })
+}
+
 export const handler = async (event) => {
   // Not sure whether the case of this is dependent on the client or API Gateway
   const contentType = event.headers['Content-Type'] || event.headers['content-type']
@@ -81,7 +134,9 @@ export const handler = async (event) => {
   if (!report.blocked_uri) {
     console.log('Client error: no blocked-uri, not logging report')
     return { statusCode: 400 }
-  // TODO: filter out common browser extensions
+  } else if (filterBlockedUri(report.blocked_uri)) {
+    console.log(`Report dropped: blocked-uri, ${report.blocked_uri} is filtered from our logging`)
+    return { statusCode: 200 }
   } else {
     await sendReportToFirehose(report)
     console.log('Report logged with firehose')
