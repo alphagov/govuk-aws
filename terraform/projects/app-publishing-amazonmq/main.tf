@@ -34,25 +34,32 @@ provider "aws" {
 # Generate passwords for the user accounts
 #
 resource "random_password" "root" {
-  length = 16
+  length  = 24
+  special = false
 }
 resource "random_password" "monitoring" {
-  length = 16
+  length  = 24
+  special = false
 }
 resource "random_password" "publishing_api" {
-  length = 16
+  length  = 24
+  special = false
 }
 resource "random_password" "search_api" {
-  length = 16
+  length  = 24
+  special = false
 }
 resource "random_password" "content_data_api" {
-  length = 16
+  length  = 24
+  special = false
 }
 resource "random_password" "email_alert_service" {
-  length = 16
+  length  = 24
+  special = false
 }
 resource "random_password" "cache_clearing_service" {
-  length = 16
+  length  = 24
+  special = false
 }
 
 locals {
