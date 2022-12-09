@@ -9,6 +9,7 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = data.archive_file.lambda_dist.output_base64sha256
 
   function_name = "CspReportsToFirehose"
+  description   = "Handles Content Security Policy reports, passing valid ones to Kinesis Firehose"
   role          = aws_iam_role.lambda_role.arn
   handler       = "index.handler"
   runtime       = "nodejs18.x"
