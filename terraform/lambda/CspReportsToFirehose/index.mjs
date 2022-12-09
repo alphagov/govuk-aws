@@ -100,7 +100,12 @@ function parseBody (body) {
 
 async function sendReportToFirehose (report) {
   const client = new Firehose()
-  await client.putRecord({ DeliveryStreamName: process.env.FIREHOSE_DELIVERY_STREAM, Record: { Data: Buffer.from(JSON.stringify(report)) } })
+  await client.putRecord({
+    DeliveryStreamName: process.env.FIREHOSE_DELIVERY_STREAM,
+    Record: {
+      Data: Buffer.from(JSON.stringify(report))
+    }
+  })
 }
 
 function filterBlockedUri (uri) {
