@@ -55,6 +55,11 @@ variable "traffic_replay_ips" {
   description = "An array of CIDR blocks that will replay traffic against an environment"
 }
 
+variable "aws_eks_nat_gateway_ips" {
+  type        = list(string)
+  description = "An array of CIDR blocks for the corresponding EKS environment's NAT gateway IPs"
+}
+
 variable "allow_external_ips" {
   type        = list(string)
   description = "An array of CIDR blocks that are our partners using to send traffic to us"
