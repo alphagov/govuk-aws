@@ -177,7 +177,7 @@ resource "aws_wafv2_ip_set" "govuk_requesting_ips" {
   description        = "The IP addresses used by our infra to make requests that hit the cache LB."
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
-  addresses          = concat(var.traffic_replay_ips, local.nat_gateway_ips)
+  addresses          = concat(var.traffic_replay_ips, local.nat_gateway_ips, var.aws_eks_nat_gateway_ips)
 }
 
 resource "aws_wafv2_ip_set" "external_partner_ips" {
