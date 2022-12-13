@@ -172,6 +172,8 @@ resource "aws_wafv2_web_acl" "cache_public" {
             name  = "Cache-Control"
             value = "max-age=0, private"
           }
+
+          custom_response_body_key = "cache-public-rule-429"
         }
       }
     }
@@ -195,6 +197,31 @@ resource "aws_wafv2_web_acl" "cache_public" {
       metric_name                = "cache-public-base-rate-limit"
       sampled_requests_enabled   = true
     }
+  }
+
+  custom_response_body {
+    key     = "cache-public-rule-429"
+    content = <<HTML
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Welcome to GOV.UK</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 0; }
+            header { background: black; }
+            h1 { color: white; font-size: 29px; margin: 0 auto; padding: 10px; max-width: 990px; }
+            p { color: black; margin: 30px auto; max-width: 990px; }
+          </style>
+        </head>
+        <body>
+          <header><h1>GOV.UK</h1></header>
+          <p>Sorry, there have been too many attempts to access this page.</p>
+          <p>Try again in a few minutes.</p>
+        </body>
+      </html>
+      HTML
+
+    content_type = "TEXT_HTML"
   }
 
   visibility_config {
