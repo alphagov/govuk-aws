@@ -159,7 +159,21 @@ resource "aws_wafv2_web_acl" "cache_public" {
     priority = 10
 
     action {
-      count {}
+      block {
+        custom_response {
+          response_code = 429
+
+          response_header {
+            name  = "Retry-After"
+            value = 30
+          }
+
+          response_header {
+            name  = "Cache-Control"
+            value = "max-age=0, private"
+          }
+        }
+      }
     }
 
     statement {
