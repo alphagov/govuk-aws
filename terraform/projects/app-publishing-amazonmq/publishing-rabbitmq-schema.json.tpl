@@ -27,7 +27,7 @@
       "tags": "monitoring"
     },
     {
-      "name": "search-api",
+      "name": "search_api",
       "password": "${publishing_amazonmq_passwords["search_api"]}",
       "tags": ""
     }
@@ -53,7 +53,7 @@
       "read": "^content_data_api|content_data_api_govuk_importer|content_data_api_dead_letter_queue$"
     },
     {
-      "user": "search-api",
+      "user": "search_api",
       "vhost": "publishing",
       "configure": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index)$",
       "write": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index)$",
