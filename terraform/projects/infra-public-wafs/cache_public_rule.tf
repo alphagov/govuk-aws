@@ -120,6 +120,38 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
   }
 
+  # This rule is intended for monitoring only
+  # set a base rate limit per IP looking back over the last 5 minutes
+  # this is checked every 30s
+  rule {
+    name     = "cache-public-base-rate-warning"
+    priority = 9
+
+    action {
+      count {}
+    }
+
+    statement {
+      rate_based_statement {
+        limit              = var.cache_public_base_rate_warning
+        aggregate_key_type = "FORWARDED_IP"
+
+        forwarded_ip_config {
+          # We expect all requests to have this header set. As we're counting,
+          #it's a good chance to verify that by matching any that don't
+          fallback_behavior = "MATCH"
+          header_name       = "true-client-ip"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "cache-public-base-rate-warning"
+      sampled_requests_enabled   = true
+    }
+  }
+
   # set a base rate limit per IP looking back over the last 5 minutes
   # this is checked every 30s
   rule {
