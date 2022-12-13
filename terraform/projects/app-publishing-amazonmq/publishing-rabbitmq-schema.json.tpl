@@ -34,55 +34,55 @@
   ],
   "vhosts": [
     {
-      "name": "/"
+      "name": "publishing"
     }
   ],
   "permissions": [
     {
       "user": "email_alert_service",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": "^(amq\\.gen.*|email_alert_service|email_unpublishing|subscriber_list_details_update_minor|subscriber_list_details_update_major)$",
       "write": "^(amq\\.gen.*|email_alert_service|email_unpublishing|subscriber_list_details_update_minor|subscriber_list_details_update_major)$",
       "read": "^(amq\\.gen.*|email_alert_service|email_unpublishing|subscriber_list_details_update_minor|subscriber_list_details_update_major|published_documents)$"
     },
     {
       "user": "content_data_api",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": "^$",
       "write": "^$",
       "read": "^content_data_api|content_data_api_govuk_importer|content_data_api_dead_letter_queue$"
     },
     {
       "user": "search-api",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index)$",
       "write": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index)$",
       "read": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index|search_api_bulk_reindex|published_documents)$"
     },
     {
       "user": "monitoring",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": "''",
       "write": "''",
       "read": ".*"
     },
     {
       "user": "publishing_api",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": "^amq\\.gen.*$",
       "write": "^(amq\\.gen.*|published_documents)$",
       "read": "^(amq\\.gen.*|published_documents)$"
     },
     {
       "user": "root",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": ".*",
       "write": ".*",
       "read": ".*"
     },
     {
       "user": "cache_clearing_service",
-      "vhost": "/",
+      "vhost": "publishing",
       "configure": "^$",
       "write": "^$",
       "read": "^cache_clearing_service-\\w+$"
@@ -97,7 +97,7 @@
   ],
   "policies": [
     {
-      "vhost": "/",
+      "vhost": "publishing",
       "name": "cache_clearing_service-low-ttl",
       "pattern": "cache_clearing_service-low.*",
       "apply-to": "queues",
@@ -109,7 +109,7 @@
       "priority": 0
     },
     {
-      "vhost": "/",
+      "vhost": "publishing",
       "name": "content_data_api-dlx",
       "pattern": "^content_data_api.*",
       "apply-to": "queues",
@@ -121,7 +121,7 @@
       "priority": 0
     },
     {
-      "vhost": "/",
+      "vhost": "publishing",
       "name": "ha-all",
       "pattern": ".*",
       "apply-to": "all",
@@ -135,91 +135,91 @@
   "queues": [
     {
       "name": "cache_clearing_service-low",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "email_alert_service",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "content_data_api_dead_letter_queue",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "subscriber_list_details_update_major",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "search_api_to_be_indexed",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "content_data_api_govuk_importer",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "subscriber_list_details_update_minor",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "search_api_bulk_reindex",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "content_data_api",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "cache_clearing_service-high",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "search_api_govuk_index",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "email_unpublishing",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
     },
     {
       "name": "cache_clearing_service-medium",
-      "vhost": "/",
+      "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
       "arguments": {}
@@ -228,7 +228,7 @@
   "exchanges": [
     {
       "name": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "type": "topic",
       "durable": false,
       "auto_delete": false,
@@ -237,7 +237,7 @@
     },
     {
       "name": "content_data_api_dlx",
-      "vhost": "/",
+      "vhost": "publishing",
       "type": "topic",
       "durable": false,
       "auto_delete": false,
@@ -248,7 +248,7 @@
   "bindings": [
     {
       "source": "content_data_api_dlx",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api_dead_letter_queue",
       "destination_type": "queue",
       "routing_key": "#",
@@ -256,7 +256,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "search_api_govuk_index",
       "destination_type": "queue",
       "routing_key": "*.*",
@@ -264,7 +264,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api_govuk_importer",
       "destination_type": "queue",
       "routing_key": "*.bulk.data-warehouse",
@@ -272,7 +272,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "search_api_bulk_reindex",
       "destination_type": "queue",
       "routing_key": "*.bulk.reindex",
@@ -280,7 +280,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "cache_clearing_service-low",
       "destination_type": "queue",
       "routing_key": "*.links",
@@ -288,7 +288,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.links",
@@ -296,7 +296,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "search_api_to_be_indexed",
       "destination_type": "queue",
       "routing_key": "*.links",
@@ -304,7 +304,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "cache_clearing_service-high",
       "destination_type": "queue",
       "routing_key": "*.major",
@@ -312,7 +312,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.major",
@@ -320,7 +320,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "email_alert_service",
       "destination_type": "queue",
       "routing_key": "*.major.#",
@@ -328,7 +328,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "subscriber_list_details_update_major",
       "destination_type": "queue",
       "routing_key": "*.major.#",
@@ -336,7 +336,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "cache_clearing_service-medium",
       "destination_type": "queue",
       "routing_key": "*.minor",
@@ -344,7 +344,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.minor",
@@ -352,7 +352,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "subscriber_list_details_update_minor",
       "destination_type": "queue",
       "routing_key": "*.minor.#",
@@ -360,7 +360,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "cache_clearing_service-medium",
       "destination_type": "queue",
       "routing_key": "*.republish",
@@ -368,7 +368,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.republish",
@@ -376,7 +376,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "cache_clearing_service-high",
       "destination_type": "queue",
       "routing_key": "*.unpublish",
@@ -384,7 +384,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.unpublish",
@@ -392,7 +392,7 @@
     },
     {
       "source": "published_documents",
-      "vhost": "/",
+      "vhost": "publishing",
       "destination": "email_unpublishing",
       "destination_type": "queue",
       "routing_key": "*.unpublish.#",
