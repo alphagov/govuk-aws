@@ -230,7 +230,7 @@
       "name": "published_documents",
       "vhost": "publishing",
       "type": "topic",
-      "durable": false,
+      "durable": true,
       "auto_delete": false,
       "internal": false,
       "arguments": {}
@@ -239,7 +239,7 @@
       "name": "content_data_api_dlx",
       "vhost": "publishing",
       "type": "topic",
-      "durable": false,
+      "durable": true,
       "auto_delete": false,
       "internal": false,
       "arguments": {}
