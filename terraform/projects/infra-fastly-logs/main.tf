@@ -948,42 +948,41 @@ data "template_file" "download_logs_analytics_policy_template" {
   }
 }
 
-# Packaging the Lambda
-data "aws_caller_identity" "current" {}
-
-resource "aws_ecr_repository" "repo" {
-  name = "analytics-logs-lambda-container"
+# S3 Bucket to store deploy packages for lambda
+resource "aws_s3_bucket" "lambda_deployment_packages" {
+  bucket = "lambda_deployment_packages"
 }
 
-resource "null_resource" "ecr_image" {
-  triggers = {
-    python_file = "${path.module}/../../lambda/DownloadLogsAnalytics/main.py"
-    docker_file = "${path.module}/../../lambda/DownloadLogsAnalytics/Dockerfile"
-  }
-
-  provisioner "local-exec" {
-    command = <<EOF
-      docker login -u AWS -p $(aws ecr get-login-password --region ${var.aws_region}) ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com
-      cd ${path.module}/../../lambda/DownloadLogsAnalytics/
-      docker build -t ${aws_ecr_repository.repo.repository_url}:latest .
-      docker push ${aws_ecr_repository.repo.repository_url}:latest
-    EOF
-  }
+resource "aws_s3_bucket_policy" "lambda_deployment_packages" {
+  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  policy = "${data.aws_iam_policy_document.lambda_deployment_packages_bucket_access.json}"
 }
 
-data "aws_ecr_image" "lambda_image" {
-  depends_on = ["null_resource.ecr_image"]
+data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
+  statement {
+    effect  = "Allow"
+    actions = ["s3:GetObject", "s3:ListBucket"]
 
-  repository_name = "analytics-logs-lambda-container"
-  image_tag       = "latest"
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.results.id}",
+      "arn:aws:s3:::${aws_s3_bucket.results.id}/*",
+    ]
+
+    principals = {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
 }
 
 resource "aws_lambda_function" "download_logs_analytics" {
   function_name = "govuk-${var.aws_environment}-download_logs_analytics"
   role          = aws_iam_role.download_logs_analytics.arn
-  depends_on    = ["null_resource.ecr_image"]
-  image_uri     = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
-  package_type  = "Image"
+  handler       = "main.lambda_handler"
+  runtime       = "python3.7"
+
+  s3_bucket = aws_s3_bucket.lambda_deployment_packages.id
+  s3_key    = "download_logs_analytics.zip"
 
   environment {
     variables = {
