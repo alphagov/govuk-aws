@@ -964,11 +964,11 @@ data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
     actions = ["s3:GetObject", "s3:ListBucket"]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.results.id}",
-      "arn:aws:s3:::${aws_s3_bucket.results.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.lambda_deployment_packages.id}",
+      "arn:aws:s3:::${aws_s3_bucket.lambda_deployment_packages.id}/*",
     ]
 
-    principals = {
+    principals {
       type        = "AWS"
       identifiers = ["*"]
     }
