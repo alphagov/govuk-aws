@@ -66,8 +66,10 @@ No modules.
 | [aws_s3_bucket.fastly_logs_monitoring](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.transition_fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_policy.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/s3_bucket_policy) | resource |
 | [archive_file.transition_executor](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_iam_policy_document.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.lambda_deployment_packages_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_s3_bucket.govuk-analytics-logs-production](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/data-sources/s3_bucket) | data source |
 | [template_file.athena_monitoring_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.download_logs_analytics_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
