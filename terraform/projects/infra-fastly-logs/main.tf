@@ -979,14 +979,23 @@ data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
   }
 }
 
+resource "aws_s3_bucket_object" "download_logs_analytics_deployment_packages" {
+  bucket = aws_s3_bucket.lambda_deployment_packages.id
+  key    = "download_logs_analytics.zip"
+  source = "${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip"
+
+  etag = filemd5("${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip")
+}
+
 resource "aws_lambda_function" "download_logs_analytics" {
   function_name = "govuk-${var.aws_environment}-download_logs_analytics"
   role          = aws_iam_role.download_logs_analytics.arn
-  handler       = "main.lambda_handler"
+  handler       = "handler.handle_lambda"
   runtime       = "python3.7"
 
-  s3_bucket = aws_s3_bucket.lambda_deployment_packages.id
-  s3_key    = "download_logs_analytics.zip"
+  s3_bucket         = aws_s3_bucket.lambda_deployment_packages.id
+  s3_key            = aws_s3_bucket_object.download_logs_analytics_deployment_packages.id
+  s3_object_version = aws_s3_bucket_object.download_logs_analytics_deployment_packages.version_id
 
   environment {
     variables = {
