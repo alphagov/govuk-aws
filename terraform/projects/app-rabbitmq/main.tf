@@ -83,6 +83,24 @@ variable "rabbitmq_3_ip" {
   description = "IP address of the private IP to assign to the instance"
 }
 
+variable "asg_min_size" {
+  default     = "3"
+  type        = "string"
+  description = "Minimum number of EC2 instances in the auto-scaling group"
+}
+
+variable "asg_max_size" {
+  default     = "3"
+  type        = "string"
+  description = "Maximum number of EC2 instances in the auto-scaling group"
+}
+
+variable "asg_desired_capacity" {
+  default     = "3"
+  type        = "string"
+  description = "Desired number of EC2 instances in the auto-scaling group"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -160,9 +178,9 @@ module "rabbitmq" {
   instance_elb_ids              = ["${aws_elb.rabbitmq_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   root_block_device_volume_size = "20"
-  asg_max_size                  = "3"
-  asg_min_size                  = "3"
-  asg_desired_capacity          = "3"
+  asg_max_size                  = "${var.asg_max_size}"
+  asg_min_size                  = "${var.asg_min_size}"
+  asg_desired_capacity          = "${var.asg_desired_capacity}"
   asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
 }
 
