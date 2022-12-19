@@ -924,19 +924,14 @@ data "aws_s3_bucket" "govuk-analytics-logs-production" {
   bucket = "govuk-analytics-logs-production"
 }
 
-# We require a user for download-logs-analytics to read from S3 buckets
-resource "aws_iam_user" "download_logs_analytics" {
-  name = "govuk-${var.aws_environment}-download-logs-analytics"
-}
-
 resource "aws_iam_policy" "download_logs_analytics" {
   name   = "fastly-logs-${var.aws_environment}-download-logs-analytics-policy"
   policy = data.template_file.download_logs_analytics_policy_template.rendered
 }
 
-resource "aws_iam_policy_attachment" "download_logs_analyticsr" {
+resource "aws_iam_policy_attachment" "download_logs_analytics" {
   name       = "download-logs-analytics-policy-attachment"
-  users      = ["${aws_iam_user.download_logs_analytics.name}"]
+  roles      = ["${aws_iam_role.download_logs_analytics.name}"]
   policy_arn = aws_iam_policy.download_logs_analytics.arn
 }
 

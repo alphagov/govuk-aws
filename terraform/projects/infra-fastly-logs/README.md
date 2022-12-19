@@ -43,7 +43,7 @@ No modules.
 | [aws_iam_policy.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy_attachment.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_policy_attachment.download_logs_analyticsr](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_policy_attachment.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_policy_attachment) | resource |
 | [aws_iam_role.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_role) | resource |
@@ -55,7 +55,6 @@ No modules.
 | [aws_iam_role_policy_attachment.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_user.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_user) | resource |
-| [aws_iam_user.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_user) | resource |
 | [aws_iam_user.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_user) | resource |
 | [aws_iam_user.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/iam_user) | resource |
 | [aws_lambda_function.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/3.19.0/docs/resources/lambda_function) | resource |
