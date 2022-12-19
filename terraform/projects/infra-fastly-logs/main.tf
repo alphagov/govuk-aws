@@ -950,7 +950,7 @@ data "template_file" "download_logs_analytics_policy_template" {
 
 # S3 Bucket to store deploy packages for lambda
 resource "aws_s3_bucket" "lambda_deployment_packages" {
-  bucket = "lambda_deployment_packages"
+  bucket = "govuk-${var.aws_environment}-lambda-deployment-packages"
 }
 
 resource "aws_s3_bucket_policy" "lambda_deployment_packages" {
