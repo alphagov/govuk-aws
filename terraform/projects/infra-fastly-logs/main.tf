@@ -954,8 +954,8 @@ resource "aws_s3_bucket" "lambda_deployment_packages" {
 }
 
 resource "aws_s3_bucket_policy" "lambda_deployment_packages" {
-  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
-  policy = "${data.aws_iam_policy_document.lambda_deployment_packages_bucket_access.json}"
+  bucket = aws_s3_bucket.lambda_deployment_packages.id
+  policy = data.aws_iam_policy_document.lambda_deployment_packages_bucket_access.json
 }
 
 data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
@@ -969,8 +969,12 @@ data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
     ]
 
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::210287912431:root", # govuk-infrastructure-integration
+        "arn:aws:iam::696911096973:root", # govuk-infrastructure-staging
+        "arn:aws:iam::172025368201:root", # govuk-infrastructure-production
+      ]
     }
   }
 }
