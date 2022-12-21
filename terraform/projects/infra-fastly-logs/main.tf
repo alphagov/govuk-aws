@@ -877,3 +877,44 @@ output "logs_writer_bucket_policy_arn" {
   value       = "${aws_iam_policy.logs_writer.arn}"
   description = "ARN of the logs writer bucket policy"
 }
+
+# Configuration for lambda functions that uploads fastly logs to Google analytics
+
+data "aws_s3_bucket" "govuk-analytics-logs-production" {
+  bucket = "govuk-analytics-logs-production"
+}
+
+# S3 Bucket to store deploy packages for lambda
+resource "aws_s3_bucket" "lambda_deployment_packages" {
+  bucket = "govuk-${var.aws_environment}-lambda-deployment-packages"
+
+  versioning {
+    enabled = true
+  }
+}
+
+resource "aws_s3_bucket_policy" "lambda_deployment_packages" {
+  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  policy = "${data.aws_iam_policy_document.lambda_deployment_packages_bucket_access.json}"
+}
+
+data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
+  statement {
+    effect  = "Allow"
+    actions = ["s3:GetObject", "s3:ListBucket"]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.lambda_deployment_packages.id}",
+      "arn:aws:s3:::${aws_s3_bucket.lambda_deployment_packages.id}/*",
+    ]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::210287912431:root", # govuk-infrastructure-integration
+        "arn:aws:iam::696911096973:root", # govuk-infrastructure-staging
+        "arn:aws:iam::172025368201:root", # govuk-infrastructure-production
+      ]
+    }
+  }
+}
