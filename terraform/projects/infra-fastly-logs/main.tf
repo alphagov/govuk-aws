@@ -910,6 +910,7 @@ data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
 
     principals {
       type = "AWS"
+
       identifiers = [
         "arn:aws:iam::210287912431:root", # govuk-infrastructure-integration
         "arn:aws:iam::696911096973:root", # govuk-infrastructure-staging
@@ -917,4 +918,94 @@ data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
       ]
     }
   }
+}
+
+# Grant permissions for accessing the S3 bucket
+resource "aws_iam_policy" "download_logs_analytics" {
+  name   = "fastly-logs-${var.aws_environment}-download-logs-analytics-policy"
+  policy = "${data.template_file.download_logs_analytics_policy_template.rendered}"
+}
+
+resource "aws_iam_policy_attachment" "download_logs_analytics" {
+  name       = "download-logs-analytics-policy-attachment"
+  roles      = ["${aws_iam_role.download_logs_analytics.name}"]
+  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+}
+
+data "template_file" "download_logs_analytics_policy_template" {
+  template = "${file("${path.module}/../../policies/analytics_logs_policy.tpl")}"
+
+  vars = {
+    bucket_arn = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
+  }
+}
+
+# Upload local build deployment packages in lambda_deployment_packages bucket
+resource "aws_s3_bucket_object" "download_logs_analytics_deployment_package" {
+  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  key    = "download_logs_analytics.zip"
+  source = "${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip"
+
+  etag = "${filemd5("${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip")}"
+}
+
+resource "aws_lambda_function" "download_logs_analytics" {
+  function_name = "govuk-${var.aws_environment}-download-logs-analytics"
+  role          = "${aws_iam_role.download_logs_analytics.arn}"
+  handler       = "handler.handle_lambda"
+  runtime       = "python3.7"
+
+  s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  s3_key            = "${aws_s3_bucket_object.download_logs_analytics_deployment_package.id}"
+  s3_object_version = "${aws_s3_bucket_object.download_logs_analytics_deployment_package.version_id}"
+
+  environment {
+    variables = {
+      BUCKET_NAME = "${data.aws_s3_bucket.govuk-analytics-logs-production.bucket}"
+    }
+  }
+}
+
+resource "aws_iam_role" "download_logs_analytics" {
+  name = "AWSLambdaRole-download-logs-analytics"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "download_logs_analytics" {
+  role       = "${aws_iam_role.download_logs_analytics.name}"
+  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+}
+
+data "aws_iam_policy_document" "download_logs_analytics" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = [
+      "arn:aws:logs:*:*:*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "download_logs_analytics" {
+  role   = "${aws_iam_role.download_logs_analytics.id}"
+  policy = "${data.aws_iam_policy_document.download_logs_analytics.json}"
 }
