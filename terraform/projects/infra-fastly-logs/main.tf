@@ -183,7 +183,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         ignore.malformed.json = "true"
       }
 
@@ -209,7 +209,8 @@ resource "aws_glue_catalog_table" "govuk_www" {
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
     // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V",
     // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
-    // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
+    // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V",
+    // "client_ja3":"%{json.escape(req.http.Client-JA3)}V"
     // }
     columns = [
       {
@@ -297,6 +298,10 @@ resource "aws_glue_catalog_table" "govuk_www" {
       },
       {
         name = "tls_client_cipher"
+        type = "string"
+      },
+      {
+        name = "client_ja3"
         type = "string"
       },
     ]
@@ -370,7 +375,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher"
+        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         ignore.malformed.json = "true"
       }
 
@@ -396,7 +401,8 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
     // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V",
     // "tls_client_protocol":"%{json.escape(tls.client.protocol)}V",
-    // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V"
+    // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V",
+    // "client_ja3":"%{json.escape(req.http.Client-JA3)}V"
     // }
     columns = [
       {
@@ -484,6 +490,10 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       },
       {
         name = "tls_client_cipher"
+        type = "string"
+      },
+      {
+        name = "client_ja3"
         type = "string"
       },
     ]
