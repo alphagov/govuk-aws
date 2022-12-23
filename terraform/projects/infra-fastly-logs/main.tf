@@ -78,7 +78,7 @@ resource "aws_iam_policy_attachment" "logs_writer" {
 data "template_file" "logs_writer_policy_template" {
   template = "${file("${path.module}/../../policies/fastly_logs_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.fastly_logs.id}"
   }
@@ -184,7 +184,11 @@ resource "aws_glue_catalog_table" "govuk_www" {
 
       parameters {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
-        ignore.malformed.json = "true"
+        ignore {
+          malformed {
+            json = "true"
+          }
+        }
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -376,7 +380,11 @@ resource "aws_glue_catalog_table" "govuk_assets" {
 
       parameters {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
-        ignore.malformed.json = "true"
+        ignore {
+          malformed {
+            json = "true"
+          }
+        }
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -568,7 +576,11 @@ resource "aws_glue_catalog_table" "bouncer" {
 
       parameters {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
-        ignore.malformed.json = "true"
+        ignore {
+          malformed {
+            json = "true"
+          }
+        }
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -738,7 +750,7 @@ resource "aws_iam_policy_attachment" "athena_monitoring" {
 data "template_file" "athena_monitoring_policy_template" {
   template = "${file("${path.module}/../../policies/fastly_logs_athena_monitoring_policy.tpl")}"
 
-  vars {
+  vars = {
     out_bucket_arn = "${aws_s3_bucket.fastly_logs_monitoring.arn}"
     in_bucket_arn  = "${aws_s3_bucket.fastly_logs.arn}"
   }
@@ -788,7 +800,7 @@ resource "aws_iam_policy_attachment" "transition_downloader" {
 data "template_file" "transition_downloader_policy_template" {
   template = "${file("${path.module}/../../policies/transition_downloader_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
   }
 }
@@ -856,7 +868,7 @@ resource "aws_iam_role_policy_attachment" "transition_executor" {
 data "template_file" "transition_executor_policy_template" {
   template = "${file("${path.module}/../../policies/transition_executor_policy.tpl")}"
 
-  vars {
+  vars = {
     out_bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
     in_bucket_arn  = "${aws_s3_bucket.fastly_logs.arn}"
   }
