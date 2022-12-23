@@ -22,7 +22,7 @@ variable "stackname" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.12.30"
 }
 
@@ -183,7 +183,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
+        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         ignore {
           malformed {
             json = "true"
@@ -379,7 +379,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
+        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         ignore {
           malformed {
             json = "true"
@@ -575,7 +575,7 @@ resource "aws_glue_catalog_table" "bouncer" {
       name = "ser_de_name"
 
       parameters {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
+        paths = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
         ignore {
           malformed {
             json = "true"
