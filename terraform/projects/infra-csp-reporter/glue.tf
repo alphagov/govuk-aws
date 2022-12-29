@@ -101,6 +101,8 @@ resource "aws_glue_catalog_table" "reports" {
     }
 
     // These columns correlate with the CspReportsToFirehose Lambda
+    // If you add a new column, add it to the end otherwise existing data
+    // can end up in the wrong column.
     columns {
       name    = "time"
       type    = "timestamp"
@@ -171,6 +173,12 @@ resource "aws_glue_catalog_table" "reports" {
       name    = "user_agent"
       type    = "string"
       comment = "User agent from the device that requested the resource"
+    }
+
+    columns {
+      name    = "original_policy"
+      type    = "string"
+      comment = "The policy that was in effect when this report was made"
     }
   }
 
