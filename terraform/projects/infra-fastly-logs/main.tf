@@ -966,6 +966,32 @@ resource "aws_lambda_function" "download_logs_analytics" {
   }
 }
 
+# Upload local build deployment packages in lambda_deployment_packages bucket
+resource "aws_s3_bucket_object" "send_public_events_deployment_package" {
+  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  key    = "send_public_api_events.zip"
+  source = "${path.module}/../../lambda/SendPublicAPIEventsToGA/send_public_events_to_ga.zip"
+
+  etag = "${filemd5("${path.module}/../../lambda/SendPublicAPIEventsToGA/send_public_events_to_ga.zip")}"
+}
+
+resource "aws_lambda_function" "send_public_events_to_ga" {
+  function_name = "govuk-${var.aws_environment}-send-public-events-to-ga"
+  role          = "${aws_iam_role.download_logs_analytics.arn}"
+  handler       = "send_public_api_events_to_ga.handle_lambda"
+  runtime       = "python3.7"
+
+  s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  s3_key            = "${aws_s3_bucket_object.send_public_events_deployment_package.id}"
+  s3_object_version = "${aws_s3_bucket_object.send_public_events_deployment_package.version_id}"
+
+  environment {
+    variables = {
+      BUCKET_NAME = "${data.aws_s3_bucket.govuk-analytics-logs-production.bucket}"
+    }
+  }
+}
+
 resource "aws_iam_role" "download_logs_analytics" {
   name = "AWSLambdaRole-download-logs-analytics"
 
