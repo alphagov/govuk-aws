@@ -68,6 +68,16 @@ resource "aws_glue_crawler" "csp_reports" {
   }
 
   schema_change_policy {
+    # This delete action performs two actions, one welcome and one not so
+    # welcome. The welcome one is that this deletes past partitions of data
+    # once data is removed from S3. The unwelcome action is that it will delete
+    # the table from AWS Glue if there is no data in the bucket - this is a
+    # risk in environments with low levels of reports such as integration
+    # and staging. If the table is deleted Kinesis can't write new data as
+    # it needs to read the table schema.
+    #
+    # Should this be a problem, we may want to change this to log or deprecate,
+    # however this will mean old partitions aren't cleaned up.
     delete_behavior = "DELETE_FROM_DATABASE"
     update_behavior = "LOG"
   }
@@ -101,6 +111,8 @@ resource "aws_glue_catalog_table" "reports" {
     }
 
     // These columns correlate with the CspReportsToFirehose Lambda
+    // If you add a new column, add it to the end otherwise existing data
+    // can end up in the wrong column.
     columns {
       name    = "time"
       type    = "timestamp"
@@ -171,6 +183,12 @@ resource "aws_glue_catalog_table" "reports" {
       name    = "user_agent"
       type    = "string"
       comment = "User agent from the device that requested the resource"
+    }
+
+    columns {
+      name    = "original_policy"
+      type    = "string"
+      comment = "The policy that was in effect when this report was made"
     }
   }
 

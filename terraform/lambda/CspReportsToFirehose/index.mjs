@@ -63,6 +63,7 @@ function buildReport (json, sourceIp, userAgent) {
     sample: normaliseInputString(cspReport['script-sample']),
     line_number: normaliseInteger(cspReport['line-number']),
     status_code: normaliseInteger(cspReport['status-code']),
+    original_policy: normaliseInputString(cspReport['original-policy']),
     source_ip: normaliseInputString(sourceIp),
     user_agent: normaliseInputString(userAgent)
   }
