@@ -61,11 +61,13 @@ No modules.
 | [aws_lambda_function.send_public_events_to_ga](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
 | [aws_lambda_function.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
 | [aws_lambda_permission.allow_download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
+| [aws_lambda_permission.allow_send_public_events_to_ga](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.cloudwatch_transition_executor_daily_permission](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
 | [aws_s3_bucket.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.fastly_logs_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.transition_fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_notification.bucket_notification](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_notification) | resource |
 | [aws_s3_bucket_object.download_logs_analytics_deployment_package](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_object) | resource |
 | [aws_s3_bucket_object.send_public_events_deployment_package](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_object) | resource |
 | [aws_s3_bucket_policy.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) | resource |

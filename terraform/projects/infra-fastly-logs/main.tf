@@ -966,6 +966,14 @@ resource "aws_lambda_function" "download_logs_analytics" {
   }
 }
 
+resource "aws_lambda_permission" "allow_download_logs_analytics" {
+  statement_id  = "AllowAnalyticsLogsExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.download_logs_analytics.function_name}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
+}
+
 # Upload local build deployment packages in lambda_deployment_packages bucket
 resource "aws_s3_bucket_object" "send_public_events_deployment_package" {
   bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
@@ -989,6 +997,30 @@ resource "aws_lambda_function" "send_public_events_to_ga" {
     variables = {
       BUCKET_NAME = "${data.aws_s3_bucket.govuk-analytics-logs-production.bucket}"
     }
+  }
+}
+
+resource "aws_lambda_permission" "allow_send_public_events_to_ga" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.send_public_events_to_ga.function_name}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = "${data.aws_s3_bucket.govuk-analytics-logs-production.id}"
+
+  lambda_function {
+    lambda_function_arn = "${aws_lambda_function.send_public_events_to_ga.arn}"
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "public_api_logs/"
+  }
+
+  lambda_function {
+    lambda_function_arn = "${aws_lambda_function.download_logs_analytics.arn}"
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "assets/"
   }
 }
 
