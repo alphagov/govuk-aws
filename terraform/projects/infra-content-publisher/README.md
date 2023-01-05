@@ -84,6 +84,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_activestorage_s3_bucket_arn"></a> [activestorage\_s3\_bucket\_arn](#output\_activestorage\_s3\_bucket\_arn) | n/a |
 | <a name="output_integration_content_publisher_active_storage_bucket_reader_writer_policy_arn"></a> [integration\_content\_publisher\_active\_storage\_bucket\_reader\_writer\_policy\_arn](#output\_integration\_content\_publisher\_active\_storage\_bucket\_reader\_writer\_policy\_arn) | ARN of the staging content publisher storage bucket reader writer policy |
 | <a name="output_production_content_publisher_active_storage_bucket_reader_policy_arn"></a> [production\_content\_publisher\_active\_storage\_bucket\_reader\_policy\_arn](#output\_production\_content\_publisher\_active\_storage\_bucket\_reader\_policy\_arn) | ARN of the production content publisher storage bucket reader policy |
 | <a name="output_staging_content_publisher_active_storage_bucket_reader_policy_arn"></a> [staging\_content\_publisher\_active\_storage\_bucket\_reader\_policy\_arn](#output\_staging\_content\_publisher\_active\_storage\_bucket\_reader\_policy\_arn) | ARN of the staging content publisher storage bucket reader policy |
