@@ -999,7 +999,7 @@ resource "aws_lambda_function" "send_public_events_to_ga" {
   role          = "${aws_iam_role.download_logs_analytics.arn}"
   handler       = "send_public_api_events_to_ga.handle_lambda"
   runtime       = "python3.7"
-  timeout       = 10
+  timeout       = 120
 
   s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"
   s3_key            = "${aws_s3_bucket_object.send_public_events_deployment_package.id}"
