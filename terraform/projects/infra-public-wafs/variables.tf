@@ -45,14 +45,24 @@ variable "fastly_rate_limit_token" {
   default     = ""
 }
 
+variable "backend_public_base_rate_warning" {
+  type        = number
+  description = "For the backend ALB. Allows us to configure a warning level to detect what happens if we reduce the limit."
+}
+
+variable "backend_public_base_rate_limit" {
+  type        = number
+  description = "For the backend ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
+}
+
 variable "cache_public_base_rate_warning" {
   type        = number
-  description = "Allows us to configure a warning level to detect what happens if we reduce the limit."
+  description = "For the cache ALB. Allows us to configure a warning level to detect what happens if we reduce the limit."
 }
 
 variable "cache_public_base_rate_limit" {
   type        = number
-  description = "Number of requests to allow in a 5 minute period before rate limiting is applied."
+  description = "For the cache ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
 }
 
 variable "traffic_replay_ips" {
