@@ -170,3 +170,7 @@ data "template_file" "s3_writer_policy" {
     bucket = "${aws_s3_bucket.activestorage.id}"
   }
 }
+
+output "activestorage_s3_bucket_arn" {
+  value = "${aws_s3_bucket.activestorage.arn}"
+}
