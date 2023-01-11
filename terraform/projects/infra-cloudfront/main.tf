@@ -45,7 +45,7 @@ resource "aws_cloudfront_distribution" "lambda_at_edge_test_distribution" {
 
     lambda_function_association {
       event_type   = "viewer-request"
-      lambda_arn   = aws_lambda_function.lambda_at_edge_test_request_handler.arn
+      lambda_arn   = aws_lambda_function.lambda_at_edge_test_request_handler.qualified_arn
       include_body = true
     }
   }
@@ -97,4 +97,5 @@ resource "aws_lambda_function" "lambda_at_edge_test_request_handler" {
   role          = aws_iam_role.lambda_at_edge_test_role.arn
   handler       = "viewerRequest.handler"
   runtime       = "nodejs16.x"
+  publish       = true
 }
