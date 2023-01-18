@@ -117,12 +117,17 @@ variable "remote_state_infra_vpc_key_stack" {
 # Set up the backend & provider for each region
 terraform {
   backend "s3" {}
-  required_version = "= 0.13.6"
+  required_version = "~> 1.1"
 
   required_providers {
     fastly = {
       source  = "fastly/fastly"
       version = ">= 3.0.4"
+    }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.76"
     }
   }
 }
@@ -629,6 +634,6 @@ resource "aws_lambda_function" "url_rewrite" {
   function_name = "url_rewrite"
   role          = aws_iam_role.basic_lambda_role.arn
   handler       = "index.handler"
-  runtime       = "nodejs12.x"
+  runtime       = "nodejs16.x"
   provider      = aws.aws_cloudfront_certificate
 }
