@@ -54,5 +54,5 @@ resource "aws_iam_policy" "s3_mirrors_writer_policy" {
 
 resource "aws_iam_role_policy_attachment" "s3_mirrors_writer_user_policy" {
   policy_arn = aws_iam_policy.s3_mirrors_writer_policy.arn
-  role       = data.terraform_remote_state.app_mirrorer.instance_iam_role_name
+  role       = data.terraform_remote_state.app_mirrorer.outputs.instance_iam_role_name
 }

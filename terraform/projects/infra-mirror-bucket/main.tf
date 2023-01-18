@@ -189,7 +189,7 @@ resource "aws_s3_bucket" "govuk-mirror" {
   }
 
   logging {
-    target_bucket = data.terraform_remote_state.infra_monitoring.aws_secondary_logging_bucket_id
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_secondary_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-mirror/"
   }
 
@@ -253,7 +253,7 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
   }
 
   logging {
-    target_bucket = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-mirror-replica/"
   }
 
@@ -410,7 +410,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
+    bucket          = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}.s3.amazonaws.com"
     prefix          = "cloudfront/"
   }
 
@@ -540,7 +540,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
+    bucket          = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}.s3.amazonaws.com"
     prefix          = "cloudfront/"
   }
 
