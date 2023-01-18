@@ -118,6 +118,13 @@ variable "remote_state_infra_vpc_key_stack" {
 terraform {
   backend "s3" {}
   required_version = "= 0.13.6"
+
+  required_providers {
+    fastly = {
+      source  = "fastly/fastly"
+      version = ">= 3.0.4"
+    }
+  }
 }
 
 provider "aws" {
