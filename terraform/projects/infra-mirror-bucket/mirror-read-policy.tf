@@ -91,7 +91,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list]
+      values   = [data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list]
     }
 
     principals {
@@ -217,7 +217,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list]
+      values   = [data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list]
     }
 
     principals {
@@ -238,7 +238,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceVpce"
-      values   = [data.terraform_remote_state.infra_vpc.s3_gateway_id]
+      values   = [data.terraform_remote_state.infra_vpc.outputs.s3_gateway_id]
     }
 
     principals {
