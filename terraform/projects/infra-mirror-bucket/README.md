@@ -14,7 +14,7 @@ The primary bucket should be in London and the backup in Ireland.
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
-| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
+| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | >= 3.0.4 |
 
 ## Providers
 
@@ -25,7 +25,7 @@ The primary bucket should be in London and the backup in Ireland.
 | <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_external"></a> [external](#provider\_external) | n/a |
-| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
+| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | >= 3.0.4 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
@@ -63,7 +63,7 @@ No modules.
 | [aws_iam_policy_document.s3_mirror_replica_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.s3_mirrors_crawler_writer_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [external_external.pingdom](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
-| [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/hashicorp/fastly/latest/docs/data-sources/ip_ranges) | data source |
+| [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/fastly/fastly/latest/docs/data-sources/ip_ranges) | data source |
 | [template_file.s3_govuk_mirror_read_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.s3_govuk_mirror_replication_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.s3_govuk_mirror_replication_role_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
