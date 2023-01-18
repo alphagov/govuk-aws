@@ -117,7 +117,7 @@ variable "remote_state_infra_vpc_key_stack" {
 # Set up the backend & provider for each region
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "= 0.13.6"
 }
 
 provider "aws" {
