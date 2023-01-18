@@ -9,46 +9,46 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region where primary s3 bucket is located"
   default     = "eu-west-2"
 }
 
 variable "aws_replica_region" {
-  type        = "string"
+  type        = string
   description = "AWS region where replica s3 bucket is located"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "remote_state_bucket" {
-  type        = "string"
+  type        = string
   description = "S3 bucket we store our terraform state in"
 }
 
 variable "remote_state_infra_monitoring_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override stackname path to infra_monitoring remote state "
   default     = ""
 }
 
 variable "remote_state_infra_networking_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override infra_networking remote state path"
   default     = ""
 }
 
 variable "office_ips" {
-  type        = "list"
+  type        = list
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
@@ -63,49 +63,49 @@ variable "cloudfront_enable" {
 }
 
 variable "cloudfront_www_distribution_aliases" {
-  type        = "list"
+  type        = list
   description = "Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution."
   default     = []
 }
 
 variable "cloudfront_www_certificate_domain" {
-  type        = "string"
+  type        = string
   description = "The domain of the WWW CloudFront certificate to look up."
   default     = ""
 }
 
 variable "cloudfront_assets_distribution_aliases" {
-  type        = "list"
+  type        = list
   description = "Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution."
   default     = []
 }
 
 variable "cloudfront_assets_certificate_domain" {
-  type        = "string"
+  type        = string
   description = "The domain of the Assets CloudFront certificate to look up."
   default     = ""
 }
 
 variable "notify_cloudfront_domain" {
-  type        = "string"
+  type        = string
   description = "The domain of the Notify CloudFront to proxy /alerts requests to."
   default     = ""
 }
 
 variable "lifecycle_main" {
-  type        = "string"
+  type        = string
   description = "Number of days for the lifecycle rule for the mirror"
   default     = "5"
 }
 
 variable "lifecycle_government_uploads" {
-  type        = "string"
+  type        = string
   description = "Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/"
   default     = "8"
 }
 
 variable "remote_state_infra_vpc_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override infra_vpc remote state path"
   default     = ""
 }
@@ -120,12 +120,12 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 provider "aws" {
-  region  = "${var.aws_replica_region}"
+  region  = var.aws_replica_region
   alias   = "aws_replica"
   version = "2.46.0"
 }
@@ -147,9 +147,9 @@ data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
   config = {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
-    region = "${var.aws_replica_region}"
+    region = var.aws_replica_region
   }
 }
 
@@ -157,9 +157,9 @@ data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
   config = {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
-    region = "${var.aws_replica_region}"
+    region = var.aws_replica_region
   }
 }
 
@@ -167,9 +167,9 @@ data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
   config = {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
-    region = "${var.aws_replica_region}"
+    region = var.aws_replica_region
   }
 }
 
@@ -178,11 +178,11 @@ resource "aws_s3_bucket" "govuk-mirror" {
 
   tags = {
     Name            = "govuk-${var.aws_environment}-mirror"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_secondary_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.aws_secondary_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-mirror/"
   }
 
@@ -197,7 +197,7 @@ resource "aws_s3_bucket" "govuk-mirror" {
     prefix = ""
 
     noncurrent_version_expiration {
-      days = "${var.lifecycle_main}"
+      days = var.lifecycle_main
     }
   }
 
@@ -208,12 +208,12 @@ resource "aws_s3_bucket" "govuk-mirror" {
     prefix = "www.gov.uk/government/uploads/"
 
     noncurrent_version_expiration {
-      days = "${var.lifecycle_government_uploads}"
+      days = var.lifecycle_government_uploads
     }
   }
 
   replication_configuration {
-    role = "${aws_iam_role.govuk_mirror_replication_role.arn}"
+    role = aws_iam_role.govuk_mirror_replication_role.arn
 
     rules {
       id     = "govuk-mirror-replication-whole-bucket-rule"
@@ -221,7 +221,7 @@ resource "aws_s3_bucket" "govuk-mirror" {
       status = "Enabled"
 
       destination {
-        bucket        = "${aws_s3_bucket.govuk-mirror-replica.arn}"
+        bucket        = aws_s3_bucket.govuk-mirror-replica.arn
         storage_class = "STANDARD"
       }
     }
@@ -237,16 +237,16 @@ resource "aws_s3_bucket" "govuk-mirror" {
 
 resource "aws_s3_bucket" "govuk-mirror-replica" {
   bucket   = "govuk-${var.aws_environment}-mirror-replica"
-  region   = "${var.aws_replica_region}"
-  provider = "aws.aws_replica"
+  region   = var.aws_replica_region
+  provider = aws.aws_replica
 
   tags = {
     Name            = "govuk-${var.aws_environment}-mirror-replica"
-    aws_environment = "${var.aws_environment}"
+    aws_environment = var.aws_environment
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-mirror-replica/"
   }
 
@@ -261,7 +261,7 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
     prefix = ""
 
     noncurrent_version_expiration {
-      days = "${var.lifecycle_main}"
+      days = var.lifecycle_main
     }
   }
 
@@ -272,68 +272,68 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
     prefix = "www.gov.uk/government/uploads/"
 
     noncurrent_version_expiration {
-      days = "${var.lifecycle_government_uploads}"
+      days = var.lifecycle_government_uploads
     }
   }
 }
 
 resource "aws_s3_bucket_policy" "govuk_mirror_read_policy" {
-  bucket = "${aws_s3_bucket.govuk-mirror.id}"
-  policy = "${data.aws_iam_policy_document.s3_mirror_read_policy_doc.json}"
+  bucket = aws_s3_bucket.govuk-mirror.id
+  policy = data.aws_iam_policy_document.s3_mirror_read_policy_doc.json
 }
 
 resource "aws_s3_bucket_policy" "govuk_mirror_replica_read_policy" {
-  bucket   = "${aws_s3_bucket.govuk-mirror-replica.id}"
-  policy   = "${data.aws_iam_policy_document.s3_mirror_replica_read_policy_doc.json}"
-  provider = "aws.aws_replica"
+  bucket   = aws_s3_bucket.govuk-mirror-replica.id
+  policy   = data.aws_iam_policy_document.s3_mirror_replica_read_policy_doc.json
+  provider = aws.aws_replica
 }
 
 # S3 backup replica role configuration
 data "template_file" "s3_govuk_mirror_replication_role_template" {
-  template = "${file("${path.module}/../../policies/s3_govuk_mirror_replication_role.tpl")}"
+  template = file("${path.module}/../../policies/s3_govuk_mirror_replication_role.tpl")
 }
 
 # Adding backup replication role
 resource "aws_iam_role" "govuk_mirror_replication_role" {
   name               = "${var.stackname}-mirror-replication-role"
-  assume_role_policy = "${data.template_file.s3_govuk_mirror_replication_role_template.rendered}"
+  assume_role_policy = data.template_file.s3_govuk_mirror_replication_role_template.rendered
 }
 
 data "template_file" "s3_govuk_mirror_replication_policy_template" {
-  template = "${file("${path.module}/../../policies/s3_govuk_mirror_replication_policy.tpl")}"
+  template = file("${path.module}/../../policies/s3_govuk_mirror_replication_policy.tpl")
 
   vars = {
-    govuk_mirror_arn         = "${aws_s3_bucket.govuk-mirror.arn}"
-    govuk_mirror_replica_arn = "${aws_s3_bucket.govuk-mirror-replica.arn}"
-    aws_account_id           = "${data.aws_caller_identity.current.account_id}"
+    govuk_mirror_arn         = aws_s3_bucket.govuk-mirror.arn
+    govuk_mirror_replica_arn = aws_s3_bucket.govuk-mirror-replica.arn
+    aws_account_id           = data.aws_caller_identity.current.account_id
   }
 }
 
 # Adding backup replication policy
 resource "aws_iam_policy" "govuk_mirror_replication_policy" {
   name        = "govuk-${var.aws_environment}-mirror-buckets-replication-policy"
-  policy      = "${data.template_file.s3_govuk_mirror_replication_policy_template.rendered}"
+  policy      = data.template_file.s3_govuk_mirror_replication_policy_template.rendered
   description = "Allows replication of the mirror buckets"
 }
 
 # Combine the role and policy
 resource "aws_iam_policy_attachment" "govuk_mirror_replication_policy_attachment" {
   name       = "s3-govuk-mirror-replication-policy-attachment"
-  roles      = ["${aws_iam_role.govuk_mirror_replication_role.name}"]
-  policy_arn = "${aws_iam_policy.govuk_mirror_replication_policy.arn}"
+  roles      = [aws_iam_role.govuk_mirror_replication_role.name]
+  policy_arn = aws_iam_policy.govuk_mirror_replication_policy.arn
 }
 
 data "template_file" "s3_govuk_mirror_read_policy_template" {
-  template = "${file("${path.module}/../../policies/s3_govuk_mirror_read_policy.tpl")}"
+  template = file("${path.module}/../../policies/s3_govuk_mirror_read_policy.tpl")
 
   vars = {
-    govuk_mirror_arn = "${aws_s3_bucket.govuk-mirror.arn}"
+    govuk_mirror_arn = aws_s3_bucket.govuk-mirror.arn
   }
 }
 
 resource "aws_iam_policy" "govuk_mirror_read_policy" {
   name        = "govuk-${var.aws_environment}-mirror-read-policy"
-  policy      = "${data.template_file.s3_govuk_mirror_read_policy_template.rendered}"
+  policy      = data.template_file.s3_govuk_mirror_read_policy_template.rendered
   description = "Allow the listing and reading of the primary govuk mirror bucket"
 }
 
@@ -343,8 +343,8 @@ resource "aws_iam_user" "govuk_mirror_google_reader" {
 
 resource "aws_iam_policy_attachment" "govuk_mirror_read_policy_attachment" {
   name       = "s3-govuk-mirror-read-policy-attachment"
-  users      = ["${aws_iam_user.govuk_mirror_google_reader.name}"]
-  policy_arn = "${aws_iam_policy.govuk_mirror_read_policy.arn}"
+  users      = [aws_iam_user.govuk_mirror_google_reader.name]
+  policy_arn = aws_iam_policy.govuk_mirror_read_policy.arn
 }
 
 #
@@ -355,36 +355,36 @@ resource "aws_cloudfront_origin_access_identity" "mirror_access_identity" {
 }
 
 data "aws_acm_certificate" "www" {
-  count = "${var.cloudfront_create}"
+  count = var.cloudfront_create
 
-  domain   = "${var.cloudfront_www_certificate_domain}"
+  domain   = var.cloudfront_www_certificate_domain
   statuses = ["ISSUED"]
-  provider = "aws.aws_cloudfront_certificate"
+  provider = aws.aws_cloudfront_certificate
 }
 
 data "aws_acm_certificate" "assets" {
-  count = "${var.cloudfront_create}"
+  count = var.cloudfront_create
 
-  domain   = "${var.cloudfront_assets_certificate_domain}"
+  domain   = var.cloudfront_assets_certificate_domain
   statuses = ["ISSUED"]
-  provider = "aws.aws_cloudfront_certificate"
+  provider = aws.aws_cloudfront_certificate
 }
 
 resource "aws_cloudfront_distribution" "www_distribution" {
-  count = "${var.cloudfront_create}"
+  count = var.cloudfront_create
 
   origin {
-    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_domain_name}"
+    domain_name = aws_s3_bucket.govuk-mirror.bucket_domain_name
     origin_id   = "S3 www"
     origin_path = "/www.gov.uk"
 
     s3_origin_config {
-      origin_access_identity = "${aws_cloudfront_origin_access_identity.mirror_access_identity.cloudfront_access_identity_path}"
+      origin_access_identity = aws_cloudfront_origin_access_identity.mirror_access_identity.cloudfront_access_identity_path
     }
   }
 
   origin {
-    domain_name = "${var.notify_cloudfront_domain}"
+    domain_name = var.notify_cloudfront_domain
     origin_id   = "Notify alerts"
     origin_path = ""
 
@@ -396,7 +396,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     }
   }
 
-  enabled             = "${var.cloudfront_enable}"
+  enabled             = var.cloudfront_enable
   is_ipv6_enabled     = true
   comment             = "WWW"
   default_root_object = "index.html"
@@ -407,7 +407,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     prefix          = "cloudfront/"
   }
 
-  aliases = ["${var.cloudfront_www_distribution_aliases}"]
+  aliases = [var.cloudfront_www_distribution_aliases]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -489,7 +489,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "${data.aws_acm_certificate.www.arn}"
+    acm_certificate_arn      = data.aws_acm_certificate.www.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
@@ -509,25 +509,25 @@ resource "aws_cloudfront_distribution" "www_distribution" {
   }
 
   tags = {
-    Project         = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    Project         = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
 resource "aws_cloudfront_distribution" "assets_distribution" {
-  count = "${var.cloudfront_create}"
+  count = var.cloudfront_create
 
   origin {
-    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_domain_name}"
+    domain_name = aws_s3_bucket.govuk-mirror.bucket_domain_name
     origin_id   = "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
     origin_path = "/assets.publishing.service.gov.uk"
 
     s3_origin_config {
-      origin_access_identity = "${aws_cloudfront_origin_access_identity.mirror_access_identity.cloudfront_access_identity_path}"
+      origin_access_identity = aws_cloudfront_origin_access_identity.mirror_access_identity.cloudfront_access_identity_path
     }
   }
 
-  enabled         = "${var.cloudfront_enable}"
+  enabled         = var.cloudfront_enable
   is_ipv6_enabled = true
   comment         = "Assets"
 
@@ -537,7 +537,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
     prefix          = "cloudfront/"
   }
 
-  aliases = ["${var.cloudfront_assets_distribution_aliases}"]
+  aliases = [var.cloudfront_assets_distribution_aliases]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -569,14 +569,14 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "${data.aws_acm_certificate.assets.arn}"
+    acm_certificate_arn      = data.aws_acm_certificate.assets.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
 
   tags = {
-    Project         = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    Project         = var.stackname
+    aws_environment = var.aws_environment
   }
 }
 
@@ -604,7 +604,7 @@ EOF
 
 resource "aws_iam_policy_attachment" "basic_lambda_attach" {
   name       = "basic-lambda-attachment"
-  roles      = ["${aws_iam_role.basic_lambda_role.name}"]
+  roles      = [aws_iam_role.basic_lambda_role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -615,12 +615,12 @@ data "archive_file" "url_rewrite" {
 }
 
 resource "aws_lambda_function" "url_rewrite" {
-  filename         = "${data.archive_file.url_rewrite.output_path}"
-  source_code_hash = "${data.archive_file.url_rewrite.output_base64sha256}"
+  filename         = data.archive_file.url_rewrite.output_path
+  source_code_hash = data.archive_file.url_rewrite.output_base64sha256
 
   function_name = "url_rewrite"
-  role          = "${aws_iam_role.basic_lambda_role.arn}"
+  role          = aws_iam_role.basic_lambda_role.arn
   handler       = "index.handler"
   runtime       = "nodejs10.x"
-  provider      = "aws.aws_cloudfront_certificate"
+  provider      = aws.aws_cloudfront_certificate
 }
