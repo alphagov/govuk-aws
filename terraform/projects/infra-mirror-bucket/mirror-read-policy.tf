@@ -4,7 +4,7 @@ provider "fastly" {
 }
 
 variable "aws_integration_account_root_arn" {
-  type        = "string"
+  type        = string
   description = "AWS account root ARN for the Integration account"
 }
 
@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
+      values   = [data.fastly_ip_ranges.fastly.cidr_blocks]
     }
 
     principals {
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${split(",",data.external.pingdom.result.pingdom_probe_ips)}"]
+      values   = [split(",",data.external.pingdom.result.pingdom_probe_ips)]
     }
 
     principals {
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${var.office_ips}"]
+      values   = [var.office_ips]
     }
 
     principals {
@@ -90,7 +90,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list}"]
+      values   = [data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list]
     }
 
     principals {
@@ -105,17 +105,17 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn}"]
+      identifiers = [aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn]
     }
   }
 
   statement {
     actions   = ["s3:ListBucket"]
-    resources = ["${aws_s3_bucket.govuk-mirror.arn}"]
+    resources = [aws_s3_bucket.govuk-mirror.arn]
 
     principals {
       type        = "AWS"
-      identifiers = ["${aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn}"]
+      identifiers = [aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn]
     }
   }
 
@@ -135,7 +135,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${var.aws_integration_account_root_arn}"]
+      identifiers = [var.aws_integration_account_root_arn]
     }
   }
 }
@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
+      values   = [data.fastly_ip_ranges.fastly.cidr_blocks]
     }
 
     principals {
@@ -174,7 +174,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${split(",",data.external.pingdom.result.pingdom_probe_ips)}"]
+      values   = [split(",",data.external.pingdom.result.pingdom_probe_ips)]
     }
 
     principals {
@@ -195,7 +195,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${var.office_ips}"]
+      values   = [var.office_ips]
     }
 
     principals {
@@ -216,7 +216,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list}"]
+      values   = [data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list]
     }
 
     principals {
@@ -237,7 +237,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceVpce"
-      values   = ["${data.terraform_remote_state.infra_vpc.s3_gateway_id}"]
+      values   = [data.terraform_remote_state.infra_vpc.s3_gateway_id]
     }
 
     principals {
@@ -262,7 +262,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${var.aws_integration_account_root_arn}"]
+      identifiers = [var.aws_integration_account_root_arn]
     }
   }
 }
