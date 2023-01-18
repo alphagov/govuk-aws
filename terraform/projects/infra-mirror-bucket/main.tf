@@ -153,7 +153,7 @@ data "aws_caller_identity" "current" {}
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_replica_region}"
@@ -163,7 +163,7 @@ data "terraform_remote_state" "infra_monitoring" {
 data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
     region = "${var.aws_replica_region}"
@@ -173,7 +173,7 @@ data "terraform_remote_state" "infra_networking" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_replica_region}"
@@ -183,7 +183,7 @@ data "terraform_remote_state" "infra_vpc" {
 resource "aws_s3_bucket" "govuk-mirror" {
   bucket = "govuk-${var.aws_environment}-mirror"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-mirror"
     aws_environment = "${var.aws_environment}"
   }
@@ -247,7 +247,7 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
   region   = "${var.aws_replica_region}"
   provider = "aws.aws_replica"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-mirror-replica"
     aws_environment = "${var.aws_environment}"
   }
@@ -309,7 +309,7 @@ resource "aws_iam_role" "govuk_mirror_replication_role" {
 data "template_file" "s3_govuk_mirror_replication_policy_template" {
   template = "${file("${path.module}/../../policies/s3_govuk_mirror_replication_policy.tpl")}"
 
-  vars {
+  vars = {
     govuk_mirror_arn         = "${aws_s3_bucket.govuk-mirror.arn}"
     govuk_mirror_replica_arn = "${aws_s3_bucket.govuk-mirror-replica.arn}"
     aws_account_id           = "${data.aws_caller_identity.current.account_id}"
@@ -333,7 +333,7 @@ resource "aws_iam_policy_attachment" "govuk_mirror_replication_policy_attachment
 data "template_file" "s3_govuk_mirror_read_policy_template" {
   template = "${file("${path.module}/../../policies/s3_govuk_mirror_read_policy.tpl")}"
 
-  vars {
+  vars = {
     govuk_mirror_arn = "${aws_s3_bucket.govuk-mirror.arn}"
   }
 }
