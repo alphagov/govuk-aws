@@ -15,7 +15,7 @@ variable "app_mirrorer_stackname" {
 data "terraform_remote_state" "app_mirrorer" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_app_mirrorer_key_stack, var.app_mirrorer_stackname)}/app-mirrorer.tfstate"
     region = "${var.aws_replica_region}"
