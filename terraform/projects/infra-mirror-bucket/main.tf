@@ -54,6 +54,7 @@ variable "office_ips" {
 
 variable "cloudfront_create" {
   description = "Create Cloudfront resources."
+  type        = bool
   default     = false
 }
 
@@ -355,7 +356,7 @@ resource "aws_cloudfront_origin_access_identity" "mirror_access_identity" {
 }
 
 data "aws_acm_certificate" "www" {
-  count = var.cloudfront_create
+  count = var.cloudfront_create ? 1 : 0
 
   domain   = var.cloudfront_www_certificate_domain
   statuses = ["ISSUED"]
@@ -363,7 +364,7 @@ data "aws_acm_certificate" "www" {
 }
 
 data "aws_acm_certificate" "assets" {
-  count = var.cloudfront_create
+  count = var.cloudfront_create ? 1 : 0
 
   domain   = var.cloudfront_assets_certificate_domain
   statuses = ["ISSUED"]
@@ -371,7 +372,7 @@ data "aws_acm_certificate" "assets" {
 }
 
 resource "aws_cloudfront_distribution" "www_distribution" {
-  count = var.cloudfront_create
+  count = var.cloudfront_create ? 1 : 0
 
   origin {
     domain_name = aws_s3_bucket.govuk-mirror.bucket_domain_name
@@ -515,7 +516,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
 }
 
 resource "aws_cloudfront_distribution" "assets_distribution" {
-  count = var.cloudfront_create
+  count = var.cloudfront_create ? 1 : 0
 
   origin {
     domain_name = aws_s3_bucket.govuk-mirror.bucket_domain_name
