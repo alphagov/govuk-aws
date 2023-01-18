@@ -414,7 +414,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     prefix          = "cloudfront/"
   }
 
-  aliases = [var.cloudfront_www_distribution_aliases]
+  aliases = var.cloudfront_www_distribution_aliases
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -544,7 +544,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
     prefix          = "cloudfront/"
   }
 
-  aliases = [var.cloudfront_assets_distribution_aliases]
+  aliases = var.cloudfront_assets_distribution_aliases
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
