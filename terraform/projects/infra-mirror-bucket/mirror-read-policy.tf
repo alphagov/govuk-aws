@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [data.fastly_ip_ranges.fastly.cidr_blocks]
+      values   = data.fastly_ip_ranges.fastly.cidr_blocks
     }
 
     principals {
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [split(",",data.external.pingdom.result.pingdom_probe_ips)]
+      values   = split(",", data.external.pingdom.result.pingdom_probe_ips)
     }
 
     principals {
@@ -70,7 +70,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [var.office_ips]
+      values   = var.office_ips
     }
 
     principals {
@@ -91,7 +91,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list]
+      values   = data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list
     }
 
     principals {
@@ -154,7 +154,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [data.fastly_ip_ranges.fastly.cidr_blocks]
+      values   = data.fastly_ip_ranges.fastly.cidr_blocks
     }
 
     principals {
@@ -175,7 +175,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [split(",",data.external.pingdom.result.pingdom_probe_ips)]
+      values   = split(",", data.external.pingdom.result.pingdom_probe_ips)
     }
 
     principals {
@@ -196,7 +196,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [var.office_ips]
+      values   = var.office_ips
     }
 
     principals {
@@ -217,7 +217,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = [data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list]
+      values   = data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list
     }
 
     principals {
