@@ -490,7 +490,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = data.aws_acm_certificate.www.arn
+    acm_certificate_arn      = data.aws_acm_certificate.www[0].arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
@@ -570,7 +570,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = data.aws_acm_certificate.assets.arn
+    acm_certificate_arn      = data.aws_acm_certificate.assets[0].arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
