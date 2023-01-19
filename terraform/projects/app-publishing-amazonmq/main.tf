@@ -80,12 +80,29 @@ locals {
   }
 }
 # --------------------------------------------------------------
+# Lookups to existing resources which we need to reference
+
 data "aws_subnet" "lb_subnets" {
   count = length(aws_mq_broker.publishing_amazonmq.subnet_ids)
-  id    = aws_mq_broker.publishing_amazonmq.subnet_ids
+  id    = sort(tolist(aws_mq_broker.publishing_amazonmq.subnet_ids))[count.index]
+}
+
+# Look up the existing SSL certificate for internal-facing infra
+data "aws_acm_certificate" "internal_cert" {
+  domain   = var.elb_internal_certname
+  statuses = ["ISSUED"]
+}
+
+# The ip_address attributes of the AmazonMQ instances are blank in the outputs
+# (see https://stackoverflow.com/a/69221987)
+# So the only way we can get the IPs in order to add them to the 
+# Load Balancer target group, is by a DNS lookup
+data "dns_a_record_set" "mq_instances" {
+  host = regex("://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]
 }
 
 # --------------------------------------------------------------
+# The broker itself
 resource "aws_mq_broker" "publishing_amazonmq" {
   broker_name = var.publishing_amazonmq_broker_name
 
@@ -109,6 +126,9 @@ resource "aws_mq_broker" "publishing_amazonmq" {
 
 }
 
+# --------------------------------------------------------------
+# Security group rules
+
 # Allow HTTPS access to Publishing's AmazonMQ from anything in the 'management' SG
 # (i.e. all EC2 instances)
 resource "aws_security_group_rule" "publishingamazonmq_ingress_management_https" {
@@ -122,7 +142,7 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_management_https"
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
 }
-# and also from the load balancer
+# and also from the load balancer, so that the health checks don't fail
 resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_https" {
   type        = "ingress"
   from_port   = 443
@@ -132,7 +152,7 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_https" {
 
   # Which security group is the rule assigned to
   security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
-  cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_blocks
+  cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
 }
 
 # existing RabbitMQ runs on port 5672, this AmazonMQ will be on port 5671
@@ -148,7 +168,7 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_management_amqps"
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
 }
-# and also from the load balancer
+# and also from the load balancer as before
 resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_amqps" {
   type        = "ingress"
   from_port   = 5671
@@ -158,7 +178,7 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_amqps" {
 
   # Which security group is the rule assigned to
   security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
-  cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_blocks
+  cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
 }
 
 # --------------------------------------------------------------
@@ -185,25 +205,6 @@ resource "aws_lb" "publishingmq_lb_internal" {
   }
 }
 
-
-data "aws_acm_certificate" "internal_cert" {
-  domain   = var.elb_internal_certname
-  statuses = ["ISSUED"]
-}
-
-# The ip_address attributes of the AmazonMQ instances turn out blank
-# (see https://stackoverflow.com/a/69221987)
-# So the only way we can get the IPs is by a DNS lookup
-data "dns_a_record_set" "mq_instances" {
-  host = regex("://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]
-}
-
-resource "aws_lb_listener_certificate" "internal" {
-  listener_arn    = aws_lb_listener.internal_https.arn
-  certificate_arn = data.aws_acm_certificate.internal_cert.arn
-}
-
-
 # HTTPS listener & target group for web admin UI traffic
 resource "aws_lb_listener" "internal_https" {
   load_balancer_arn = aws_lb.publishingmq_lb_internal.arn
@@ -226,7 +227,7 @@ resource "aws_lb_target_group" "internal_https" {
   vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
   health_check {
-    path = "/"
+    path     = "/"
     protocol = "HTTPS"
   }
 }
@@ -235,8 +236,8 @@ resource "aws_lb_target_group_attachment" "internal_https_ips" {
   count            = length(aws_mq_broker.publishing_amazonmq.instances)
   target_group_arn = aws_lb_target_group.internal_https.arn
   #target_id        = aws_mq_broker.publishing_amazonmq.instances[count.index].ip_address
-  target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
-  port             = 443
+  target_id = data.dns_a_record_set.mq_instances.addrs[count.index]
+  port      = 443
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_https
@@ -264,21 +265,20 @@ resource "aws_lb_target_group" "internal_amqps" {
   vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
   # ... BUT use port 443 HTTPS for the healthcheck, as the LB
-  # might not get a recognisable response on port 5671
+  # won't get a recognisable response on port 5671
   health_check {
-    path = "/"
-    port = 443
+    path     = "/"
+    port     = 443
     protocol = "HTTPS"
   }
 }
-
 
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
   count            = length(aws_mq_broker.publishing_amazonmq.instances)
   target_group_arn = aws_lb_target_group.internal_amqps.arn
   # target_id        = aws_mq_broker.publishing_amazonmq.instances[count.index].ip_address
-  target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
-  port             = 5671
+  target_id = data.dns_a_record_set.mq_instances.addrs[count.index]
+  port      = 5671
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_amqps
@@ -292,7 +292,7 @@ resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
 # internal_domain_name is ${var.stackname}.${internal_root_domain_name}
 resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
-  name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
+  name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}-direct.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "CNAME"
 
   # TODO: this version will only work with a single instance, as on integration. 
@@ -307,7 +307,7 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 # TEMP: separate DNS entry to go via the NLB
 resource "aws_route53_record" "publishing_amazonmq_internal_via_nlb" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
-  name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}-via-nlb.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
+  name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "A"
 
   alias {

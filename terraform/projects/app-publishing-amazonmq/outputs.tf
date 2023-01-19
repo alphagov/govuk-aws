@@ -26,8 +26,3 @@ output "publishing_amazonmq_passwords" {
   sensitive   = true
   value       = local.publishing_amazonmq_passwords
 }
-
-output "instances" {
-  description = "generated instances"
-  value       = aws_mq_broker.publishing_amazonmq.instances
-}
