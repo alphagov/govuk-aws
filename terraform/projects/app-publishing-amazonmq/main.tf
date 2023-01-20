@@ -289,22 +289,7 @@ resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
 # --------------------------------------------------------------  
 # DNS Entry
 
-# internal_domain_name is ${var.stackname}.${internal_root_domain_name}
-resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
-  zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
-  name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}-direct.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
-  type    = "CNAME"
-
-  # TODO: this version will only work with a single instance, as on integration. 
-  # For staging/production, we'll have a highly-available cluster, at which point
-  # we'll need to repoint this Route53 record at a Network Load Balancer that balances
-  # between the instances. See Amazon's article about how to do that here:
-  # https://aws.amazon.com/blogs/compute/creating-static-custom-domain-endpoints-with-amazon-mq-for-rabbitmq/
-  records = [regex("://([^/:]+)", aws_mq_broker.publishing_amazonmq.instances.0.console_url)[0]]
-  ttl     = 300
-}
-
-# TEMP: separate DNS entry to go via the NLB
+# DNS entry to go via the NLB
 resource "aws_route53_record" "publishing_amazonmq_internal_via_nlb" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
   name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
