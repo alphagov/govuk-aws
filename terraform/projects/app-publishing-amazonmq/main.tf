@@ -195,7 +195,7 @@ resource "aws_lb" "publishingmq_lb_internal" {
     prefix = "lb/${var.stackname}-publishingamazonmq-internal-lb"
   }
 
-  enable_deletion_protection = true
+  enable_deletion_protection = var.lb_delete_protection
 
   tags = {
     "Name"            = "${var.stackname}-publishingamazonmq-internal"
@@ -290,7 +290,7 @@ resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
 # DNS Entry
 
 # DNS entry to go via the NLB
-resource "aws_route53_record" "publishing_amazonmq_internal_via_nlb" {
+resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
   zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
   name    = "${lower(aws_mq_broker.publishing_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "A"
