@@ -69,12 +69,6 @@ variable "cloudfront_www_distribution_aliases" {
   default     = []
 }
 
-variable "aws_region_containing_cloudfront_www_certificate_domain" {
-  type        = string
-  description = "The AWS region containing the WWW CloudFront certificate."
-  default     = "us-east-1"
-}
-
 variable "cloudfront_www_certificate_domain" {
   type        = string
   description = "The domain of the WWW CloudFront certificate to look up."
@@ -85,12 +79,6 @@ variable "cloudfront_assets_distribution_aliases" {
   type        = list
   description = "Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution."
   default     = []
-}
-
-variable "aws_region_containing_cloudfront_assets_certificate_domain" {
-  type        = string
-  description = "The AWS region containing the Assets CloudFront certificate."
-  default     = "eu-west-1"
 }
 
 variable "cloudfront_assets_certificate_domain" {
@@ -146,18 +134,6 @@ provider "aws" {
 provider "aws" {
   region  = "us-east-1"
   alias   = "aws_cloudfront_certificate"
-  version = "2.46.0"
-}
-
-provider "aws" {
-  region  = var.aws_region_containing_cloudfront_www_certificate_domain
-  alias   = "aws_cloudfront_www_certificate"
-  version = "2.46.0"
-}
-
-provider "aws" {
-  region  = var.aws_region_containing_cloudfront_assets_certificate_domain
-  alias   = "aws_cloudfront_assets_certificate"
   version = "2.46.0"
 }
 
@@ -384,7 +360,7 @@ data "aws_acm_certificate" "www" {
 
   domain   = var.cloudfront_www_certificate_domain
   statuses = ["ISSUED"]
-  provider = aws.aws_cloudfront_www_certificate
+  provider = aws.aws_cloudfront_certificate
 }
 
 data "aws_acm_certificate" "assets" {
@@ -392,7 +368,7 @@ data "aws_acm_certificate" "assets" {
 
   domain   = var.cloudfront_assets_certificate_domain
   statuses = ["ISSUED"]
-  provider = aws.aws_cloudfront_assets_certificate
+  provider = aws.aws_cloudfront_certificate
 }
 
 resource "aws_cloudfront_distribution" "www_distribution" {

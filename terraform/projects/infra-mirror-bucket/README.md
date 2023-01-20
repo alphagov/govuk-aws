@@ -14,8 +14,6 @@ The primary bucket should be in London and the backup in Ireland.
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 0.26.0 |
 
 ## Providers
@@ -23,11 +21,9 @@ The primary bucket should be in London and the backup in Ireland.
 | Name | Version |
 |------|---------|
 | <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 2.46.0 2.46.0 2.46.0 2.46.0 |
-| <a name="provider_aws.aws_cloudfront_assets_certificate"></a> [aws.aws\_cloudfront\_assets\_certificate](#provider\_aws.aws\_cloudfront\_assets\_certificate) | 2.46.0 2.46.0 2.46.0 2.46.0 2.46.0 |
-| <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | 2.46.0 2.46.0 2.46.0 2.46.0 2.46.0 |
-| <a name="provider_aws.aws_cloudfront_www_certificate"></a> [aws.aws\_cloudfront\_www\_certificate](#provider\_aws.aws\_cloudfront\_www\_certificate) | 2.46.0 2.46.0 2.46.0 2.46.0 2.46.0 |
-| <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | 2.46.0 2.46.0 2.46.0 2.46.0 2.46.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 2.46.0 2.46.0 |
+| <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | 2.46.0 2.46.0 2.46.0 |
+| <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | 2.46.0 2.46.0 2.46.0 |
 | <a name="provider_external"></a> [external](#provider\_external) | n/a |
 | <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 0.26.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
@@ -84,8 +80,6 @@ No modules.
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_integration_account_root_arn"></a> [aws\_integration\_account\_root\_arn](#input\_aws\_integration\_account\_root\_arn) | AWS account root ARN for the Integration account | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region where primary s3 bucket is located | `string` | `"eu-west-2"` | no |
-| <a name="input_aws_region_containing_cloudfront_assets_certificate_domain"></a> [aws\_region\_containing\_cloudfront\_assets\_certificate\_domain](#input\_aws\_region\_containing\_cloudfront\_assets\_certificate\_domain) | The AWS region containing the Assets CloudFront certificate. | `string` | `"eu-west-1"` | no |
-| <a name="input_aws_region_containing_cloudfront_www_certificate_domain"></a> [aws\_region\_containing\_cloudfront\_www\_certificate\_domain](#input\_aws\_region\_containing\_cloudfront\_www\_certificate\_domain) | The AWS region containing the WWW CloudFront certificate. | `string` | `"us-east-1"` | no |
 | <a name="input_aws_replica_region"></a> [aws\_replica\_region](#input\_aws\_replica\_region) | AWS region where replica s3 bucket is located | `string` | `"eu-west-1"` | no |
 | <a name="input_cloudfront_assets_certificate_domain"></a> [cloudfront\_assets\_certificate\_domain](#input\_cloudfront\_assets\_certificate\_domain) | The domain of the Assets CloudFront certificate to look up. | `string` | `""` | no |
 | <a name="input_cloudfront_assets_distribution_aliases"></a> [cloudfront\_assets\_distribution\_aliases](#input\_cloudfront\_assets\_distribution\_aliases) | Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution. | `list` | `[]` | no |
