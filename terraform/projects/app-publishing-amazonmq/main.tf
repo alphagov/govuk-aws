@@ -232,12 +232,14 @@ resource "aws_lb_target_group" "internal_https" {
   }
 }
 
+# Attach all the IP addresses from the broker DNS lookup
+# to the LB target group
 resource "aws_lb_target_group_attachment" "internal_https_ips" {
   count            = length(aws_mq_broker.publishing_amazonmq.instances)
   target_group_arn = aws_lb_target_group.internal_https.arn
-  #target_id        = aws_mq_broker.publishing_amazonmq.instances[count.index].ip_address
-  target_id = data.dns_a_record_set.mq_instances.addrs[count.index]
-  port      = 443
+  target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
+  port             = 443
+
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_https
@@ -264,7 +266,7 @@ resource "aws_lb_target_group" "internal_amqps" {
   protocol    = "TLS"
   vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
-  # ... BUT use port 443 HTTPS for the healthcheck, as the LB
+  # Use port 443 HTTPS for the healthcheck, as the LB
   # won't get a recognisable response on port 5671
   health_check {
     path     = "/"
@@ -273,12 +275,14 @@ resource "aws_lb_target_group" "internal_amqps" {
   }
 }
 
+# Attach all the IP addresses from the broker DNS lookup
+# to the LB target group
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
   count            = length(aws_mq_broker.publishing_amazonmq.instances)
   target_group_arn = aws_lb_target_group.internal_amqps.arn
-  # target_id        = aws_mq_broker.publishing_amazonmq.instances[count.index].ip_address
-  target_id = data.dns_a_record_set.mq_instances.addrs[count.index]
-  port      = 5671
+  target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
+  port             = 5671
+
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_amqps
