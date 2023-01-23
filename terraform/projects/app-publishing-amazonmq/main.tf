@@ -239,7 +239,7 @@ resource "aws_lb_target_group_attachment" "internal_https_ips" {
   for_each = aws_mq_broker.publishing_amazonmq.instances
 
   target_group_arn = aws_lb_target_group.internal_https.arn
-  target_id        = data.dns_a_record_set.mq_instances.addrs[each.index]
+  target_id        = data.dns_a_record_set.mq_instances.addrs[each.key]
   port             = 443
 
   depends_on = [
@@ -284,7 +284,7 @@ resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
   for_each = aws_mq_broker.publishing_amazonmq.instances
 
   target_group_arn = aws_lb_target_group.internal_amqps.arn
-  target_id        = data.dns_a_record_set.mq_instances.addrs[each.index]
+  target_id        = data.dns_a_record_set.mq_instances.addrs[each.key]
   port             = 5671
 
   depends_on = [
