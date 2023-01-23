@@ -318,23 +318,79 @@ resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   })
 }
 
-# POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
-resource "null_resource" "upload_definitions" {
-  triggers = {
-    # make this run on every apply
-    build_number = "${timestamp()}"
-  }
 
-  depends_on = [
-    aws_route53_record.publishing_amazonmq_internal_root_domain_name,
-    aws_lb.publishingmq_lb_internal
-  ]
+data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
+  filename = "/tmp/amazonmq_rabbitmq_definitions.json"
+}
 
-  provisioner "local-exec" {
-    environment = {
-      AMAZONMQ_USER     = "root"
-      AMAZONMQ_PASSWORD = local.publishing_amazonmq_passwords["root"]
+# # POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
+# resource "null_resource" "upload_definitions" {
+#   triggers = {
+#     # make this run on every apply
+#     build_number = "${timestamp()}"
+#   }
+#   provisioner "local-exec" {
+#     environment = {
+#       AMAZONMQ_USER     = "root"
+#       AMAZONMQ_PASSWORD = local.publishing_amazonmq_passwords["root"]
+#     }
+#     command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
+#   }
+# }
+
+
+# Lambda function that can be invoked from integration Jenkins, regardless of target environment
+data "archive_file" "post_config_to_amazonmq_lambda" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
+  output_path = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
+}
+
+resource "aws_lambda_function" "post_config_to_amazonmq" {
+  filename         = "${data.archive_file.post_config_to_amazonmq_lambda.output_path}"
+  source_code_hash = "${data.archive_file.post_config_to_amazonmq_lambda.output_base64sha256}"
+
+  function_name = "govuk-${var.aws_environment}-artefact"
+  role          = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
+  handler       = "main.lambda_handler"
+  runtime       = "python3.8"
+}
+
+# AWS Lambda Role
+resource "aws_iam_role" "post_config_to_amazonmq_role" {
+  name  = "post_config_to_amazonmq_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
     }
-    command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
-  }
+  ]
+}
+EOF
+}
+
+# Call the function
+data "aws_lambda_invocation" "post_config_to_amazonmq" {
+  function_name = aws_lambda_function.post_config_to_amazonmq.function_name
+
+  input = <<JSON
+{
+  "url": "${aws_mq_broker.publishing_amazonmq.console_url}/api/definitions",
+  "username": "root",
+  "password": "${local.publishing_amazonmq_passwords["root"]}",
+  "json": "${data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content}"
+}
+JSON
+}
+
+output "result_entry" {
+  value = jsondecode(data.aws_lambda_invocation.post_config_to_amazonmq.result)
 }
