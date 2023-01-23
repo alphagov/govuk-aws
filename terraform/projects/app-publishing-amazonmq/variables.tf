@@ -56,3 +56,14 @@ variable "publishing_amazonmq_broker_name" {
   description = "Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces)."
   default     = "PublishingMQ"
 }
+
+variable "elb_internal_certname" {
+  type        = string
+  description = "The ACM cert domain name to find the ARN of, so that it can be applied to the Network Load Balancer"
+}
+
+variable "lb_delete_protection" {
+  type        = bool
+  description = "Whether to enable delete protection on the Network Load Balancer. Defaults to false."
+  default     = false
+}
