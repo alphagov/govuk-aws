@@ -266,6 +266,7 @@ ordered_cache_behavior {
     Project         = "${var.stackname}"
     aws_environment = "${var.aws_environment}"
   }
+}
 
 resource "aws_cloudfront_distribution" "assets_distribution" {
   count = "${var.cloudfront_create}"
@@ -333,6 +334,3 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
     aws_environment = "${var.aws_environment}"
   }
 }
-
-}
-
