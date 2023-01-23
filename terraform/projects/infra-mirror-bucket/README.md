@@ -10,21 +10,17 @@ The primary bucket should be in London and the backup in Ireland.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.13.6 |
-| <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.76 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | >= 3.0.4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.76 2.46.0 2.46.0 2.46.0 |
-| <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | ~> 3.76 2.46.0 2.46.0 2.46.0 |
-| <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | ~> 3.76 2.46.0 2.46.0 2.46.0 |
+| <a name="provider_archive"></a> [archive](#provider\_archive) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 3.76 |
+| <a name="provider_aws.aws_cloudfront_certificate"></a> [aws.aws\_cloudfront\_certificate](#provider\_aws.aws\_cloudfront\_certificate) | ~> 3.76 |
+| <a name="provider_aws.aws_replica"></a> [aws.aws\_replica](#provider\_aws.aws\_replica) | ~> 3.76 |
 | <a name="provider_external"></a> [external](#provider\_external) | n/a |
 | <a name="provider_fastly"></a> [fastly](#provider\_fastly) | >= 3.0.4 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
@@ -38,31 +34,31 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_cloudfront_distribution.assets_distribution](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudfront_distribution) | resource |
-| [aws_cloudfront_distribution.www_distribution](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudfront_distribution) | resource |
-| [aws_cloudfront_origin_access_identity.mirror_access_identity](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudfront_origin_access_identity) | resource |
-| [aws_iam_policy.govuk_mirror_read_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.govuk_mirror_replication_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.s3_mirrors_writer_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy_attachment.basic_lambda_attach](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_policy_attachment.govuk_mirror_read_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_policy_attachment.govuk_mirror_replication_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_role.basic_lambda_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role.govuk_mirror_replication_role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.s3_mirrors_writer_user_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_user.govuk_mirror_google_reader](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
-| [aws_lambda_function.url_rewrite](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
-| [aws_s3_bucket.govuk-mirror](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket.govuk-mirror-replica](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_policy.govuk_mirror_read_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) | resource |
-| [aws_s3_bucket_policy.govuk_mirror_replica_read_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) | resource |
+| [aws_cloudfront_distribution.assets_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
+| [aws_cloudfront_distribution.www_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
+| [aws_cloudfront_origin_access_identity.mirror_access_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity) | resource |
+| [aws_iam_policy.govuk_mirror_read_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.govuk_mirror_replication_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.s3_mirrors_writer_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy_attachment.basic_lambda_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.govuk_mirror_read_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.govuk_mirror_replication_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_role.basic_lambda_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.govuk_mirror_replication_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.s3_mirrors_writer_user_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_user.govuk_mirror_google_reader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
+| [aws_lambda_function.url_rewrite](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
+| [aws_s3_bucket.govuk-mirror](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.govuk-mirror-replica](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_policy.govuk_mirror_read_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_policy.govuk_mirror_replica_read_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [archive_file.url_rewrite](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
-| [aws_acm_certificate.assets](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
-| [aws_acm_certificate.www](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/acm_certificate) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/caller_identity) | data source |
-| [aws_iam_policy_document.s3_mirror_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.s3_mirror_replica_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.s3_mirrors_crawler_writer_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_acm_certificate.assets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
+| [aws_acm_certificate.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.s3_mirror_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.s3_mirror_replica_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.s3_mirrors_crawler_writer_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [external_external.pingdom](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
 | [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/fastly/fastly/latest/docs/data-sources/ip_ranges) | data source |
 | [template_file.s3_govuk_mirror_read_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
