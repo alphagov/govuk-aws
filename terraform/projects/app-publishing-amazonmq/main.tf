@@ -324,6 +324,12 @@ resource "null_resource" "upload_definitions" {
     # make this run on every apply
     build_number = "${timestamp()}"
   }
+
+  depends_on = [
+    aws_route53_record.publishing_amazonmq_internal_root_domain_name,
+    aws_lb.publishingmq_lb_internal
+  ]
+
   provisioner "local-exec" {
     environment = {
       AMAZONMQ_USER     = "root"

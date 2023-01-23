@@ -26,3 +26,8 @@ output "publishing_amazonmq_passwords" {
   sensitive   = true
   value       = local.publishing_amazonmq_passwords
 }
+
+output "instances" {
+  description = "debugging only - the instances of the broker"
+  value = aws_mq_broker.publishing_amazonmq.instances
+}
