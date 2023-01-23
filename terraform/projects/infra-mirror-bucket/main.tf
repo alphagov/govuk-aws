@@ -242,7 +242,6 @@ resource "aws_s3_bucket" "govuk-mirror" {
 
 resource "aws_s3_bucket" "govuk-mirror-replica" {
   bucket   = "govuk-${var.aws_environment}-mirror-replica"
-  region   = var.aws_replica_region
   provider = aws.aws_replica
 
   tags = {
