@@ -48,7 +48,7 @@ variable "remote_state_infra_networking_key_stack" {
 }
 
 variable "office_ips" {
-  type        = list
+  type        = list(string)
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
@@ -64,7 +64,7 @@ variable "cloudfront_enable" {
 }
 
 variable "cloudfront_www_distribution_aliases" {
-  type        = list
+  type        = list(string)
   description = "Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution."
   default     = []
 }
@@ -76,7 +76,7 @@ variable "cloudfront_www_certificate_domain" {
 }
 
 variable "cloudfront_assets_distribution_aliases" {
-  type        = list
+  type        = list(string)
   description = "Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution."
   default     = []
 }
@@ -133,17 +133,17 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 provider "aws" {
-  region  = var.aws_replica_region
-  alias   = "aws_replica"
+  region = var.aws_replica_region
+  alias  = "aws_replica"
 }
 
 provider "aws" {
-  region  = "us-east-1"
-  alias   = "aws_cloudfront_certificate"
+  region = "us-east-1"
+  alias  = "aws_cloudfront_certificate"
 }
 
 data "aws_caller_identity" "current" {}
