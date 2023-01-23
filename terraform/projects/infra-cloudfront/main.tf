@@ -6,7 +6,7 @@
 variable "aws_region" {
   type        = string
   description = "AWS region where primary s3 bucket is located"
-  default     = "eu-west-2"
+  default     = "eu-west-1"
 }
 
 variable "aws_environment" {
@@ -43,12 +43,53 @@ variable "office_ips" {
 
 variable "cloudfront_create" {
   description = "Create Cloudfront resources."
-  default     = false
+  default     = 0
 }
 
 variable "cloudfront_enable" {
   description = "Enable Cloudfront distributions."
   default     = false
+}
+
+variable "logging_bucket" {
+  description = "Logging S3 bucket"
+  default     = false
+}
+
+variable "origin_lb_domain" {
+  type        = string
+  description = "Domain for the cache load balancer origin"
+  default     = ""
+}
+
+variable "origin_lb_id" {
+  type        = string
+  description = "Id for the cache load balancer origin"
+  default     = ""
+}
+
+variable "origin_notify_domain" {
+  type        = string
+  description = "Domain for the notify origin"
+  default     = ""
+}
+
+variable "origin_notify_id" {
+  type        = string
+  description = "Id for the notify origin"
+  default     = ""
+}
+
+variable "www_web_acl_id" {
+  type        = string
+  description = "WAF ACL rules id for the WWW cloudfront distribution"
+  default     = ""
+}
+
+variable "assets_web_acl_id" {
+  type        = string
+  description = "WAF ACL rules id for the assets cloudfront distribution"
+  default     = ""
 }
 
 variable "cloudfront_www_distribution_aliases" {
@@ -63,6 +104,12 @@ variable "cloudfront_www_certificate_domain" {
   default     = ""
 }
 
+variable "www_certificate_arn" {
+  type        = string
+  description = "The WWW CloudFront certificate"
+  default     = ""
+}
+
 variable "cloudfront_assets_distribution_aliases" {
   type        = list
   description = "Extra CNAMEs (alternate domain names), if any, for the Assets CloudFront distribution."
@@ -72,6 +119,18 @@ variable "cloudfront_assets_distribution_aliases" {
 variable "cloudfront_assets_certificate_domain" {
   type        = string
   description = "The domain of the Assets CloudFront certificate to look up."
+  default     = ""
+}
+
+variable "assets_certificate_arn" {
+  type        = string
+  description = "The Assets CloudFront certificate"
+  default     = ""
+}
+
+variable "cloudfront_assets_bucket" { 
+  type        = string
+  description = "The S3 bucket containing assets"
   default     = ""
 }
 
@@ -117,17 +176,32 @@ provider "archive" {
 
 data "aws_caller_identity" "current" {}
 
+data "terraform_remote_state" "infra_monitoring" {
+  backend = "s3"
+
+  config = {
+    bucket = "${var.remote_state_bucket}"
+    key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
+    region = "${var.aws_region}"
+  }
+}
+
 #
 # CloudFront
 #
 
-resource "aws_cloudfront_distribution" "www_distribution" {
+resource "aws_cloudfront_origin_access_identity" "mirror_access_identity" {
+  comment = "Assets"
+}
 
-  aliases = ["www.staging.publishing.service.gov.uk"]
-  web_acl_id = "arn:aws:wafv2:us-east-1:696911096973:global/webacl/cdn_poc_govuk/8fcb1569-44ff-4dd8-b634-748ca3e2b255"
+resource "aws_cloudfront_distribution" "www_distribution" {
+  count = "${var.cloudfront_create}"
+
+  aliases = "${var.cloudfront_www_distribution_aliases}"
+  web_acl_id = "${var.www_web_acl_id}"
   origin {
-    domain_name = "govuk-cache-public-cdn-504820716.eu-west-1.elb.amazonaws.com"
-    origin_id   = "cache cdn lb"
+    domain_name = "${var.origin_lb_domain}"
+    origin_id   = "${var.origin_lb_id}"
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -141,8 +215,8 @@ resource "aws_cloudfront_distribution" "www_distribution" {
   }
 
   origin {
-    domain_name = "d1lmz31mme1483.cloudfront.net"
-    origin_id   = "notify alerts"
+    domain_name = "${var.origin_notify_domain}"
+    origin_id   = "${var.origin_notify_id}"
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -155,6 +229,11 @@ resource "aws_cloudfront_distribution" "www_distribution" {
   is_ipv6_enabled     = true
   comment             = "WWW"
 
+  logging_config {
+    include_cookies = false
+    bucket          = "${var.logging_bucket}"
+    prefix          = "cloudfront/"
+  }
 
   default_cache_behavior {
     allowed_methods          = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
@@ -243,7 +322,7 @@ ordered_cache_behavior {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "arn:aws:acm:us-east-1:696911096973:certificate/642e34ef-71e2-439d-99f7-e79baf9ed482"
+    acm_certificate_arn      = "${var.www_certificate_arn}"
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
@@ -272,7 +351,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   count = "${var.cloudfront_create}"
 
   origin {
-    domain_name = "${aws_s3_bucket.govuk-mirror.bucket_domain_name}"
+    domain_name = "${var.cloudfront_assets_bucket}"
     origin_id   = "S3-govuk-${var.aws_environment}-mirror/assets.publishing.service.gov.uk"
     origin_path = "/assets.publishing.service.gov.uk"
 
@@ -287,11 +366,11 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}.s3.amazonaws.com"
+    bucket          = "${var.logging_bucket}"
     prefix          = "cloudfront/"
   }
 
-  aliases = ["${var.cloudfront_assets_distribution_aliases}"]
+  aliases = "${var.cloudfront_assets_distribution_aliases}"
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -324,7 +403,7 @@ resource "aws_cloudfront_distribution" "assets_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "${data.aws_acm_certificate.assets.arn}"
+    acm_certificate_arn      = "${var.assets_certificate_arn}"
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
