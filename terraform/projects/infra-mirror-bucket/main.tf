@@ -133,25 +133,17 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
-  version = "2.46.0"
+  region = var.aws_region
 }
 
 provider "aws" {
-  region  = var.aws_replica_region
-  alias   = "aws_replica"
-  version = "2.46.0"
+  region = var.aws_replica_region
+  alias  = "aws_replica"
 }
 
 provider "aws" {
-  region  = "us-east-1"
-  alias   = "aws_cloudfront_certificate"
-  version = "2.46.0"
-}
-
-provider "archive" {
-  # Versions >= 2.0 don't work because TF 0.11 doesn't trust the signing cert.
-  version = "~> 1.3"
+  region = "us-east-1"
+  alias  = "aws_cloudfront_certificate"
 }
 
 data "aws_caller_identity" "current" {}
