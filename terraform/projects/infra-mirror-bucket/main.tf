@@ -124,29 +124,26 @@ terraform {
       source  = "fastly/fastly"
       version = ">= 3.0.4"
     }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.76"
+    }
   }
 }
 
 provider "aws" {
-  region  = var.aws_region
-  version = "2.46.0"
+  region = var.aws_region
 }
 
 provider "aws" {
-  region  = var.aws_replica_region
-  alias   = "aws_replica"
-  version = "2.46.0"
+  region = var.aws_replica_region
+  alias  = "aws_replica"
 }
 
 provider "aws" {
-  region  = "us-east-1"
-  alias   = "aws_cloudfront_certificate"
-  version = "2.46.0"
-}
-
-provider "archive" {
-  # Versions >= 2.0 don't work because TF 0.11 doesn't trust the signing cert.
-  version = "~> 1.3"
+  region = "us-east-1"
+  alias  = "aws_cloudfront_certificate"
 }
 
 data "aws_caller_identity" "current" {}
@@ -245,7 +242,6 @@ resource "aws_s3_bucket" "govuk-mirror" {
 
 resource "aws_s3_bucket" "govuk-mirror-replica" {
   bucket   = "govuk-${var.aws_environment}-mirror-replica"
-  region   = var.aws_replica_region
   provider = aws.aws_replica
 
   tags = {
@@ -629,6 +625,6 @@ resource "aws_lambda_function" "url_rewrite" {
   function_name = "url_rewrite"
   role          = aws_iam_role.basic_lambda_role.arn
   handler       = "index.handler"
-  runtime       = "nodejs12.x"
+  runtime       = "nodejs16.x"
   provider      = aws.aws_cloudfront_certificate
 }
