@@ -9,7 +9,7 @@ The primary bucket should be in London and the backup in Ireland.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.13.6 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.76 |
 | <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | >= 3.0.4 |
 
