@@ -346,10 +346,8 @@ data "archive_file" "post_config_to_amazonmq_lambda" {
 }
 
 resource "aws_lambda_function" "post_config_to_amazonmq" {
-  count = "${var.create_sns_subscription ? 1 : 0}"
-
-  filename         = "${data.archive_file.post_config_to_amazonmq.output_path}"
-  source_code_hash = "${data.archive_file.post_config_to_amazonmq.output_base64sha256}"
+  filename         = "${data.archive_file.post_config_to_amazonmq_lambda.output_path}"
+  source_code_hash = "${data.archive_file.post_config_to_amazonmq_lambda.output_base64sha256}"
 
   function_name = "govuk-${var.aws_environment}-artefact"
   role          = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
