@@ -352,7 +352,7 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
 
   function_name = "govuk-${var.aws_environment}-artefact"
   role          = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
-  handler       = "main.lambda_handler"
+  handler       = "post_config_to_amazonmq.lambda_handler"
   runtime       = "python3.8"
 }
 
