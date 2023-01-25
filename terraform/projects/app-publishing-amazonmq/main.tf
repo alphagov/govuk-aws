@@ -383,7 +383,7 @@ data "aws_lambda_invocation" "post_config_to_amazonmq" {
 
   input = <<JSON
 {
-  "url": "${aws_mq_broker.publishing_amazonmq.console_url}/api/definitions",
+  "url": "${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions",
   "username": "root",
   "password": "${local.publishing_amazonmq_passwords["root"]}",
   "json": "${data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content}"
