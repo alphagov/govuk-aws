@@ -181,6 +181,17 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_amqps" {
   cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
 }
 
+# allow outgoing traffic to anything within the same SG
+resource "aws_security_group_rule" "rabbitmq_egress_self_self" {
+  type      = "egress"
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
+
+  source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+  security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+}
+
 # --------------------------------------------------------------
 # Network Load Balancer
 
@@ -308,7 +319,10 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 
 # --------------------------------------------------------------
 # POST full RabbitMQ config to the management API
-
+# We have to do this by creating and invoking a Lambda function 
+# in the target environment, as the Jenkins box in integration
+# does not have access to other environments
+#
 # Write the decrypted definitions from govuk-aws-data to a local file
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   filename = "/tmp/amazonmq_rabbitmq_definitions.json"
@@ -318,17 +332,72 @@ resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   })
 }
 
-# POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
-resource "null_resource" "upload_definitions" {
-  triggers = {
-    # make this run on every apply
-    build_number = "${timestamp()}"
-  }
-  provisioner "local-exec" {
-    environment = {
-      AMAZONMQ_USER     = "root"
-      AMAZONMQ_PASSWORD = local.publishing_amazonmq_passwords["root"]
-    }
-    command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
+data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
+  filename = "/tmp/amazonmq_rabbitmq_definitions.json"
+}
+
+
+# Get the existing IAM policy by name
+data "aws_iam_policy" "lambda_vpc_access" {
+  name = "AWSLambdaVPCAccessExecutionRole"
+}
+
+# The Lambda function itself, defined in the zip file
+resource "aws_lambda_function" "post_config_to_amazonmq" {
+  filename         = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
+  function_name    = "govuk-${var.aws_environment}-post_config_to_amazonmq"
+  role             = aws_iam_role.post_config_to_amazonmq_role.arn
+  handler          = "post_config_to_amazonmq.lambda_handler"
+  runtime          = "python3.8"
+  source_code_hash = filebase64sha256("${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip")
+
+  vpc_config {
+    subnet_ids         = aws_mq_broker.publishing_amazonmq.subnet_ids
+    security_group_ids = [data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id]
   }
 }
+
+# AWS Lambda Role
+resource "aws_iam_role" "post_config_to_amazonmq_role" {
+  name = "post_config_to_amazonmq_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+# Attach the policy to the role
+resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
+  role       = aws_iam_role.post_config_to_amazonmq_role.name
+  policy_arn = data.aws_iam_policy.lambda_vpc_access.arn
+}
+
+# Call the function
+data "aws_lambda_invocation" "post_config_to_amazonmq" {
+  function_name = aws_lambda_function.post_config_to_amazonmq.function_name
+
+  input = <<JSON
+{
+  "url": "${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions",
+  "username": "root",
+  "password": "${local.publishing_amazonmq_passwords["root"]}",
+  "json_b64": "${base64encode(data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content)}"
+}
+JSON
+
+  depends_on = [
+    aws_security_group_rule.rabbitmq_egress_self_self
+  ]
+}
+
