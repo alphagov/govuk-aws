@@ -490,8 +490,8 @@ variable "waf_logs_hec_token" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
-  required_version = "= 0.11.15"
+  backend "s3" {}
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
