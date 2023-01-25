@@ -1,8 +1,10 @@
+import base64
 import json
 import requests
 
 def lambda_handler(event, context):
-    r = requests.post(event['url'], json=event['json'], auth=HTTPBasicAuth(event['username'], event['password']))
+    raw_json = print(base64.b64decode(event['json_b64']))
+    r = requests.post(event['url'], json=raw_json, auth=HTTPBasicAuth(event['username'], event['password']))
     
     return {
         'statusCode': r.status_code,
