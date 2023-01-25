@@ -533,7 +533,7 @@ module "account_public_lb_rules" {
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn           = "${module.account_public_lb.load_balancer_ssl_listeners[0]}"
-  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.account_public_service_cnames) : ""))}"]
+  rules_host             = var.enable_lb_app_healthchecks ? var.account_public_service_cnames : []
   default_tags           = "${map("Project", var.stackname, "aws_migration", "account", "aws_environment", var.aws_environment)}"
 }
 
@@ -671,7 +671,7 @@ module "backend_public_lb_rules" {
   rules_host_domain                = "*"
   vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn                     = "${module.backend_public_lb.load_balancer_ssl_listeners[0]}"
-  rules_host                       = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.backend_public_service_cnames) : ""))}"]
+  rules_host                       = var.enable_lb_app_healthchecks ? var.backend_public_service_cnames : []
   rules_for_existing_target_groups = "${var.backend_rules_for_existing_target_groups}"
   priority_offset                  = "${length(var.backend_alb_blocked_host_headers) + 1}"
   default_tags                     = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
@@ -851,7 +851,7 @@ module "cache_public_lb_rules" {
   rules_host_domain      = "*"
   vpc_id                 = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn           = "${module.cache_public_lb.load_balancer_ssl_listeners[0]}"
-  rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.cache_public_service_cnames) : ""))}"]
+  rules_host             = var.enable_lb_app_healthchecks ? var.cache_public_service_cnames : []
   default_tags           = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
 }
 
