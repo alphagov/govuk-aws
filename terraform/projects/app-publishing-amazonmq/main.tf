@@ -359,7 +359,6 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
 
 # AWS Lambda Role
 resource "aws_iam_role" "post_config_to_amazonmq_role" {
-  count = "${var.create_sns_subscription ? 1 : 0}"
   name  = "post_config_to_amazonmq_role"
 
   assume_role_policy = <<EOF
