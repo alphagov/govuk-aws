@@ -652,7 +652,7 @@ resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
     type             = "fixed-response"
     target_group_arn = "${element(module.backend_public_lb.target_group_arns, 0)}"
 
-    fixed_response = {
+    fixed_response {
       content_type = "text/html"
       status_code  = "403"
     }
