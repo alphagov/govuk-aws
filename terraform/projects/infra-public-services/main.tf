@@ -512,16 +512,16 @@ module "account_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-account-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-account-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_internal_certificate_domain_name  = "${var.elb_public_internal_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_account_elb_external_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_account_elb_external_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "account", "aws_environment", var.aws_environment)}"
   target_group_health_check_path             = "/_healthcheck-ready_account-api"
 }
@@ -531,7 +531,7 @@ module "account_public_lb_rules" {
   name                   = "account"
   autoscaling_group_name = "${data.aws_autoscaling_group.account.name}"
   rules_host_domain      = "*"
-  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn           = "${module.account_public_lb.load_balancer_ssl_listeners[0]}"
   rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.account_public_service_cnames) : ""))}"]
   default_tags           = "${map("Project", var.stackname, "aws_migration", "account", "aws_environment", var.aws_environment)}"
@@ -629,16 +629,16 @@ module "backend_public_lb" {
   name                                       = "${var.stackname}-backend-public"
   internal                                   = false
   allow_routing_for_absent_host_header_rules = "${var.backend_allow_routing_for_absent_host_header_rules}"
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-backend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_internal_certificate_domain_name  = "${var.elb_public_internal_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_external_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_elb_external_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
   idle_timeout                               = 400
 }
@@ -669,7 +669,7 @@ module "backend_public_lb_rules" {
   name                             = "backend"
   autoscaling_group_name           = "${data.aws_autoscaling_group.backend.name}"
   rules_host_domain                = "*"
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn                     = "${module.backend_public_lb.load_balancer_ssl_listeners[0]}"
   rules_host                       = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.backend_public_service_cnames) : ""))}"]
   rules_for_existing_target_groups = "${var.backend_rules_for_existing_target_groups}"
@@ -744,8 +744,8 @@ module "bouncer_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-bouncer-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-bouncer-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
@@ -757,8 +757,8 @@ module "bouncer_public_lb" {
 
   target_group_health_check_path = "/healthcheck/ready"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_bouncer_elb_id}"]
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_bouncer_elb_id}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                   = "${map("Project", var.stackname, "aws_migration", "bouncer", "aws_environment", var.aws_environment)}"
 }
 
@@ -810,15 +810,15 @@ module "cache_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-cache-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-cache-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_cache_external_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_cache_external_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
 }
 
@@ -849,7 +849,7 @@ module "cache_public_lb_rules" {
   name                   = "cache"
   autoscaling_group_name = "${data.aws_autoscaling_group.cache.name}"
   rules_host_domain      = "*"
-  vpc_id                 = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                 = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn           = "${module.cache_public_lb.load_balancer_ssl_listeners[0]}"
   rules_host             = ["${compact(split(",", var.enable_lb_app_healthchecks ? join(",", var.cache_public_service_cnames) : ""))}"]
   default_tags           = "${map("Project", var.stackname, "aws_migration", "cache", "aws_environment", var.aws_environment)}"
@@ -911,15 +911,15 @@ module "ckan_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-ckan-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-ckan-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_ckan_elb_external_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_elb_external_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "ckan", "aws_environment", var.aws_environment)}"
 }
 
@@ -1047,15 +1047,15 @@ module "deploy_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-deploy-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-deploy-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_deploy_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "deploy", "aws_environment", var.aws_environment)}"
 }
 
@@ -1119,15 +1119,15 @@ module "draft_cache_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-draft-cache-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-draft-cache-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_draft-cache_external_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_draft-cache_external_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "draft_cache", "aws_environment", var.aws_environment)}"
 }
 
@@ -1245,16 +1245,16 @@ module "email_alert_api_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-email-alert-api-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-email-alert-api-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   target_group_health_check_path             = "/_healthcheck-ready_email-alert-api"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_email-alert-api_elb_external_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_email-alert-api_elb_external_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "email_alert_api", "aws_environment", var.aws_environment)}"
 }
 
@@ -1348,15 +1348,15 @@ module "graphite_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-graphite-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-graphite-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_external_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_graphite_external_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "graphite", "aws_environment", var.aws_environment)}"
 }
 
@@ -1380,15 +1380,15 @@ module "prometheus_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-prometheus-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-prometheus-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_external_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_prometheus_external_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment)}"
   target_group_health_check_path             = "/-/ready"
 }
@@ -1494,11 +1494,11 @@ resource "aws_route53_record" "locations_api_public_service_cnames" {
 resource "aws_elb" "jumpbox_public_elb" {
   name            = "${var.stackname}-jumpbox"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_offsite_ssh_id}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_offsite_ssh_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-jumpbox-public-elb"
     interval      = 60
   }
@@ -1560,7 +1560,7 @@ resource "aws_autoscaling_attachment" "jumpbox_asg_attachment_elb" {
 module "alarms-elb-jumpbox-public" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-jumpbox"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.jumpbox_public_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "0"
@@ -1580,8 +1580,8 @@ module "licensify_frontend_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-licensify-frontend-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-licensify-frontend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
@@ -1592,8 +1592,8 @@ module "licensify_frontend_public_lb" {
   }
 
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-frontend_external_elb_id}"]
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_licensify-frontend_external_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
     Project         = "${var.stackname}"
@@ -1684,8 +1684,8 @@ module "licensify_backend_public_lb" {
   source                           = "../../modules/aws/lb"
   name                             = "licensify-backend-public"
   internal                         = false
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/licensify-backend-public-elb"
   listener_certificate_domain_name = "${var.licensify_backend_elb_public_certname}"
   target_group_health_check_path   = "/healthcheck"
@@ -1695,8 +1695,8 @@ module "licensify_backend_public_lb" {
   }
 
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-backend_external_elb_id}"]
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_licensify-backend_external_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
     Project         = "${var.stackname}"
@@ -1775,15 +1775,15 @@ module "monitoring_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-monitoring-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-monitoring-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
   subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_external_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_monitoring_external_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", var.stackname, "aws_migration", "monitoring", "aws_environment", var.aws_environment)}"
 }
 
@@ -1950,8 +1950,8 @@ module "sidekiq_monitoring_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-sidekiq-monitoring-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-sidekiq-monitoring-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
@@ -1962,8 +1962,8 @@ module "sidekiq_monitoring_public_lb" {
 
   target_group_health_check_path = "/_healthcheck-ready_sidekiq-monitoring"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_sidekiq-monitoring_external_elb_id}"]
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_sidekiq-monitoring_external_elb_id}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                   = "${map("Project", var.stackname, "aws_migration", "sidekiq-monitoring", "aws_environment", var.aws_environment)}"
 }
 
@@ -2020,8 +2020,8 @@ module "whitehall_backend_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "${var.stackname}-whitehall-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/${var.stackname}-whitehall-backend-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
@@ -2032,8 +2032,8 @@ module "whitehall_backend_public_lb" {
 
   target_group_health_check_path = "/_healthcheck-ready_whitehall-admin"
   subnets                        = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-backend_external_elb_id}"]
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups                = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_whitehall-backend_external_elb_id}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
     Project         = "${var.stackname}"
