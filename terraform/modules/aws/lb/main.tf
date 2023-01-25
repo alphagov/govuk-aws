@@ -433,11 +433,11 @@ output "lb_zone_id" {
 }
 
 output "target_group_arns" {
-  value       = ["${aws_lb_target_group.tg_default.*.arn}"]
+  value       = "${aws_lb_target_group.tg_default.*.arn}"
   description = "List of the default target group ARNs."
 }
 
 output "load_balancer_ssl_listeners" {
-  value       = ["${aws_lb_listener.listener.*.arn}"]
+  value       = "${aws_lb_listener.listener.*.arn}"
   description = "List of https listeners on the Load Balancer."
 }
