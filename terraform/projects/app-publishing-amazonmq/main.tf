@@ -346,9 +346,7 @@ data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
 # }
 
 resource "aws_lambda_function" "post_config_to_amazonmq" {
-  filename         = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
-  source_code_hash = "${data.archive_file.post_config_to_amazonmq_lambda.output_base64sha256}"
-
+  filename      = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
   function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
   role          = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
   handler       = "post_config_to_amazonmq.lambda_handler"
