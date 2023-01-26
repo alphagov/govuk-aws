@@ -27,7 +27,7 @@ output "publishing_amazonmq_passwords" {
   value       = local.publishing_amazonmq_passwords
 }
 
-output "instances" {
-  description = "debugging only - the instances of the broker"
-  value = aws_mq_broker.publishing_amazonmq.instances
+output "lambda_function_name" {
+  description = "Name of the Lambda function which posts config to AmazonMQ after creation"
+  value       = aws_lambda_function.post_config_to_amazonmq.function_name
 }
