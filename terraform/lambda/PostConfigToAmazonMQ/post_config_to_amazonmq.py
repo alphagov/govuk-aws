@@ -1,7 +1,6 @@
 import base64
 import json
-
-from botocore.vendored import requests
+import requests
 
 def lambda_handler(event, context):
     raw_json = print(base64.b64decode(event['json_b64']))

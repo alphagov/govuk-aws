@@ -3,14 +3,14 @@
 virtualenv -p python3.9 .venv
 . .venv/bin/activate
 
-mkdir -p wheelhouse
+mkdir -p package
 
-pip install --platform manylinux2014_x86_64 --target=wheelhouse --implementation cp --python 3.9 --only-binary=:all: --upgrade requests
+pip install --platform manylinux2014_x86_64 --target=package --implementation cp --python 3.9 --only-binary=:all: -r requirements.txt
 (
-cd wheelhouse
+cd package
 zip -r ../post_config_to_amazonmq.zip .
 )
 zip -r post_config_to_amazonmq.zip post_config_to_amazonmq.py
 
-rm -rf wheelhouse
+rm -rf package
 rm -rf .venv
