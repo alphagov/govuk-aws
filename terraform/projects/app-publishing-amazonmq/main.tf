@@ -349,7 +349,7 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
   filename         = "${data.archive_file.post_config_to_amazonmq_lambda.output_path}"
   source_code_hash = "${data.archive_file.post_config_to_amazonmq_lambda.output_base64sha256}"
 
-  function_name = "govuk-${var.aws_environment}-artefact"
+  function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
   role          = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
   handler       = "post_config_to_amazonmq.lambda_handler"
   runtime       = "python3.8"

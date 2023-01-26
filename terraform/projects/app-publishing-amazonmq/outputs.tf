@@ -26,3 +26,8 @@ output "publishing_amazonmq_passwords" {
   sensitive   = true
   value       = local.publishing_amazonmq_passwords
 }
+
+output "lambda_function_name" {
+  description = "Name of the Lambda function which posts config to AmazonMQ after creation"
+  value       = aws_lambda_function.post_config_to_amazonmq.function_name
+}
