@@ -339,14 +339,14 @@ data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
 
 
 # Lambda function that can be invoked from integration Jenkins, regardless of target environment
-data "archive_file" "post_config_to_amazonmq_lambda" {
-  type        = "zip"
-  source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
-  output_path = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
-}
+# data "archive_file" "post_config_to_amazonmq_lambda" {
+#   type        = "zip"
+#   source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
+#   output_path = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
+# }
 
 resource "aws_lambda_function" "post_config_to_amazonmq" {
-  filename         = "${data.archive_file.post_config_to_amazonmq_lambda.output_path}"
+  filename         = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
   source_code_hash = "${data.archive_file.post_config_to_amazonmq_lambda.output_base64sha256}"
 
   function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
