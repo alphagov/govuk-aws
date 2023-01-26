@@ -1,7 +1,6 @@
 resource "aws_s3_bucket" "aws_waf_logs" {
   acl    = "private"
   bucket = "govuk-${var.aws_environment}-aws-waf-logs"
-  region = "${var.aws_region}"
 
   lifecycle_rule {
     id      = "all"
@@ -96,7 +95,7 @@ resource "aws_lambda_function" "aws_waf_log_trimmer" {
   source_code_hash = "${data.archive_file.aws_waf_log_trimmer.output_base64sha256}"
   role             = "${aws_iam_role.aws_waf_log_trimmer.arn}"
   handler          = "lambda.handler"
-  runtime          = "nodejs12.x"
+  runtime          = "nodejs16.x"
   timeout          = 190
 }
 
