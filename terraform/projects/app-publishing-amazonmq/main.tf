@@ -340,7 +340,7 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
 
   vpc_config {
     subnet_ids         = aws_mq_broker.publishing_amazonmq.subnet_ids
-    security_group_ids = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
+    security_group_ids = [data.terraform_remote_state.infra_security_groups.outputs.sg_management_id]
   }
 }
 
