@@ -347,15 +347,13 @@ data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
 # }
 
 resource "aws_lambda_function" "post_config_to_amazonmq" {
-  triggers = {
-    # make this run on every apply
-    build_number = "${timestamp()}"
-  }
-  filename      = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
-  function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
-  role          = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
-  handler       = "post_config_to_amazonmq.lambda_handler"
-  runtime       = "python3.8"
+  
+  filename         = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
+  function_name    = "govuk-${var.aws_environment}-post_config_to_amazonmq"
+  role             = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
+  handler          = "post_config_to_amazonmq.lambda_handler"
+  runtime          = "python3.8"
+  source_code_hash = filebase64sha256("${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip")
 }
 
 # AWS Lambda Role
