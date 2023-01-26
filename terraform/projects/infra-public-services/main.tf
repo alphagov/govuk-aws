@@ -491,12 +491,18 @@ variable "waf_logs_hec_token" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "= 0.13.6"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.76"
+    }
+  }
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "2.69.0"
+  region = "${var.aws_region}"
 }
 
 provider "archive" {
