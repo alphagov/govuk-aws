@@ -171,8 +171,9 @@ resource "aws_lb_listener_rule" "existing_target_groups" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${element(keys(var.rules_for_existing_target_groups),count.index)}.${var.rules_host_domain}"]
+    host_header {
+      values = ["${element(keys(var.rules_for_existing_target_groups),count.index)}.${var.rules_host_domain}"]
+    }
   }
 }
 

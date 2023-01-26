@@ -665,8 +665,9 @@ resource "aws_lb_listener_rule" "backend_alb_blocked_host_headers" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${element(var.backend_alb_blocked_host_headers, count.index)}"]
+    host_header {
+      values = ["${element(var.backend_alb_blocked_host_headers, count.index)}"]
+    }
   }
 }
 
