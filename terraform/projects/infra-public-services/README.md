@@ -8,7 +8,7 @@ This project adds global resources for app components:
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.30 |
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.69.0 |
 

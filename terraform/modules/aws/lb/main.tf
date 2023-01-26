@@ -208,8 +208,8 @@ data "aws_acm_certificate" "internal_cert" {
 resource "aws_lb" "lb" {
   name               = "${var.name}"
   internal           = "${var.internal}"
-  security_groups    = ["${var.security_groups}"]
-  subnets            = ["${var.subnets}"]
+  security_groups    = "${var.security_groups}"
+  subnets            = var.subnets
   load_balancer_type = "${var.load_balancer_type}"
   idle_timeout       = "${var.idle_timeout}"
 
@@ -231,20 +231,20 @@ data "null_data_source" "values" {
   count = "${length(keys(var.listener_action))}"
 
   inputs = {
-    ssl_arn_index = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? format("%d",count.index) : ""}"
-    arn_index     = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTP" ? format("%d",count.index) : ""}"
+    ssl_arn_index = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? format("%d", count.index) : ""}"
+    arn_index     = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTP" ? format("%d", count.index) : ""}"
   }
 }
 
 resource "aws_lb_listener" "listener_non_ssl" {
   count             = "${length(compact(data.null_data_source.values.*.inputs.arn_index))}"
   load_balancer_arn = "${aws_lb.lb.arn}"
-  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))), 1)}"
-  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))), 0)}"
+  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))), 1)}"
+  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))), 0)}"
 
   default_action {
-    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true"? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index),count.index))}"):""}"
-    type             = "${var.allow_routing_for_absent_host_header_rules == "true"? "forward" : "fixed-response"}"
+    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true" ? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))}") : ""}"
+    type             = "${var.allow_routing_for_absent_host_header_rules == "true" ? "forward" : "fixed-response"}"
 
     fixed_response {
       content_type = "text/plain"
@@ -257,14 +257,14 @@ resource "aws_lb_listener" "listener_non_ssl" {
 resource "aws_lb_listener" "listener" {
   count             = "${length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
   load_balancer_arn = "${aws_lb.lb.arn}"
-  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 1)}"
-  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0)}"
-  ssl_policy        = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
-  certificate_arn   = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
+  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 1)}"
+  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0)}"
+  ssl_policy        = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
+  certificate_arn   = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
 
   default_action {
-    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true"? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index),count.index))}"):""}"
-    type             = "${var.allow_routing_for_absent_host_header_rules == "true"? "forward" : "fixed-response"}"
+    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true" ? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))}") : ""}"
+    type             = "${var.allow_routing_for_absent_host_header_rules == "true" ? "forward" : "fixed-response"}"
 
     fixed_response {
       content_type = "text/plain"
@@ -275,13 +275,13 @@ resource "aws_lb_listener" "listener" {
 }
 
 resource "aws_lb_listener_certificate" "secondary" {
-  count           = "${var.listener_secondary_certificate_domain_name == ""? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
+  count           = "${var.listener_secondary_certificate_domain_name == "" ? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
   listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
   certificate_arn = "${data.aws_acm_certificate.secondary_cert.0.arn}"
 }
 
 resource "aws_lb_listener_certificate" "internal" {
-  count           = "${var.listener_internal_certificate_domain_name == ""? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
+  count           = "${var.listener_internal_certificate_domain_name == "" ? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
   listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
   certificate_arn = "${data.aws_acm_certificate.internal_cert.0.arn}"
 }
@@ -340,11 +340,11 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_4xx_count" {
   statistic           = "Sum"
   threshold           = "${var.httpcode_elb_4xx_count_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = "${var.alarm_actions}"
   alarm_description   = "This metric monitors the sum of HTTP 4XX response codes generated by the Application LB."
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
   }
 }
@@ -360,11 +360,11 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_5xx_count" {
   statistic           = "Sum"
   threshold           = "${var.httpcode_elb_5xx_count_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = "${var.alarm_actions}"
   alarm_description   = "This metric monitors the sum of HTTP 5XX response codes generated by the Application LB."
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
   }
 }
@@ -380,11 +380,11 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_4xx_count" {
   statistic           = "Sum"
   threshold           = "${var.httpcode_target_4xx_count_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = "${var.alarm_actions}"
   alarm_description   = "This metric monitors the sum of HTTP 4XX response codes generated by the Target Groups."
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
   }
 }
@@ -400,11 +400,11 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_5xx_count" {
   statistic           = "Sum"
   threshold           = "${var.httpcode_target_5xx_count_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = "${var.alarm_actions}"
   alarm_description   = "This metric monitors the sum of HTTP 5XX response codes generated by the Target Groups."
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     LoadBalancer = "${local.alarm_dimensions_loadbalancer}"
   }
 }
@@ -433,11 +433,11 @@ output "lb_zone_id" {
 }
 
 output "target_group_arns" {
-  value       = ["${aws_lb_target_group.tg_default.*.arn}"]
+  value       = "${aws_lb_target_group.tg_default.*.arn}"
   description = "List of the default target group ARNs."
 }
 
 output "load_balancer_ssl_listeners" {
-  value       = ["${aws_lb_listener.listener.*.arn}"]
+  value       = "${aws_lb_listener.listener.*.arn}"
   description = "List of https listeners on the Load Balancer."
 }
