@@ -1,7 +1,6 @@
 resource "aws_s3_bucket" "aws_waf_logs" {
   acl    = "private"
   bucket = "govuk-${var.aws_environment}-aws-waf-logs"
-  region = "${var.aws_region}"
 
   lifecycle_rule {
     id      = "all"
