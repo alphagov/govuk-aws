@@ -19,7 +19,8 @@ def lambda_handler(event, context):
     logger.info("raw_json = %s", raw_json)
 
     logger.info('Posting...')
-    r = requests.post(event['url'], json=raw_json, auth=HTTPBasicAuth(event['username'], event['password']))
+    headers = {'Content-type': 'application/json'}
+    r = requests.post(event['url'], data=raw_json, auth=HTTPBasicAuth(event['username'], event['password']), headers=headers)
     logger.info('Posted - status_code = %s', r.status_code)
 
     return {
