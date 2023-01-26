@@ -308,7 +308,10 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 
 # --------------------------------------------------------------
 # POST full RabbitMQ config to the management API
-
+# We have to do this by creating and invoking a Lambda function 
+# in the target environment, as the Jenkins box in integration
+# does not have access to other environments
+#
 # Write the decrypted definitions from govuk-aws-data to a local file
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   filename = "/tmp/amazonmq_rabbitmq_definitions.json"
@@ -328,8 +331,8 @@ data "aws_iam_policy" "lambda_vpc_access" {
   name = "AWSLambdaVPCAccessExecutionRole"
 }
 
+# The Lambda function itself, defined in the zip file
 resource "aws_lambda_function" "post_config_to_amazonmq" {
-  
   filename         = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
   function_name    = "govuk-${var.aws_environment}-post_config_to_amazonmq"
   role             = "${aws_iam_role.post_config_to_amazonmq_role.arn}"
