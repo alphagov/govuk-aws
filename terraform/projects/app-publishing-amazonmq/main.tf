@@ -322,28 +322,11 @@ data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
   filename = "/tmp/amazonmq_rabbitmq_definitions.json"
 }
 
-# # POST that definitions file to the Rabbitmq HTTP API (see https://pulse.mozilla.org/api/index.html)
-# resource "null_resource" "upload_definitions" {
-#   triggers = {
-#     # make this run on every apply
-#     build_number = "${timestamp()}"
-#   }
-#   provisioner "local-exec" {
-#     environment = {
-#       AMAZONMQ_USER     = "root"
-#       AMAZONMQ_PASSWORD = local.publishing_amazonmq_passwords["root"]
-#     }
-#     command = "curl -i -XPOST -u $AMAZONMQ_USER:$AMAZONMQ_PASSWORD -H 'Content-type: application/json' -d '@${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}' ${aws_mq_broker.publishing_amazonmq.instances.0.console_url}/api/definitions && rm ${local_sensitive_file.amazonmq_rabbitmq_definitions.filename}"
-#   }
-# }
 
-
-# Lambda function that can be invoked from integration Jenkins, regardless of target environment
-# data "archive_file" "post_config_to_amazonmq_lambda" {
-#   type        = "zip"
-#   source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
-#   output_path = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
-# }
+# Get the existing IAM policy by name
+data "aws_iam_policy" "lambda_vpc_access" {
+  name = "AWSLambdaVPCAccessExecutionRole"
+}
 
 resource "aws_lambda_function" "post_config_to_amazonmq" {
   
@@ -353,6 +336,11 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
   handler          = "post_config_to_amazonmq.lambda_handler"
   runtime          = "python3.8"
   source_code_hash = filebase64sha256("${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip")
+
+  vpc_config {
+    subnet_ids         = aws_mq_broker.publishing_amazonmq.subnet_ids
+    security_group_ids = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
+  }
 }
 
 # AWS Lambda Role
@@ -374,6 +362,11 @@ resource "aws_iam_role" "post_config_to_amazonmq_role" {
   ]
 }
 EOF
+}
+# Attach the policy to the role
+resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
+  role       = aws_iam_role.post_config_to_amazonmq_role.name
+  policy_arn = data.aws_iam_policy.lambda_vpc_access.arn
 }
 
 # Call the function
