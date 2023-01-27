@@ -1,27 +1,19 @@
 import base64
 import json
 import requests
-import logging
 
 from requests.auth import HTTPBasicAuth
 
 def lambda_handler(event, context):
-    # Initialize you log configuration using the base class
-    logging.basicConfig(level = logging.INFO)
-
-    # Retrieve the logger instance
-    logger = logging.getLogger()
-
-    logger.info("event = %s", event)
+    print("event = %s", event)
 
     raw_json = print(base64.b64decode(event['json_b64']))
+    json_str = raw_json.decode('ascii')
 
-    logger.info("raw_json = %s", raw_json)
-
-    logger.info('Posting...')
+    print('Posting...')
     headers = {'Content-type': 'application/json'}
-    r = requests.post(event['url'], data=raw_json, auth=HTTPBasicAuth(event['username'], event['password']), headers=headers)
-    logger.info('Posted - status_code = %s', r.status_code)
+    r = requests.post(event['url'], data=json_str, auth=HTTPBasicAuth(event['username'], event['password']), headers=headers, verify=False)
+    print('Posted - status_code = %s, text = %s', r.status_code, r.text)
 
     return {
         'statusCode': r.status_code,
