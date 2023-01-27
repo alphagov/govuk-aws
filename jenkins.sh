@@ -44,6 +44,18 @@ if [[ "$GOVUK_AWS_DATA_BRANCH" == "" ]]; then
   GOVUK_AWS_DATA_BRANCH="main"
 fi
 
+if [[ $COMMAND == "plan" && $GOVUK_AWS_BRANCH != "main" ]]; then
+echo -e "\e[31m===============================================================\e[0m"
+echo -e "\e[31mWARNING: you have run a 'plan' of a branch of govuk-aws that may be a number of commits behind 'main'.\nApplying this branch may lead to unintended infrastructural changes.\nYou should rebase your branch before proceeding.\e[0m"
+echo -e "\e[31m===============================================================\e[0m"
+fi
+
+if [[ $COMMAND == "plan" && $GOVUK_AWS_DATA_BRANCH != "main" ]]; then
+echo -e "\e[31m===============================================================\e[0m"
+echo -e "\e[31mWARNING: you have run a 'plan' of a branch of govuk-aws-data that may be a number of commits behind 'main'.\nApplying this branch may lead to unintended infrastructural changes.\nYou should rebase your branch before proceeding.\e[0m"
+echo -e "\e[31m===============================================================\e[0m"
+fi
+
 echo "Cloning govuk-aws-data $GOVUK_AWS_DATA_BRANCH"
 git clone --single-branch --branch "$GOVUK_AWS_DATA_BRANCH" git@github.com:alphagov/govuk-aws-data.git
 
@@ -52,7 +64,7 @@ case $COMMAND in
   'plan (destroy)') COMMAND='plan'; EXTRA='-detailed-exitcode -destroy';;
   # This flag must be -auto-approve for terraform v1.0+
   # TODO: either also support -force for terraform v0.x, or update remaining
-  #       projects that require terraform v0.x 
+  #       projects that require terraform v0.x
   'destroy') EXTRA='-auto-approve';;
   'plan') EXTRA='-detailed-exitcode';;
 esac
