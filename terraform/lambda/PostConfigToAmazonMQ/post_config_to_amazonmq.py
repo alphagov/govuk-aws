@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 def lambda_handler(event, context):
     print("event = %s", event)
 
-    raw_json = print(base64.b64decode(event['json_b64']))
+    raw_json = base64.b64decode(event['json_b64'])
     json_str = raw_json.decode('ascii')
 
     print('Posting...')
