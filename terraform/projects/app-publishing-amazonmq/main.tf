@@ -321,7 +321,6 @@ resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   })
 }
 
-
 data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
   filename = "/tmp/amazonmq_rabbitmq_definitions.json"
 }
