@@ -342,14 +342,22 @@ data "aws_iam_policy" "lambda_vpc_access" {
   name = "AWSLambdaVPCAccessExecutionRole"
 }
 
-# The Lambda function itself, defined in the zip file
+# Build a zip file which can be deployed to AWS Lambda
+data "archive_file" "artefact_lambda" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
+  output_path = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
+}
+
+# The Lambda function itself
 resource "aws_lambda_function" "post_config_to_amazonmq" {
-  filename         = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
-  function_name    = "govuk-${var.aws_environment}-post_config_to_amazonmq"
-  role             = aws_iam_role.post_config_to_amazonmq_role.arn
-  handler          = "post_config_to_amazonmq.lambda_handler"
-  runtime          = "python3.8"
-  source_code_hash = filebase64sha256("${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip")
+  filename         = data.archive_file.artefact_lambda.output_path
+  source_code_hash = data.archive_file.artefact_lambda.output_base64sha256
+
+  function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
+  role          = aws_iam_role.post_config_to_amazonmq_role.arn
+  handler       = "post_config_to_amazonmq.lambda_handler"
+  runtime       = "python3.8"
 
   vpc_config {
     subnet_ids         = aws_mq_broker.publishing_amazonmq.subnet_ids
