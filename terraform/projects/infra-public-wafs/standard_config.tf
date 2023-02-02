@@ -26,7 +26,7 @@ resource "aws_shield_protection" "bouncer_public_lb" {
 
 resource "aws_wafv2_web_acl_association" "bouncer_public_web_acl" {
   resource_arn = data.terraform_remote_state.infra_public_services.outputs.bouncer_public_lb_id
-  web_acl_arn  = aws_wafv2_web_acl.default.arn
+  web_acl_arn  = aws_wafv2_web_acl.bouncer_public.arn
 }
 
 resource "aws_wafv2_web_acl_association" "cache_public_web_acl" {
