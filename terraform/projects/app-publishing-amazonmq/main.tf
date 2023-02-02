@@ -83,7 +83,7 @@ locals {
 # Lookups to existing resources which we need to reference
 
 data "aws_subnet" "lb_subnets" {
-  count = length(aws_mq_broker.publishing_amazonmq.subnet_ids)
+  count = var.publishing_amazonmq_instance_count
   id    = sort(tolist(aws_mq_broker.publishing_amazonmq.subnet_ids))[count.index]
 }
 
@@ -246,7 +246,7 @@ resource "aws_lb_target_group" "internal_https" {
 # Attach all the IP addresses from the broker DNS lookup
 # to the LB target group
 resource "aws_lb_target_group_attachment" "internal_https_ips" {
-  count            = length(aws_mq_broker.publishing_amazonmq.instances)
+  count            = var.publishing_amazonmq_instance_count
   target_group_arn = aws_lb_target_group.internal_https.arn
   target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
   port             = 443
@@ -289,7 +289,7 @@ resource "aws_lb_target_group" "internal_amqps" {
 # Attach all the IP addresses from the broker DNS lookup
 # to the LB target group
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
-  count            = length(aws_mq_broker.publishing_amazonmq.instances)
+  count            = var.publishing_amazonmq_instance_count
   target_group_arn = aws_lb_target_group.internal_amqps.arn
   target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
   port             = 5671

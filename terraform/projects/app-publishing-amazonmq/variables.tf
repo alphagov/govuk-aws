@@ -57,6 +57,19 @@ variable "publishing_amazonmq_broker_name" {
   default     = "PublishingMQ"
 }
 
+# We need to use count when creating load balancer target group attachments
+# This must be defined before apply, which means it can't be derived from the 
+# outputs of the broker, if the broker doesn't already exist. 
+# The only alternatives are 
+# a) run terraform with -target to create the broker first, before any other run
+# b) define the number of instances in advance
+# We chose b) as the least-worst option
+variable "publishing_amazonmq_instance_count" {
+  type        = number
+  description = "Number of instances the broker has/should have. This would normally be 1 for a deployment_mode of SINGLE_INSTANCE, 2 for ACTIVE_STANDBY_MULTI_AZ, 3 for CLUSTER_MULTI_AZ. Defaults to 1."
+  default     = 1
+}
+
 variable "elb_internal_certname" {
   type        = string
   description = "The ACM cert domain name to find the ARN of, so that it can be applied to the Network Load Balancer"
