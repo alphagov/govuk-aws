@@ -119,7 +119,7 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   logs {
     general = true
   }
-  
+
   # The Terraform provider will only allow us to create a single user
   # All other users must be added from the web UI 
   user {
