@@ -116,6 +116,10 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
   subnet_ids      = var.deployment_mode == "SINGLE_INSTANCE" ? [data.terraform_remote_state.infra_networking.outputs.private_subnet_ids[0]] : data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 
+  logs {
+    general = true
+  }
+  
   # The Terraform provider will only allow us to create a single user
   # All other users must be added from the web UI 
   user {
