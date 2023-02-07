@@ -62,7 +62,7 @@ variable "ebs_volume_size" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 
@@ -72,13 +72,13 @@ provider "aws" {
 }
 
 module "prometheus-1" {
-  source       = "../../modules/aws/node_group"
-  name         = "${var.stackname}-prometheus-1"
+  source = "../../modules/aws/node_group"
+  name   = "${var.stackname}-prometheus-1"
   default_tags = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
-var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1")}"
+  var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1")}"
 
   instance_subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
-keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
+  keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
 
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
@@ -123,7 +123,7 @@ module "prometheus_internal_alb" {
   listener_certificate_domain_name = "${var.elb_internal_certname}"
   listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
   subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  target_group_health_check_path   = "/-/ready"                                                              # See https://prometheus.io/docs/prometheus/latest/management_api/
+  target_group_health_check_path   = "/-/ready" # See https://prometheus.io/docs/prometheus/latest/management_api/
 
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_internal_elb_id}"]
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]

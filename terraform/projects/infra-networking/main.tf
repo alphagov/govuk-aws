@@ -118,7 +118,7 @@ variable "private_subnet_elasticsearch_availability_zones" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 

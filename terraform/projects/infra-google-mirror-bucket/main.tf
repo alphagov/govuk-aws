@@ -60,7 +60,7 @@ variable "govuk_mirror_google_reader_aws_secret_access_key" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "gcs"            {}
+  backend "gcs" {}
   required_version = "= 0.11.15"
 }
 

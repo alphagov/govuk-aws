@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_https"
 }
 
 resource "aws_security_group_rule" "licensify-frontend-elb_ingress_public_https" {
-  count     = "${var.aws_environment == "production"? 1 : 0}"
+  count     = "${var.aws_environment == "production" ? 1 : 0}"
   type      = "ingress"
   from_port = 443
   to_port   = 443
@@ -91,7 +91,7 @@ resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_http" 
 }
 
 resource "aws_security_group_rule" "licensify-frontend-elb_ingress_public_http" {
-  count     = "${var.aws_environment == "production"? 1 : 0}"
+  count     = "${var.aws_environment == "production" ? 1 : 0}"
   type      = "ingress"
   from_port = 80
   to_port   = 80

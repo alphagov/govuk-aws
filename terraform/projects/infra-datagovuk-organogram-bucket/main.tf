@@ -41,7 +41,7 @@ variable "remote_state_infra_monitoring_key_stack" {
 
 # Set up the backend & provider for each region
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 

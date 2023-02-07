@@ -73,7 +73,7 @@ variable "instance_type" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 
@@ -137,7 +137,7 @@ resource "aws_route53_record" "draft-frontend_service_record" {
 
   alias {
     name                   = "${var.enable_alb ? module.internal_lb.lb_dns_name : aws_elb.draft-frontend_elb.dns_name}"
-    zone_id                = "${var.enable_alb ? module.internal_lb.lb_zone_id  : aws_elb.draft-frontend_elb.zone_id}"
+    zone_id                = "${var.enable_alb ? module.internal_lb.lb_zone_id : aws_elb.draft-frontend_elb.zone_id}"
     evaluate_target_health = true
   }
 }
