@@ -51,7 +51,7 @@ variable "instance_type" {
 }
 
 variable "create_instance_key" {
-  type        = "string"
+  type        = "bool"
   description = "Whether to create a key pair for the instance launch configuration"
   default     = false
 }
@@ -253,7 +253,7 @@ resource "aws_iam_instance_profile" "node_instance_profile" {
 }
 
 resource "aws_key_pair" "node_key" {
-  count      = "${var.create_instance_key}"
+  count      = "${var.create_instance_key == false ? 0 : 1}"
   key_name   = "${var.instance_key_name}"
   public_key = "${var.instance_public_key}"
 }
@@ -265,7 +265,9 @@ resource "aws_launch_configuration" "node_launch_configuration" {
   instance_type = "${var.instance_type}"
   user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
 
-  security_groups = ["${var.instance_security_group_ids}"]
+  # this awkward syntax should work in both v0.11 and v0.12
+  # (see https://stackoverflow.com/questions/57117183/terraform-0-11-list-attribute-compatible-with-terraform-0-12)
+  security_groups = "${flatten(var.instance_security_group_ids)}"
 
   iam_instance_profile        = "${aws_iam_instance_profile.node_instance_profile.name}"
   associate_public_ip_address = false
@@ -289,7 +291,7 @@ resource "aws_launch_configuration" "node_with_ebs_launch_configuration" {
   instance_type = "${var.instance_type}"
   user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
 
-  security_groups = ["${var.instance_security_group_ids}"]
+  security_groups = "${flatten(var.instance_security_group_ids)}"
 
   iam_instance_profile        = "${aws_iam_instance_profile.node_instance_profile.name}"
   associate_public_ip_address = false
@@ -317,7 +319,7 @@ resource "aws_launch_configuration" "node_with_ebs_launch_configuration" {
 resource "null_resource" "node_autoscaling_group_tags" {
   count = "${length(keys(var.default_tags))}"
 
-  triggers {
+  triggers = {
     key                 = "${element(keys(var.default_tags), count.index)}"
     value               = "${element(values(var.default_tags), count.index)}"
     propagate_at_launch = true
@@ -327,9 +329,7 @@ resource "null_resource" "node_autoscaling_group_tags" {
 resource "aws_autoscaling_group" "node_autoscaling_group" {
   name = "${var.name}"
 
-  vpc_zone_identifier = [
-    "${var.instance_subnet_ids}",
-  ]
+  vpc_zone_identifier = "${flatten(var.instance_subnet_ids)}"
 
   desired_capacity          = "${var.asg_desired_capacity}"
   min_size                  = "${var.asg_min_size}"
@@ -351,10 +351,10 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
     "GroupTotalInstances",
   ]
 
-  tags = ["${concat(
+  tags = "${concat(
     list(map("key", "Name", "value", "${var.name}", "propagate_at_launch", true)),
     null_resource.node_autoscaling_group_tags.*.triggers)
-  }"]
+  }"
 
   lifecycle {
     create_before_destroy = true
@@ -374,9 +374,9 @@ resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic
 }
 
 resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {
-  count         = "${var.create_asg_notifications}"
+  count         = "${var.create_asg_notifications == false ? 0 : 1}"
   group_names   = ["${aws_autoscaling_group.node_autoscaling_group.name}"]
-  notifications = ["${var.asg_notification_types}"]
+  notifications = "${flatten(var.asg_notification_types)}"
   topic_arn     = "${var.asg_notification_topic_arn}"
 }
 

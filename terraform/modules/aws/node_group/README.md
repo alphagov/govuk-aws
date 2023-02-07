@@ -61,7 +61,7 @@ No modules.
 | <a name="input_asg_notification_topic_arn"></a> [asg\_notification\_topic\_arn](#input\_asg\_notification\_topic\_arn) | The Topic ARN for Autoscaling Group notifications to be sent to | `string` | `""` | no |
 | <a name="input_asg_notification_types"></a> [asg\_notification\_types](#input\_asg\_notification\_types) | A list of Notification Types that trigger Autoscaling Group notifications. Acceptable values are documented in https://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_NotificationConfiguration.html | `list` | <pre>[<br>  "autoscaling:EC2_INSTANCE_LAUNCH",<br>  "autoscaling:EC2_INSTANCE_TERMINATE",<br>  "autoscaling:EC2_INSTANCE_LAUNCH_ERROR"<br>]</pre> | no |
 | <a name="input_create_asg_notifications"></a> [create\_asg\_notifications](#input\_create\_asg\_notifications) | Enable Autoscaling Group notifications | `string` | `true` | no |
-| <a name="input_create_instance_key"></a> [create\_instance\_key](#input\_create\_instance\_key) | Whether to create a key pair for the instance launch configuration | `string` | `false` | no |
+| <a name="input_create_instance_key"></a> [create\_instance\_key](#input\_create\_instance\_key) | Whether to create a key pair for the instance launch configuration | `bool` | `false` | no |
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map` | `{}` | no |
 | <a name="input_ebs_device_name"></a> [ebs\_device\_name](#input\_ebs\_device\_name) | Name of the block device to mount on the instance, e.g. xvdf | `string` | `"xvdf"` | no |
 | <a name="input_ebs_device_volume_size"></a> [ebs\_device\_volume\_size](#input\_ebs\_device\_volume\_size) | Size of additional ebs volume in GB | `string` | `"20"` | no |
