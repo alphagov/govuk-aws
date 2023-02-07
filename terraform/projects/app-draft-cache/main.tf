@@ -321,7 +321,7 @@ resource "aws_security_group_rule" "authenticating-proxy-rds_ingress_draft_cache
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = data.aws_security_group.authenticating-proxy-rds.0.id
+  security_group_id        = data.aws_security_group.authenticating-proxy-rds.id
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_draft-cache_id
 }
 
