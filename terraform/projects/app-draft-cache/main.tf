@@ -242,8 +242,8 @@ resource "aws_route53_record" "draft-cache_external_service_record" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.draft-cache_external_elb.dns_name
-    zone_id                = aws_elb.draft-cache_external_elb.zone_id
+    name                   = aws_elb.draft-cache_external_elb.0.dns_name
+    zone_id                = aws_elb.draft-cache_external_elb.0.zone_id
     evaluate_target_health = true
   }
 }
