@@ -282,7 +282,7 @@ module "draft-cache" {
 module "alarms-elb-draft-cache-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-draft-cache-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = [data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn]
   elb_name                       = "${aws_elb.draft-cache_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -301,7 +301,7 @@ locals {
 module "alarms-elb-draft-cache-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-draft-cache-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = [data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn]
   elb_name                       = "${join("", aws_elb.draft-cache_external_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
