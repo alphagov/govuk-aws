@@ -200,55 +200,6 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
   }
 
-  # set a base rate limit per IP looking back over the last 5 minutes
-  # this is checked every 30s
-  rule {
-    name     = "cache-public-method-rate-limit"
-    priority = 11
-
-    action {
-      count {}
-    }
-
-    statement {
-      rate_based_statement {
-        limit              = var.cache_public_method_rate_limit
-        aggregate_key_type = "FORWARDED_IP"
-
-        forwarded_ip_config {
-          # We expect all requests to have this header set. As we're counting,
-          #it's a good chance to verify that by matching any that don't
-          fallback_behavior = "MATCH"
-          header_name       = "true-client-ip"
-        }
-
-        scope_down_statement {
-          not_statement {
-            statement {
-              regex_pattern_set_reference_statement {
-                arn            = aws_wafv2_regex_pattern_set.method_allow_list_pattern.arn
-
-                field_to_match {
-                  method {}
-                }
-
-                text_transformation {
-                  priority = 1
-                  type     = "NONE"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "cache-public-method-rate-limit"
-      sampled_requests_enabled   = true
-    }
-  }
 
   custom_response_body {
     key     = "cache-public-rule-429"
