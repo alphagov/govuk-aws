@@ -188,7 +188,7 @@ variable "ebs_device_name" {
 }
 
 locals {
-  launch_configuration_name = "${coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name) )}"
+  launch_configuration_name = "${coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name))}"
 }
 
 # Resources
@@ -259,7 +259,7 @@ resource "aws_key_pair" "node_key" {
 }
 
 resource "aws_launch_configuration" "node_launch_configuration" {
-  count         = "${var.lc_create_ebs_volume == "1" ? 0 : 1 }"
+  count         = "${var.lc_create_ebs_volume == "1" ? 0 : 1}"
   name_prefix   = "${var.name}-"
   image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
   instance_type = "${var.instance_type}"
