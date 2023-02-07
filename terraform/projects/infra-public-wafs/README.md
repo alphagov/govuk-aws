@@ -40,6 +40,7 @@ No modules.
 | [aws_wafv2_ip_set.external_partner_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_ip_set.govuk_requesting_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_ip_set.nat_gateway_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
+| [aws_wafv2_regex_pattern_set.method_allow_list_pattern](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_regex_pattern_set) | resource |
 | [aws_wafv2_regex_pattern_set.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_regex_pattern_set) | resource |
 | [aws_wafv2_rule_group.x_always_block](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_rule_group) | resource |
 | [aws_wafv2_web_acl.backend_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
@@ -83,6 +84,8 @@ No modules.
 | <a name="input_backend_public_base_rate_warning"></a> [backend\_public\_base\_rate\_warning](#input\_backend\_public\_base\_rate\_warning) | For the backend ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
 | <a name="input_cache_public_base_rate_limit"></a> [cache\_public\_base\_rate\_limit](#input\_cache\_public\_base\_rate\_limit) | For the cache ALB. Number of requests to allow in a 5 minute period before rate limiting is applied. | `number` | n/a | yes |
 | <a name="input_cache_public_base_rate_warning"></a> [cache\_public\_base\_rate\_warning](#input\_cache\_public\_base\_rate\_warning) | For the cache ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
+| <a name="input_cache_public_method_rate_limit"></a> [cache\_public\_method\_rate\_limit](#input\_cache\_public\_method\_rate\_limit) | For the cache ALB. Number of requests to allow in a 5 minute period matching the method rule before rate limiting is applied. | `number` | n/a | yes |
+| <a name="input_cache_public_method_regex"></a> [cache\_public\_method\_regex](#input\_cache\_public\_method\_regex) | An allow list of HTTP methods that this rate limit will skip | `string` | n/a | yes |
 | <a name="input_fastly_rate_limit_token"></a> [fastly\_rate\_limit\_token](#input\_fastly\_rate\_limit\_token) | Token used by the CDN to skip rate limiting | `string` | `""` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_database_backups_bucket_key_stack"></a> [remote\_state\_infra\_database\_backups\_bucket\_key\_stack](#input\_remote\_state\_infra\_database\_backups\_bucket\_key\_stack) | Override path to infra\_database\_backups\_bucket remote state | `string` | `""` | no |

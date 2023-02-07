@@ -65,6 +65,16 @@ variable "cache_public_base_rate_limit" {
   description = "For the cache ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
 }
 
+variable "cache_public_method_rate_limit" {
+  type        = number
+  description = "For the cache ALB. Number of requests to allow in a 5 minute period matching the method rule before rate limiting is applied."
+}
+
+variable "cache_public_method_regex" {
+  type        = string
+  description = "An allow list of HTTP methods that this rate limit will skip"
+}
+
 variable "traffic_replay_ips" {
   type        = list(string)
   description = "An array of CIDR blocks that will replay traffic against an environment"
