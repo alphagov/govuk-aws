@@ -84,27 +84,23 @@ resource "aws_wafv2_web_acl" "backend_public" {
     priority = 10
 
     action {
-      count {}
-      # TODO: remove the above `count {}` statement and uncomment the below `block { ... }`
-      # statement once we're happy
-      #
-      # block {
-      #   custom_response {
-      #     response_code = 429
+      block {
+        custom_response {
+          response_code = 429
 
-      #     response_header {
-      #       name  = "Retry-After"
-      #       value = 30
-      #     }
+          response_header {
+            name  = "Retry-After"
+            value = 30
+          }
 
-      #     response_header {
-      #       name  = "Cache-Control"
-      #       value = "max-age=0, private"
-      #     }
+          response_header {
+            name  = "Cache-Control"
+            value = "max-age=0, private"
+          }
 
-      #     custom_response_body_key = "backend-public-rule-429"
-      #   }
-      # }
+          custom_response_body_key = "backend-public-rule-429"
+        }
+      }
     }
 
     statement {
