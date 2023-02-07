@@ -182,7 +182,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
     ser_de_info {
       name = "ser_de_name"
 
-      parameters {
+      parameters = {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         ignore.malformed.json = "true"
       }
@@ -374,7 +374,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     ser_de_info {
       name = "ser_de_name"
 
-      parameters {
+      parameters = {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         ignore.malformed.json = "true"
       }
@@ -566,7 +566,7 @@ resource "aws_glue_catalog_table" "bouncer" {
     ser_de_info {
       name = "ser_de_name"
 
-      parameters {
+      parameters = {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
         ignore.malformed.json = "true"
       }
