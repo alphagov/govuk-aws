@@ -40,7 +40,7 @@ variable "storage_class" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "gcs"            {}
+  backend "gcs" {}
   required_version = "= 0.11.15"
 }
 

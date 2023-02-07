@@ -130,7 +130,7 @@ resource "aws_security_group_rule" "cache-external-elb_ingress_public_https" {
     "${var.office_ips}",
     "${var.traffic_replay_ips}",
     "${var.ithc_access_ips}",
-    "${formatlist("%s/32",data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list)}",
+    "${formatlist("%s/32", data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list)}",
   ]
 }
 

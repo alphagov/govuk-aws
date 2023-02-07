@@ -6,7 +6,7 @@
 #
 # To concatenate the snippets, use:
 # ${join("\n", null_resource.user_data.*.triggers.snippet)}
-# 
+#
 
 variable "user_data_snippets" {
   type        = "list"

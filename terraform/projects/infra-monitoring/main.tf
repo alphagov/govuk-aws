@@ -48,7 +48,7 @@ variable "stackname" {
 # Resources
 # --------------------------------------------------------------
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 
@@ -138,7 +138,7 @@ resource "aws_s3_bucket" "aws-logging" {
     rules {
       id     = "govuk-aws-logging-elb-govuk-public-ckan-rule"
       prefix = "elb/govuk-ckan-public-elb"
-      status = "${var.aws_environment == "production"? "Enabled" : "Disabled"}"
+      status = "${var.aws_environment == "production" ? "Enabled" : "Disabled"}"
 
       destination {
         bucket        = "arn:aws:s3:::${var.cyber_slunk_s3_bucket_name}"
