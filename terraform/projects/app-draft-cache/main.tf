@@ -113,7 +113,7 @@ data "aws_acm_certificate" "elb_external_cert" {
 
 resource "aws_elb" "draft-cache_elb" {
   name            = "${var.stackname}-draft-cache"
-  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
   security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_draft-cache_elb_id}"]
   internal        = "true"
 
@@ -199,7 +199,7 @@ resource "aws_elb" "draft-cache_external_elb" {
   count = var.create_external_elb ? 1 : 0
 
   name            = "${var.stackname}-draft-cache-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_draft-cache_external_elb_id}"]
   internal        = "false"
 
