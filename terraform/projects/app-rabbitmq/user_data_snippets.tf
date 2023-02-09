@@ -21,9 +21,9 @@ variable "esm_trusty_token" {
 # --------------------------------------------------------------
 
 resource "null_resource" "user_data" {
-  count = "${length(var.user_data_snippets)}"
+  count = length(var.user_data_snippets)
 
-  triggers {
-    snippet = "${replace(file("../../userdata/${element(var.user_data_snippets, count.index)}"),"ESM_TRUSTY_TOKEN","${var.esm_trusty_token}")}"
+  triggers = {
+    snippet = "${replace(file("../../userdata/${element(var.user_data_snippets, count.index)}"), "ESM_TRUSTY_TOKEN", "${var.esm_trusty_token}")}"
   }
 }
