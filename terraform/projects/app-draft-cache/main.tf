@@ -75,6 +75,7 @@ variable "internal_domain_name" {
 
 variable "create_external_elb" {
   description = "Create the external ELB"
+  type        = bool
   default     = true
 }
 
@@ -195,7 +196,7 @@ resource "aws_route53_record" "draft-cache_publicapi_service_record" {
 }
 
 resource "aws_elb" "draft-cache_external_elb" {
-  count = var.create_external_elb
+  count = var.create_external_elb ? 1 : 0
 
   name            = "${var.stackname}-draft-cache-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
@@ -235,7 +236,7 @@ resource "aws_elb" "draft-cache_external_elb" {
 }
 
 resource "aws_route53_record" "draft-cache_external_service_record" {
-  count = var.create_external_elb
+  count = var.create_external_elb ? 1 : 0
 
   zone_id = data.aws_route53_zone.external.zone_id
   name    = "draft-cache.${var.external_domain_name}"
