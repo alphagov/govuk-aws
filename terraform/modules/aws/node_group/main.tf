@@ -370,7 +370,7 @@ resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic" {
   count                  = "${var.instance_elb_ids_length}"
   autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
-  elb                    = "${element(var.instance_elb_ids, count.index)}"
+  elb                    = "${element(flatten(var.instance_elb_ids), count.index)}"
 }
 
 resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {
