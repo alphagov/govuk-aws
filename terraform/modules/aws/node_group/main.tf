@@ -51,7 +51,7 @@ variable "instance_type" {
 }
 
 variable "create_instance_key" {
-  type        = "bool"
+  type        = bool
   description = "Whether to create a key pair for the instance launch configuration"
   default     = false
 }
