@@ -172,7 +172,7 @@ resource "fastly_service_v1" "datagovuk" {
   }
 
   s3logging {
-    format             = "%h\\t%{%Y-%m-%d %H:%M:%S}t.%{msec_frac}t\\t%m\\t%U%q\\t%>s\\t%B\\t%{tls.client.protocol}V\\t%{fastly_info.state}V\\t%{Referer}i\\t%{User-Agent}i"
+    format             = "%h\\t%%{%Y-%m-%d %H:%M:%S}t.%%{msec_frac}t\\t%m\\t%U%q\\t%>s\\t%B\\t%%{tls.client.protocol}V\\t%%{fastly_info.state}V\\t%%{Referer}i\\t%%{User-Agent}i"
     bucket_name        = "govuk-${var.aws_environment}-fastly-logs"
     domain             = "s3-eu-west-1.amazonaws.com"
     format_version     = "2"
