@@ -73,12 +73,6 @@ variable "internal_domain_name" {
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
-variable "create_external_elb" {
-  description = "Create the external ELB"
-  type        = bool
-  default     = true
-}
-
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -196,7 +190,7 @@ resource "aws_route53_record" "draft-cache_publicapi_service_record" {
 }
 
 resource "aws_elb" "draft-cache_external_elb" {
-  count = var.create_external_elb ? 1 : 0
+  count = 1
 
   name            = "${var.stackname}-draft-cache-external"
   subnets         = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
@@ -236,7 +230,7 @@ resource "aws_elb" "draft-cache_external_elb" {
 }
 
 resource "aws_route53_record" "draft-cache_external_service_record" {
-  count = var.create_external_elb ? 1 : 0
+  count = 1
 
   zone_id = data.aws_route53_zone.external.zone_id
   name    = "draft-cache.${var.external_domain_name}"
@@ -259,7 +253,7 @@ resource "aws_route53_record" "app_service_records" {
 }
 
 locals {
-  instance_elb_ids_length = var.create_external_elb ? 2 : 1
+  instance_elb_ids_length = 2
   instance_elb_ids        = compact(list(aws_elb.draft-cache_elb.id, join("", aws_elb.draft-cache_external_elb.*.id)))
 }
 
@@ -294,9 +288,9 @@ module "alarms-elb-draft-cache-internal" {
 }
 
 locals {
-  elb_httpcode_backend_5xx_threshold = var.create_external_elb ? 100 : 0
-  elb_httpcode_elb_4xx_threshold     = var.create_external_elb ? 100 : 0
-  elb_httpcode_elb_5xx_threshold     = var.create_external_elb ? 100 : 0
+  elb_httpcode_backend_5xx_threshold = 100
+  elb_httpcode_elb_4xx_threshold     = 100
+  elb_httpcode_elb_5xx_threshold     = 100
 }
 
 module "alarms-elb-draft-cache-external" {
