@@ -167,12 +167,12 @@ resource "aws_lb_listener_rule" "existing_target_groups" {
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.tg.*.arn[index(var.rules_host,var.rules_for_existing_target_groups[element(keys(var.rules_for_existing_target_groups),count.index)])]}"
+    target_group_arn = "${aws_lb_target_group.tg.*.arn[index(var.rules_host, var.rules_for_existing_target_groups[element(keys(var.rules_for_existing_target_groups), count.index)])]}"
   }
 
   condition {
     host_header {
-      values = ["${element(keys(var.rules_for_existing_target_groups),count.index)}.${var.rules_host_domain}"]
+      values = ["${element(keys(var.rules_for_existing_target_groups), count.index)}.${var.rules_host_domain}"]
     }
   }
 }

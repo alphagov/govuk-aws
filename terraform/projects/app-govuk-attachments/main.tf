@@ -59,7 +59,7 @@ variable "additional_policy_attachment_roles" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 

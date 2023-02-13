@@ -51,7 +51,7 @@ variable "instance_type" {
 }
 
 variable "create_instance_key" {
-  type        = "bool"
+  type        = bool
   description = "Whether to create a key pair for the instance launch configuration"
   default     = false
 }
@@ -188,7 +188,7 @@ variable "ebs_device_name" {
 }
 
 locals {
-  launch_configuration_name = "${coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name) )}"
+  launch_configuration_name = "${coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name))}"
 }
 
 # Resources
@@ -259,7 +259,7 @@ resource "aws_key_pair" "node_key" {
 }
 
 resource "aws_launch_configuration" "node_launch_configuration" {
-  count         = "${var.lc_create_ebs_volume == "1" ? 0 : 1 }"
+  count         = "${var.lc_create_ebs_volume == "1" ? 0 : 1}"
   name_prefix   = "${var.name}-"
   image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
   instance_type = "${var.instance_type}"
@@ -370,7 +370,7 @@ resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic" {
   count                  = "${var.instance_elb_ids_length}"
   autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
-  elb                    = "${element(var.instance_elb_ids, count.index)}"
+  elb                    = "${element(flatten(var.instance_elb_ids), count.index)}"
 }
 
 resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {

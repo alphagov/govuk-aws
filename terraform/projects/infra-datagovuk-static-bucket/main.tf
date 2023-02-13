@@ -41,7 +41,7 @@ variable "s3_bucket_read_ips" {
 
 # Set up the backend & provider for each region
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "= 0.11.15"
 }
 
