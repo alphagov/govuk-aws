@@ -40,6 +40,11 @@ variable "remote_state_infra_monitoring_key_stack" {
   default     = ""
 }
 
+variable "database_backups_access_list" {
+  type        = "list"
+  description = "For the database backups cross account access. Allows us to define account permissions for each environment."
+}
+
 # Set up the backend & provider for each region
 terraform {
   backend "s3" {}
