@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "database_backups_cross_account_access" {
       type = "AWS"
 
       identifiers = [
-        "${var.database_backups_access_list}"
+        "${var.database_backups_access_list}",
       ]
     }
 
