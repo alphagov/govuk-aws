@@ -472,7 +472,7 @@ To ensure that applications deploy correctly, ensure that the datastores exist:
 `app-mongo`
 `app-mysql`
 `app-postgresql`
-`app-rabbitmq`
+`app-publishing-amazonmq`
 `app-rate-limit-redis`
 `app-router-backend`
 `app-shared-documentdb`
