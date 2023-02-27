@@ -35,7 +35,7 @@ resource "aws_wafv2_web_acl" "bouncer_public" {
   # this is checked every 30s
   rule {
     name     = "bouncer-public-base-rate-warning"
-    priority = 9
+    priority = 2
 
     action {
       count {}
