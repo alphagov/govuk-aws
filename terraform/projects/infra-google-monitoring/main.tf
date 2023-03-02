@@ -41,7 +41,7 @@ variable "storage_class" {
 
 terraform {
   backend "gcs" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "google" {
