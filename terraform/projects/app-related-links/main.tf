@@ -63,7 +63,7 @@ resource "aws_s3_bucket" "s3_bucket" {
     enabled = true
   }
 
-  tags {
+  tags = {
     aws_environment = "${var.aws_environment}"
     Name            = "${local.related_links_bucket_name}"
   }
@@ -152,7 +152,7 @@ data "aws_iam_policy_document" "read_secrets_from_secrets_manager_policy_documen
 data "template_file" "provision-generation-instance-userdata" {
   template = "${file("${path.module}/provision-generation-instance.tpl")}"
 
-  vars {
+  vars = {
     database_backups_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
     related_links_bucket_name    = "govuk-related-links-${var.aws_environment}"
   }
@@ -161,7 +161,7 @@ data "template_file" "provision-generation-instance-userdata" {
 data "template_file" "provision-ingestion-instance-userdata" {
   template = "${file("${path.module}/provision-ingestion-instance.tpl")}"
 
-  vars {
+  vars = {
     publishing_api_uri        = "https://publishing-api.${var.aws_environment}.govuk-internal.digital"
     related_links_bucket_name = "govuk-related-links-${var.aws_environment}"
   }

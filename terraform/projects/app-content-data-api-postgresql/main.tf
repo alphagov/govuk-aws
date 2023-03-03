@@ -136,7 +136,7 @@ resource "aws_db_parameter_group" "content_data_api" {
     value = true
   }
 
-  tags {
+  tags = {
     aws_stackname = "${var.stackname}"
   }
 }

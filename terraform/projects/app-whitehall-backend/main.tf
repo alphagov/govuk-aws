@@ -159,7 +159,7 @@ resource "aws_iam_policy" "s3_writer" {
 data "template_file" "s3_writer_policy_template" {
   template = "${file("${path.module}/../../policies/whitehall_s3_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.whitehall_csvs.id}"
   }

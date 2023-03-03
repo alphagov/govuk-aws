@@ -65,7 +65,7 @@ resource "aws_iam_policy_attachment" "s3_writer" {
 data "template_file" "s3_writer_policy_template" {
   template = "${file("${path.module}/../../policies/specialist_publisher_s3_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.specialist_publisher_csvs.id}"
   }

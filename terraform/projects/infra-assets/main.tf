@@ -89,7 +89,7 @@ resource "aws_iam_policy_attachment" "s3_writer" {
 data "template_file" "s3_writer_policy" {
   template = "${file("s3_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket = "${aws_s3_bucket.assets.id}"
   }
 }

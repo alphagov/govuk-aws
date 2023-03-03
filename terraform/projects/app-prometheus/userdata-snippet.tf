@@ -19,7 +19,7 @@ variable "user_data_snippets" {
 resource "null_resource" "user_data" {
   count = "${length(var.user_data_snippets)}"
 
-  triggers {
+  triggers = {
     snippet = "${file("../../userdata/${element(var.user_data_snippets, count.index)}")}"
   }
 }

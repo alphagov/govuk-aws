@@ -357,7 +357,7 @@ module "alarms-ec2-mongo-3" {
 data "terraform_remote_state" "infra_database_backups_bucket" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
     region = "${var.aws_region}"

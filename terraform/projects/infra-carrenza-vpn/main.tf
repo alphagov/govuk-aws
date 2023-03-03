@@ -69,7 +69,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
     region = "${var.aws_region}"
@@ -79,7 +79,7 @@ data "terraform_remote_state" "infra_networking" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -91,7 +91,7 @@ resource "aws_customer_gateway" "carrenza_vpn_gateway" {
   ip_address = "${var.carrenza_vpn_endpoint_ip}"
   type       = "ipsec.1"
 
-  tags {
+  tags = {
     Name = "Carrenza - ${var.stackname}"
   }
 }

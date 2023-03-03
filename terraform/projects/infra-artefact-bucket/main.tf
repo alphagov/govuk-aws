@@ -134,7 +134,7 @@ data "aws_caller_identity" "current" {}
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -353,7 +353,7 @@ EOF
 data "template_file" "govuk_artefact_policy_template" {
   template = "${file("${path.module}/../../policies/govuk_artefact_policy.tpl")}"
 
-  vars {
+  vars = {
     artefact_source = "${var.artefact_source}"
     aws_environment = "${var.aws_environment}"
   }
@@ -371,8 +371,8 @@ resource "aws_iam_policy" "govuk_artefact_policy" {
 resource "aws_iam_policy_attachment" "govuk_artefact_policy_attachment" {
   count      = "${var.create_sns_subscription ? 1 : 0}"
   name       = "govuk-artefact-policy-attachment"
-  roles      = ["${aws_iam_role.govuk_artefact_lambda_role.name}"]
-  policy_arn = "${aws_iam_policy.govuk_artefact_policy.arn}"
+  roles      = ["${aws_iam_role.govuk_artefact_lambda_role[0].name}"]
+  policy_arn = "${aws_iam_policy.govuk_artefact_policy[0].arn}"
 }
 
 # AWS SNS Trigger for Lambda
@@ -408,7 +408,7 @@ resource "aws_iam_policy_attachment" "artefact_writer" {
 data "template_file" "artefact_writer_policy_template" {
   template = "${file("${path.module}/../../policies/artefact_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     artefact_bucket = "${aws_s3_bucket.artefact.id}"
   }
@@ -424,7 +424,7 @@ resource "aws_iam_policy" "artefact_reader" {
 data "template_file" "artefact_reader_policy_template" {
   template = "${file("${path.module}/../../policies/artefact_reader_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     artefact_bucket = "${aws_s3_bucket.artefact.id}"
   }

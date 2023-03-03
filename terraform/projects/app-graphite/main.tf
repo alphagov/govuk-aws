@@ -325,7 +325,7 @@ resource "aws_iam_role_policy_attachment" "access_graphite_backups_iam_role_poli
 data "terraform_remote_state" "infra_graphite_backups_bucket" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_graphite_backups_bucket_key_stack, var.stackname)}/infra-graphite-backups-bucket.tfstate"
     region = "${var.aws_region}"

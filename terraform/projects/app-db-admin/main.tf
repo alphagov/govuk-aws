@@ -164,7 +164,7 @@ module "alarms-ec2-db-admin" {
 data "terraform_remote_state" "infra_database_backups_bucket" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
     region = "${var.aws_region}"
@@ -174,7 +174,7 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
 data "terraform_remote_state" "infra_content_publisher_active_storage_buckets" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_content_publisher_key_stack, var.stackname)}/infra-content-publisher.tfstate"
     region = "${var.aws_region}"

@@ -47,7 +47,7 @@ resource "aws_iam_policy_attachment" "backup" {
 data "template_file" "backup_policy" {
   template = "${file("backup_policy.tpl")}"
 
-  vars {
+  vars = {
     src_bucket = "${aws_s3_bucket.assets.id}"
     dst_bucket = "${aws_s3_bucket.assets_backup.id}"
   }

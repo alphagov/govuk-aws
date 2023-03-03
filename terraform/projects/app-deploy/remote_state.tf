@@ -65,7 +65,7 @@ variable "remote_state_infra_monitoring_key_stack" {
 data "terraform_remote_state" "app_search" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_app_search_key_stack, var.stackname)}/app-search.tfstate"
     region = "${var.aws_region}"
@@ -75,7 +75,7 @@ data "terraform_remote_state" "app_search" {
 data "terraform_remote_state" "app_related_links" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/app-related-links.tfstate"
     region = "${var.aws_region}"
@@ -85,7 +85,7 @@ data "terraform_remote_state" "app_related_links" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -95,7 +95,7 @@ data "terraform_remote_state" "infra_vpc" {
 data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
     region = "${var.aws_region}"
@@ -105,7 +105,7 @@ data "terraform_remote_state" "infra_networking" {
 data "terraform_remote_state" "infra_security_groups" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_security_groups_key_stack, var.stackname)}/infra-security-groups.tfstate"
     region = "${var.aws_region}"
@@ -115,7 +115,7 @@ data "terraform_remote_state" "infra_security_groups" {
 data "terraform_remote_state" "infra_root_dns_zones" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_root_dns_zones_key_stack, var.stackname)}/infra-root-dns-zones.tfstate"
     region = "${var.aws_region}"
@@ -125,7 +125,7 @@ data "terraform_remote_state" "infra_root_dns_zones" {
 data "terraform_remote_state" "infra_stack_dns_zones" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_stack_dns_zones_key_stack, var.stackname)}/infra-stack-dns-zones.tfstate"
     region = "${var.aws_region}"
@@ -135,7 +135,7 @@ data "terraform_remote_state" "infra_stack_dns_zones" {
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
