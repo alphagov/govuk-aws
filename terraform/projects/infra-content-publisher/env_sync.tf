@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "test_cross_account_access_to_integration" {
   statement {
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [
@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "integration_cross_account_access_to_staging" {
   statement {
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [
@@ -88,7 +88,7 @@ data "aws_iam_policy_document" "staging_cross_account_access_to_production" {
   statement {
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [
