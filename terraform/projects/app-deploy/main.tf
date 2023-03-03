@@ -285,7 +285,7 @@ resource "aws_iam_policy" "allow_assume_tools_codecommit_poweruser_policy" {
   name        = "govuk-${var.aws_environment}-tools-codecommit-poweruser-policy"
   description = "Allows assuming the role of 'govuk-codecommit-poweruser' in the Tools environment"
 
-  policy = "${data.aws_iam_policy_document.allow_assume_tools_codecommit_poweruser_policy_document.json}"
+  policy = "${data.aws_iam_policy_document.allow_assume_tools_codecommit_poweruser_policy_document[0].json}"
 }
 
 data "aws_iam_policy_document" "allow_assume_tools_codecommit_poweruser_policy_document" {
@@ -320,7 +320,7 @@ resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
 resource "aws_iam_role_policy_attachment" "allow_assume_role_concourse_code_commit" {
   count      = "${var.aws_environment == "production" ? 1 : 0}"
   role       = "${module.deploy.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.allow_assume_tools_codecommit_poweruser_policy.arn}"
+  policy_arn = "${aws_iam_policy.allow_assume_tools_codecommit_poweruser_policy[0].arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "related_links_jenkins" {

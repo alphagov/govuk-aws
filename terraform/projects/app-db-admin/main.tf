@@ -233,7 +233,7 @@ resource "aws_iam_policy" "db-admin_elasticache_iam_policy" {
 resource "aws_iam_role_policy_attachment" "db-admin_elasticache_iam_role_policy_attachment" {
   count      = "${var.aws_environment == "integration" ? 1 : 0}"
   role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.db-admin_elasticache_iam_policy.arn}"
+  policy_arn = "${aws_iam_policy.db-admin_elasticache_iam_policy[0].arn}"
 }
 
 resource "aws_iam_policy" "assets_env_sync_s3_writer" {
@@ -246,7 +246,7 @@ resource "aws_iam_policy" "assets_env_sync_s3_writer" {
 resource "aws_iam_role_policy_attachment" "assets_env_sync_s3_writer" {
   count      = "${var.aws_environment == "production" ? 1 : 0}"
   role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.assets_env_sync_s3_writer.arn}"
+  policy_arn = "${aws_iam_policy.assets_env_sync_s3_writer[0].arn}"
 }
 
 data "template_file" "assets_env_sync_s3_writer_policy_template" {
