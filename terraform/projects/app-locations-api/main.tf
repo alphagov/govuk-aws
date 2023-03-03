@@ -178,7 +178,7 @@ resource "aws_security_group_rule" "locations-api-rds_ingress_locations-api_post
   to_port   = 5432
   protocol  = "tcp"
 
-  security_group_id        = "${data.aws_security_group.locations-api-rds.0.id}"
+  security_group_id        = "${data.aws_security_group.locations-api-rds.id}"
   source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_locations-api_id}"
 }
 
