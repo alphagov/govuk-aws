@@ -350,7 +350,7 @@ data "aws_iam_policy_document" "manual_snapshot_bucket_policy" {
 
     effect = "Allow"
 
-    resources = ["${var.elasticsearch6_manual_snapshot_bucket_arns}"]
+    resources = var.elasticsearch6_manual_snapshot_bucket_arns
   }
 
   statement {
@@ -362,7 +362,7 @@ data "aws_iam_policy_document" "manual_snapshot_bucket_policy" {
 
     effect = "Allow"
 
-    resources = ["${formatlist("%s/*", var.elasticsearch6_manual_snapshot_bucket_arns)}"]
+    resources = "${formatlist("%s/*", var.elasticsearch6_manual_snapshot_bucket_arns)}"
   }
 }
 

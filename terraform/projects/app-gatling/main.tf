@@ -174,7 +174,7 @@ data "aws_iam_policy_document" "results_bucket_access" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${var.office_ips}"]
+      values   = var.office_ips
     }
 
     principals {
