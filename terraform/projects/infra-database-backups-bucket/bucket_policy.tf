@@ -19,7 +19,10 @@ data "aws_iam_policy_document" "database_backups_cross_account_access" {
       type = "AWS"
 
       identifiers = [
-        "${var.database_backups_access_list}",
+        "arn:aws:iam::210287912431:root",
+        "arn:aws:iam::696911096973:root",
+        "arn:aws:iam::172025368201:root",
+        "arn:aws:iam::291968922021:root",
       ]
     }
 
