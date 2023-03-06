@@ -223,8 +223,8 @@ resource "aws_route53_record" "service_record" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.ci-master_elb.dns_name}"
-    zone_id                = "${aws_elb.ci-master_elb.zone_id}"
+    name                   = "${aws_elb.ci-master_elb[0].dns_name}"
+    zone_id                = "${aws_elb.ci-master_elb[0].zone_id}"
     evaluate_target_health = true
   }
 }

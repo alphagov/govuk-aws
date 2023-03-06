@@ -294,7 +294,7 @@ resource "aws_s3_bucket_notification" "artefact_bucket_notification" {
   depends_on = ["aws_sns_topic.artefact_topic"]
 
   topic {
-    topic_arn = "${aws_sns_topic.artefact_topic.arn}"
+    topic_arn = "${aws_sns_topic.artefact_topic[0].arn}"
     events    = ["s3:ObjectCreated:*"]
   }
 }

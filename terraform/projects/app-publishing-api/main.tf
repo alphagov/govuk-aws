@@ -205,8 +205,8 @@ resource "aws_route53_record" "service_record_external" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.publishing-api_elb_external.dns_name}"
-    zone_id                = "${aws_elb.publishing-api_elb_external.zone_id}"
+    name                   = "${aws_elb.publishing-api_elb_external[0].dns_name}"
+    zone_id                = "${aws_elb.publishing-api_elb_external[0].zone_id}"
     evaluate_target_health = true
   }
 }
@@ -219,8 +219,8 @@ resource "aws_route53_record" "service_record_dual_external" {
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.publishing-api_elb_external.dns_name}"
-    zone_id                = "${aws_elb.publishing-api_elb_external.zone_id}"
+    name                   = "${aws_elb.publishing-api_elb_external[0].dns_name}"
+    zone_id                = "${aws_elb.publishing-api_elb_external[0].zone_id}"
     evaluate_target_health = true
   }
 }
