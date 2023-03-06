@@ -148,7 +148,7 @@ module "content-data-api-postgresql-primary_rds_instance" {
   engine_name           = "postgres"
   engine_version        = "13.3"
   default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_primary")}"
-  subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  subnet_ids            = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_rds_ids}"
   username              = "${var.username}"
   password              = "${var.password}"
   allocated_storage     = "1024"
@@ -156,12 +156,12 @@ module "content-data-api-postgresql-primary_rds_instance" {
   instance_class        = "${var.instance_type}"
   instance_name         = "${var.stackname}-content-data-api-postgresql-primary"
   multi_az              = "${var.multi_az}"
-  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-postgresql-primary_id}"]
-  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_content-data-api-postgresql-primary_id}"]
+  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn}"
   skip_final_snapshot   = "${var.skip_final_snapshot}"
   snapshot_identifier   = "${var.snapshot_identifier}"
   monitoring_interval   = "60"
-  monitoring_role_arn   = "${data.terraform_remote_state.infra_monitoring.rds_enhanced_monitoring_role_arn}"
+  monitoring_role_arn   = "${data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -175,7 +175,7 @@ resource "aws_route53_record" "service_record" {
 module "alarms-rds-content-data-api-postgresql-primary" {
   source                     = "../../modules/aws/alarms/rds"
   name_prefix                = "${var.stackname}-content-data-api-postgresql-primary"
-  alarm_actions              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   db_instance_id             = "${module.content-data-api-postgresql-primary_rds_instance.rds_instance_id}"
   freestoragespace_threshold = "536870912000"
 }

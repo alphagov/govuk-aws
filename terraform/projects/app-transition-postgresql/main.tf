@@ -116,7 +116,7 @@ module "transition-postgresql-primary_rds_instance" {
   engine_name           = "postgres"
   engine_version        = "13"
   default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
-  subnet_ids            = "${data.terraform_remote_state.infra_networking.private_subnet_rds_ids}"
+  subnet_ids            = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_rds_ids}"
   username              = "${var.username}"
   password              = "${var.password}"
   allocated_storage     = "120"
@@ -124,13 +124,13 @@ module "transition-postgresql-primary_rds_instance" {
   instance_class        = "${var.instance_type}"
   instance_name         = "${var.stackname}-transition-postgresql-primary"
   multi_az              = "${var.multi_az}"
-  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-primary_id}"]
-  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  security_group_ids    = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_transition-postgresql-primary_id}"]
+  event_sns_topic_arn   = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn}"
   skip_final_snapshot   = "${var.skip_final_snapshot}"
   snapshot_identifier   = "${var.snapshot_identifier}"
   parameter_group_name  = "${aws_db_parameter_group.app_transition_pg.name}"
   monitoring_interval   = "60"
-  monitoring_role_arn   = "${data.terraform_remote_state.infra_monitoring.rds_enhanced_monitoring_role_arn}"
+  monitoring_role_arn   = "${data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn}"
 }
 
 resource "aws_route53_record" "service_record" {
@@ -148,16 +148,16 @@ module "transition-postgresql-standby_rds_instance" {
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_standby")}"
   instance_class             = "${var.instance_type}"
   instance_name              = "${var.stackname}-transition-postgresql-standby"
-  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
+  security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_transition-postgresql-standby_id}"]
   create_replicate_source_db = "1"
   allocated_storage          = "120"
   max_allocated_storage      = "500"
   replicate_source_db        = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
-  event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_rds_events_arn}"
+  event_sns_topic_arn        = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn}"
   skip_final_snapshot        = "${var.skip_final_snapshot}"
   parameter_group_name       = "${aws_db_parameter_group.app_transition_pg.name}"
   monitoring_interval        = "60"
-  monitoring_role_arn        = "${data.terraform_remote_state.infra_monitoring.rds_enhanced_monitoring_role_arn}"
+  monitoring_role_arn        = "${data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn}"
 }
 
 resource "aws_route53_record" "replica_service_record" {
@@ -171,14 +171,14 @@ resource "aws_route53_record" "replica_service_record" {
 module "alarms-rds-transition-postgresql-primary" {
   source         = "../../modules/aws/alarms/rds"
   name_prefix    = "${var.stackname}-transition-postgresql-primary"
-  alarm_actions  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   db_instance_id = "${module.transition-postgresql-primary_rds_instance.rds_instance_id}"
 }
 
 module "alarms-rds-transition-postgresql-standby" {
   source               = "../../modules/aws/alarms/rds"
   name_prefix          = "${var.stackname}-transition-postgresql-standby"
-  alarm_actions        = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions        = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   db_instance_id       = "${module.transition-postgresql-standby_rds_instance.rds_replica_id}"
   replicalag_threshold = "300"
 }

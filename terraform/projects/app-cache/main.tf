@@ -112,12 +112,12 @@ data "aws_acm_certificate" "elb_external_cert" {
 
 resource "aws_elb" "cache_elb" {
   name            = "${var.stackname}-cache"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_cache_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_cache_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-cache-internal-elb"
     interval      = 60
   }
@@ -174,12 +174,12 @@ resource "aws_elb" "cache_external_elb" {
   count = "${var.create_external_elb}"
 
   name            = "${var.stackname}-cache-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_cache_external_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_cache_external_elb_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-cache-external-elb"
     interval      = 60
   }
@@ -242,8 +242,8 @@ module "cache" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-cache"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "cache", "aws_hostname", "cache-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_cache_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_cache_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "${local.instance_elb_ids_length}"
@@ -252,13 +252,13 @@ module "cache" {
   asg_max_size                  = "${var.asg_size}"
   asg_min_size                  = "${var.asg_size - 1}"
   asg_desired_capacity          = "${var.asg_size}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
 }
 
 module "alarms-elb-cache-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-cache-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.cache_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"
@@ -276,7 +276,7 @@ locals {
 module "alarms-elb-cache-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-cache-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${join("", aws_elb.cache_external_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"

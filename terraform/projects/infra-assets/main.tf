@@ -41,13 +41,13 @@ provider "aws" {
 resource "aws_s3_bucket" "assets" {
   bucket = "govuk-assets-${var.aws_environment}"
 
-  tags {
+  tags = {
     Name            = "govuk-assets-${var.aws_environment}"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-assets-${var.aws_environment}/"
   }
 

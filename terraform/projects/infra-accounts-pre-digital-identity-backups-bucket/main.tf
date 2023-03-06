@@ -41,13 +41,13 @@ provider "aws" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "govuk-${var.aws_environment}-accounts-pre-digital-identity-backups"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-accounts-pre-digital-identity-backups"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-accounts-pre-digital-identity-backups/"
   }
 

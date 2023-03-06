@@ -27,7 +27,7 @@ variable "jenkins_ssh_public_key" {
 }
 
 locals {
-  content_store_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+  content_store_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.outputs.s3_database_backups_bucket_name}"
   related_links_bucket_name = "govuk-related-links-${var.aws_environment}"
 }
 
@@ -153,7 +153,7 @@ data "template_file" "provision-generation-instance-userdata" {
   template = "${file("${path.module}/provision-generation-instance.tpl")}"
 
   vars = {
-    database_backups_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+    database_backups_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.outputs.s3_database_backups_bucket_name}"
     related_links_bucket_name    = "govuk-related-links-${var.aws_environment}"
   }
 }
@@ -276,7 +276,7 @@ resource "aws_launch_template" "related-links-generation_launch-template" {
   instance_type = "m5.8xlarge"
 
   vpc_security_group_ids = [
-    "${data.terraform_remote_state.infra_security_groups.sg_related-links_id}",
+    "${data.terraform_remote_state.infra_security_groups.outputs.sg_related-links_id}",
   ]
 
   key_name = "${aws_key_pair.jenkins_public_key.key_name}"
@@ -313,7 +313,7 @@ resource "aws_autoscaling_group" "related-links-generation" {
     version = "$Latest"
   }
 
-  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  vpc_zone_identifier = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 
   tag {
     key                 = "Name"
@@ -328,8 +328,8 @@ resource "aws_launch_template" "related-links-ingestion_launch-template" {
   instance_type = "t2.micro"
 
   vpc_security_group_ids = [
-    "${data.terraform_remote_state.infra_security_groups.sg_related-links_id}",
-    "${data.terraform_remote_state.infra_security_groups.sg_management_id}",
+    "${data.terraform_remote_state.infra_security_groups.outputs.sg_related-links_id}",
+    "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}",
   ]
 
   key_name = "${aws_key_pair.jenkins_public_key.key_name}"
@@ -366,7 +366,7 @@ resource "aws_autoscaling_group" "related-links-ingestion" {
     version = "$Latest"
   }
 
-  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  vpc_zone_identifier = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
 
   tag {
     key                 = "Name"

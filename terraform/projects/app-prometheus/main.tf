@@ -77,22 +77,22 @@ module "prometheus-1" {
   default_tags = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
   var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1")}"
 
-  instance_subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
-  keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
+  instance_subnet_ids = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map),
+  keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.prometheus_1_subnet))}"
 
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_prometheus_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
 }
 
 resource "aws_ebs_volume" "prometheus-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.prometheus_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.prometheus_1_subnet)}"
   size              = "${var.ebs_volume_size}"
   type              = "gp3"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-prometheus-1"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -117,16 +117,16 @@ module "prometheus_internal_alb" {
   source                           = "../../modules/aws/lb"
   name                             = "${var.stackname}-prometheus-internal"
   internal                         = true
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/${var.stackname}-prometheus-internal-alb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
   listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  subnets                          = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
   target_group_health_check_path   = "/-/ready" # See https://prometheus.io/docs/prometheus/latest/management_api/
 
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_internal_elb_id}"]
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_prometheus_internal_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags    = "${map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment)}"
 }
 

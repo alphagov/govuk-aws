@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "cache" {
   name        = "${var.stackname}_cache_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the cache host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_cache_access"
   }
 }
@@ -77,10 +77,10 @@ resource "aws_security_group_rule" "cache_ingress_backend_varnish" {
 
 resource "aws_security_group" "cache_elb" {
   name        = "${var.stackname}_cache_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the cache ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_cache_elb_access"
   }
 }
@@ -111,10 +111,10 @@ resource "aws_security_group_rule" "cache-elb_egress_any_any" {
 
 resource "aws_security_group" "cache_external_elb" {
   name        = "${var.stackname}_cache_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the cache external ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_cache_external_elb_access"
   }
 }
@@ -126,12 +126,12 @@ resource "aws_security_group_rule" "cache-external-elb_ingress_public_https" {
   protocol          = "tcp"
   security_group_id = "${aws_security_group.cache_external_elb.id}"
 
-  cidr_blocks = ["${data.fastly_ip_ranges.fastly.cidr_blocks}",
+  cidr_blocks = flatten(["${data.fastly_ip_ranges.fastly.cidr_blocks}",
     "${var.office_ips}",
     "${var.traffic_replay_ips}",
     "${var.ithc_access_ips}",
-    "${formatlist("%s/32", data.terraform_remote_state.infra_networking.nat_gateway_elastic_ips_list)}",
-  ]
+    "${formatlist("%s/32", data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list)}",
+  ])
 }
 
 # allow gatling to load test www-origin
@@ -156,10 +156,10 @@ resource "aws_security_group_rule" "cache-external-elb_egress_any_any" {
 resource "aws_security_group" "cache_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_cache_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_cache_ithc_access"
   }
 }

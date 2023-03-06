@@ -47,8 +47,8 @@ module "content-data-api-db-admin" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-content-data-api-db-admin"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_db_admin", "aws_hostname", "content-data-api-db-admin-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_content-data-api-db-admin_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_content-data-api-db-admin_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "0"
@@ -56,7 +56,7 @@ module "content-data-api-db-admin" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "64"
 }
 
@@ -64,7 +64,7 @@ module "alarms-autoscaling-content-data-api-db-admin" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-content-data-api-db-admin"
   autoscaling_group_name            = "${module.content-data-api-db-admin.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -72,7 +72,7 @@ module "alarms-ec2-content-data-api-db-admin" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-content-data-api-db-admin"
   autoscaling_group_name   = "${module.content-data-api-db-admin.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
 
@@ -90,7 +90,7 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
 # the respective environment.
 resource "aws_iam_role_policy_attachment" "write_to_database_backups_bucket_iam_role_policy_attachment" {
   role       = "${module.content-data-api-db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.content_data_api_dbadmin_write_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.outputs.content_data_api_dbadmin_write_database_backups_bucket_policy_arn}"
 }
 
 # All environments should be able to read from the production database
@@ -98,5 +98,5 @@ resource "aws_iam_role_policy_attachment" "write_to_database_backups_bucket_iam_
 # data syncs.
 resource "aws_iam_role_policy_attachment" "read_from_production_database_backups_from_production_iam_role_policy_attachment" {
   role       = "${module.content-data-api-db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_content_data_api_dbadmin_read_database_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.outputs.production_content_data_api_dbadmin_read_database_backups_bucket_policy_arn}"
 }

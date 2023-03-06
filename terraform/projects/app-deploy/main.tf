@@ -131,12 +131,12 @@ resource "aws_elb" "deploy_elb" {
   count = "${var.create_external_elb}"
 
   name            = "${var.stackname}-deploy"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_deploy_elb_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-deploy-external-elb"
     interval      = 60
   }
@@ -174,12 +174,12 @@ data "aws_acm_certificate" "elb_internal_cert" {
 
 resource "aws_elb" "deploy_internal_elb" {
   name            = "${var.stackname}-deploy-internal"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_internal_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_deploy_internal_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-deploy-internal-elb"
     interval      = 60
   }
@@ -245,23 +245,23 @@ module "deploy" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-deploy"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "aws_hostname", "jenkins-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.deploy_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.deploy_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_deploy_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "${local.instance_elb_ids_length}"
   instance_elb_ids              = ["${local.instance_elb_ids}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
 }
 
 resource "aws_ebs_volume" "deploy" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.deploy_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.deploy_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 40
   type              = "gp2"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-deploy"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -309,12 +309,12 @@ resource "aws_iam_role_policy_attachment" "deploy_iam_role_policy_attachment" {
 
 resource "aws_iam_role_policy_attachment" "allow_writes_from_artefact_bucket" {
   role       = "${module.deploy.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.artefact_bucket.write_artefact_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.artefact_bucket.outputs.write_artefact_bucket_policy_arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "allow_reads_from_artefact_bucket" {
   role       = "${module.deploy.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.artefact_bucket.read_artefact_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.artefact_bucket.outputs.read_artefact_bucket_policy_arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "allow_assume_role_concourse_code_commit" {
@@ -325,12 +325,12 @@ resource "aws_iam_role_policy_attachment" "allow_assume_role_concourse_code_comm
 
 resource "aws_iam_role_policy_attachment" "related_links_jenkins" {
   role       = "${module.deploy.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.app_related_links.policy_related_links_jenkins_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.app_related_links.outputs.policy_related_links_jenkins_policy_arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "learn_to_rank_jenkins" {
   role       = "${module.deploy.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.app_search.scale_learntorank_asg_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.app_search.outputs.scale_learntorank_asg_policy_arn}"
 }
 
 locals {
@@ -341,7 +341,7 @@ locals {
 module "alarms-elb-deploy-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-deploy-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${join("", aws_elb.deploy_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"

@@ -10,20 +10,20 @@
 
 resource "aws_security_group" "transition-postgresql-primary" {
   name        = "${var.stackname}_transition-postgresql-primary_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to transition-postgresql-primary from its clients"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_transition-postgresql-primary_access"
   }
 }
 
 resource "aws_security_group" "transition-postgresql-standby" {
   name        = "${var.stackname}_transition-postgresql-standby_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to transition-postgresql-standby from its clients"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_transition-postgresql-standby_access"
   }
 }

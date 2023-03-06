@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "offsite_ssh" {
   name        = "${var.stackname}_ssh_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to SSH and egress"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ssh_access"
   }
 }
@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "offsite-ssh_ingress_office-and-carrenza_ssh"
   from_port   = 22
   to_port     = 22
   protocol    = "tcp"
-  cidr_blocks = ["${concat(var.office_ips, var.carrenza_production_ips, var.carrenza_staging_ips, var.ithc_access_ips)}"]
+  cidr_blocks = flatten(["${concat(var.office_ips, var.carrenza_production_ips, var.carrenza_staging_ips, var.ithc_access_ips)}"])
 
   security_group_id = "${aws_security_group.offsite_ssh.id}"
 }

@@ -65,10 +65,10 @@ resource "aws_efs_file_system" "assets-efs-fs" {
 }
 
 resource "aws_efs_mount_target" "assets-mount-target" {
-  count           = "${length(data.terraform_remote_state.infra_networking.private_subnet_ids)}"
+  count           = "${length(data.terraform_remote_state.infra_networking.outputs.private_subnet_ids)}"
   file_system_id  = "${aws_efs_file_system.assets-efs-fs.id}"
-  subnet_id       = "${element(data.terraform_remote_state.infra_networking.private_subnet_ids, count.index)}"
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_asset-master-efs_id}"]
+  subnet_id       = "${element(data.terraform_remote_state.infra_networking.outputs.private_subnet_ids, count.index)}"
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_asset-master-efs_id}"]
 }
 
 resource "aws_route53_record" "assets_service_record" {
@@ -83,8 +83,8 @@ module "asset-master" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-asset-master"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "asset_master", "aws_hostname", "asset-master-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_asset-master_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_asset-master_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
@@ -93,7 +93,7 @@ module "asset-master" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "50"
 }
 
@@ -101,7 +101,7 @@ module "alarms-autoscaling-asset-master" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-asset-master"
   autoscaling_group_name            = "${module.asset-master.autoscaling_group_name}"
-  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
 
@@ -109,7 +109,7 @@ module "alarms-ec2-asset-master" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-asset-master"
   autoscaling_group_name   = "${module.asset-master.autoscaling_group_name}"
-  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
 

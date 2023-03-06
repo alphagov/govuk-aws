@@ -16,10 +16,10 @@
 #
 resource "aws_security_group" "publishing-api" {
   name        = "${var.stackname}_publishing-api_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the publishing-api host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_publishing-api_access"
   }
 }
@@ -52,10 +52,10 @@ resource "aws_security_group_rule" "publishing-api_ingress_publishing-api-elb-ex
 
 resource "aws_security_group" "publishing-api_elb_internal" {
   name        = "${var.stackname}_publishing-api_elb_internal_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the publishing-api ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_publishing-api_elb_access"
   }
 }
@@ -85,10 +85,10 @@ resource "aws_security_group_rule" "publishing-api-elb-internal_egress_any_any" 
 
 resource "aws_security_group" "publishing-api_elb_external" {
   name        = "${var.stackname}_publishing-api_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the publishing-api ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_publishing-api_elb_access"
   }
 }
@@ -101,7 +101,7 @@ resource "aws_security_group_rule" "publishing-api-elb-external_ingress_office_h
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.publishing-api_elb_external.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 resource "aws_security_group_rule" "publishing-api-elb-external_ingress_carrenza_https" {
@@ -113,7 +113,7 @@ resource "aws_security_group_rule" "publishing-api-elb-external_ingress_carrenza
 
   # Which security group is the rule assigned to
   security_group_id = "${aws_security_group.publishing-api_elb_external.id}"
-  cidr_blocks       = ["${var.carrenza_env_ips}"]
+  cidr_blocks       = var.carrenza_env_ips
 }
 
 resource "aws_security_group_rule" "publishing-api-elb-external_egress_any_any" {
@@ -128,10 +128,10 @@ resource "aws_security_group_rule" "publishing-api-elb-external_egress_any_any" 
 resource "aws_security_group" "publishing-api_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_publishing-api_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_publishing-api_ithc_access"
   }
 }
@@ -153,5 +153,5 @@ resource "aws_security_group_rule" "publishing-api-elb-external_ingress_ithc_htt
   to_port           = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.publishing-api_elb_external.id}"
-  cidr_blocks       = ["${var.ithc_access_ips}"]
+  cidr_blocks       = var.ithc_access_ips
 }

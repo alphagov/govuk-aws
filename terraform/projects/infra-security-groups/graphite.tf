@@ -15,10 +15,10 @@
 
 resource "aws_security_group" "graphite" {
   name        = "${var.stackname}_graphite_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the graphite host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_graphite_access"
   }
 }
@@ -90,10 +90,10 @@ resource "aws_security_group_rule" "graphite_ingress_graphite_internal_elb_https
 
 resource "aws_security_group" "graphite_external_elb" {
   name        = "${var.stackname}_graphite_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the Graphite External ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_graphite_external_elb_access"
   }
 }
@@ -105,7 +105,7 @@ resource "aws_security_group_rule" "graphite-external-elb_ingress_office_https" 
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.graphite_external_elb.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 # TODO: Audit
@@ -130,10 +130,10 @@ resource "aws_security_group_rule" "graphite-external-elb_egress_any_any" {
 
 resource "aws_security_group" "graphite_internal_elb" {
   name        = "${var.stackname}_graphite_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the Graphite Internal ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_graphite_internal_elb_access"
   }
 }

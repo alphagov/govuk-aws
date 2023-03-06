@@ -16,10 +16,10 @@
 #
 resource "aws_security_group" "email-alert-api" {
   name        = "${var.stackname}_email-alert-api_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the email-alert-api host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_email-alert-api_access"
   }
 }
@@ -52,10 +52,10 @@ resource "aws_security_group_rule" "email-alert-api_ingress_email-alert-api-elb-
 
 resource "aws_security_group" "email-alert-api_elb_internal" {
   name        = "${var.stackname}_email-alert-api_elb_internal_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the email-alert-api ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_email-alert-api_elb_access"
   }
 }
@@ -85,10 +85,10 @@ resource "aws_security_group_rule" "email-alert-api-elb-internal_egress_any_any"
 
 resource "aws_security_group" "email-alert-api_elb_external" {
   name        = "${var.stackname}_email-alert-api_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the email-alert-api ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_email-alert-api_elb_access"
   }
 }
@@ -116,10 +116,10 @@ resource "aws_security_group_rule" "email-alert-api-elb-external_egress_any_any"
 resource "aws_security_group" "email-alert-api_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_email-alert-api_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_email-alert-api_ithc_access"
   }
 }

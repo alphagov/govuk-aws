@@ -1,9 +1,9 @@
 resource "aws_security_group" "search-ltr-generation" {
   name = "search-ltr-generation_access"
 
-  vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
 
-  tags {
+  tags = {
     Name = "search-ltr-generation"
   }
 }

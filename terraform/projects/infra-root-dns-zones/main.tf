@@ -82,10 +82,10 @@ resource "aws_route53_zone" "internal_zone" {
   name  = "${var.root_domain_internal_name}"
 
   vpc {
-    vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+    vpc_id = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   }
 
-  tags {
+  tags = {
     Project = "infra-root-dns-zones"
   }
 }

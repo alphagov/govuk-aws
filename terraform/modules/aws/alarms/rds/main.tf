@@ -74,7 +74,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpuutilization" {
   alarm_actions       = ["${var.alarm_actions}"]
   alarm_description   = "This metric monitors the percentage of CPU utilization."
 
-  dimensions {
+  dimensions = {
     DBInstanceIdentifier = "${var.db_instance_id}"
   }
 }
@@ -92,7 +92,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_freeablememory" {
   alarm_actions       = ["${var.alarm_actions}"]
   alarm_description   = "This metric monitors the amount of available random access memory."
 
-  dimensions {
+  dimensions = {
     DBInstanceIdentifier = "${var.db_instance_id}"
   }
 }
@@ -110,7 +110,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_freestoragespace" {
   alarm_actions       = ["${var.alarm_actions}"]
   alarm_description   = "This metric monitors the amount of available storage space."
 
-  dimensions {
+  dimensions = {
     DBInstanceIdentifier = "${var.db_instance_id}"
   }
 }
@@ -129,7 +129,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_replicalag" {
   alarm_actions       = ["${var.alarm_actions}"]
   alarm_description   = "This metric monitors the amount of time a Read Replica DB instance lags behind the source DB instance."
 
-  dimensions {
+  dimensions = {
     DBInstanceIdentifier = "${var.db_instance_id}"
   }
 }

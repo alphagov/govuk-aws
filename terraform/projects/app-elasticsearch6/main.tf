@@ -203,8 +203,8 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
   }
 
   vpc_options {
-    subnet_ids         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_elasticsearch_names_ids_map), var.elasticsearch_subnet_names)}"]
-    security_group_ids = ["${data.terraform_remote_state.infra_security_groups.sg_elasticsearch6_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+    subnet_ids         = flatten(["${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_elasticsearch_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_elasticsearch_names_ids_map), var.elasticsearch_subnet_names)}"])
+    security_group_ids = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_elasticsearch6_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   }
 
   snapshot_options {
@@ -246,7 +246,7 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
 }
 CONFIG
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-elasticsearch6"
     Project         = "${var.stackname}"
     aws_stackname   = "${var.stackname}"
@@ -272,13 +272,13 @@ resource "aws_s3_bucket" "manual_snapshots" {
   bucket = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots"
   region = "${var.aws_region}"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-elasticsearch6-manual-snapshots/"
   }
 }
@@ -293,7 +293,7 @@ data "aws_iam_policy_document" "manual_snapshots_cross_account_access" {
     sid    = "CrossAccountAccess"
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [

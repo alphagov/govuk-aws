@@ -108,12 +108,12 @@ data "aws_acm_certificate" "elb_internal_cert" {
 # if this load-balancer is removed/changed
 resource "aws_elb" "monitoring_external_elb" {
   name            = "${var.stackname}-monitoring-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_external_elb_id}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_monitoring_external_elb_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-monitoring-external-elb"
     interval      = 60
   }
@@ -173,8 +173,8 @@ resource "aws_elb" "monitoring_external_elb" {
 
 resource "aws_elb" "monitoring_internal_elb" {
   name            = "${var.stackname}-monitoring"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_internal_elb_id}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_monitoring_internal_elb_id}"]
   internal        = "true"
 
   listener {
@@ -221,24 +221,24 @@ module "monitoring" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-monitoring"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "aws_hostname", "monitoring-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.monitoring_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.monitoring_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_monitoring_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.monitoring_external_elb.id}", "${aws_elb.monitoring_internal_elb.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "40"
 }
 
 resource "aws_ebs_volume" "monitoring" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.monitoring_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.monitoring_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 40
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-monitoring"
     Project         = "${var.stackname}"
     ManagedBy       = "terraform"
@@ -301,8 +301,8 @@ resource "aws_route53_record" "external_service_record" {
 
 # This DNS record is used by fastly rsyslog
 resource "aws_route53_record" "fastly_external_service_record" {
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "monitoring.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_zone_id}"
+  name    = "monitoring.${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_domain_name}"
   type    = "A"
 
   alias {
@@ -327,7 +327,7 @@ resource "aws_route53_record" "internal_service_record" {
 module "alarms-elb-monitoring-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-monitoring-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.monitoring_internal_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "0"
@@ -340,7 +340,7 @@ module "alarms-elb-monitoring-internal" {
 module "alarms-elb-monitoring-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-monitoring-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.monitoring_external_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"

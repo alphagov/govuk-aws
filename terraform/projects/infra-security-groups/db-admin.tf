@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "db-admin" {
   name        = "${var.stackname}_db-admin_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the db-admin host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_db-admin_access"
   }
 }
@@ -49,10 +49,10 @@ resource "aws_security_group_rule" "db-admin_ingress_db-admin-elb_pgbouncer" {
 
 resource "aws_security_group" "db-admin_elb" {
   name        = "${var.stackname}_db-admin_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the db-admin ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_db-admin_elb_access"
   }
 }

@@ -144,12 +144,12 @@ resource "aws_iam_policy" "ci-agent_iam_policy" {
 
 resource "aws_elb" "ci-agent-1_elb" {
   name            = "${var.stackname}-ci-agent-1"
-  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-1_elb_id}"]
+  subnets         = flatten(["${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))}"])
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-1_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-agent-1-internal-elb"
     interval      = 60
   }
@@ -194,8 +194,8 @@ module "ci-agent-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-1"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-1_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-1_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
@@ -204,17 +204,17 @@ module "ci-agent-1" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 resource "aws_ebs_volume" "ci-agent-1-data" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.data_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-1-data"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -226,12 +226,12 @@ resource "aws_ebs_volume" "ci-agent-1-data" {
 }
 
 resource "aws_ebs_volume" "ci-agent-1-docker" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.docker_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-1-docker"
     Project         = "${var.stackname}"
     Device          = "xvdg"
@@ -250,7 +250,7 @@ resource "aws_iam_role_policy_attachment" "ci-agent-1_iam_role_policy_attachment
 module "alarms-elb-ci-agent-1-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ci-agent-1-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ci-agent-1_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"
@@ -264,12 +264,12 @@ module "alarms-elb-ci-agent-1-internal" {
 
 resource "aws_elb" "ci-agent-2_elb" {
   name            = "${var.stackname}-ci-agent-2"
-  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_2_subnet))}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-2_elb_id}"]
+  subnets         = flatten(["${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_2_subnet))}"])
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-2_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-agent-2-internal-elb"
     interval      = 60
   }
@@ -314,8 +314,8 @@ module "ci-agent-2" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-2"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-2")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_2_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-2_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_2_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-2_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
@@ -324,17 +324,17 @@ module "ci-agent-2" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 resource "aws_ebs_volume" "ci-agent-2-data" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_2_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_2_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.data_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-2-data"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -346,12 +346,12 @@ resource "aws_ebs_volume" "ci-agent-2-data" {
 }
 
 resource "aws_ebs_volume" "ci-agent-2-docker" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_2_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_2_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.docker_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-2-docker"
     Project         = "${var.stackname}"
     Device          = "xvdg"
@@ -376,7 +376,7 @@ resource "aws_iam_role_policy_attachment" "ci-agent-2_iam_role_policy_attachment
 module "alarms-elb-ci-agent-2-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ci-agent-2-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ci-agent-2_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"
@@ -390,12 +390,12 @@ module "alarms-elb-ci-agent-2-internal" {
 
 resource "aws_elb" "ci-agent-3_elb" {
   name            = "${var.stackname}-ci-agent-3"
-  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_3_subnet))}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-3_elb_id}"]
+  subnets         = flatten(["${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_3_subnet))}"])
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-3_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-agent-3-internal-elb"
     interval      = 60
   }
@@ -440,8 +440,8 @@ module "ci-agent-3" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-3"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-3")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_3_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-3_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_3_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-3_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
@@ -450,17 +450,17 @@ module "ci-agent-3" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 resource "aws_ebs_volume" "ci-agent-3-data" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_3_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_3_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.data_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-3-data"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -472,12 +472,12 @@ resource "aws_ebs_volume" "ci-agent-3-data" {
 }
 
 resource "aws_ebs_volume" "ci-agent-3-docker" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_3_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_3_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.docker_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-3-docker"
     Project         = "${var.stackname}"
     Device          = "xvdg"
@@ -496,7 +496,7 @@ resource "aws_iam_role_policy_attachment" "ci-agent-3_iam_role_policy_attachment
 module "alarms-elb-ci-agent-3-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ci-agent-3-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ci-agent-3_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"
@@ -510,12 +510,12 @@ module "alarms-elb-ci-agent-3-internal" {
 
 resource "aws_elb" "ci-agent-4_elb" {
   name            = "${var.stackname}-ci-agent-4"
-  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_4_subnet))}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-4_elb_id}"]
+  subnets         = flatten(["${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_4_subnet))}"])
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-4_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-agent-4-internal-elb"
     interval      = 60
   }
@@ -560,8 +560,8 @@ module "ci-agent-4" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-4"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-4")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_4_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-4_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_4_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-4_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
@@ -570,17 +570,17 @@ module "ci-agent-4" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 resource "aws_ebs_volume" "ci-agent-4-data" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_4_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_4_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.data_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-4-data"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -592,12 +592,12 @@ resource "aws_ebs_volume" "ci-agent-4-data" {
 }
 
 resource "aws_ebs_volume" "ci-agent-4-docker" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_4_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_4_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.docker_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-4-docker"
     Project         = "${var.stackname}"
     Device          = "xvdg"
@@ -616,7 +616,7 @@ resource "aws_iam_role_policy_attachment" "ci-agent-4_iam_role_policy_attachment
 module "alarms-elb-ci-agent-4-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ci-agent-4-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ci-agent-4_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"
@@ -630,12 +630,12 @@ module "alarms-elb-ci-agent-4-internal" {
 
 resource "aws_elb" "ci-agent-5_elb" {
   name            = "${var.stackname}-ci-agent-5"
-  subnets         = ["${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_5_subnet))}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-5_elb_id}"]
+  subnets         = flatten(["${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_5_subnet))}"])
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-5_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-agent-5-internal-elb"
     interval      = 60
   }
@@ -680,8 +680,8 @@ module "ci-agent-5" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-5"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-5")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_5_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-5_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ci_agent_5_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-agent-5_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
@@ -690,17 +690,17 @@ module "ci-agent-5" {
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "${var.root_block_device_volume_size}"
 }
 
 resource "aws_ebs_volume" "ci-agent-5-data" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_5_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_5_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.data_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-5-data"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -712,12 +712,12 @@ resource "aws_ebs_volume" "ci-agent-5-data" {
 }
 
 resource "aws_ebs_volume" "ci-agent-5-docker" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ci_agent_5_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ci_agent_5_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.docker_block_device_volume_size}"
   type              = "${var.ebs_volume_type}"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci-agent-5-docker"
     Project         = "${var.stackname}"
     Device          = "xvdg"
@@ -736,7 +736,7 @@ resource "aws_iam_role_policy_attachment" "ci-agent-5_iam_role_policy_attachment
 module "alarms-elb-ci-agent-5-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ci-agent-5-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ci-agent-5_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "50"

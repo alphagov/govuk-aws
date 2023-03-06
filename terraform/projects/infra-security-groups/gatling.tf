@@ -11,10 +11,10 @@
 
 resource "aws_security_group" "gatling" {
   name        = "${var.stackname}_gatling_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the gatling host"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_gatling_access"
   }
 }
@@ -56,10 +56,10 @@ resource "aws_security_group_rule" "gatling_ingress_gatling_http" {
 
 resource "aws_security_group" "gatling_external_elb" {
   name        = "${var.stackname}_gatling_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the gatling External ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_gatling_external_elb_access"
   }
 }
@@ -71,7 +71,7 @@ resource "aws_security_group_rule" "gatling-external-elb_ingress_office_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.gatling_external_elb.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 resource "aws_security_group_rule" "gatling-external-elb_egress_any_any" {

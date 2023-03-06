@@ -61,7 +61,7 @@ provider "aws" {
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  name         = "${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   private_zone = true
 }
 
@@ -74,8 +74,8 @@ module "internal_lb" {
   source                           = "../../modules/aws/lb"
   name                             = "licensify-backend-internal"
   internal                         = true
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/licensify-backend-internal-elb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
   target_group_health_check_path   = "/healthcheck"
@@ -84,9 +84,9 @@ module "internal_lb" {
     "HTTPS:443" = "HTTP:80"
   }
 
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-backend_internal_elb_id}"]
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_licensify-backend_internal_elb_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
     Project         = "${var.stackname}"
@@ -100,7 +100,7 @@ module "internal_lb" {
 resource "aws_route53_record" "internal_service_names" {
   count   = "${length(var.app_service_records)}"
   zone_id = "${data.aws_route53_zone.internal.zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "A"
 
   alias {
@@ -122,8 +122,8 @@ module "licensify-backend" {
     aws_hostname    = "licensify-backend-1"
   }
 
-  instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_licensify-backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids               = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"
+  instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_licensify-backend_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                     = "${var.instance_type}"
   instance_additional_user_data     = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_target_group_arns_length = "1"
@@ -132,7 +132,7 @@ module "licensify-backend" {
   asg_max_size                      = "${var.asg_size}"
   asg_min_size                      = "${var.asg_size}"
   asg_desired_capacity              = "${var.asg_size}"
-  asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn        = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size     = "50"
 }
 

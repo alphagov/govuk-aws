@@ -170,7 +170,7 @@ resource "aws_s3_bucket" "artefact" {
   bucket = "govuk-${var.aws_environment}-artefact"
   acl    = "private"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-artefact"
     aws_environment = "${var.aws_environment}"
   }
@@ -180,7 +180,7 @@ resource "aws_s3_bucket" "artefact" {
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-artefact/"
   }
 

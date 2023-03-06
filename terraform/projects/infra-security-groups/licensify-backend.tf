@@ -10,10 +10,10 @@
 
 resource "aws_security_group" "licensify-backend" {
   name        = "licensify-backend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the licensify-backend host from its ELB"
 
-  tags {
+  tags = {
     Name = "licensify-backend_access"
   }
 }
@@ -46,10 +46,10 @@ resource "aws_security_group_rule" "licensify-backend_ingress_licensify-backend-
 
 resource "aws_security_group" "licensify-backend_internal_elb" {
   name        = "licensify-backend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the licensify-backend ELB"
 
-  tags {
+  tags = {
     Name = "licensify-backend_internal_elb_access"
   }
 }
@@ -75,10 +75,10 @@ resource "aws_security_group_rule" "licensify-backend-internal-elb_egress_any_an
 
 resource "aws_security_group" "licensify-backend_external_elb" {
   name        = "licensify-backend_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the licensify-backend external ELB"
 
-  tags {
+  tags = {
     Name = "licensify-backend_external_elb_access"
   }
 }
@@ -115,10 +115,10 @@ resource "aws_security_group_rule" "licensify-backend-external-elb_egress_any_an
 resource "aws_security_group" "licensify_backend_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_licensify_backend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_licensify_backend_ithc_access"
   }
 }

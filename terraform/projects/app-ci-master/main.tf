@@ -136,12 +136,12 @@ resource "aws_elb" "ci-master_elb" {
   count = "${var.create_external_elb}"
 
   name            = "${var.stackname}-ci-master"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-master_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-master_elb_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-master-external-elb"
     interval      = 60
   }
@@ -179,12 +179,12 @@ data "aws_acm_certificate" "elb_internal_cert" {
 
 resource "aws_elb" "ci-master_internal_elb" {
   name            = "${var.stackname}-ci-master-internal"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ci-master_internal_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-master_internal_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ci-master-internal-elb"
     interval      = 60
   }
@@ -250,23 +250,23 @@ module "ci-master" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-master"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "aws_hostname", "ci-master-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.deploy_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-master_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.deploy_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-master_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "${local.instance_elb_ids_length}"
   instance_elb_ids              = ["${local.instance_elb_ids}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
 }
 
 resource "aws_ebs_volume" "ci-master" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.deploy_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.deploy_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = 40
   type              = "gp3"
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ci"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -296,7 +296,7 @@ locals {
 module "alarms-elb-ci-master-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ci-master-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${join("", aws_elb.ci-master_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
@@ -312,15 +312,15 @@ module "ci_master_public_lb" {
   source                                     = "../../modules/aws/lb"
   name                                       = "govuk-ci-master-public"
   internal                                   = false
-  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name                    = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix                  = "elb/govuk-ci-master-public-elb"
   listener_certificate_domain_name           = "${var.elb_public_certname}"
   listener_secondary_certificate_domain_name = "${var.elb_public_secondary_certname}"
   listener_action                            = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                                    = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.sg_ci-master_elb_id}"]
-  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  subnets                                    = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
+  security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ci-master_elb_id}"]
+  alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags                               = "${map("Project", "govuk", "aws_migration", "ci_master", "aws_environment", var.aws_environment)}"
 }
 
@@ -331,8 +331,8 @@ resource "aws_shield_protection" "ci_master_public_lb" {
 
 resource "aws_route53_record" "ci_master_public_service_names" {
   count   = "${length(var.public_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.external_root_zone_id}"
-  name    = "${element(var.public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_zone_id}"
+  name    = "${element(var.public_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_domain_name}"
   type    = "A"
 
   alias {
@@ -362,10 +362,10 @@ resource "aws_autoscaling_attachment" "ci_master_asg_attachment_alb" {
 
 resource "aws_route53_record" "ci_master_internal_service_names" {
   count   = "${length(var.internal_service_names)}"
-  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.internal_root_zone_id}"
-  name    = "${element(var.internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id}"
+  name    = "${element(var.internal_service_names, count.index)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
   type    = "CNAME"
-  records = ["${element(var.internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.internal_root_domain_name}"]
+  records = ["${element(var.internal_service_names, count.index)}.blue.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"]
   ttl     = "300"
 }
 

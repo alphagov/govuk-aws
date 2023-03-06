@@ -14,10 +14,10 @@
 
 resource "aws_security_group" "bouncer" {
   name        = "${var.stackname}_bouncer_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the bouncer host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_bouncer_access"
   }
 }
@@ -50,10 +50,10 @@ resource "aws_security_group_rule" "bouncer_ingress_bouncer-internal-elb_http" {
 
 resource "aws_security_group" "bouncer_elb" {
   name        = "${var.stackname}_bouncer_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the bouncer ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_bouncer_elb_access"
   }
 }
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "bouncer-elb_ingress_fastly_http" {
   from_port         = 80
   protocol          = "tcp"
   security_group_id = "${aws_security_group.bouncer_elb.id}"
-  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"]
+  cidr_blocks       = flatten(["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"])
 }
 
 resource "aws_security_group_rule" "bouncer-elb_ingress_traffic-replay_http" {
@@ -73,7 +73,7 @@ resource "aws_security_group_rule" "bouncer-elb_ingress_traffic-replay_http" {
   from_port         = 80
   protocol          = "tcp"
   security_group_id = "${aws_security_group.bouncer_elb.id}"
-  cidr_blocks       = ["${var.traffic_replay_ips}"]
+  cidr_blocks       = var.traffic_replay_ips
 }
 
 resource "aws_security_group_rule" "bouncer-elb_ingress_fastly_https" {
@@ -82,7 +82,7 @@ resource "aws_security_group_rule" "bouncer-elb_ingress_fastly_https" {
   from_port         = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.bouncer_elb.id}"
-  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"]
+  cidr_blocks       = flatten(["${data.fastly_ip_ranges.fastly.cidr_blocks}", "${var.office_ips}"])
 }
 
 resource "aws_security_group_rule" "bouncer-elb_egress_any_any" {
@@ -96,10 +96,10 @@ resource "aws_security_group_rule" "bouncer-elb_egress_any_any" {
 
 resource "aws_security_group" "bouncer_internal_elb" {
   name        = "${var.stackname}_bouncer_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the bouncer internal ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_bouncer_internal_elb_access"
   }
 }
@@ -143,10 +143,10 @@ resource "aws_security_group_rule" "bouncer-internal-elb_ingress_smokey_https" {
 resource "aws_security_group" "bouncer_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_bouncer_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_bouncer_ithc_access"
   }
 }
@@ -158,5 +158,5 @@ resource "aws_security_group_rule" "ithc_ingress_bouncer_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.bouncer_ithc_access.id}"
+  security_group_id = "${aws_security_group.bouncer_ithc_access[0].id}"
 }

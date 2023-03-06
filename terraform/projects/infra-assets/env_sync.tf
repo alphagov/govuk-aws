@@ -8,7 +8,7 @@ data "aws_iam_policy_document" "cross_account_access" {
   statement {
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [
@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "cross_account_access" {
   statement {
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [

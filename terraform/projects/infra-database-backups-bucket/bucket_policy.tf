@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "database_backups_cross_account_access" {
     sid    = "CrossAccountPermissions"
     effect = "Allow"
 
-    principals = {
+    principals {
       type = "AWS"
 
       identifiers = [

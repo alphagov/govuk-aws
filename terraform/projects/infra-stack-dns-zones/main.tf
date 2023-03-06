@@ -109,7 +109,7 @@ resource "aws_route53_record" "external_zone_ns" {
 
 data "aws_route53_zone" "internal_selected" {
   name         = "${var.root_domain_internal_name}"
-  vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id       = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   private_zone = true
 }
 

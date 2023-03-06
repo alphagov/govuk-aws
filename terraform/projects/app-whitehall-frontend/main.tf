@@ -76,12 +76,12 @@ data "aws_acm_certificate" "elb_cert" {
 
 resource "aws_elb" "whitehall-frontend_elb" {
   name            = "${var.stackname}-whitehall-frontend"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_elb_id}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_whitehall-frontend_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-whitehall-frontend-internal-elb"
     interval      = 60
   }
@@ -127,8 +127,8 @@ module "whitehall-frontend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-whitehall-frontend"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "whitehall_frontend", "aws_hostname", "whitehall-frontend-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_whitehall-frontend_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "1"
@@ -137,14 +137,14 @@ module "whitehall-frontend" {
   asg_max_size                  = "${var.asg_size}"
   asg_min_size                  = "${var.asg_size}"
   asg_desired_capacity          = "${var.asg_size}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "50"
 }
 
 module "alarms-elb-whitehall-frontend-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-whitehall-frontend-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.whitehall-frontend_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -165,7 +165,7 @@ resource "aws_security_group_rule" "whitehall-rds_ingress_whitehall-frontend_mys
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.whitehall-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_whitehall-frontend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_whitehall-frontend_id}"
 }
 
 # Outputs

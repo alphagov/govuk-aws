@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "frontend" {
   name        = "${var.stackname}_frontend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the frontend host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_frontend_access"
   }
 }
@@ -36,10 +36,10 @@ resource "aws_security_group_rule" "frontend_ingress_frontend-elb_http" {
 
 resource "aws_security_group" "frontend_elb" {
   name        = "${var.stackname}_frontend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the frontend ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_frontend_elb_access"
   }
 }
@@ -66,10 +66,10 @@ resource "aws_security_group_rule" "frontend-elb_egress_any_any" {
 
 resource "aws_security_group" "static" {
   name        = "${var.stackname}_static_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to static host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_static_access"
   }
 }
@@ -102,10 +102,10 @@ resource "aws_security_group_rule" "static_ingress_static-carrenza-alb_http" {
 
 resource "aws_security_group" "frontend_cache" {
   name        = "${var.stackname}_frontend_cache_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the frontend cache from frontend"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_frontend_cache_access"
   }
 }
@@ -127,10 +127,10 @@ resource "aws_security_group_rule" "frontend_ingress_frontend_cache_memcached" {
 
 resource "aws_security_group" "static_carrenza_alb" {
   name        = "${var.stackname}_static_carrenza_alb"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access static Carrenza ALB "
 
-  tags {
+  tags = {
     Name = "${var.stackname}_static_carrenza_alb_access"
   }
 }
@@ -142,7 +142,7 @@ resource "aws_security_group_rule" "static-carrenza-alb_ingress_443_carrenza" {
   to_port   = 443
   protocol  = "tcp"
 
-  cidr_blocks       = ["${var.carrenza_env_ips}"]
+  cidr_blocks       = var.carrenza_env_ips
   security_group_id = "${aws_security_group.static_carrenza_alb.id}"
 }
 
@@ -158,10 +158,10 @@ resource "aws_security_group_rule" "static-carrenza-alb_egress_any_any" {
 resource "aws_security_group" "frontend_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_frontend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_frontend_ithc_access"
   }
 }

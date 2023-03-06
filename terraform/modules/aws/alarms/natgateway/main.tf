@@ -59,10 +59,10 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
   statistic           = "Sum"
   threshold           = "${var.errorportallocation_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the sum of the number of times the NAT gateway could not allocate a source port."
 
-  dimensions {
+  dimensions = {
     NatGatewayId = "${element(var.nat_gateway_ids, count.index)}"
   }
 }
@@ -78,10 +78,10 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
   statistic           = "Sum"
   threshold           = "${var.packetsdropcount_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the number of packets dropped by the NAT gateway."
 
-  dimensions {
+  dimensions = {
     NatGatewayId = "${element(var.nat_gateway_ids, count.index)}"
   }
 }

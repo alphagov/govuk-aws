@@ -81,12 +81,12 @@ data "aws_acm_certificate" "elb_internal_cert" {
 
 resource "aws_elb" "ckan_elb_external" {
   name            = "${var.stackname}-ckan-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ckan_elb_external_id}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_elb_external_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ckan-external-elb"
     interval      = 60
   }
@@ -117,8 +117,8 @@ resource "aws_elb" "ckan_elb_external" {
 }
 
 resource "aws_route53_record" "service_record_external" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "ckan.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.outputs.external_zone_id}"
+  name    = "ckan.${data.terraform_remote_state.infra_stack_dns_zones.outputs.external_domain_name}"
   type    = "A"
 
   alias {
@@ -130,21 +130,21 @@ resource "aws_route53_record" "service_record_external" {
 
 resource "aws_route53_record" "app_service_records_external" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.external_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.outputs.external_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.outputs.external_domain_name}"
   type    = "CNAME"
-  records = ["ckan.${data.terraform_remote_state.infra_stack_dns_zones.external_domain_name}"]
+  records = ["ckan.${data.terraform_remote_state.infra_stack_dns_zones.outputs.external_domain_name}"]
   ttl     = "300"
 }
 
 resource "aws_elb" "ckan_elb_internal" {
   name            = "${var.stackname}-ckan-internal"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_ckan_elb_internal_id}"]
+  subnets         = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_elb_internal_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-ckan-internal-elb"
     interval      = 60
   }
@@ -175,8 +175,8 @@ resource "aws_elb" "ckan_elb_internal" {
 }
 
 resource "aws_route53_record" "service_record_internal" {
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "ckan.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.outputs.internal_zone_id}"
+  name    = "ckan.${data.terraform_remote_state.infra_stack_dns_zones.outputs.internal_domain_name}"
   type    = "A"
 
   alias {
@@ -188,10 +188,10 @@ resource "aws_route53_record" "service_record_internal" {
 
 resource "aws_route53_record" "app_service_records_internal" {
   count   = "${length(var.app_service_records)}"
-  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.internal_zone_id}"
-  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"
+  zone_id = "${data.terraform_remote_state.infra_stack_dns_zones.outputs.internal_zone_id}"
+  name    = "${element(var.app_service_records, count.index)}.${data.terraform_remote_state.infra_stack_dns_zones.outputs.internal_domain_name}"
   type    = "CNAME"
-  records = ["ckan.${data.terraform_remote_state.infra_stack_dns_zones.internal_domain_name}"]
+  records = ["ckan.${data.terraform_remote_state.infra_stack_dns_zones.outputs.internal_domain_name}"]
   ttl     = "300"
 }
 
@@ -199,23 +199,23 @@ module "ckan" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ckan"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ckan", "aws_hostname", "ckan-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ckan_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ckan_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.ckan_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "2"
   instance_elb_ids              = ["${aws_elb.ckan_elb_internal.id}", "${aws_elb.ckan_elb_external.id}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
 }
 
 resource "aws_ebs_volume" "ckan" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.ckan_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.ckan_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   type              = "gp2"
   size              = 20
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-ckan"
     Project         = "${var.stackname}"
     ManagedBy       = "terraform"
@@ -241,7 +241,7 @@ resource "aws_iam_role_policy_attachment" "ckan_iam_role_policy_attachment" {
 module "alarms-elb-ckan-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ckan-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ckan_elb_internal.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -254,7 +254,7 @@ module "alarms-elb-ckan-internal" {
 module "alarms-elb-ckan-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-ckan-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.ckan_elb_external.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -275,7 +275,7 @@ resource "aws_security_group_rule" "ckan-rds_ingress_ckan_postgres" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.ckan-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_ckan_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_id}"
 }
 
 # Outputs

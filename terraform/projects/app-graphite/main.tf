@@ -124,12 +124,12 @@ resource "aws_elb" "graphite_external_elb" {
   count = "${var.create_external_elb}"
 
   name            = "${var.stackname}-graphite-external"
-  subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_external_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_graphite_external_elb_id}"]
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-graphite-external-elb"
     interval      = 60
   }
@@ -190,12 +190,12 @@ resource "aws_route53_record" "grafana_external_service_record" {
 
 resource "aws_elb" "graphite_internal_elb" {
   name            = "${var.stackname}-graphite-internal"
-  subnets         = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_internal_elb_id}"]
+  subnets         = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_graphite_internal_elb_id}"]
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     bucket_prefix = "elb/${var.stackname}-graphite-internal-elb"
     interval      = 60
   }
@@ -273,24 +273,24 @@ module "graphite-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-graphite-1"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "graphite", "aws_hostname", "graphite-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
+  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = "${local.instance_elb_ids_length}"
   instance_elb_ids              = ["${local.instance_elb_ids}"]
   instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
 }
 
 resource "aws_ebs_volume" "graphite-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
+  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_azs_map, var.graphite_1_subnet)}"
   encrypted         = "${var.ebs_encrypted}"
   size              = "${var.ebs_volume_size}"
   type              = "io1"
   iops              = 1000
 
-  tags {
+  tags = {
     Name            = "${var.stackname}-graphite-1"
     Project         = "${var.stackname}"
     Device          = "xvdf"
@@ -319,7 +319,7 @@ resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_cloudwatch
 
 resource "aws_iam_role_policy_attachment" "access_graphite_backups_iam_role_policy_attachment" {
   role       = "${module.graphite-1.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_graphite_backups_bucket.access_graphite_backups_bucket_policy_arn}"
+  policy_arn = "${data.terraform_remote_state.infra_graphite_backups_bucket.outputs.access_graphite_backups_bucket_policy_arn}"
 }
 
 data "terraform_remote_state" "infra_graphite_backups_bucket" {
@@ -335,7 +335,7 @@ data "terraform_remote_state" "infra_graphite_backups_bucket" {
 module "alarms-elb-graphite-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-graphite-internal"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${aws_elb.graphite_internal_elb.name}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
@@ -353,7 +353,7 @@ locals {
 module "alarms-elb-graphite-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-graphite-external"
-  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   elb_name                       = "${join("", aws_elb.graphite_external_elb.*.name)}"
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"

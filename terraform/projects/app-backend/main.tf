@@ -102,8 +102,8 @@ module "backend" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-backend"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend", "aws_hostname", "backend-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
-  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_backend_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}", "${data.terraform_remote_state.infra_security_groups.sg_aws-vpn_id}"]
+  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"
+  instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_management_id}", "${data.terraform_remote_state.infra_security_groups.outputs.sg_aws-vpn_id}"]
   instance_type                 = "${var.instance_type}"
   instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
   instance_elb_ids_length       = 0
@@ -112,7 +112,7 @@ module "backend" {
   asg_max_size                  = "${var.asg_size}"
   asg_min_size                  = "${var.asg_size}"
   asg_desired_capacity          = "${var.asg_size}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_autoscaling_group_events_arn}"
   root_block_device_volume_size = "60"
 }
 
@@ -121,16 +121,16 @@ module "backend_internal_alb" {
   source                           = "../../modules/aws/lb"
   name                             = "${var.stackname}-backend-internal"
   internal                         = true
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
-  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  access_logs_bucket_name          = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
   access_logs_bucket_prefix        = "elb/${var.stackname}-backend-internal-alb"
   listener_certificate_domain_name = "${var.elb_internal_certname}"
   listener_action                  = "${map("HTTPS:443", "HTTP:80")}"
-  subnets                          = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  subnets                          = ["${data.terraform_remote_state.infra_networking.outputs.private_subnet_ids}"]
 
   #TODO: create new security group with alb name
-  security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_backend_elb_internal_id}"]
-  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_elb_internal_id}"]
+  alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
   default_tags    = "${map("Project", var.stackname, "aws_migration", "backend", "aws_environment", var.aws_environment)}"
 }
 
@@ -140,7 +140,7 @@ module "backend_internal_alb_rules" {
   name                             = "backend-i"
   autoscaling_group_name           = "${module.backend.autoscaling_group_name}"
   rules_host_domain                = "*"
-  vpc_id                           = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                           = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   listener_arn                     = "${module.backend_internal_alb.load_balancer_ssl_listeners[0]}"
   rules_host                       = ["${var.app_service_records_alb}"]
   rules_for_existing_target_groups = "${var.rules_for_existing_target_groups}"
@@ -178,7 +178,7 @@ resource "aws_route53_record" "app_service_records_redirected_public_alb" {
   zone_id = "${data.aws_route53_zone.internal.zone_id}"
   name    = "${element(var.app_service_records_redirected_public_alb, count.index)}.${var.internal_domain_name}"
   type    = "CNAME"
-  records = ["backend.${data.terraform_remote_state.infra_root_dns_zones.external_root_domain_name}"]
+  records = ["backend.${data.terraform_remote_state.infra_root_dns_zones.outputs.external_root_domain_name}"]
   ttl     = "300"
 }
 
@@ -193,7 +193,7 @@ resource "aws_security_group_rule" "collections-publisher-rds_ingress_backend_my
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.collections-publisher-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "contacts-admin-rds" {
@@ -207,7 +207,7 @@ resource "aws_security_group_rule" "contacts-admin-rds_ingress_backend_mysql" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.contacts-admin-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "content-data-admin-rds" {
@@ -221,7 +221,7 @@ resource "aws_security_group_rule" "content-data-admin-rds_ingress_backend_postg
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.content-data-admin-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "content-publisher-rds" {
@@ -235,7 +235,7 @@ resource "aws_security_group_rule" "content-publisher-rds_ingress_backend_postgr
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.content-publisher-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "content-tagger-rds" {
@@ -249,7 +249,7 @@ resource "aws_security_group_rule" "content-tagger-rds_ingress_backend_postgres"
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.content-tagger-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "imminence-rds" {
@@ -263,7 +263,7 @@ resource "aws_security_group_rule" "imminence-rds_ingress_backend_postgres" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.imminence-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "link-checker-api-rds" {
@@ -277,7 +277,7 @@ resource "aws_security_group_rule" "link-checker-api-rds_ingress_backend_postgre
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.link-checker-api-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "local-links-manager-rds" {
@@ -291,7 +291,7 @@ resource "aws_security_group_rule" "local-links-manager-rds_ingress_backend_post
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.local-links-manager-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "release-rds" {
@@ -305,7 +305,7 @@ resource "aws_security_group_rule" "release-rds_ingress_backend_mysql" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.release-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "search-admin-rds" {
@@ -319,7 +319,7 @@ resource "aws_security_group_rule" "search-admin-rds_ingress_backend_mysql" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.search-admin-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "service-manual-publisher-rds" {
@@ -333,7 +333,7 @@ resource "aws_security_group_rule" "service-manual-publisher-rds_ingress_backend
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.service-manual-publisher-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "signon-rds" {
@@ -347,7 +347,7 @@ resource "aws_security_group_rule" "signon-rds_ingress_backend_mysql" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.signon-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 data "aws_security_group" "support-api-rds" {
@@ -361,7 +361,7 @@ resource "aws_security_group_rule" "support-api-rds_ingress_backend_postgres" {
   protocol  = "tcp"
 
   security_group_id        = "${data.aws_security_group.support-api-rds.id}"
-  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.sg_backend_id}"
+  source_security_group_id = "${data.terraform_remote_state.infra_security_groups.outputs.sg_backend_id}"
 }
 
 # Outputs
