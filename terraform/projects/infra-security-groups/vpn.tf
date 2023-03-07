@@ -16,7 +16,7 @@ resource "aws_security_group_rule" "vpn_ingress_aws_carrenza" {
   to_port   = 0
   protocol  = "icmp"
 
-  security_group_id = "${aws_security_group.vpn.id}"
+  security_group_id = "${aws_security_group.vpn[0].id}"
 
   cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
 }
@@ -28,7 +28,7 @@ resource "aws_security_group_rule" "vpn_egress_carrenza_aws" {
   to_port   = 0
   protocol  = "icmp"
 
-  security_group_id = "${aws_security_group.vpn.id}"
+  security_group_id = "${aws_security_group.vpn[0].id}"
 
   cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
 }
@@ -40,7 +40,7 @@ resource "aws_security_group_rule" "vpn_egress_carrenza_aws_frontend" {
   to_port   = 0
   protocol  = "-1"
 
-  security_group_id = "${aws_security_group.vpn.id}"
+  security_group_id = "${aws_security_group.vpn[0].id}"
 
   cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
 }
@@ -52,7 +52,7 @@ resource "aws_security_group_rule" "vpn_ingress_http_http" {
   to_port   = 80
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.vpn.id}"
+  security_group_id = "${aws_security_group.vpn[0].id}"
 
   cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
 }
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "vpn_ingress_https_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.vpn.id}"
+  security_group_id = "${aws_security_group.vpn[0].id}"
 
   cidr_blocks = "${var.carrenza_vpn_subnet_cidr}"
 }
