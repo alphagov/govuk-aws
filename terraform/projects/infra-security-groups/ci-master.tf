@@ -81,7 +81,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_carrenza_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.ci-master_elb[0].id}"
-  cidr_blocks       = ["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"]
+  cidr_blocks       = flatten(["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"])
 }
 
 resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.ci-master_elb[0].id}"
-  cidr_blocks       = ["${data.github_ip_ranges.outputs.github.hooks_ipv4}"]
+  cidr_blocks       = data.github_ip_ranges.github.hooks
 }
 
 resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {

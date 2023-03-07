@@ -15,7 +15,7 @@
 #
 resource "aws_security_group" "account" {
   name        = "${var.stackname}_account_access"
-  vpc_id      = "${data.terraform_remote_state.outputs.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the account host from its ELB"
 
   tags = {
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "account-elb-internal_egress_any_any" {
 
 resource "aws_security_group" "account_elb_external" {
   name        = "${var.stackname}_account_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.outputs.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the account ELB"
 
   tags = {
