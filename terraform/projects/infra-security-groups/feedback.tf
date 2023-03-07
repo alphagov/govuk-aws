@@ -72,5 +72,5 @@ resource "aws_security_group_rule" "ithc_ingress_feedback_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.feedback_ithc_access.id}"
+  security_group_id = "${aws_security_group.feedback_ithc_access[0].id}"
 }

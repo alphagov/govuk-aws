@@ -87,7 +87,7 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.apt_external_elb.id}"
-  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
+  cidr_blocks       = data.fastly_ip_ranges.fastly.cidr_blocks
 }
 
 resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_http" {
@@ -97,7 +97,7 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_http" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.apt_external_elb.id}"
-  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
+  cidr_blocks       = data.fastly_ip_ranges.fastly.cidr_blocks
 }
 
 resource "aws_security_group_rule" "apt-external-elb_egress_any_any" {
@@ -166,5 +166,5 @@ resource "aws_security_group_rule" "ithc_ingress_apt_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.apt_ithc_access.id}"
+  security_group_id = "${aws_security_group.apt_ithc_access[0].id}"
 }

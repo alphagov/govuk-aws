@@ -30,10 +30,10 @@ resource "aws_security_group_rule" "ci-master_ingress_ci-master-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.ci-master.id}"
+  security_group_id = "${aws_security_group.ci-master[0].id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.ci-master_elb.id}"
+  source_security_group_id = "${aws_security_group.ci-master_elb[0].id}"
 }
 
 resource "aws_security_group_rule" "ci-master_ingress_ci-master-internal-elb_http" {
@@ -44,10 +44,10 @@ resource "aws_security_group_rule" "ci-master_ingress_ci-master-internal-elb_htt
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.ci-master.id}"
+  security_group_id = "${aws_security_group.ci-master[0].id}"
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.ci-master_internal_elb.id}"
+  source_security_group_id = "${aws_security_group.ci-master_internal_elb[0].id}"
 }
 
 resource "aws_security_group" "ci-master_elb" {
@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_office_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.ci-master_elb.id}"
+  security_group_id = "${aws_security_group.ci-master_elb[0].id}"
   cidr_blocks       = var.office_ips
 }
 
@@ -80,8 +80,8 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_carrenza_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"]
+  security_group_id = "${aws_security_group.ci-master_elb[0].id}"
+  cidr_blocks       = flatten(["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"])
 }
 
 resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
@@ -91,8 +91,8 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${data.github_ip_ranges.outputs.github.hooks_ipv4}"]
+  security_group_id = "${aws_security_group.ci-master_elb[0].id}"
+  cidr_blocks       = data.github_ip_ranges.github.hooks
 }
 
 resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {
@@ -102,7 +102,7 @@ resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.ci-master_elb.id}"
+  security_group_id = "${aws_security_group.ci-master_elb[0].id}"
 }
 
 resource "aws_security_group_rule" "ci-master-internal-elb_egress_any_any" {
@@ -112,7 +112,7 @@ resource "aws_security_group_rule" "ci-master-internal-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.ci-master_internal_elb.id}"
+  security_group_id = "${aws_security_group.ci-master_internal_elb[0].id}"
 }
 
 resource "aws_security_group" "ci-master_internal_elb" {
@@ -133,6 +133,6 @@ resource "aws_security_group_rule" "ci-master-internal-elb_ingress_management_ht
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.ci-master_internal_elb.id}"
+  security_group_id        = "${aws_security_group.ci-master_internal_elb[0].id}"
   source_security_group_id = "${aws_security_group.management.id}"
 }

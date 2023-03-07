@@ -173,5 +173,5 @@ resource "aws_security_group_rule" "monitoring-elb_ingress_fastly_syslog-tls" {
   to_port           = 6516
   protocol          = "tcp"
   security_group_id = "${aws_security_group.monitoring_external_elb.id}"
-  cidr_blocks       = ["${data.fastly_ip_ranges.fastly.cidr_blocks}"]
+  cidr_blocks       = data.fastly_ip_ranges.fastly.cidr_blocks
 }

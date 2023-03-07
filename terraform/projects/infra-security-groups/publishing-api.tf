@@ -143,7 +143,7 @@ resource "aws_security_group_rule" "ithc_ingress_publishing-api_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.publishing-api_ithc_access.id}"
+  security_group_id = "${aws_security_group.publishing-api_ithc_access[0].id}"
 }
 
 resource "aws_security_group_rule" "publishing-api-elb-external_ingress_ithc_https" {

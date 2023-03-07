@@ -30,6 +30,7 @@ provider "fastly" {
 }
 
 provider "github" {
+  version = "4.4.0" 
 }
 
 data "fastly_ip_ranges" "fastly" {}
