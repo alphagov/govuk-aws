@@ -68,7 +68,7 @@ variable "artefact_source" {
 }
 
 variable "aws_s3_access_account" {
-  type        = "list"
+  type        = "string"
   description = "Here we define the account that will have access to the Artefact S3 bucket."
 }
 
@@ -230,8 +230,7 @@ data "aws_iam_policy_document" "govuk-artefact-bucket" {
     principals {
       type = "AWS"
 
-      identifiers = [flatten(["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",var.aws_s3_access_account])
-      ]
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root", var.aws_s3_access_account]
     }
   }
 }
