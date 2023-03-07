@@ -184,7 +184,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
 
       parameters = {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
-        ignore.malformed.json = "true"
+        "ignore.malformed.json" = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -212,18 +212,17 @@ resource "aws_glue_catalog_table" "govuk_www" {
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V",
     // "client_ja3":"%{json.escape(req.http.Client-JA3)}V"
     // }
-    columns = [
-      {
+    columns {
         name    = "client_ip"
         type    = "string"
         comment = "IP address of the client that made the request"
-      },
-      {
+      }
+    columns {
         name    = "request_received"
         type    = "timestamp"
         comment = "Time we received the request"
-      },
-      {
+      }
+    columns {
         // This field is separate from the timestamp above as the Presto version
         // on AWS Athena doesn't support timestamps - expectation is that this is
         // always +0000 though
@@ -231,100 +230,97 @@ resource "aws_glue_catalog_table" "govuk_www" {
 
         type    = "string"
         comment = "Time offset of the request, expected to be +0000 always"
-      },
-      {
+      }
+    columns {
         name    = "method"
         type    = "string"
         comment = "HTTP method for this request"
-      },
-      {
+      }
+    columns {
         name    = "url"
         type    = "string"
         comment = "URL requested with query string"
-      },
-      {
+      }
+    columns {
         name    = "status"
         type    = "int"
         comment = "HTTP status code returned"
-      },
-      {
+      }
+    columns {
         name    = "request_time"
         type    = "double"
         comment = "Time until user received full response in seconds"
-      },
-      {
+      }
+    columns {
         name    = "time_to_generate_response"
         type    = "double"
         comment = "Time spent generating a response for varnish, in seconds"
-      },
-      {
+      }
+    columns {
         name    = "bytes"
         type    = "bigint"
         comment = "Number of bytes returned"
-      },
-      {
+      }
+    columns {
         name    = "content_type"
         type    = "string"
         comment = "HTTP Content-Type header returned"
-      },
-      {
+      }
+    columns {
         name    = "user_agent"
         type    = "string"
         comment = "User agent that made the request"
-      },
-      {
+      }
+    columns {
         name    = "fastly_backend"
         type    = "string"
         comment = "Name of the backend that served this request"
-      },
-      {
+      }
+    columns {
         name    = "data_centre"
         type    = "string"
         comment = "Name of the data centre that served this request"
-      },
-      {
+      }
+    columns {
         name    = "cache_hit"
         type    = "boolean"
         comment = "Whether this object is cacheable or not"
-      },
-      {
+      }
+    columns {
         name    = "cache_response"
         type    = "string"
         comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
-      },
-      {
+      }
+    columns {
         name = "tls_client_protocol"
         type = "string"
-      },
-      {
+      }
+    columns {
         name = "tls_client_cipher"
         type = "string"
-      },
-      {
+      }
+    columns {
         name = "client_ja3"
         type = "string"
-      },
-    ]
+      }
   }
 
   // these correspond to directory ordering of:
   // /year=YYYY/month=MM/date=DD/file.log.gz
-  partition_keys = [
-    {
+  partition_keys {
       name = "year"
       type = "int"
-    },
-    {
+    }
+  partition_keys {
       name = "month"
       type = "int"
-    },
-    {
+    }
+  partition_keys {
       name = "date"
       type = "int"
-    },
-  ]
+    }
 
-  parameters {
+  parameters = {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
@@ -376,7 +372,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
 
       parameters = {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
-        ignore.malformed.json = "true"
+        "ignore.malformed.json" = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -404,18 +400,17 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V",
     // "client_ja3":"%{json.escape(req.http.Client-JA3)}V"
     // }
-    columns = [
-      {
+    columns {
         name    = "client_ip"
         type    = "string"
         comment = "IP address of the client that made the request"
-      },
-      {
+      }
+    columns {
         name    = "request_received"
         type    = "timestamp"
         comment = "Time we received the request"
-      },
-      {
+      }
+    columns {
         // This field is separate from the timestamp above as the Presto version
         // on AWS Athena doesn't support timestamps - expectation is that this is
         // always +0000 though
@@ -423,100 +418,97 @@ resource "aws_glue_catalog_table" "govuk_assets" {
 
         type    = "string"
         comment = "Time offset of the request, expected to be +0000 always"
-      },
-      {
+      }
+    columns {
         name    = "method"
         type    = "string"
         comment = "HTTP method for this request"
-      },
-      {
+      }
+    columns {
         name    = "url"
         type    = "string"
         comment = "URL requested with query string"
-      },
-      {
+      }
+    columns {
         name    = "status"
         type    = "int"
         comment = "HTTP status code returned"
-      },
-      {
+      }
+    columns {
         name    = "request_time"
         type    = "double"
         comment = "Time until user received full response in seconds"
-      },
-      {
+      }
+    columns {
         name    = "time_to_generate_response"
         type    = "double"
         comment = "Time spent generating a response for varnish, in seconds"
-      },
-      {
+      }
+    columns {
         name    = "bytes"
         type    = "bigint"
         comment = "Number of bytes returned"
-      },
-      {
+      }
+    columns {
         name    = "content_type"
         type    = "string"
         comment = "HTTP Content-Type header returned"
-      },
-      {
+      }
+    columns {
         name    = "user_agent"
         type    = "string"
         comment = "User agent that made the request"
-      },
-      {
+      }
+    columns {
         name    = "fastly_backend"
         type    = "string"
         comment = "Name of the backend that served this request"
-      },
-      {
+      }
+    columns {
         name    = "data_centre"
         type    = "string"
         comment = "Name of the data centre that served this request"
-      },
-      {
+      }
+    columns {
         name    = "cache_hit"
         type    = "boolean"
         comment = "Whether this object is cacheable or not"
-      },
-      {
+      }
+    columns {
         name    = "cache_response"
         type    = "string"
         comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
-      },
-      {
+      }
+    columns {
         name = "tls_client_protocol"
         type = "string"
-      },
-      {
+      }
+    columns {
         name = "tls_client_cipher"
         type = "string"
-      },
-      {
+      }
+    columns {
         name = "client_ja3"
         type = "string"
-      },
-    ]
+      }
   }
 
   // these correspond to directory ordering of:
   // /year=YYYY/month=MM/date=DD/file.log.gz
-  partition_keys = [
-    {
+  partition_keys { 
       name = "year"
       type = "int"
-    },
-    {
+    }
+  partition_keys { 
       name = "month"
       type = "int"
-    },
-    {
+    }
+  partition_keys { 
       name = "date"
       type = "int"
-    },
-  ]
+    }
 
-  parameters {
+  parameters = {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
@@ -568,7 +560,7 @@ resource "aws_glue_catalog_table" "bouncer" {
 
       parameters = {
         paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
-        ignore.malformed.json = "true"
+        "ignore.malformed.json" = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -592,18 +584,17 @@ resource "aws_glue_catalog_table" "bouncer" {
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
     // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V"
     // }
-    columns = [
-      {
+    columns {
         name    = "client_ip"
         type    = "string"
         comment = "IP address of the client that made the request"
-      },
-      {
+      }
+    columns {
         name    = "request_received"
         type    = "timestamp"
         comment = "Time we received the request"
-      },
-      {
+      }
+    columns {
         // This field is separate from the timestamp above as the Presto version
         // on AWS Athena doesn't support timestamps - expectation is that this is
         // always +0000 though
@@ -611,83 +602,80 @@ resource "aws_glue_catalog_table" "bouncer" {
 
         type    = "string"
         comment = "Time offset of the request, expected to be +0000 always"
-      },
-      {
+      }
+    columns {
         name    = "method"
         type    = "string"
         comment = "HTTP method for this request"
-      },
-      {
+      }
+    columns {
         name    = "host"
         type    = "string"
         comment = "Host that was requested"
-      },
-      {
+      }
+    columns {
         name    = "url"
         type    = "string"
         comment = "URL requested with query string"
-      },
-      {
+      }
+    columns {
         name    = "status"
         type    = "int"
         comment = "HTTP status code returned"
-      },
-      {
+      }
+    columns {
         name    = "request_time"
         type    = "double"
         comment = "Time until user received full response in seconds"
-      },
-      {
+      }
+    columns {
         name    = "time_to_generate_response"
         type    = "double"
         comment = "Time spent generating a response for varnish, in seconds"
-      },
-      {
+      }
+    columns {
         name    = "location"
         type    = "string"
         comment = "HTTP Location header returned"
-      },
-      {
+      }
+    columns {
         name    = "user_agent"
         type    = "string"
         comment = "User agent that made the request"
-      },
-      {
+      }
+    columns {
         name    = "data_centre"
         type    = "string"
         comment = "Name of the data centre that served this request"
-      },
-      {
+      }
+    columns {
         name    = "cache_hit"
         type    = "boolean"
         comment = "Whether this object is cacheable or not"
-      },
-      {
+      }
+    columns {
         name    = "cache_response"
         type    = "string"
         comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
-      },
-    ]
+      }
   }
 
   // these correspond to directory ordering of:
   // /year=YYYY/month=MM/date=DD/file.log.gz
-  partition_keys = [
-    {
+  partition_keys {
       name = "year"
       type = "int"
-    },
-    {
+    }
+  partition_keys {
       name = "month"
       type = "int"
-    },
-    {
+    }
+  partition_keys {
       name = "date"
       type = "int"
-    },
-  ]
+    }
 
-  parameters {
+  parameters = {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
