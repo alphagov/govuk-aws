@@ -18,9 +18,7 @@ data "aws_iam_policy_document" "database_backups_cross_account_access" {
     principals {
       type = "AWS"
 
-      identifiers = [
-        "${var.database_backups_access_list}",
-      ]
+      identifiers = var.database_backups_access_list
     }
 
     actions = ["s3:Get*", "s3:List*"]
