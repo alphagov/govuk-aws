@@ -20,9 +20,7 @@ data "aws_iam_policy_document" "s3_fastly_read_policy_doc" {
       test     = "IpAddress"
       variable = "aws:SourceIp"
 
-      values = [
-        "${data.fastly_ip_ranges.fastly.cidr_blocks}",
-      ]
+      values = data.fastly_ip_ranges.fastly.cidr_blocks
     }
 
     principals {
