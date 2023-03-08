@@ -78,7 +78,7 @@ data "terraform_remote_state" "infra_vpc" {
 }
 
 resource "aws_route53_zone" "internal_zone" {
-  count = "${var.create_internal_zone}"
+  count = "${var.create_internal_zone ? 1 : 0}"
   name  = "${var.root_domain_internal_name}"
 
   vpc {
@@ -91,7 +91,7 @@ resource "aws_route53_zone" "internal_zone" {
 }
 
 resource "aws_route53_zone" "external_zone" {
-  count = "${var.create_external_zone}"
+  count = "${var.create_external_zone ? 1 : 0}"
   name  = "${var.root_domain_external_name}"
 
   tags = {
@@ -100,7 +100,7 @@ resource "aws_route53_zone" "external_zone" {
 }
 
 resource "aws_route53_zone" "internal_zone_dns_validation" {
-  count = "${var.create_internal_zone_dns_validation}"
+  count = "${var.create_internal_zone_dns_validation ? 1 : 0}"
   name  = "${var.root_domain_internal_name}"
 
   tags = {
