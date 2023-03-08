@@ -60,6 +60,11 @@ variable "bouncer_public_base_rate_warning" {
   description = "For the bouncer ALB. Allows us to configure a warning level to detect what happens if we reduce the limit."
 }
 
+variable "bouncer_public_base_rate_limit" {
+  type        = number
+  description = "For the bouncer ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
+}
+
 variable "cache_public_base_rate_warning" {
   type        = number
   description = "For the cache ALB. Allows us to configure a warning level to detect what happens if we reduce the limit."

@@ -125,7 +125,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # this is checked every 30s
   rule {
     name     = "cache-public-base-rate-warning"
-    priority = 9
+    priority = 5
 
     action {
       count {}
@@ -156,7 +156,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # this is checked every 30s
   rule {
     name     = "cache-public-base-rate-limit"
-    priority = 10
+    priority = 6
 
     action {
       block {

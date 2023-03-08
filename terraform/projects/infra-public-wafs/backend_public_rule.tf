@@ -57,7 +57,7 @@ resource "aws_wafv2_web_acl" "backend_public" {
   # this is checked every 30s
   rule {
     name     = "backend-public-base-rate-warning"
-    priority = 9
+    priority = 3
 
     action {
       count {}
@@ -81,7 +81,7 @@ resource "aws_wafv2_web_acl" "backend_public" {
   # this is checked every 30s
   rule {
     name     = "backend-public-base-rate-limit"
-    priority = 10
+    priority = 4
 
     action {
       block {
