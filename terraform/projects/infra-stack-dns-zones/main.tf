@@ -83,7 +83,7 @@ data "aws_route53_zone" "external_selected" {
 }
 
 resource "aws_route53_zone" "external_zone" {
-  count = "${var.create_external_zone}"
+  count = "${var.create_external_zone ? 1 : 0}"
   name  = "${var.stackname}.${var.root_domain_external_name}"
 
   tags = {
@@ -93,7 +93,7 @@ resource "aws_route53_zone" "external_zone" {
 }
 
 resource "aws_route53_record" "external_zone_ns" {
-  count   = "${var.create_external_zone}"
+  count   = "${var.create_external_zone ? 1 : 0}"
   zone_id = "${data.aws_route53_zone.external_selected.zone_id}"
   name    = "${var.stackname}.${var.root_domain_external_name}"
   type    = "NS"
