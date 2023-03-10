@@ -77,7 +77,7 @@ data "aws_route53_zone" "internal" {
 }
 
 resource "aws_elb" "puppetmaster_bootstrap_elb" {
-  count           = "${var.enable_bootstrap}"
+  count           = "${var.enable_bootstrap ? 1 : 0}"
   name            = "${var.stackname}-puppetmaster-bootstrap"
   subnets         = ["${data.terraform_remote_state.infra_networking.outputs.public_subnet_ids}"]
   security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_offsite_ssh_id}"]
@@ -115,7 +115,7 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
 }
 
 resource "aws_security_group_rule" "puppetmaster_ingress_offsite-ssh_22" {
-  count                    = "${var.enable_bootstrap}"
+  count                    = "${var.enable_bootstrap ? 1 : 0}"
   type                     = "ingress"
   from_port                = "22"
   to_port                  = "22"
