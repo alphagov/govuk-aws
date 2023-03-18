@@ -52,6 +52,11 @@ variable "office_ips" {
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
+variable "eks_egress_ips" {
+  type        = list(string)
+  description = "Egress addresses for the corresponding EKS environment, in CIDR notation."
+}
+
 variable "cloudfront_create" {
   description = "Create Cloudfront resources."
   type        = bool

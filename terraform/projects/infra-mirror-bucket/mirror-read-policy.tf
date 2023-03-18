@@ -8,6 +8,13 @@ variable "aws_integration_account_root_arn" {
   description = "AWS account root ARN for the Integration account"
 }
 
+locals {
+  egress_ips = concat(
+    var.eks_egress_ips,
+    data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list,
+  )
+}
+
 data "fastly_ip_ranges" "fastly" {}
 
 data "external" "pingdom" {
@@ -90,7 +97,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list
+      values   = local.egress_ips
     }
 
     principals {
@@ -216,7 +223,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list
+      values   = local.egress_ips
     }
 
     principals {
