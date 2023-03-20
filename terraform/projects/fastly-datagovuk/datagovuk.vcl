@@ -1,31 +1,16 @@
 acl purge_ip_whitelist {
-  "37.26.93.252";     # Skyscape mirrors
-  "31.210.241.100";   # Carrenza mirrors
-  "31.210.245.70";    # Carrenza Staging
   "18.202.183.143";   # AWS NAT GW1 Staging
   "18.203.90.80";     # AWS NAT GW2 Staging
   "18.203.108.248";   # AWS NAT GW3 Staging
-  "31.210.245.86";    # Carrenza Production
   "34.246.209.74";    # AWS NAT GW1 Production
   "34.253.57.8";      # AWS NAT GW2 Production
   "18.202.136.43";    # AWS NAT GW3 Production
-  "23.235.32.0"/20;   # Fastly cache node
-  "43.249.72.0"/22;   # Fastly cache node
-  "103.244.50.0"/24;  # Fastly cache node
-  "103.245.222.0"/23; # Fastly cache node
-  "103.245.224.0"/24; # Fastly cache node
-  "104.156.80.0"/20;  # Fastly cache node
-  "151.101.0.0"/16;   # Fastly cache node
-  "157.52.64.0"/18;   # Fastly cache node
-  "167.82.0.0"/17;    # Fastly cache node
-  "167.82.128.0"/20;  # Fastly cache node
-  "167.82.160.0"/20;  # Fastly cache node
-  "167.82.224.0"/20;  # Fastly cache node
-  "172.111.64.0"/18;  # Fastly cache node
-  "185.31.16.0"/22;   # Fastly cache node
-  "199.27.72.0"/21;   # Fastly cache node
-  "199.232.0.0"/16;   # Fastly cache node
-  
+  "54.246.115.159";   # EKS Staging NAT gateways
+  "54.220.171.242";
+  "54.228.115.164";
+  "63.33.241.191";    # EKS Production NAT gateways
+  "52.208.193.230";
+  "54.220.6.200";
 }
 
 sub vcl_recv {
