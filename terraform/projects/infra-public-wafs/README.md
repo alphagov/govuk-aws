@@ -79,7 +79,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_allow_external_ips"></a> [allow\_external\_ips](#input\_allow\_external\_ips) | An array of CIDR blocks that are our partners using to send traffic to us | `list(string)` | n/a | yes |
-| <a name="input_aws_eks_nat_gateway_ips"></a> [aws\_eks\_nat\_gateway\_ips](#input\_aws\_eks\_nat\_gateway\_ips) | An array of CIDR blocks for the corresponding EKS environment's NAT gateway IPs | `list(string)` | n/a | yes |
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_backend_public_base_rate_limit"></a> [backend\_public\_base\_rate\_limit](#input\_backend\_public\_base\_rate\_limit) | For the backend ALB. Number of requests to allow in a 5 minute period before rate limiting is applied. | `number` | n/a | yes |
@@ -88,6 +87,7 @@ No modules.
 | <a name="input_bouncer_public_base_rate_warning"></a> [bouncer\_public\_base\_rate\_warning](#input\_bouncer\_public\_base\_rate\_warning) | For the bouncer ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
 | <a name="input_cache_public_base_rate_limit"></a> [cache\_public\_base\_rate\_limit](#input\_cache\_public\_base\_rate\_limit) | For the cache ALB. Number of requests to allow in a 5 minute period before rate limiting is applied. | `number` | n/a | yes |
 | <a name="input_cache_public_base_rate_warning"></a> [cache\_public\_base\_rate\_warning](#input\_cache\_public\_base\_rate\_warning) | For the cache ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
+| <a name="input_eks_egress_ips"></a> [eks\_egress\_ips](#input\_eks\_egress\_ips) | An array of CIDR blocks for the corresponding EKS environment's NAT gateway IPs | `list(string)` | n/a | yes |
 | <a name="input_fastly_rate_limit_token"></a> [fastly\_rate\_limit\_token](#input\_fastly\_rate\_limit\_token) | Token used by the CDN to skip rate limiting | `string` | `""` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_database_backups_bucket_key_stack"></a> [remote\_state\_infra\_database\_backups\_bucket\_key\_stack](#input\_remote\_state\_infra\_database\_backups\_bucket\_key\_stack) | Override path to infra\_database\_backups\_bucket remote state | `string` | `""` | no |
