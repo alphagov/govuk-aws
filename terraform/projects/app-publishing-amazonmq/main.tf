@@ -104,6 +104,7 @@ data "dns_a_record_set" "mq_instances" {
 # --------------------------------------------------------------
 # The broker itself
 resource "aws_mq_broker" "publishing_amazonmq" {
+  apply_immediately   = true
   broker_name = var.publishing_amazonmq_broker_name
 
   engine_type         = var.engine_type
