@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "draft-content-store" {
   name        = "${var.stackname}_draft-content-store_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the draft-content-store host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-content-store_access"
   }
 }
@@ -49,10 +49,10 @@ resource "aws_security_group_rule" "draft-content-store_ingress_draft-content-st
 
 resource "aws_security_group" "draft-content-store_internal_elb" {
   name        = "${var.stackname}_draft-content-store_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the draft-content-store internal ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-content-store_internal_elb_access"
   }
 }
@@ -80,10 +80,10 @@ resource "aws_security_group_rule" "draft-content-store-internal-elb_egress_any_
 
 resource "aws_security_group" "draft-content-store_external_elb" {
   name        = "${var.stackname}_draft-content-store_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the draft-content-store external ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-content-store_external_elb_access"
   }
 }
@@ -97,7 +97,7 @@ resource "aws_security_group_rule" "draft-content-store-external-elb_ingress_off
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.draft-content-store_external_elb.id}"
-  cidr_blocks       = ["${var.carrenza_draft_frontend_ips}"]
+  cidr_blocks       = var.carrenza_draft_frontend_ips
 }
 
 resource "aws_security_group_rule" "draft-content-store-external-elb_egress_any_any" {

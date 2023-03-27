@@ -10,10 +10,10 @@
 
 resource "aws_security_group" "content-data-api-postgresql-primary" {
   name        = "${var.stackname}_content-data-api-postgresql-primary_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to content-data-api-postgresql-primary from its clients"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_content-data-api-postgresql-primary_access"
   }
 }
@@ -47,10 +47,10 @@ resource "aws_security_group_rule" "content-data-api-postgresql-primary_ingress_
 resource "aws_security_group" "content-data-api-postgresql-primary_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_content-data-api-postgresql-primary_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_content-data-api-postgresql-primary_ithc_access"
   }
 }

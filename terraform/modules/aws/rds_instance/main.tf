@@ -214,7 +214,7 @@ resource "aws_db_instance" "db_instance_replica" {
   storage_type           = "${var.storage_type}"
   allocated_storage      = "${var.allocated_storage}"
   max_allocated_storage  = "${var.max_allocated_storage}"
-  vpc_security_group_ids = ["${var.security_group_ids}"]
+  vpc_security_group_ids = var.security_group_ids
   replicate_source_db    = "${var.replicate_source_db}"
   parameter_group_name   = "${var.parameter_group_name}"
   monitoring_interval    = "${var.monitoring_interval}"

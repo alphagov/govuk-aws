@@ -39,13 +39,13 @@ provider "aws" {
 resource "aws_s3_bucket" "cdn_logs_monitor" {
   bucket = "govuk-${var.aws_environment}-cdn-logs-monitor-archive"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-cdn-logs-monitor-archive"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-cdn-logs-monitor-archive/"
   }
 }

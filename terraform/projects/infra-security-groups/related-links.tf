@@ -1,9 +1,9 @@
 resource "aws_security_group" "related-links" {
   name = "related-links_access"
 
-  vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
 
-  tags {
+  tags = {
     Name = "related-links"
   }
 }

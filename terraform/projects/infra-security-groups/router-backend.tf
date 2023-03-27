@@ -14,10 +14,10 @@
 #
 resource "aws_security_group" "router-backend" {
   name        = "${var.stackname}_router-backend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to router-backend"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_router-backend_access"
   }
 }
@@ -73,10 +73,10 @@ resource "aws_security_group_rule" "router-backend_ingress_cache_mongo" {
 
 resource "aws_security_group" "router-api_elb" {
   name        = "${var.stackname}_router-api_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to router-api"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_router-api_elb_access"
   }
 }
@@ -105,10 +105,10 @@ resource "aws_security_group_rule" "router-api-elb_egress_any_any" {
 resource "aws_security_group" "router-backend_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_router-backend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_router-backend_ithc_access"
   }
 }

@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "deploy" {
   name        = "${var.stackname}_deploy_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the deploy host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_deploy_access"
   }
 }
@@ -49,10 +49,10 @@ resource "aws_security_group_rule" "deploy_ingress_deploy-internal-elb_http" {
 
 resource "aws_security_group" "deploy_elb" {
   name        = "${var.stackname}_deploy_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the deploy ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_deploy_elb_access"
   }
 }
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "deploy-elb_ingress_office_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.deploy_elb.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 # Allow Carrenza Integration and Production access to trigger automated deployments
@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "deploy-elb_ingress_carrenza_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.deploy_elb.id}"
-  cidr_blocks       = ["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"]
+  cidr_blocks       = flatten(["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"])
 }
 
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_https" {
@@ -86,7 +86,7 @@ resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_ht
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.deploy_elb.id}"
-  cidr_blocks       = ["${var.aws_integration_external_nat_gateway_ips}"]
+  cidr_blocks       = var.aws_integration_external_nat_gateway_ips
 }
 
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_staging_access_https" {
@@ -97,7 +97,7 @@ resource "aws_security_group_rule" "deploy-elb_ingress_aws_staging_access_https"
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.deploy_elb.id}"
-  cidr_blocks       = ["${var.aws_staging_external_nat_gateway_ips}"]
+  cidr_blocks       = var.aws_staging_external_nat_gateway_ips
 }
 
 resource "aws_security_group_rule" "deploy-elb_egress_any_any" {
@@ -120,10 +120,10 @@ resource "aws_security_group_rule" "deploy-internal-elb_egress_any_any" {
 
 resource "aws_security_group" "deploy_internal_elb" {
   name        = "${var.stackname}_deploy_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the deploy Internal ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_deploy_internal_elb_access"
   }
 }

@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "search" {
   name        = "${var.stackname}_search_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the search host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_search_access"
   }
 }
@@ -36,10 +36,10 @@ resource "aws_security_group_rule" "search_ingress_search-elb_http" {
 
 resource "aws_security_group" "search_elb" {
   name        = "${var.stackname}_search_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the search ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_search_elb_access"
   }
 }
@@ -80,10 +80,10 @@ resource "aws_security_group_rule" "search-elb_egress_any_any" {
 resource "aws_security_group" "search_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_search_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_search_ithc_access"
   }
 }

@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "locations-api" {
   name        = "${var.stackname}_locations-api_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the locations-api host from its public ELB and internal LB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_locations-api_access"
   }
 }
@@ -49,10 +49,10 @@ resource "aws_security_group_rule" "locations-api_ingress_locations-api-internal
 
 resource "aws_security_group" "locations-api_external_elb" {
   name        = "${var.stackname}_locations-api_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the public locations-api ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_locations-api_elb_access"
   }
 }
@@ -65,7 +65,7 @@ resource "aws_security_group_rule" "locations-api-elb_ingress_office_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.locations-api_external_elb.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 resource "aws_security_group_rule" "locations-api-elb_ingress_public_https" {
@@ -87,7 +87,7 @@ resource "aws_security_group_rule" "locations-api-elb_ingress_office_http" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.locations-api_external_elb.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 resource "aws_security_group_rule" "locations-api-elb_ingress_public_http" {
@@ -113,10 +113,10 @@ resource "aws_security_group_rule" "locations-api-elb_egress_any_any" {
 # Internal Loadbalancer
 resource "aws_security_group" "locations-api_internal_lb" {
   name        = "${var.stackname}_locations-api_lb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the locations-api LB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_locations-api_internal_lb_access"
   }
 }
@@ -148,16 +148,16 @@ resource "aws_security_group_rule" "locations-api-elb_ingress_ithc_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.locations-api_external_elb.id}"
-  cidr_blocks       = ["${var.ithc_access_ips}"]
+  cidr_blocks       = var.ithc_access_ips
 }
 
 resource "aws_security_group" "locations_api_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_locations_api_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_locations_api_ithc_access"
   }
 }

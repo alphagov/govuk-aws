@@ -14,10 +14,10 @@
 resource "aws_security_group" "ci-master" {
   count       = "${var.aws_environment == "integration" ? 1 : 0}"
   name        = "${var.stackname}_ci-master_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the ci-master host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ci-master_access"
   }
 }
@@ -53,10 +53,10 @@ resource "aws_security_group_rule" "ci-master_ingress_ci-master-internal-elb_htt
 resource "aws_security_group" "ci-master_elb" {
   count       = "${var.aws_environment == "integration" ? 1 : 0}"
   name        = "${var.stackname}_ci-master_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the ci-master ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ci-master_elb_access"
   }
 }
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_office_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${var.office_ips}"]
+  cidr_blocks       = var.office_ips
 }
 
 # Allow Carrenza Integration and Production access to trigger automated ci-masterments
@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "ci-master-elb_ingress_github_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.ci-master_elb.id}"
-  cidr_blocks       = ["${data.github_ip_ranges.github.hooks_ipv4}"]
+  cidr_blocks       = ["${data.github_ip_ranges.outputs.github.hooks_ipv4}"]
 }
 
 resource "aws_security_group_rule" "ci-master-elb_egress_any_any" {
@@ -118,10 +118,10 @@ resource "aws_security_group_rule" "ci-master-internal-elb_egress_any_any" {
 resource "aws_security_group" "ci-master_internal_elb" {
   count       = "${var.aws_environment == "integration" ? 1 : 0}"
   name        = "${var.stackname}_ci-master_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the ci-master Internal ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ci-master_internal_elb_access"
   }
 }

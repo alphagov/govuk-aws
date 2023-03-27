@@ -39,13 +39,13 @@ provider "archive" {
 resource "aws_s3_bucket" "fastly_logs" {
   bucket = "govuk-${var.aws_environment}-fastly-logs"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-fastly-logs"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-fastly-logs/"
   }
 
@@ -701,13 +701,13 @@ resource "aws_glue_catalog_table" "bouncer" {
 resource "aws_s3_bucket" "fastly_logs_monitoring" {
   bucket = "govuk-${var.aws_environment}-fastly-logs-monitoring"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-fastly-logs-monitoring"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-fastly-logs-monitoring/"
   }
 
@@ -750,13 +750,13 @@ data "template_file" "athena_monitoring_policy_template" {
 resource "aws_s3_bucket" "transition_fastly_logs" {
   bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
   }
 

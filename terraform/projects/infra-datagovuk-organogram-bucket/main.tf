@@ -68,13 +68,13 @@ resource "aws_s3_bucket" "datagovuk-organogram" {
     allowed_origins = "${compact(list(var.domain, var.aws_environment == "production" ? "https://staging.data.gov.uk" : ""))}"
   }
 
-  tags {
+  tags = {
     Name            = "datagovuk-${var.aws_environment}-ckan-organogram"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/datagovuk-${var.aws_environment}-ckan-organogram/"
   }
 

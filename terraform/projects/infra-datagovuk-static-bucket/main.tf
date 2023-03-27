@@ -63,13 +63,13 @@ data "terraform_remote_state" "infra_monitoring" {
 resource "aws_s3_bucket" "datagovuk-static" {
   bucket = "datagovuk-${var.aws_environment}-ckan-static-data"
 
-  tags {
+  tags = {
     Name            = "datagovuk-${var.aws_environment}-ckan-static-data"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/datagovuk-${var.aws_environment}-ckan-static-data/"
   }
 

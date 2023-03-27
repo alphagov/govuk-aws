@@ -35,13 +35,13 @@ provider "aws" {
 resource "aws_s3_bucket" "support_api_csvs" {
   bucket = "govuk-${var.aws_environment}-support-api-csvs"
 
-  tags {
+  tags = {
     name            = "govuk-${var.aws_environment}-support-api-csvs"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-support-api-csvs/"
   }
 }

@@ -47,10 +47,10 @@ resource "aws_cloudwatch_metric_alarm" "autoscaling_groupinserviceinstances" {
   statistic           = "Average"
   threshold           = "${var.groupinserviceinstances_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors instances in service in an AutoScalingGroup"
 
-  dimensions {
+  dimensions = {
     AutoScalingGroupName = "${var.autoscaling_group_name}"
   }
 }

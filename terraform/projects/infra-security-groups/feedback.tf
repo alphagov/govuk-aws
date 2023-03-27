@@ -26,10 +26,10 @@ resource "aws_security_group_rule" "frontend_ingress_feedback-elb_http" {
 
 resource "aws_security_group" "feedback_elb" {
   name        = "${var.stackname}_feedback_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the feedback ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_feedback_elb_access"
   }
 }
@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "feedback-elb_ingress_carrenza_env_ips_https"
   to_port           = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.feedback_elb.id}"
-  cidr_blocks       = ["${var.carrenza_vpn_subnet_cidr}"]
+  cidr_blocks       = var.carrenza_vpn_subnet_cidr
 }
 
 resource "aws_security_group_rule" "feedback-elb_egress_any_any" {
@@ -57,10 +57,10 @@ resource "aws_security_group_rule" "feedback-elb_egress_any_any" {
 resource "aws_security_group" "feedback_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_feedback_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_feedback_ithc_access"
   }
 }

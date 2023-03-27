@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "whitehall-backend" {
   name        = "${var.stackname}_whitehall-backend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the whitehall-backend host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_whitehall-backend_access"
   }
 }
@@ -49,10 +49,10 @@ resource "aws_security_group_rule" "whitehall-backend_ingress_whitehall-backend-
 
 resource "aws_security_group" "whitehall-backend_internal_elb" {
   name        = "${var.stackname}_whitehall-backend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the whitehall-backend ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_whitehall-backend_internal_elb_access"
   }
 }
@@ -79,10 +79,10 @@ resource "aws_security_group_rule" "whitehall-backend-internal-elb_egress_any_an
 
 resource "aws_security_group" "whitehall-backend_external_elb" {
   name        = "${var.stackname}_whitehall-backend_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the whitehall-backend external ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_whitehall-backend_external_elb_access"
   }
 }
@@ -93,7 +93,7 @@ resource "aws_security_group_rule" "whitehall-backend-external-elb_ingress_publi
   from_port         = 443
   protocol          = "tcp"
   security_group_id = "${aws_security_group.whitehall-backend_external_elb.id}"
-  cidr_blocks       = ["0.0.0.0/0", "${var.office_ips}"]
+  cidr_blocks       = flatten(["0.0.0.0/0", "${var.office_ips}"])
 }
 
 resource "aws_security_group_rule" "whitehall-backend-external-elb_egress_any_any" {
@@ -108,10 +108,10 @@ resource "aws_security_group_rule" "whitehall-backend-external-elb_egress_any_an
 resource "aws_security_group" "whitehall_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_whitehall_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_whitehall_ithc_access"
   }
 }
