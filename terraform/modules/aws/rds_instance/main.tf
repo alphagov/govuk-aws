@@ -199,7 +199,7 @@ variable "monitoring_role_arn" {
 resource "aws_db_subnet_group" "subnet_group" {
   count      = "${1 - var.create_replicate_source_db}"
   name       = "${var.name}"
-  subnet_ids = ["${var.subnet_ids}"]
+  subnet_ids = var.subnet_ids
 
   tags = "${merge(var.default_tags, map("Name", var.name))}"
 }

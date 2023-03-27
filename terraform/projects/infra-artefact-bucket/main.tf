@@ -230,9 +230,7 @@ data "aws_iam_policy_document" "govuk-artefact-bucket" {
     principals {
       type = "AWS"
 
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        "${var.aws_s3_access_account}",
+      identifiers = [flatten(["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",var.aws_s3_access_account])
       ]
     }
   }
