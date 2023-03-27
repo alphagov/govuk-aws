@@ -10,7 +10,7 @@ variable "remote_state_infra_networking_key_stack" {
 data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
     region = "${var.aws_region}"

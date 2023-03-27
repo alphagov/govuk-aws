@@ -12,7 +12,7 @@ resource "aws_iam_policy_attachment" "content_publisher_env_sync_s3_writer" {
 data "template_file" "content_publisher_env_sync_s3_writer_policy_template" {
   template = "${file("s3_sync_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket_suffix = "content-publisher-activestorage"
   }
 }

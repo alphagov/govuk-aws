@@ -130,7 +130,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -140,7 +140,7 @@ data "terraform_remote_state" "infra_vpc" {
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -173,7 +173,7 @@ data "template_file" "nat_gateway_association_subnet_id" {
   count    = "${length(keys(var.private_subnet_nat_gateway_association))}"
   template = "$${subnet_id}"
 
-  vars {
+  vars = {
     subnet_id = "${lookup(module.infra_public_subnet.subnet_names_ids_map, element(values(var.private_subnet_nat_gateway_association), count.index))}"
   }
 }

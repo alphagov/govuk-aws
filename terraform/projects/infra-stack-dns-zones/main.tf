@@ -70,7 +70,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -86,7 +86,7 @@ resource "aws_route53_zone" "external_zone" {
   count = "${var.create_external_zone}"
   name  = "${var.stackname}.${var.root_domain_external_name}"
 
-  tags {
+  tags = {
     Project       = "${var.stackname}"
     aws_stackname = "${var.stackname}"
   }
@@ -100,10 +100,10 @@ resource "aws_route53_record" "external_zone_ns" {
   ttl     = "30"
 
   records = [
-    "${aws_route53_zone.external_zone.name_servers.0}",
-    "${aws_route53_zone.external_zone.name_servers.1}",
-    "${aws_route53_zone.external_zone.name_servers.2}",
-    "${aws_route53_zone.external_zone.name_servers.3}",
+    "${aws_route53_zone.external_zone[0].name_servers.0}",
+    "${aws_route53_zone.external_zone[0].name_servers.1}",
+    "${aws_route53_zone.external_zone[0].name_servers.2}",
+    "${aws_route53_zone.external_zone[0].name_servers.3}",
   ]
 }
 
