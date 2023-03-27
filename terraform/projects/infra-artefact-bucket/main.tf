@@ -252,8 +252,8 @@ resource "aws_sns_topic" "artefact_topic" {
 # AWS SNS Topic Policy
 resource "aws_sns_topic_policy" "artefact_topic_policy" {
   count  = "${var.create_sns_topic ? 1 : 0}"
-  arn    = "${aws_sns_topic.artefact_topic.arn}"
-  policy = "${data.aws_iam_policy_document.artefact_sns_topic_policy.json}"
+  arn    = "${aws_sns_topic.artefact_topic[0].arn}"
+  policy = "${data.aws_iam_policy_document.artefact_sns_topic_policy[0].json}"
 }
 
 # AWS SNS Topic Policy Data
@@ -282,7 +282,7 @@ data "aws_iam_policy_document" "artefact_sns_topic_policy" {
     }
 
     resources = [
-      "${aws_sns_topic.artefact_topic.arn}",
+      "${aws_sns_topic.artefact_topic[0].arn}",
     ]
 
     sid = "__default_statement_ID"
@@ -324,7 +324,7 @@ resource "aws_lambda_function" "artefact_lambda_function" {
   source_code_hash = "${data.archive_file.artefact_lambda.output_base64sha256}"
 
   function_name = "govuk-${var.aws_environment}-artefact"
-  role          = "${aws_iam_role.govuk_artefact_lambda_role.arn}"
+  role          = "${aws_iam_role.govuk_artefact_lambda_role[0].arn}"
   handler       = "main.lambda_handler"
   runtime       = "python3.8"
 }
