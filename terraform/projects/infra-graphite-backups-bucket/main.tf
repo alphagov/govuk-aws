@@ -30,7 +30,7 @@ variable "expiration_time" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
