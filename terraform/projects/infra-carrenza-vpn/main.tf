@@ -58,7 +58,7 @@ variable "remote_state_infra_vpc_key_stack" {
 
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -69,7 +69,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_networking" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_networking_key_stack, var.stackname)}/infra-networking.tfstate"
     region = "${var.aws_region}"
@@ -79,7 +79,7 @@ data "terraform_remote_state" "infra_networking" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -91,15 +91,15 @@ resource "aws_customer_gateway" "carrenza_vpn_gateway" {
   ip_address = "${var.carrenza_vpn_endpoint_ip}"
   type       = "ipsec.1"
 
-  tags {
+  tags = {
     Name = "Carrenza - ${var.stackname}"
   }
 }
 
 resource "aws_vpn_gateway" "aws_vpn_gateway" {
-  vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
 
-  tags {
+  tags = {
     Name = "${var.stackname} VPN Gateway"
   }
 }
@@ -112,7 +112,7 @@ resource "aws_vpn_connection" "aws_carrenza_vpn" {
   type                  = "ipsec.1"
   static_routes_only    = true
 
-  tags {
+  tags = {
     Name = "${var.stackname} AWS to Carrenza"
   }
 }
@@ -123,15 +123,15 @@ resource "aws_vpn_connection_route" "Carrenza" {
 }
 
 resource "aws_vpn_gateway_route_propagation" "Carrenza_route_propagation" {
-  count          = "${length(data.terraform_remote_state.infra_networking.private_subnet_names_route_tables_map)}"
+  count          = "${length(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_route_tables_map)}"
   vpn_gateway_id = "${aws_vpn_gateway.aws_vpn_gateway.id}"
-  route_table_id = "${element(values(data.terraform_remote_state.infra_networking.private_subnet_names_route_tables_map), count.index)}"
+  route_table_id = "${element(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_route_tables_map), count.index)}"
 }
 
 resource "aws_vpn_gateway_route_propagation" "Carrenza_route_propagation_reserved_ips" {
-  count          = "${length(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_route_tables_map)}"
+  count          = "${length(data.terraform_remote_state.infra_networking.outputs.private_subnet_reserved_ips_names_route_tables_map)}"
   vpn_gateway_id = "${aws_vpn_gateway.aws_vpn_gateway.id}"
-  route_table_id = "${element(values(data.terraform_remote_state.infra_networking.private_subnet_reserved_ips_names_route_tables_map), count.index)}"
+  route_table_id = "${element(values(data.terraform_remote_state.infra_networking.outputs.private_subnet_reserved_ips_names_route_tables_map), count.index)}"
 }
 
 # Outputs

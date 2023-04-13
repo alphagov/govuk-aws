@@ -59,7 +59,7 @@ variable "remote_state_infra_monitoring_key_stack" {
 
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -70,7 +70,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -88,7 +88,7 @@ resource "aws_cloudwatch_log_group" "log" {
   name              = "${var.stackname}-vpc-flow-log"
   retention_in_days = "${var.cloudwatch_log_retention}"
 
-  tags {
+  tags = {
     Project       = "${var.stackname}"
     aws_stackname = "${var.stackname}"
   }
@@ -124,7 +124,7 @@ resource "aws_eip" "licensify_reservation" {
 
   vpc = true
 
-  tags {
+  tags = {
     Name    = "licensify-reservation-${count.index}"
     Comment = "Reserved for future use by the Licensify service when that moves into another VPC / account. This IP address will be allow-listed by Civica, and assigned to a NAT Gateway instance in the VPC where Licensing ultimately ends up running."
     Project = "infra-vpc"

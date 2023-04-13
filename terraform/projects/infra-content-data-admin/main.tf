@@ -24,7 +24,7 @@ variable "stackname" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -36,13 +36,13 @@ resource "aws_s3_bucket" "content_data_csvs" {
   bucket = "govuk-${var.aws_environment}-content-data-csvs"
   acl    = "public-read"
 
-  tags {
+  tags = {
     name            = "govuk-${var.aws_environment}-content-data-csvs"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-content-data-csvs/"
   }
 
@@ -75,7 +75,7 @@ resource "aws_iam_policy_attachment" "s3_writer" {
 data "template_file" "s3_writer_policy_template" {
   template = "${file("${path.module}/../../policies/content_data_admin_s3_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.content_data_csvs.id}"
   }

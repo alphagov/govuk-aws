@@ -119,7 +119,7 @@ variable "private_subnet_elasticsearch_availability_zones" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -130,7 +130,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -140,7 +140,7 @@ data "terraform_remote_state" "infra_vpc" {
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -149,9 +149,9 @@ data "terraform_remote_state" "infra_monitoring" {
 
 module "infra_public_subnet" {
   source                    = "../../modules/aws/network/public_subnet"
-  vpc_id                    = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                    = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   default_tags              = "${map("Project", var.stackname)}"
-  route_table_public_id     = "${data.terraform_remote_state.infra_vpc.route_table_public_id}"
+  route_table_public_id     = "${data.terraform_remote_state.infra_vpc.outputs.route_table_public_id}"
   subnet_cidrs              = "${var.public_subnet_cidrs}"
   subnet_availability_zones = "${var.public_subnet_availability_zones}"
 }
@@ -173,7 +173,7 @@ data "template_file" "nat_gateway_association_subnet_id" {
   count    = "${length(keys(var.private_subnet_nat_gateway_association))}"
   template = "$${subnet_id}"
 
-  vars {
+  vars = {
     subnet_id = "${lookup(module.infra_public_subnet.subnet_names_ids_map, element(values(var.private_subnet_nat_gateway_association), count.index))}"
   }
 }
@@ -183,74 +183,74 @@ data "template_file" "nat_gateway_association_nat_id" {
   template   = "$${nat_gateway_id}"
   depends_on = ["data.template_file.nat_gateway_association_subnet_id"]
 
-  vars {
+  vars = {
     nat_gateway_id = "${lookup(module.infra_nat.nat_gateway_subnets_ids_map, element(data.template_file.nat_gateway_association_subnet_id.*.rendered, count.index))}"
   }
 }
 
 module "infra_private_subnet" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   default_tags               = "${map("Project", var.stackname)}"
   subnet_cidrs               = "${var.private_subnet_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_availability_zones}"
   subnet_nat_gateways        = "${zipmap(keys(var.private_subnet_nat_gateway_association), data.template_file.nat_gateway_association_nat_id.*.rendered)}"
   subnet_nat_gateways_length = "${length(keys(var.private_subnet_nat_gateway_association))}"
-  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.outputs.s3_gateway_id}"
 }
 
 module "infra_private_subnet_elasticache" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   default_tags               = "${map("Project", var.stackname, "aws_migration", "elasticache")}"
   subnet_cidrs               = "${var.private_subnet_elasticache_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_elasticache_availability_zones}"
   subnet_nat_gateways_length = "0"
-  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.outputs.s3_gateway_id}"
 }
 
 module "infra_private_subnet_rds" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   default_tags               = "${map("Project", var.stackname, "aws_migration", "rds")}"
   subnet_cidrs               = "${var.private_subnet_rds_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_rds_availability_zones}"
   subnet_nat_gateways_length = "0"
-  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.outputs.s3_gateway_id}"
 }
 
 module "infra_private_subnet_reserved_ips" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   default_tags               = "${map("Project", var.stackname, "aws_migration", "eni")}"
   subnet_cidrs               = "${var.private_subnet_reserved_ips_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_reserved_ips_availability_zones}"
   subnet_nat_gateways_length = "0"
-  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.outputs.s3_gateway_id}"
 }
 
 module "infra_private_subnet_elasticsearch" {
   source                     = "../../modules/aws/network/private_subnet"
-  vpc_id                     = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id                     = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   default_tags               = "${map("Project", var.stackname, "aws_migration", "elasticsearch")}"
   subnet_cidrs               = "${var.private_subnet_elasticsearch_cidrs}"
   subnet_availability_zones  = "${var.private_subnet_elasticsearch_availability_zones}"
   subnet_nat_gateways_length = "0"
-  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.s3_gateway_id}"
+  s3_gateway_id              = "${data.terraform_remote_state.infra_vpc.outputs.s3_gateway_id}"
 }
 
 module "infra_alarms_natgateway" {
   source                 = "../../modules/aws/alarms/natgateway"
   name_prefix            = "${var.stackname}-natgateway"
-  alarm_actions          = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  nat_gateway_ids        = ["${module.infra_nat.nat_gateway_ids}"]
+  alarm_actions          = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
+  nat_gateway_ids        = "${module.infra_nat.nat_gateway_ids}"
   nat_gateway_ids_length = "${length(var.public_subnet_nat_gateway_enable)}"
 }
 
 # Outputs
 # --------------------------------------------------------------
 output "vpc_id" {
-  value       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  value       = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "VPC ID where the stack resources are created"
 }
 

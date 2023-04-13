@@ -49,7 +49,7 @@ variable "stackname" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -64,7 +64,7 @@ data "aws_caller_identity" "current" {}
 data "template_file" "s3_aws_logging_policy_template" {
   template = "${file("${path.module}/../../policies/s3_aws_logging_write_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     aws_account_id  = "${data.aws_elb_service_account.main.arn}"
   }
@@ -73,7 +73,7 @@ data "template_file" "s3_aws_logging_policy_template" {
 data "template_file" "s3_govuk_aws_logging_replication_policy_template" {
   template = "${file("${path.module}/../../policies/s3_govuk_aws_logging_replication_policy.tpl")}"
 
-  vars {
+  vars = {
     govuk_aws_logging_arn  = "${aws_s3_bucket.aws-logging.arn}"
     govuk_cyber_splunk_arn = "arn:aws:s3:::${var.cyber_slunk_s3_bucket_name}"
   }
@@ -108,7 +108,7 @@ resource "aws_s3_bucket" "aws-logging" {
   bucket = "govuk-${var.aws_environment}-aws-logging"
   acl    = "log-delivery-write"
 
-  tags {
+  tags = {
     Name        = "govuk-${var.aws_environment}-aws-logging"
     Environment = "${var.aws_environment}"
   }
@@ -158,7 +158,7 @@ resource "aws_s3_bucket" "aws-logging" {
 data "template_file" "iam_aws_logging_logit_read_policy_template" {
   template = "${file("${path.module}/../../policies/iam_s3_aws_logging_read_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
   }
 }
@@ -189,7 +189,7 @@ resource "aws_iam_policy_attachment" "aws-logging_logit-read_iam_policy_attachme
 data "template_file" "firehose_assume_policy_template" {
   template = "${file("${path.module}/../../policies/firehose_assume_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_account_id = "${data.aws_caller_identity.current.account_id}"
   }
 }
@@ -203,7 +203,7 @@ resource "aws_iam_role" "firehose_logs_role" {
 data "template_file" "firehose_logs_policy_template" {
   template = "${file("${path.module}/../../policies/firehose_logs_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket_name = "${aws_s3_bucket.aws-logging.id}"
   }
 }
@@ -229,7 +229,7 @@ resource "aws_iam_role" "lambda_logs_to_firehose_role" {
 data "template_file" "lambda_logs_to_firehose_policy_template" {
   template = "${file("${path.module}/../../policies/lambda_logs_to_firehose_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_region     = "${var.aws_region}"
     aws_account_id = "${data.aws_caller_identity.current.account_id}"
   }
@@ -256,7 +256,7 @@ resource "aws_iam_role" "lambda_rds_logs_to_s3_role" {
 data "template_file" "lambda_rds_logs_to_s3_policy_template" {
   template = "${file("${path.module}/../../policies/lambda_rds_logs_to_s3_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket_name = "${aws_s3_bucket.aws-logging.id}"
   }
 }
@@ -294,7 +294,7 @@ resource "aws_sns_topic_subscription" "notifications_sqs_target" {
 data "template_file" "notifications_sqs_queue_policy_template" {
   template = "${file("${path.module}/../../policies/sqs_allow_sns_policy.tpl")}"
 
-  vars {
+  vars = {
     sns_topic_arn = "${aws_sns_topic.notifications.arn}"
     sqs_queue_arn = "${aws_sqs_queue.notifications.arn}"
   }

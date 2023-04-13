@@ -364,7 +364,7 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
   count                  = "${var.instance_target_group_arns_length}"
   autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
-  alb_target_group_arn   = "${element(var.instance_target_group_arns, count.index)}"
+  alb_target_group_arn   = "${element(flatten(var.instance_target_group_arns), count.index)}"
 }
 
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic" {

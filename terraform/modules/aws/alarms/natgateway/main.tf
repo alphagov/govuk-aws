@@ -50,7 +50,7 @@ variable "packetsdropcount_threshold" {
 #--------------------------------------------------------------
 resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
   count               = "${var.nat_gateway_ids_length}"
-  alarm_name          = "${var.name_prefix}-natgateway-errorportallocation-${element(var.nat_gateway_ids, count.index)}"
+  alarm_name          = "${var.name_prefix}-natgateway-errorportallocation-${var.nat_gateway_ids[count.index]}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
   metric_name         = "ErrorPortAllocation"
@@ -59,17 +59,17 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_errorportallocation" {
   statistic           = "Sum"
   threshold           = "${var.errorportallocation_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the sum of the number of times the NAT gateway could not allocate a source port."
 
-  dimensions {
-    NatGatewayId = "${element(var.nat_gateway_ids, count.index)}"
+  dimensions = {
+    NatGatewayId = var.nat_gateway_ids[count.index]
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
   count               = "${var.nat_gateway_ids_length}"
-  alarm_name          = "${var.name_prefix}-natgateway-packetsdropcount-${element(var.nat_gateway_ids, count.index)}"
+  alarm_name          = "${var.name_prefix}-natgateway-packetsdropcount-${var.nat_gateway_ids[count.index]}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
   metric_name         = "PacketsDropCount"
@@ -78,11 +78,11 @@ resource "aws_cloudwatch_metric_alarm" "natgateway_packetsdropcount" {
   statistic           = "Sum"
   threshold           = "${var.packetsdropcount_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the number of packets dropped by the NAT gateway."
 
-  dimensions {
-    NatGatewayId = "${element(var.nat_gateway_ids, count.index)}"
+  dimensions = {
+    NatGatewayId = var.nat_gateway_ids[count.index]
   }
 }
 

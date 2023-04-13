@@ -18,7 +18,7 @@ service records on the internal and external DNS zones.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.30 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 
 ## Providers

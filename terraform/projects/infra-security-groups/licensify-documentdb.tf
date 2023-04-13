@@ -10,10 +10,10 @@
 
 resource "aws_security_group" "licensify_documentdb" {
   name        = "${var.stackname}_licensify-documentdb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to licensify documentdb from its clients"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_licensify_documentdb_access"
   }
 }

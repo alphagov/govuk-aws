@@ -42,7 +42,7 @@ variable "replication_setting" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -59,13 +59,13 @@ provider "aws" {
 resource "aws_s3_bucket" "activestorage" {
   bucket = "govuk-${var.aws_environment}-content-publisher-activestorage"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-content-publisher-activestorage"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-content-publisher-activestorage/"
   }
 
@@ -94,7 +94,7 @@ resource "aws_s3_bucket" "activestorage_replica" {
   region   = "${var.aws_replica_region}"
   provider = "aws.aws_replica"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-content-publisher-activestorage-replica"
     aws_environment = "${var.aws_environment}"
   }
@@ -130,7 +130,7 @@ resource "aws_iam_role" "govuk_content_publisher_activestorage_replication_role"
 data "template_file" "s3_govuk_content_publisher_activestorage_policy_template" {
   template = "${file("${path.module}/../../policies/s3_govuk_content_publisher_activestorage_replication_policy.tpl")}"
 
-  vars {
+  vars = {
     govuk_content_publisher_activestorage_arn         = "${aws_s3_bucket.activestorage.arn}"
     govuk_content_publisher_activestorage_replica_arn = "${aws_s3_bucket.activestorage_replica.arn}"
   }
@@ -166,7 +166,7 @@ resource "aws_iam_policy_attachment" "s3_writer" {
 data "template_file" "s3_writer_policy" {
   template = "${file("s3_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket = "${aws_s3_bucket.activestorage.id}"
   }
 }

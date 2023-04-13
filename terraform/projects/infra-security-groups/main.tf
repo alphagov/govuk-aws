@@ -13,8 +13,8 @@ variable "aws_environment" {
 # --------------------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
-  required_version = "= 0.11.15"
+  backend "s3" {}
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -30,7 +30,7 @@ provider "fastly" {
 }
 
 provider "github" {
-  version = "~> 4.14.0"
+  version = "4.4.0"
 }
 
 data "fastly_ip_ranges" "fastly" {}
@@ -40,7 +40,7 @@ data "github_ip_ranges" "github" {}
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"

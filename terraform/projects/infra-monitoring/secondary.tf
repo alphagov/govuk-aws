@@ -22,7 +22,7 @@ provider "aws" {
 data "template_file" "s3_aws_secondary_logging_policy_template" {
   template = "${file("${path.module}/../../policies/s3_aws_secondary_logging_write_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     aws_account_id  = "${data.aws_elb_service_account.main.arn}"
   }
@@ -34,7 +34,7 @@ resource "aws_s3_bucket" "aws-secondary-logging" {
   acl      = "log-delivery-write"
   provider = "aws.aws_secondary"
 
-  tags {
+  tags = {
     Name        = "govuk-${var.aws_environment}-aws-secondary-logging"
     Environment = "${var.aws_environment}"
   }

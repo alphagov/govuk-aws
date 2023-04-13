@@ -14,10 +14,10 @@
 
 resource "aws_security_group" "prometheus" {
   name        = "${var.stackname}_prometheus"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to prometheus instance from the prometheus LB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_prometheus"
   }
 }
@@ -37,10 +37,10 @@ resource "aws_security_group_rule" "prometheuselb_ingress_prometheus_http" {
 
 resource "aws_security_group" "prometheus_internal_elb" {
   name        = "${var.stackname}_prometheus_internal_elb"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Prometheus Internal LB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_prometheus_internal_elb"
   }
 }
@@ -86,10 +86,10 @@ resource "aws_security_group_rule" "prometheus-internal-elb_ingress_grafana_http
 
 resource "aws_security_group" "prometheus_external_elb" {
   name        = "${var.stackname}_prometheus_external_elb"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to prometheus LB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_prometheus_external_elb"
   }
 }
@@ -104,7 +104,7 @@ resource "aws_security_group_rule" "prometheus-elb_ingress_officeips_https" {
   security_group_id = "${aws_security_group.prometheus_external_elb.id}"
 
   # Which security group can use this rule
-  cidr_blocks = ["${var.office_ips}"]
+  cidr_blocks = var.office_ips
 }
 
 resource "aws_security_group_rule" "prometheus-elb_egress_prometheus_http" {

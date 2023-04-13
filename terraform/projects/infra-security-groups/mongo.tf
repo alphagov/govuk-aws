@@ -13,10 +13,10 @@
 #
 resource "aws_security_group" "mongo" {
   name        = "${var.stackname}_mongo_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to mongo"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_mongo_access"
   }
 }

@@ -59,7 +59,7 @@ variable "root_domain_external_name" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -70,7 +70,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -83,33 +83,33 @@ data "aws_route53_zone" "external_selected" {
 }
 
 resource "aws_route53_zone" "external_zone" {
-  count = "${var.create_external_zone}"
+  count = "${var.create_external_zone ? 1 : 0}"
   name  = "${var.stackname}.${var.root_domain_external_name}"
 
-  tags {
+  tags = {
     Project       = "${var.stackname}"
     aws_stackname = "${var.stackname}"
   }
 }
 
 resource "aws_route53_record" "external_zone_ns" {
-  count   = "${var.create_external_zone}"
+  count   = "${var.create_external_zone ? 1 : 0}"
   zone_id = "${data.aws_route53_zone.external_selected.zone_id}"
   name    = "${var.stackname}.${var.root_domain_external_name}"
   type    = "NS"
   ttl     = "30"
 
   records = [
-    "${aws_route53_zone.external_zone.name_servers.0}",
-    "${aws_route53_zone.external_zone.name_servers.1}",
-    "${aws_route53_zone.external_zone.name_servers.2}",
-    "${aws_route53_zone.external_zone.name_servers.3}",
+    "${aws_route53_zone.external_zone[0].name_servers.0}",
+    "${aws_route53_zone.external_zone[0].name_servers.1}",
+    "${aws_route53_zone.external_zone[0].name_servers.2}",
+    "${aws_route53_zone.external_zone[0].name_servers.3}",
   ]
 }
 
 data "aws_route53_zone" "internal_selected" {
   name         = "${var.root_domain_internal_name}"
-  vpc_id       = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id       = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   private_zone = true
 }
 

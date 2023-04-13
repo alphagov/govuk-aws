@@ -24,7 +24,7 @@ This module creates the following.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.11.15 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.30 |
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
@@ -86,7 +86,7 @@ No modules.
 | <a name="input_artefact_source"></a> [artefact\_source](#input\_artefact\_source) | Identifies the source artefact environment | `string` | n/a | yes |
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_aws_s3_access_account"></a> [aws\_s3\_access\_account](#input\_aws\_s3\_access\_account) | Here we define the account that will have access to the Artefact S3 bucket. | `list` | n/a | yes |
+| <a name="input_aws_s3_access_account"></a> [aws\_s3\_access\_account](#input\_aws\_s3\_access\_account) | Here we define the account that will have access to the Artefact S3 bucket. | `string` | n/a | yes |
 | <a name="input_aws_secondary_region"></a> [aws\_secondary\_region](#input\_aws\_secondary\_region) | Secondary region for cross-replication | `string` | `"eu-west-2"` | no |
 | <a name="input_aws_subscription_account_id"></a> [aws\_subscription\_account\_id](#input\_aws\_subscription\_account\_id) | The AWS Account ID that will appear on the subscription | `string` | n/a | yes |
 | <a name="input_aws_subscription_account_region"></a> [aws\_subscription\_account\_region](#input\_aws\_subscription\_account\_region) | AWS region of the SNS topic | `string` | `"eu-west-1"` | no |

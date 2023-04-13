@@ -69,7 +69,7 @@ variable "stackname" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -79,7 +79,7 @@ provider "aws" {
 
 resource "aws_docdb_subnet_group" "licensify_cluster_subnet" {
   name       = "licensify-documentdb-${var.aws_environment}"
-  subnet_ids = ["${data.terraform_remote_state.infra_networking.private_subnet_ids}"]
+  subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 }
 
 resource "aws_docdb_cluster_parameter_group" "licensify_parameter_group" {
@@ -112,11 +112,11 @@ resource "aws_docdb_cluster" "licensify_cluster" {
   master_password                 = "${var.master_password}"
   storage_encrypted               = true
   backup_retention_period         = "${var.backup_retention_period}"
-  kms_key_id                      = "${data.terraform_remote_state.infra_security.licensify_documentdb_kms_key_arn}"
-  vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.sg_licensify_documentdb_id}"]
+  kms_key_id                      = "${data.terraform_remote_state.infra_security.outputs.licensify_documentdb_kms_key_arn}"
+  vpc_security_group_ids          = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_licensify_documentdb_id}"]
 
   # enabled_cloudwatch_logs_exports is ["profiler"] if profiling is enabled, otherwise [].
-  enabled_cloudwatch_logs_exports = ["${slice("${list("profiler")}", 0, var.profiler == "enabled" ? 1 : 0)}"]
+  enabled_cloudwatch_logs_exports = "${slice("${list("profiler")}", 0, var.profiler == "enabled" ? 1 : 0)}"
 
   tags = {
     Service  = "documentdb"

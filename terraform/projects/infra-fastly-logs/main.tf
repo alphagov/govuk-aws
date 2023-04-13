@@ -23,7 +23,7 @@ variable "stackname" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -39,13 +39,13 @@ provider "archive" {
 resource "aws_s3_bucket" "fastly_logs" {
   bucket = "govuk-${var.aws_environment}-fastly-logs"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-fastly-logs"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-fastly-logs/"
   }
 
@@ -78,7 +78,7 @@ resource "aws_iam_policy_attachment" "logs_writer" {
 data "template_file" "logs_writer_policy_template" {
   template = "${file("${path.module}/../../policies/fastly_logs_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     bucket          = "${aws_s3_bucket.fastly_logs.id}"
   }
@@ -183,8 +183,8 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters = {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
-        ignore.malformed.json = "true"
+        paths                   = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
+        "ignore.malformed.json" = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -212,119 +212,115 @@ resource "aws_glue_catalog_table" "govuk_www" {
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V",
     // "client_ja3":"%{json.escape(req.http.Client-JA3)}V"
     // }
-    columns = [
-      {
-        name    = "client_ip"
-        type    = "string"
-        comment = "IP address of the client that made the request"
-      },
-      {
-        name    = "request_received"
-        type    = "timestamp"
-        comment = "Time we received the request"
-      },
-      {
-        // This field is separate from the timestamp above as the Presto version
-        // on AWS Athena doesn't support timestamps - expectation is that this is
-        // always +0000 though
-        name = "request_received_offset"
+    columns {
+      name    = "client_ip"
+      type    = "string"
+      comment = "IP address of the client that made the request"
+    }
+    columns {
+      name    = "request_received"
+      type    = "timestamp"
+      comment = "Time we received the request"
+    }
+    columns {
+      // This field is separate from the timestamp above as the Presto version
+      // on AWS Athena doesn't support timestamps - expectation is that this is
+      // always +0000 though
+      name = "request_received_offset"
 
-        type    = "string"
-        comment = "Time offset of the request, expected to be +0000 always"
-      },
-      {
-        name    = "method"
-        type    = "string"
-        comment = "HTTP method for this request"
-      },
-      {
-        name    = "url"
-        type    = "string"
-        comment = "URL requested with query string"
-      },
-      {
-        name    = "status"
-        type    = "int"
-        comment = "HTTP status code returned"
-      },
-      {
-        name    = "request_time"
-        type    = "double"
-        comment = "Time until user received full response in seconds"
-      },
-      {
-        name    = "time_to_generate_response"
-        type    = "double"
-        comment = "Time spent generating a response for varnish, in seconds"
-      },
-      {
-        name    = "bytes"
-        type    = "bigint"
-        comment = "Number of bytes returned"
-      },
-      {
-        name    = "content_type"
-        type    = "string"
-        comment = "HTTP Content-Type header returned"
-      },
-      {
-        name    = "user_agent"
-        type    = "string"
-        comment = "User agent that made the request"
-      },
-      {
-        name    = "fastly_backend"
-        type    = "string"
-        comment = "Name of the backend that served this request"
-      },
-      {
-        name    = "data_centre"
-        type    = "string"
-        comment = "Name of the data centre that served this request"
-      },
-      {
-        name    = "cache_hit"
-        type    = "boolean"
-        comment = "Whether this object is cacheable or not"
-      },
-      {
-        name    = "cache_response"
-        type    = "string"
-        comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
-      },
-      {
-        name = "tls_client_protocol"
-        type = "string"
-      },
-      {
-        name = "tls_client_cipher"
-        type = "string"
-      },
-      {
-        name = "client_ja3"
-        type = "string"
-      },
-    ]
+      type    = "string"
+      comment = "Time offset of the request, expected to be +0000 always"
+    }
+    columns {
+      name    = "method"
+      type    = "string"
+      comment = "HTTP method for this request"
+    }
+    columns {
+      name    = "url"
+      type    = "string"
+      comment = "URL requested with query string"
+    }
+    columns {
+      name    = "status"
+      type    = "int"
+      comment = "HTTP status code returned"
+    }
+    columns {
+      name    = "request_time"
+      type    = "double"
+      comment = "Time until user received full response in seconds"
+    }
+    columns {
+      name    = "time_to_generate_response"
+      type    = "double"
+      comment = "Time spent generating a response for varnish, in seconds"
+    }
+    columns {
+      name    = "bytes"
+      type    = "bigint"
+      comment = "Number of bytes returned"
+    }
+    columns {
+      name    = "content_type"
+      type    = "string"
+      comment = "HTTP Content-Type header returned"
+    }
+    columns {
+      name    = "user_agent"
+      type    = "string"
+      comment = "User agent that made the request"
+    }
+    columns {
+      name    = "fastly_backend"
+      type    = "string"
+      comment = "Name of the backend that served this request"
+    }
+    columns {
+      name    = "data_centre"
+      type    = "string"
+      comment = "Name of the data centre that served this request"
+    }
+    columns {
+      name    = "cache_hit"
+      type    = "boolean"
+      comment = "Whether this object is cacheable or not"
+    }
+    columns {
+      name    = "cache_response"
+      type    = "string"
+      comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
+    }
+    columns {
+      name = "tls_client_protocol"
+      type = "string"
+    }
+    columns {
+      name = "tls_client_cipher"
+      type = "string"
+    }
+    columns {
+      name = "client_ja3"
+      type = "string"
+    }
   }
 
   // these correspond to directory ordering of:
   // /year=YYYY/month=MM/date=DD/file.log.gz
-  partition_keys = [
-    {
-      name = "year"
-      type = "int"
-    },
-    {
-      name = "month"
-      type = "int"
-    },
-    {
-      name = "date"
-      type = "int"
-    },
-  ]
+  partition_keys {
+    name = "year"
+    type = "int"
+  }
+  partition_keys {
+    name = "month"
+    type = "int"
+  }
+  partition_keys {
+    name = "date"
+    type = "int"
+  }
 
-  parameters {
+  parameters = {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
@@ -375,8 +371,8 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters = {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
-        ignore.malformed.json = "true"
+        paths                   = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
+        "ignore.malformed.json" = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -404,119 +400,115 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     // "tls_client_cipher":"%{json.escape(tls.client.cipher)}V",
     // "client_ja3":"%{json.escape(req.http.Client-JA3)}V"
     // }
-    columns = [
-      {
-        name    = "client_ip"
-        type    = "string"
-        comment = "IP address of the client that made the request"
-      },
-      {
-        name    = "request_received"
-        type    = "timestamp"
-        comment = "Time we received the request"
-      },
-      {
-        // This field is separate from the timestamp above as the Presto version
-        // on AWS Athena doesn't support timestamps - expectation is that this is
-        // always +0000 though
-        name = "request_received_offset"
+    columns {
+      name    = "client_ip"
+      type    = "string"
+      comment = "IP address of the client that made the request"
+    }
+    columns {
+      name    = "request_received"
+      type    = "timestamp"
+      comment = "Time we received the request"
+    }
+    columns {
+      // This field is separate from the timestamp above as the Presto version
+      // on AWS Athena doesn't support timestamps - expectation is that this is
+      // always +0000 though
+      name = "request_received_offset"
 
-        type    = "string"
-        comment = "Time offset of the request, expected to be +0000 always"
-      },
-      {
-        name    = "method"
-        type    = "string"
-        comment = "HTTP method for this request"
-      },
-      {
-        name    = "url"
-        type    = "string"
-        comment = "URL requested with query string"
-      },
-      {
-        name    = "status"
-        type    = "int"
-        comment = "HTTP status code returned"
-      },
-      {
-        name    = "request_time"
-        type    = "double"
-        comment = "Time until user received full response in seconds"
-      },
-      {
-        name    = "time_to_generate_response"
-        type    = "double"
-        comment = "Time spent generating a response for varnish, in seconds"
-      },
-      {
-        name    = "bytes"
-        type    = "bigint"
-        comment = "Number of bytes returned"
-      },
-      {
-        name    = "content_type"
-        type    = "string"
-        comment = "HTTP Content-Type header returned"
-      },
-      {
-        name    = "user_agent"
-        type    = "string"
-        comment = "User agent that made the request"
-      },
-      {
-        name    = "fastly_backend"
-        type    = "string"
-        comment = "Name of the backend that served this request"
-      },
-      {
-        name    = "data_centre"
-        type    = "string"
-        comment = "Name of the data centre that served this request"
-      },
-      {
-        name    = "cache_hit"
-        type    = "boolean"
-        comment = "Whether this object is cacheable or not"
-      },
-      {
-        name    = "cache_response"
-        type    = "string"
-        comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
-      },
-      {
-        name = "tls_client_protocol"
-        type = "string"
-      },
-      {
-        name = "tls_client_cipher"
-        type = "string"
-      },
-      {
-        name = "client_ja3"
-        type = "string"
-      },
-    ]
+      type    = "string"
+      comment = "Time offset of the request, expected to be +0000 always"
+    }
+    columns {
+      name    = "method"
+      type    = "string"
+      comment = "HTTP method for this request"
+    }
+    columns {
+      name    = "url"
+      type    = "string"
+      comment = "URL requested with query string"
+    }
+    columns {
+      name    = "status"
+      type    = "int"
+      comment = "HTTP status code returned"
+    }
+    columns {
+      name    = "request_time"
+      type    = "double"
+      comment = "Time until user received full response in seconds"
+    }
+    columns {
+      name    = "time_to_generate_response"
+      type    = "double"
+      comment = "Time spent generating a response for varnish, in seconds"
+    }
+    columns {
+      name    = "bytes"
+      type    = "bigint"
+      comment = "Number of bytes returned"
+    }
+    columns {
+      name    = "content_type"
+      type    = "string"
+      comment = "HTTP Content-Type header returned"
+    }
+    columns {
+      name    = "user_agent"
+      type    = "string"
+      comment = "User agent that made the request"
+    }
+    columns {
+      name    = "fastly_backend"
+      type    = "string"
+      comment = "Name of the backend that served this request"
+    }
+    columns {
+      name    = "data_centre"
+      type    = "string"
+      comment = "Name of the data centre that served this request"
+    }
+    columns {
+      name    = "cache_hit"
+      type    = "boolean"
+      comment = "Whether this object is cacheable or not"
+    }
+    columns {
+      name    = "cache_response"
+      type    = "string"
+      comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
+    }
+    columns {
+      name = "tls_client_protocol"
+      type = "string"
+    }
+    columns {
+      name = "tls_client_cipher"
+      type = "string"
+    }
+    columns {
+      name = "client_ja3"
+      type = "string"
+    }
   }
 
   // these correspond to directory ordering of:
   // /year=YYYY/month=MM/date=DD/file.log.gz
-  partition_keys = [
-    {
-      name = "year"
-      type = "int"
-    },
-    {
-      name = "month"
-      type = "int"
-    },
-    {
-      name = "date"
-      type = "int"
-    },
-  ]
+  partition_keys {
+    name = "year"
+    type = "int"
+  }
+  partition_keys {
+    name = "month"
+    type = "int"
+  }
+  partition_keys {
+    name = "date"
+    type = "int"
+  }
 
-  parameters {
+  parameters = {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
@@ -567,8 +559,8 @@ resource "aws_glue_catalog_table" "bouncer" {
       name = "ser_de_name"
 
       parameters = {
-        paths                 = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
-        ignore.malformed.json = "true"
+        paths                   = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,content_type,user_agent,data_centre,cache_hit,cache_response"
+        "ignore.malformed.json" = "true"
       }
 
       serialization_library = "org.openx.data.jsonserde.JsonSerDe"
@@ -592,102 +584,98 @@ resource "aws_glue_catalog_table" "bouncer" {
     // "cache_hit":%{if(fastly_info.state ~"^(HIT|MISS)(?:-|$)", "true", "false")}V,
     // "cache_response":"%{regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3") }V"
     // }
-    columns = [
-      {
-        name    = "client_ip"
-        type    = "string"
-        comment = "IP address of the client that made the request"
-      },
-      {
-        name    = "request_received"
-        type    = "timestamp"
-        comment = "Time we received the request"
-      },
-      {
-        // This field is separate from the timestamp above as the Presto version
-        // on AWS Athena doesn't support timestamps - expectation is that this is
-        // always +0000 though
-        name = "request_received_offset"
+    columns {
+      name    = "client_ip"
+      type    = "string"
+      comment = "IP address of the client that made the request"
+    }
+    columns {
+      name    = "request_received"
+      type    = "timestamp"
+      comment = "Time we received the request"
+    }
+    columns {
+      // This field is separate from the timestamp above as the Presto version
+      // on AWS Athena doesn't support timestamps - expectation is that this is
+      // always +0000 though
+      name = "request_received_offset"
 
-        type    = "string"
-        comment = "Time offset of the request, expected to be +0000 always"
-      },
-      {
-        name    = "method"
-        type    = "string"
-        comment = "HTTP method for this request"
-      },
-      {
-        name    = "host"
-        type    = "string"
-        comment = "Host that was requested"
-      },
-      {
-        name    = "url"
-        type    = "string"
-        comment = "URL requested with query string"
-      },
-      {
-        name    = "status"
-        type    = "int"
-        comment = "HTTP status code returned"
-      },
-      {
-        name    = "request_time"
-        type    = "double"
-        comment = "Time until user received full response in seconds"
-      },
-      {
-        name    = "time_to_generate_response"
-        type    = "double"
-        comment = "Time spent generating a response for varnish, in seconds"
-      },
-      {
-        name    = "location"
-        type    = "string"
-        comment = "HTTP Location header returned"
-      },
-      {
-        name    = "user_agent"
-        type    = "string"
-        comment = "User agent that made the request"
-      },
-      {
-        name    = "data_centre"
-        type    = "string"
-        comment = "Name of the data centre that served this request"
-      },
-      {
-        name    = "cache_hit"
-        type    = "boolean"
-        comment = "Whether this object is cacheable or not"
-      },
-      {
-        name    = "cache_response"
-        type    = "string"
-        comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
-      },
-    ]
+      type    = "string"
+      comment = "Time offset of the request, expected to be +0000 always"
+    }
+    columns {
+      name    = "method"
+      type    = "string"
+      comment = "HTTP method for this request"
+    }
+    columns {
+      name    = "host"
+      type    = "string"
+      comment = "Host that was requested"
+    }
+    columns {
+      name    = "url"
+      type    = "string"
+      comment = "URL requested with query string"
+    }
+    columns {
+      name    = "status"
+      type    = "int"
+      comment = "HTTP status code returned"
+    }
+    columns {
+      name    = "request_time"
+      type    = "double"
+      comment = "Time until user received full response in seconds"
+    }
+    columns {
+      name    = "time_to_generate_response"
+      type    = "double"
+      comment = "Time spent generating a response for varnish, in seconds"
+    }
+    columns {
+      name    = "location"
+      type    = "string"
+      comment = "HTTP Location header returned"
+    }
+    columns {
+      name    = "user_agent"
+      type    = "string"
+      comment = "User agent that made the request"
+    }
+    columns {
+      name    = "data_centre"
+      type    = "string"
+      comment = "Name of the data centre that served this request"
+    }
+    columns {
+      name    = "cache_hit"
+      type    = "boolean"
+      comment = "Whether this object is cacheable or not"
+    }
+    columns {
+      name    = "cache_response"
+      type    = "string"
+      comment = "Whether the response was a HIT, MISS, PASS, ERROR, PIPE, HITPASS, or SYNTH(etic)"
+    }
   }
 
   // these correspond to directory ordering of:
   // /year=YYYY/month=MM/date=DD/file.log.gz
-  partition_keys = [
-    {
-      name = "year"
-      type = "int"
-    },
-    {
-      name = "month"
-      type = "int"
-    },
-    {
-      name = "date"
-      type = "int"
-    },
-  ]
+  partition_keys {
+    name = "year"
+    type = "int"
+  }
+  partition_keys {
+    name = "month"
+    type = "int"
+  }
+  partition_keys {
+    name = "date"
+    type = "int"
+  }
 
-  parameters {
+  parameters = {
     classification  = "json"
     compressionType = "gzip"
     typeOfDate      = "file"
@@ -701,13 +689,13 @@ resource "aws_glue_catalog_table" "bouncer" {
 resource "aws_s3_bucket" "fastly_logs_monitoring" {
   bucket = "govuk-${var.aws_environment}-fastly-logs-monitoring"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-fastly-logs-monitoring"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-fastly-logs-monitoring/"
   }
 
@@ -738,7 +726,7 @@ resource "aws_iam_policy_attachment" "athena_monitoring" {
 data "template_file" "athena_monitoring_policy_template" {
   template = "${file("${path.module}/../../policies/fastly_logs_athena_monitoring_policy.tpl")}"
 
-  vars {
+  vars = {
     out_bucket_arn = "${aws_s3_bucket.fastly_logs_monitoring.arn}"
     in_bucket_arn  = "${aws_s3_bucket.fastly_logs.arn}"
   }
@@ -750,13 +738,13 @@ data "template_file" "athena_monitoring_policy_template" {
 resource "aws_s3_bucket" "transition_fastly_logs" {
   bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
   }
 
@@ -788,7 +776,7 @@ resource "aws_iam_policy_attachment" "transition_downloader" {
 data "template_file" "transition_downloader_policy_template" {
   template = "${file("${path.module}/../../policies/transition_downloader_policy.tpl")}"
 
-  vars {
+  vars = {
     bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
   }
 }
@@ -856,7 +844,7 @@ resource "aws_iam_role_policy_attachment" "transition_executor" {
 data "template_file" "transition_executor_policy_template" {
   template = "${file("${path.module}/../../policies/transition_executor_policy.tpl")}"
 
-  vars {
+  vars = {
     out_bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
     in_bucket_arn  = "${aws_s3_bucket.fastly_logs.arn}"
   }

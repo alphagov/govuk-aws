@@ -15,10 +15,10 @@
 
 resource "aws_security_group" "ckan" {
   name        = "${var.stackname}_ckan_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the ckan host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ckan_access"
   }
 }
@@ -51,10 +51,10 @@ resource "aws_security_group_rule" "ckan_ingress_ckan-elb-external_http" {
 
 resource "aws_security_group" "ckan_elb_internal" {
   name        = "${var.stackname}_ckan_elb_internal_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the ckan ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ckan_elb_internal_access"
   }
 }
@@ -72,10 +72,10 @@ resource "aws_security_group_rule" "ckan-elb-internal_ingress_management_https" 
 
 resource "aws_security_group" "ckan_elb_external" {
   name        = "${var.stackname}_ckan_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the ckan ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ckan_elb_external_access"
   }
 }
@@ -123,10 +123,10 @@ resource "aws_security_group_rule" "ckan_ingress_db-admin_ssh" {
 resource "aws_security_group" "ckan_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_ckan_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_ckan_ithc_access"
   }
 }
@@ -138,5 +138,5 @@ resource "aws_security_group_rule" "ithc_ingress_ckan_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.ckan_ithc_access.id}"
+  security_group_id = "${aws_security_group.ckan_ithc_access[0].id}"
 }

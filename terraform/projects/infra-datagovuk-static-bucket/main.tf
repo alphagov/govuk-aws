@@ -42,7 +42,7 @@ variable "s3_bucket_read_ips" {
 # Set up the backend & provider for each region
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -53,7 +53,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -63,13 +63,13 @@ data "terraform_remote_state" "infra_monitoring" {
 resource "aws_s3_bucket" "datagovuk-static" {
   bucket = "datagovuk-${var.aws_environment}-ckan-static-data"
 
-  tags {
+  tags = {
     Name            = "datagovuk-${var.aws_environment}-ckan-static-data"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/datagovuk-${var.aws_environment}-ckan-static-data/"
   }
 

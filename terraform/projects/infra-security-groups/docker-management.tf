@@ -14,10 +14,10 @@
 
 resource "aws_security_group" "docker_management" {
   name        = "${var.stackname}_docker_management_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the docker_management host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_docker_management_access"
   }
 }
@@ -47,10 +47,10 @@ resource "aws_security_group_rule" "docker-management_ingress_docker-management_
 
 resource "aws_security_group" "docker_management_etcd_elb" {
   name        = "${var.stackname}_docker_management_etcd_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the docker_management etcd ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_docker_management_etcd_elb_access"
   }
 }

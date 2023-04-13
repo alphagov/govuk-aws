@@ -49,10 +49,10 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpuutilization" {
   statistic           = "Average"
   threshold           = "${var.cpuutilization_threshold}"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors CPU utilization in an instance"
 
-  dimensions {
+  dimensions = {
     AutoScalingGroupName = "${var.autoscaling_group_name}"
   }
 }
@@ -67,10 +67,10 @@ resource "aws_cloudwatch_metric_alarm" "ec2_statuscheckfailed_instance" {
   statistic           = "Average"
   threshold           = "1"
   actions_enabled     = true
-  alarm_actions       = ["${var.alarm_actions}"]
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the status of the instance status check"
 
-  dimensions {
+  dimensions = {
     AutoScalingGroupName = "${var.autoscaling_group_name}"
   }
 }

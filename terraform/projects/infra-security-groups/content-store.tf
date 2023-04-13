@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "content-store" {
   name        = "${var.stackname}_content-store_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the content-store host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_content-store_access"
   }
 }
@@ -49,10 +49,10 @@ resource "aws_security_group_rule" "content-store_ingress_content-store-external
 
 resource "aws_security_group" "content-store_internal_elb" {
   name        = "${var.stackname}_content-store_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the content-store internal ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_content-store_internal_elb_access"
   }
 }
@@ -79,10 +79,10 @@ resource "aws_security_group_rule" "content-store-internal-elb_egress_any_any" {
 
 resource "aws_security_group" "content-store_external_elb" {
   name        = "${var.stackname}_content-store_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the content-store external ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_content-store_external_elb_access"
   }
 }
@@ -96,7 +96,7 @@ resource "aws_security_group_rule" "content-store-external-elb_ingress_public_ht
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.content-store_external_elb.id}"
-  cidr_blocks       = ["${var.carrenza_env_ips}"]
+  cidr_blocks       = var.carrenza_env_ips
 }
 
 resource "aws_security_group_rule" "content-store-external-elb_egress_any_any" {

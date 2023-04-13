@@ -59,7 +59,7 @@ variable "stackname" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -70,7 +70,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_vpc" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_vpc_key_stack, var.stackname)}/infra-vpc.tfstate"
     region = "${var.aws_region}"
@@ -78,32 +78,32 @@ data "terraform_remote_state" "infra_vpc" {
 }
 
 resource "aws_route53_zone" "internal_zone" {
-  count = "${var.create_internal_zone}"
+  count = "${var.create_internal_zone ? 1 : 0}"
   name  = "${var.root_domain_internal_name}"
 
   vpc {
-    vpc_id = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+    vpc_id = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   }
 
-  tags {
+  tags = {
     Project = "infra-root-dns-zones"
   }
 }
 
 resource "aws_route53_zone" "external_zone" {
-  count = "${var.create_external_zone}"
+  count = "${var.create_external_zone ? 1 : 0}"
   name  = "${var.root_domain_external_name}"
 
-  tags {
+  tags = {
     Project = "infra-root-dns-zones"
   }
 }
 
 resource "aws_route53_zone" "internal_zone_dns_validation" {
-  count = "${var.create_internal_zone_dns_validation}"
+  count = "${var.create_internal_zone_dns_validation ? 1 : 0}"
   name  = "${var.root_domain_internal_name}"
 
-  tags {
+  tags = {
     Project = "infra-root-dns-zones"
   }
 }

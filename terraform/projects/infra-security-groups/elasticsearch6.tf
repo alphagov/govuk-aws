@@ -18,10 +18,10 @@
 
 resource "aws_security_group" "elasticsearch6" {
   name        = "${var.stackname}_elasticsearch6_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to elasticsearch6"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_elasticsearch6_access"
   }
 }

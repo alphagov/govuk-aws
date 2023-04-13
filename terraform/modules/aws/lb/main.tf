@@ -209,7 +209,7 @@ resource "aws_lb" "lb" {
   name               = "${var.name}"
   internal           = "${var.internal}"
   security_groups    = "${var.security_groups}"
-  subnets            = var.subnets
+  subnets            = flatten(var.subnets)
   load_balancer_type = "${var.load_balancer_type}"
   idle_timeout       = "${var.idle_timeout}"
 

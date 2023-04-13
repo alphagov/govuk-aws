@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "draft-cache" {
   name        = "${var.stackname}_draft-cache_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the draft-cache host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-cache_access"
   }
 }
@@ -64,10 +64,10 @@ resource "aws_security_group_rule" "draft-cache_ingress_draft-cache_router" {
 
 resource "aws_security_group" "draft-cache_elb" {
   name        = "${var.stackname}_draft-cache_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the draft-cache ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-cache_elb_access"
   }
 }
@@ -103,10 +103,10 @@ resource "aws_security_group_rule" "draft-cache-elb_ingress_management_https" {
 
 resource "aws_security_group" "draft-cache_external_elb" {
   name        = "${var.stackname}_draft-cache_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the draft-cache external ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-cache_external_elb_access"
   }
 }
@@ -155,10 +155,10 @@ resource "aws_security_group_rule" "draft-cache-external-elb_egress_any_any" {
 resource "aws_security_group" "draft-cache_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_draft-cache_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_draft-cache_ithc_access"
   }
 }
@@ -170,5 +170,5 @@ resource "aws_security_group_rule" "ithc_ingress_draft-cache_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.draft-cache_ithc_access.id}"
+  security_group_id = "${aws_security_group.draft-cache_ithc_access[0].id}"
 }

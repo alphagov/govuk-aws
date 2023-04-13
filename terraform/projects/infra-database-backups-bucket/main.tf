@@ -43,7 +43,7 @@ variable "remote_state_infra_monitoring_key_stack" {
 # Set up the backend & provider for each region
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -60,7 +60,7 @@ provider "aws" {
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -71,13 +71,13 @@ resource "aws_s3_bucket" "database_backups" {
   bucket = "govuk-${var.aws_environment}-database-backups"
   region = "${var.aws_region}"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-database-backups"
     aws_environment = "${var.aws_environment}"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-database-backups/"
   }
 
@@ -157,7 +157,7 @@ resource "aws_s3_bucket" "database_backups_replica" {
   region   = "${var.aws_backup_region}"
   provider = "aws.eu-london"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-database-backups-replica"
     aws_environment = "${var.aws_environment}"
   }
@@ -222,7 +222,7 @@ resource "aws_iam_role" "backup_replication_role" {
 data "template_file" "s3_backup_replica_policy_template" {
   template = "${file("${path.module}/../../policies/s3_backup_replica_policy.json")}"
 
-  vars {
+  vars = {
     govuk_s3_bucket = "${aws_s3_bucket.database_backups.arn}"
     govuk_s3_backup = "${aws_s3_bucket.database_backups_replica.arn}"
   }

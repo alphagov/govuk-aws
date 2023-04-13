@@ -13,10 +13,10 @@
 
 resource "aws_security_group" "calculators-frontend" {
   name        = "${var.stackname}_calculators-frontend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access to the calculators-frontend host from its ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_calculators-frontend_access"
   }
 }
@@ -36,10 +36,10 @@ resource "aws_security_group_rule" "calculators-frontend_ingress_calculators-fro
 
 resource "aws_security_group" "calculators-frontend_elb" {
   name        = "${var.stackname}_calculators-frontend_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Access the calculators-frontend ELB"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_calculators-frontend_elb_access"
   }
 }
@@ -67,10 +67,10 @@ resource "aws_security_group_rule" "calculators-frontends-elb_egress_any_any" {
 resource "aws_security_group" "calculators_frontend_ithc_access" {
   count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
   name        = "${var.stackname}_calculators_frontend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.vpc_id}"
+  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
   description = "Control access to ITHC SSH"
 
-  tags {
+  tags = {
     Name = "${var.stackname}_calculators_frontend_ithc_access"
   }
 }
@@ -82,5 +82,5 @@ resource "aws_security_group_rule" "ithc_ingress_calculators_frontend_ssh" {
   from_port         = 22
   protocol          = "tcp"
   cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.calculators_frontend_ithc_access.id}"
+  security_group_id = "${aws_security_group.calculators_frontend_ithc_access[0].id}"
 }

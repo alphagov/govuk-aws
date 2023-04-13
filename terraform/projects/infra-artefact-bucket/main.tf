@@ -68,7 +68,7 @@ variable "artefact_source" {
 }
 
 variable "aws_s3_access_account" {
-  type        = "list"
+  type        = "string"
   description = "Here we define the account that will have access to the Artefact S3 bucket."
 }
 
@@ -104,7 +104,7 @@ variable "replication_setting" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.11.15"
+  required_version = "= 0.12.30"
 }
 
 provider "aws" {
@@ -134,7 +134,7 @@ data "aws_caller_identity" "current" {}
 data "terraform_remote_state" "infra_monitoring" {
   backend = "s3"
 
-  config {
+  config = {
     bucket = "${var.remote_state_bucket}"
     key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
     region = "${var.aws_region}"
@@ -170,7 +170,7 @@ resource "aws_s3_bucket" "artefact" {
   bucket = "govuk-${var.aws_environment}-artefact"
   acl    = "private"
 
-  tags {
+  tags = {
     Name            = "govuk-${var.aws_environment}-artefact"
     aws_environment = "${var.aws_environment}"
   }
@@ -180,7 +180,7 @@ resource "aws_s3_bucket" "artefact" {
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
     target_prefix = "s3/govuk-${var.aws_environment}-artefact/"
   }
 
@@ -230,10 +230,7 @@ data "aws_iam_policy_document" "govuk-artefact-bucket" {
     principals {
       type = "AWS"
 
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        "${var.aws_s3_access_account}",
-      ]
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root", var.aws_s3_access_account]
     }
   }
 }
@@ -252,8 +249,8 @@ resource "aws_sns_topic" "artefact_topic" {
 # AWS SNS Topic Policy
 resource "aws_sns_topic_policy" "artefact_topic_policy" {
   count  = "${var.create_sns_topic ? 1 : 0}"
-  arn    = "${aws_sns_topic.artefact_topic.arn}"
-  policy = "${data.aws_iam_policy_document.artefact_sns_topic_policy.json}"
+  arn    = "${aws_sns_topic.artefact_topic[0].arn}"
+  policy = "${data.aws_iam_policy_document.artefact_sns_topic_policy[0].json}"
 }
 
 # AWS SNS Topic Policy Data
@@ -282,7 +279,7 @@ data "aws_iam_policy_document" "artefact_sns_topic_policy" {
     }
 
     resources = [
-      "${aws_sns_topic.artefact_topic.arn}",
+      "${aws_sns_topic.artefact_topic[0].arn}",
     ]
 
     sid = "__default_statement_ID"
@@ -296,7 +293,7 @@ resource "aws_s3_bucket_notification" "artefact_bucket_notification" {
   depends_on = ["aws_sns_topic.artefact_topic"]
 
   topic {
-    topic_arn = "${aws_sns_topic.artefact_topic.arn}"
+    topic_arn = "${aws_sns_topic.artefact_topic[0].arn}"
     events    = ["s3:ObjectCreated:*"]
   }
 }
@@ -324,7 +321,7 @@ resource "aws_lambda_function" "artefact_lambda_function" {
   source_code_hash = "${data.archive_file.artefact_lambda.output_base64sha256}"
 
   function_name = "govuk-${var.aws_environment}-artefact"
-  role          = "${aws_iam_role.govuk_artefact_lambda_role.arn}"
+  role          = "${aws_iam_role.govuk_artefact_lambda_role[0].arn}"
   handler       = "main.lambda_handler"
   runtime       = "python3.8"
 }
@@ -355,7 +352,7 @@ EOF
 data "template_file" "govuk_artefact_policy_template" {
   template = "${file("${path.module}/../../policies/govuk_artefact_policy.tpl")}"
 
-  vars {
+  vars = {
     artefact_source = "${var.artefact_source}"
     aws_environment = "${var.aws_environment}"
   }
@@ -373,8 +370,8 @@ resource "aws_iam_policy" "govuk_artefact_policy" {
 resource "aws_iam_policy_attachment" "govuk_artefact_policy_attachment" {
   count      = "${var.create_sns_subscription ? 1 : 0}"
   name       = "govuk-artefact-policy-attachment"
-  roles      = ["${aws_iam_role.govuk_artefact_lambda_role.name}"]
-  policy_arn = "${aws_iam_policy.govuk_artefact_policy.arn}"
+  roles      = ["${aws_iam_role.govuk_artefact_lambda_role[0].name}"]
+  policy_arn = "${aws_iam_policy.govuk_artefact_policy[0].arn}"
 }
 
 # AWS SNS Trigger for Lambda
@@ -410,7 +407,7 @@ resource "aws_iam_policy_attachment" "artefact_writer" {
 data "template_file" "artefact_writer_policy_template" {
   template = "${file("${path.module}/../../policies/artefact_writer_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     artefact_bucket = "${aws_s3_bucket.artefact.id}"
   }
@@ -426,7 +423,7 @@ resource "aws_iam_policy" "artefact_reader" {
 data "template_file" "artefact_reader_policy_template" {
   template = "${file("${path.module}/../../policies/artefact_reader_policy.tpl")}"
 
-  vars {
+  vars = {
     aws_environment = "${var.aws_environment}"
     artefact_bucket = "${aws_s3_bucket.artefact.id}"
   }
