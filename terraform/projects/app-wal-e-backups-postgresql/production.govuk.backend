@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-production"
-key     = "govuk/app-wal-e-backups-postgresql.tfstate"
-encrypt = true
-region  = "eu-west-1"
