@@ -78,7 +78,7 @@ resource "aws_route_table_association" "public" {
 #--------------------------------------------------------------
 
 output "subnet_ids" {
-  value       = ["${aws_subnet.public.*.id}"]
+  value       = "${aws_subnet.public.*.id}"
   description = "List containing the IDs of the created subnets."
 }
 
