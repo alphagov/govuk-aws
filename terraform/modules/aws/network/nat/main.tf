@@ -66,6 +66,6 @@ output "nat_gateway_subnets_ids_map" {
 }
 
 output "nat_gateway_elastic_ips_list" {
-  value       = ["${aws_eip.nat.*.public_ip}"]
+  value       = "${aws_eip.nat.*.public_ip}"
   description = "List containing the public IPs associated with the NAT gateways"
 }

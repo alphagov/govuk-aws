@@ -126,7 +126,7 @@ resource "aws_vpc_endpoint_route_table_association" "private_s3" {
 #--------------------------------------------------------------
 
 output "subnet_ids" {
-  value       = ["${aws_subnet.private.*.id}"]
+  value       = "${aws_subnet.private.*.id}"
   description = "List of private subnet IDs"
 }
 
@@ -136,7 +136,7 @@ output "subnet_names_ids_map" {
 }
 
 output "subnet_route_table_ids" {
-  value       = ["${aws_route_table.private.*.id}"]
+  value       = "${aws_route_table.private.*.id}"
   description = "List of route_table IDs"
 }
 
