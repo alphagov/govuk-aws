@@ -9,10 +9,10 @@ variable "aws_integration_account_root_arn" {
 }
 
 locals {
-  egress_ips = concat(
+  egress_ips = toset(concat(
     var.eks_egress_ips,
     data.terraform_remote_state.infra_networking.outputs.nat_gateway_elastic_ips_list,
-  )
+  ))
 }
 
 data "fastly_ip_ranges" "fastly" {}
