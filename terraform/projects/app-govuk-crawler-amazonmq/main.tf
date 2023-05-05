@@ -281,3 +281,19 @@ resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
     aws_lb_target_group.internal_amqps
   ]
 }
+
+# --------------------------------------------------------------
+# DNS Entry
+
+# DNS entry to go via the NLB
+resource "aws_route53_record" "govuk_crawler_amazonmq_internal_root_domain_name" {
+  zone_id = data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_zone_id
+  name    = "${lower(aws_mq_broker.govuk_crawler_amazonmq.broker_name)}.${data.terraform_remote_state.infra_root_dns_zones.outputs.internal_root_domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.govukcrawlermq_lb_internal.dns_name
+    zone_id                = aws_lb.govukcrawlermq_lb_internal.zone_id
+    evaluate_target_health = true
+  }
+}
