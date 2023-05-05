@@ -29,6 +29,8 @@ No modules.
 | [aws_lb_target_group.internal_amqps](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 | [aws_lb_target_group.internal_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 | [aws_mq_broker.govuk_crawler_amazonmq](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker) | resource |
+| [aws_security_group_rule.govukcrawleramazonmq_ingress_lb_amqps](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.govukcrawleramazonmq_ingress_lb_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.govukcrawleramazonmq_ingress_management_amqps](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.govukcrawleramazonmq_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq_egress_self_self](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -36,6 +38,7 @@ No modules.
 | [random_password.monitoring](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_password.root](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [aws_acm_certificate.internal_cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
+| [aws_subnet.lb_subnets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 
 ## Inputs
 
@@ -48,6 +51,7 @@ No modules.
 | <a name="input_engine_type"></a> [engine\_type](#input\_engine\_type) | Type of broker engine. Either ActiveMQ or RabbitMQ | `string` | `"RabbitMQ"` | no |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Version of the broker engine | `string` | `"3.9.16"` | no |
 | <a name="input_govuk_crawler_amazonmq_broker_name"></a> [govuk\_crawler\_amazonmq\_broker\_name](#input\_govuk\_crawler\_amazonmq\_broker\_name) | Unique name given to the broker, and the first part of the internal domain name. Must be a valid domain part (i.e. stick to a-z, 0-9, and - as a separator, no spaces). | `string` | `"govukCrawlerMQ"` | no |
+| <a name="input_govuk_crawler_amazonmq_instance_count"></a> [govuk\_crawler\_amazonmq\_instance\_count](#input\_govuk\_crawler\_amazonmq\_instance\_count) | Number of instances the broker has/should have. This would normally be 1 for a deployment\_mode of SINGLE\_INSTANCE, 2 for ACTIVE\_STANDBY\_MULTI\_AZ, 3 for CLUSTER\_MULTI\_AZ. Defaults to 1. | `number` | `1` | no |
 | <a name="input_host_instance_type"></a> [host\_instance\_type](#input\_host\_instance\_type) | Broker's instance type. For example, mq.t3.micro, mq.m5.large | `string` | `"mq.t3.micro"` | no |
 | <a name="input_lb_delete_protection"></a> [lb\_delete\_protection](#input\_lb\_delete\_protection) | Whether to enable delete protection on the Network Load Balancer. Defaults to false. | `bool` | `false` | no |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Whether to enable connections from applications outside of the VPC that hosts the broker's subnets. Default false | `bool` | `false` | no |

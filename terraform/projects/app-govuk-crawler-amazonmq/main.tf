@@ -55,6 +55,11 @@ locals {
 # --------------------------------------------------------------
 # Lookups to existing resources which we need to reference
 
+data "aws_subnet" "lb_subnets" {
+  count = var.govuk_crawler_amazonmq_instance_count
+  id    = sort(tolist(aws_mq_broker.govuk_crawler_amazonmq.subnet_ids))[count.index]
+}
+
 # Look up the existing SSL certificate for internal-facing infra
 data "aws_acm_certificate" "internal_cert" {
   domain   = var.elb_internal_certname
@@ -105,6 +110,19 @@ resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_management_http
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
 }
 
+# Allow HTTPS access to the load balancer, so that the health checks don't fail
+resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_lb_https" {
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  description = "HTTPS ingress for GOV.UK Crawler AmazonMQ"
+
+  # Which security group is the rule assigned to
+  security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+  cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
+}
+
 # existing RabbitMQ runs on port 5672, this AmazonMQ will be on port 5671
 # so we need to allow that through the SG
 resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_management_amqps" {
@@ -117,6 +135,19 @@ resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_management_amqp
   # Which security group is the rule assigned to
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
+}
+
+# Allow AMQPS access to the load balancer through the SG
+resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_lb_amqps" {
+  type        = "ingress"
+  from_port   = 5671
+  to_port     = 5671
+  protocol    = "tcp"
+  description = "AMQPS ingress for GOV.UK Crawler AmazonMQ"
+
+  # Which security group is the rule assigned to
+  security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+  cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
 }
 
 # allow outgoing traffic to anything within the same SG
