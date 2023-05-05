@@ -44,6 +44,12 @@ locals {
     monitoring           = random_password.monitoring.result
     govuk_crawler_worker = random_password.govuk_crawler_worker.result
   }
+
+  tags = {
+    Project         = var.stackname
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
+  }
 }
 
 # --------------------------------------------------------------
@@ -113,6 +119,31 @@ resource "aws_security_group_rule" "rabbitmq_egress_self_self" {
 
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+}
+
+
+# --------------------------------------------------------------
+# Network Load Balancer
+
+resource "aws_lb" "govukcrawlermq_lb_internal" {
+  name               = "govukcrawleramazonmq-lb-internal"
+  internal           = true
+  load_balancer_type = "network"
+  subnets            = aws_mq_broker.govuk_crawler_amazonmq.subnet_ids
+
+  access_logs {
+    bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
+    prefix = "lb/${var.stackname}-govukcrawleramazonmq-internal-lb"
+  }
+
+  enable_deletion_protection = var.lb_delete_protection
+
+  tags = {
+    "Name"            = "${var.stackname}-govukcrawleramazonmq-internal"
+    "Project"         = var.stackname
+    "aws_environment" = var.aws_environment
+    "aws_migration"   = "govukcrawleramazonmq"
+  }
 }
 
 

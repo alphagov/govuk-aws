@@ -39,3 +39,20 @@ variable "publicly_accessible" {
   description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets. Default false"
   default     = false
 }
+
+variable "lb_delete_protection" {
+  type        = bool
+  description = "Whether to enable delete protection on the Network Load Balancer. Defaults to false."
+  default     = false
+}
+
+variable "stackname" {
+  type        = string
+  description = "Stackname"
+  default     = "blue"
+}
+
+variable "aws_environment" {
+  type        = string
+  description = "AWS Environment"
+}
