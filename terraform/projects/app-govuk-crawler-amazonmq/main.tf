@@ -102,3 +102,16 @@ resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_management_amqp
   security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
 }
+
+# allow outgoing traffic to anything within the same SG
+resource "aws_security_group_rule" "rabbitmq_egress_self_self" {
+  type      = "egress"
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
+
+  source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+  security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+}
+
+
