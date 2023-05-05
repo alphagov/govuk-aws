@@ -58,6 +58,7 @@ resource "aws_mq_broker" "govuk_crawler_amazonmq" {
   publicly_accessible = var.publicly_accessible
   # use the existing RabbitMQ security group
   security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
+  subnet_ids      = var.deployment_mode == "SINGLE_INSTANCE" ? [data.terraform_remote_state.infra_networking.outputs.private_subnet_ids[0]] : data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 
   logs {
     general = true
