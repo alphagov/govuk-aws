@@ -53,6 +53,15 @@ locals {
 }
 
 # --------------------------------------------------------------
+# Lookups to existing resources which we need to reference
+
+# Look up the existing SSL certificate for internal-facing infra
+data "aws_acm_certificate" "internal_cert" {
+  domain   = var.elb_internal_certname
+  statuses = ["ISSUED"]
+}
+
+# --------------------------------------------------------------
 # The AmazonMQ broker
 resource "aws_mq_broker" "govuk_crawler_amazonmq" {
   broker_name = var.govuk_crawler_amazonmq_broker_name
@@ -146,4 +155,60 @@ resource "aws_lb" "govukcrawlermq_lb_internal" {
   }
 }
 
+# HTTPS listener for web admin UI traffic
+resource "aws_lb_listener" "internal_https" {
+  load_balancer_arn = aws_lb.govukcrawlermq_lb_internal.arn
+  port              = "443"
+  protocol          = "TLS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = data.aws_acm_certificate.internal_cert.arn
 
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.internal_https.arn
+  }
+}
+
+# AMQPS listener for port 5671 traffic
+resource "aws_lb_listener" "internal_amqps" {
+  load_balancer_arn = aws_lb.govukcrawlermq_lb_internal.arn
+  port              = "5671"
+  protocol          = "TLS"
+  certificate_arn   = data.aws_acm_certificate.internal_cert.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.internal_amqps.arn
+  }
+}
+
+# HTTPS target group for web admin UI traffic
+resource "aws_lb_target_group" "internal_https" {
+  name        = "govukcrawlermq-lb-internal-https"
+  target_type = "ip"
+  port        = 443
+  protocol    = "TLS"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
+
+  health_check {
+    path     = "/"
+    protocol = "HTTPS"
+  }
+}
+
+# AMQPS target group for port 5671 traffic
+resource "aws_lb_target_group" "internal_amqps" {
+  name        = "govukcrawlermq-lb-internal-amqps"
+  target_type = "ip"
+  port        = 5671
+  protocol    = "TLS"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
+
+  # Use port 443 HTTPS for the healthcheck, as the LB
+  # won't get a recognisable response on port 5671
+  health_check {
+    path     = "/"
+    port     = 443
+    protocol = "HTTPS"
+  }
+}

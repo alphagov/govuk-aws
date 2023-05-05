@@ -56,3 +56,8 @@ variable "aws_environment" {
   type        = string
   description = "AWS Environment"
 }
+
+variable "elb_internal_certname" {
+  type        = string
+  description = "The ACM cert domain name to find the ARN of, so that it can be applied to the Network Load Balancer"
+}
