@@ -66,6 +66,14 @@ data "aws_acm_certificate" "internal_cert" {
   statuses = ["ISSUED"]
 }
 
+# The ip_address attributes of the AmazonMQ instances are blank in the outputs
+# (see https://stackoverflow.com/a/69221987)
+# So the only way we can get the IPs in order to add them to the
+# Load Balancer target group, is by a DNS lookup
+data "dns_a_record_set" "mq_instances" {
+  host = regex("://([^/:]+)", aws_mq_broker.govuk_crawler_amazonmq.instances.0.console_url)[0]
+}
+
 # --------------------------------------------------------------
 # The AmazonMQ broker
 resource "aws_mq_broker" "govuk_crawler_amazonmq" {
@@ -242,4 +250,34 @@ resource "aws_lb_target_group" "internal_amqps" {
     port     = 443
     protocol = "HTTPS"
   }
+}
+
+# HTTPS target group attachment
+# Attach all the IP addresses from the broker DNS lookup
+# to the LB target group
+resource "aws_lb_target_group_attachment" "internal_https_ips" {
+  count            = var.govuk_crawler_amazonmq_instance_count
+  target_group_arn = aws_lb_target_group.internal_https.arn
+  target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
+  port             = 443
+
+  depends_on = [
+    aws_mq_broker.govuk_crawler_amazonmq,
+    aws_lb_target_group.internal_https
+  ]
+}
+
+# AMPQS target group attachment
+# Attach all the IP addresses from the broker DNS lookup
+# to the LB target group
+resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
+  count            = var.govuk_crawler_amazonmq_instance_count
+  target_group_arn = aws_lb_target_group.internal_amqps.arn
+  target_id        = data.dns_a_record_set.mq_instances.addrs[count.index]
+  port             = 5671
+
+  depends_on = [
+    aws_mq_broker.govuk_crawler_amazonmq,
+    aws_lb_target_group.internal_amqps
+  ]
 }
