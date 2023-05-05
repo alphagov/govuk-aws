@@ -56,6 +56,8 @@ resource "aws_mq_broker" "govuk_crawler_amazonmq" {
   host_instance_type  = var.host_instance_type
   deployment_mode     = var.deployment_mode
   publicly_accessible = var.publicly_accessible
+  # use the existing RabbitMQ security group
+  security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
 
   logs {
     general = true
@@ -68,4 +70,21 @@ resource "aws_mq_broker" "govuk_crawler_amazonmq" {
     username       = "root"
     password       = local.govuk_crawler_amazonmq_passwords["root"]
   }
+}
+
+# --------------------------------------------------------------
+# Security group rules
+
+# Allow HTTPS access to GOV.UK Crawler's AmazonMQ from anything in the 'management' SG
+# (i.e. all EC2 instances)
+resource "aws_security_group_rule" "govukcrawleramazonmq_ingress_management_https" {
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  description = "HTTPS ingress for GOV.UK Crawler AmazonMQ"
+
+  # Which security group is the rule assigned to
+  security_group_id        = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
+  source_security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
 }
