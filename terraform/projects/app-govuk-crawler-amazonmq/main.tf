@@ -297,3 +297,100 @@ resource "aws_route53_record" "govuk_crawler_amazonmq_internal_root_domain_name"
     evaluate_target_health = true
   }
 }
+
+
+# --------------------------------------------------------------
+# POST full RabbitMQ config to the management API
+# We have to do this by creating and invoking a Lambda function
+# in the target environment, as the Jenkins box in integration
+# does not have access to other environments
+#
+# Write the decrypted definitions from govuk-aws-data to a local file
+resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
+  filename = join(".", ["/tmp/amazonmq_rabbitmq_definitions", formatdate("YYYY-MM-DD-hhmm-ZZZ", timestamp()), "json"])
+  content = templatefile("${path.cwd}/govuk-crawler-rabbitmq-schema.json.tpl", {
+    govuk_crawler_amazonmq_passwords   = local.govuk_crawler_amazonmq_passwords
+    govuk_crawler_amazonmq_broker_name = var.govuk_crawler_amazonmq_broker_name
+  })
+}
+
+data "local_sensitive_file" "amazonmq_rabbitmq_definitions_interpolated" {
+  filename = local_sensitive_file.amazonmq_rabbitmq_definitions.filename
+
+  depends_on = [
+    local_sensitive_file.amazonmq_rabbitmq_definitions
+  ]
+}
+
+
+# Get the existing IAM policy by name
+data "aws_iam_policy" "lambda_vpc_access" {
+  name = "AWSLambdaVPCAccessExecutionRole"
+}
+
+# Build a zip file which can be deployed to AWS Lambda
+data "archive_file" "artefact_lambda" {
+  type        = "zip"
+  source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
+  output_path = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.zip"
+}
+
+# The Lambda function itself
+resource "aws_lambda_function" "post_config_to_amazonmq" {
+  filename         = data.archive_file.artefact_lambda.output_path
+  source_code_hash = data.archive_file.artefact_lambda.output_base64sha256
+
+  function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
+  role          = aws_iam_role.post_config_to_amazonmq_role.arn
+  handler       = "post_config_to_amazonmq.lambda_handler"
+  runtime       = "python3.8"
+
+  vpc_config {
+    subnet_ids         = aws_mq_broker.govuk_crawler_amazonmq.subnet_ids
+    security_group_ids = [data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id]
+  }
+}
+
+# AWS Lambda Role
+resource "aws_iam_role" "post_config_to_amazonmq_role" {
+  name = "post_config_to_amazonmq_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+# Attach the policy to the role
+resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
+  role       = aws_iam_role.post_config_to_amazonmq_role.name
+  policy_arn = data.aws_iam_policy.lambda_vpc_access.arn
+}
+
+# Call the function
+data "aws_lambda_invocation" "post_config_to_amazonmq" {
+  function_name = aws_lambda_function.post_config_to_amazonmq.function_name
+
+  input = <<JSON
+{
+  "url": "${aws_mq_broker.govuk_crawler_amazonmq.instances.0.console_url}/api/definitions",
+  "username": "root",
+  "password": "${local.govuk_crawler_amazonmq_passwords["root"]}",
+  "json_b64": "${base64encode(data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content)}"
+}
+JSON
+
+  depends_on = [
+    aws_security_group_rule.rabbitmq_egress_self_self
+  ]
+}
