@@ -88,4 +88,12 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_amqp_endpoint"></a> [amqp\_endpoint](#output\_amqp\_endpoint) | AMQP URL for connecting a client app to the broker |
+| <a name="output_broker_id"></a> [broker\_id](#output\_broker\_id) | AWS-generated unique identifier for the broker |
+| <a name="output_console_url"></a> [console\_url](#output\_console\_url) | URL of the RabbitMQ web management UI |
+| <a name="output_govuk_crawler_amazonmq_passwords"></a> [govuk\_crawler\_amazonmq\_passwords](#output\_govuk\_crawler\_amazonmq\_passwords) | Generated passwords for each RabbitMQ user account. Use `terraform output -json | jq '.govuk_crawler_amazonmq_passwords.value'` to retrieve the values. |
+| <a name="output_internal_domain_name"></a> [internal\_domain\_name](#output\_internal\_domain\_name) | Persistent internal domain name for the broker. Use this as the hostname for RabbitMQ connection strings in client apps. |
+| <a name="output_lambda_function_name"></a> [lambda\_function\_name](#output\_lambda\_function\_name) | Name of the Lambda function which posts config to AmazonMQ after creation |
+| <a name="output_lambda_function_result"></a> [lambda\_function\_result](#output\_lambda\_function\_result) | n/a |
