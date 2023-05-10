@@ -40,6 +40,24 @@ variable "host_instance_type" {
   default     = "mq.t3.micro"
 }
 
+variable "maintenance_window_start_time_day_of_week" {
+  type        = string
+  description = "Day of the week of the start of the maintenance window"
+  default     = "WEDNESDAY"
+}
+
+variable "maintenance_window_start_time_time_of_day" {
+  type        = string
+  description = "Time of day of the start of the maintenance window"
+  default     = "07:00"
+}
+
+variable "maintenance_window_start_time_time_zone" {
+  type        = string
+  description = "Time zone of the start of the maintenance window"
+  default     = "UTC"
+}
+
 variable "publicly_accessible" {
   type        = bool
   description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets. Default false"

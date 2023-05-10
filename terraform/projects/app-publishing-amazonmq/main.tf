@@ -116,6 +116,12 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id}"]
   subnet_ids      = var.deployment_mode == "SINGLE_INSTANCE" ? [data.terraform_remote_state.infra_networking.outputs.private_subnet_ids[0]] : data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
 
+  maintenance_window_start_time {
+    day_of_week = var.maintenance_window_start_time_day_of_week
+    time_of_day = var.maintenance_window_start_time_time_of_day
+    time_zone   = var.maintenance_window_start_time_time_zone
+  }
+
   logs {
     general = true
   }
