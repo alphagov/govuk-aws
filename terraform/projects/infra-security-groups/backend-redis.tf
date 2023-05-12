@@ -21,19 +21,6 @@ resource "aws_security_group" "backend-redis" {
   }
 }
 
-resource "aws_security_group_rule" "backend-redis_ingress_backend_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.backend.id}"
-}
-
 resource "aws_security_group_rule" "backend-redis_ingress_ckan_redis" {
   type      = "ingress"
   from_port = 6379
@@ -45,84 +32,6 @@ resource "aws_security_group_rule" "backend-redis_ingress_ckan_redis" {
 
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.ckan.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_whitehall-backend_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.whitehall-backend.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_whitehall-frontend_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.whitehall-frontend.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_email-alert-api_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.email-alert-api.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_locations-api_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.locations-api.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_publishing-api_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.publishing-api.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_search_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search.id}"
 }
 
 resource "aws_security_group_rule" "backend-redis_ingress_deploy_redis" {
@@ -149,43 +58,4 @@ resource "aws_security_group_rule" "backend-redis_ingress_db-admin_redis" {
 
   # Which security group can use this rule
   source_security_group_id = "${aws_security_group.db-admin.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_frontend_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.frontend.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_draft-frontend_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.draft-frontend.id}"
-}
-
-resource "aws_security_group_rule" "backend-redis_ingress_account_redis" {
-  type      = "ingress"
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.backend-redis.id}"
-
-  # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.account.id}"
 }
