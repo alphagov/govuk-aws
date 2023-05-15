@@ -1,5 +1,15 @@
 name: govuk-aws-linting
-on: [push, pull_request]
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "Jenkinsfile"
+      - ".git**"
+  pull_request:
+
 jobs:
   test:
     runs-on: macos-latest
@@ -11,7 +21,6 @@ jobs:
           path: vendor/bundle
           key: bundle-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: bundle
-      - run: bundle install --deployment
       - run: bundle install --jobs 4 --retry 3 --deployment
 
       - name: Docs Check
@@ -21,7 +30,7 @@ jobs:
           ./tools/update-docs.sh
 
           if ! git diff --exit-code; then
-            echo "The documentation isn't up to date. You should run ./tools/update-docs.sh and commit the results."
+            echo "The documentation isn't up to date. Run tools/update-docs.sh and commit the results."
             exit 1
           fi
 
@@ -66,7 +75,7 @@ jobs:
           done
 
       - name: RSpec
-        run: bundle exec rspec spec/validate_resources_spec.rb   
+        run: bundle exec rspec spec/validate_resources_spec.rb
 
       - name: Lint Resource Names
         run: bundle exec lib/resource_name_lint.rb
