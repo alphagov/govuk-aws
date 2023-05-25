@@ -1,16 +1,12 @@
-provider "aws" {
-  region = var.aws_backup_region
-  alias  = "backup_provider"
+resource "aws_s3_bucket" "assets_backup" {
+  provider = aws.backup
+  bucket   = "govuk-assets-backup-${var.aws_environment}"
 }
 
-resource "aws_s3_bucket" "assets_backup" {
-  provider = aws.backup_provider
-  bucket   = "govuk-assets-backup-${var.aws_environment}"
-  region   = var.aws_backup_region
-
-  versioning {
-    enabled = true
-  }
+resource "aws_s3_bucket_versioning" "assets_backup" {
+  provider = aws.backup
+  bucket   = aws_s3_bucket.assets_backup.id
+  versioning_configuration { status = "Enabled" }
 }
 
 resource "aws_iam_policy" "backup" {
@@ -27,9 +23,7 @@ resource "aws_iam_role" "backup" {
   "Statement": [
     {
       "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "s3.amazonaws.com"
-      },
+      "Principal": { "Service": "s3.amazonaws.com" },
       "Effect": "Allow",
       "Sid": ""
     }
