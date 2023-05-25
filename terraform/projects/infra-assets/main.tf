@@ -44,10 +44,11 @@ resource "aws_s3_bucket_versioning" "assets" {
 }
 
 resource "aws_s3_bucket_replication_configuration" "assets" {
+  count      = var.aws_environment == "production" ? 1 : 0
   depends_on = [aws_s3_bucket_versioning.assets] # TF doesn't infer this :(
 
   bucket = aws_s3_bucket.assets.id
-  role   = aws_iam_role.backup.arn
+  role   = aws_iam_role.backup[0].arn
 
   rule {
     id       = "govuk-${var.aws_environment}-assets-replication-rule"
@@ -55,8 +56,8 @@ resource "aws_s3_bucket_replication_configuration" "assets" {
     status   = "Enabled"
     delete_marker_replication { status = "Disabled" }
     destination {
-      bucket        = aws_s3_bucket.assets_backup.arn
-      storage_class = "STANDARD_IA"
+      bucket        = aws_s3_bucket.assets_backup[0].arn
+      storage_class = "STANDARD"
     }
     filter {}
   }
