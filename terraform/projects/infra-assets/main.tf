@@ -75,20 +75,38 @@ resource "aws_iam_user" "app_user" {
 }
 
 resource "aws_iam_policy" "s3_writer" {
-  name   = "govuk-${var.aws_environment}-assets-s3-writer-policy"
-  policy = data.template_file.s3_writer_policy.rendered
+  name = "govuk-${var.aws_environment}-assets-s3-writer-policy"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation",
+        ],
+        "Resource" : ["arn:aws:s3:::*"],
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject",
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${aws_s3_bucket.assets.id}",
+          "arn:aws:s3:::${aws_s3_bucket.assets.id}/*",
+        ],
+      },
+    ],
+  })
 }
 
 resource "aws_iam_policy_attachment" "s3_writer" {
   name       = "govuk-${var.aws_environment}-assets-s3-writer-policy-attachment"
   users      = [aws_iam_user.app_user.name]
   policy_arn = aws_iam_policy.s3_writer.arn
-}
-
-data "template_file" "s3_writer_policy" {
-  template = file("s3_writer_policy.tpl")
-
-  vars = {
-    bucket = aws_s3_bucket.assets.id
-  }
 }
