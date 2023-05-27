@@ -3,4 +3,6 @@ source 'https://rubygems.org'
 gem 'rspec'
 gem 'colorize'
 
-gem 'pry'
+group :development do
+  gem 'pry'
+end
