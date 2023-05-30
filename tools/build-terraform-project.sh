@@ -137,6 +137,7 @@ function init() {
   fi
   rm -rf .terraform && \
   rm -rf terraform.tfstate.backup && \
+  terraform version && \
   terraform init \
             -backend-config "$BACKEND_FILE"
 }
