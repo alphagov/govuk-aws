@@ -1,17 +1,16 @@
 /**
 * ## Project: infra-assets
 *
-* Stores ActiveStorage blobs uploaded via Content Publisher.
+* Stores ActiveStorage blobs uploaded via Asset Manager.
 */
 
 terraform {
   backend "s3" {}
-
   required_version = "~> 1.4"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.9"
+      version = "~> 5.0"
     }
   }
 }
@@ -43,33 +42,13 @@ resource "aws_s3_bucket_versioning" "assets" {
   versioning_configuration { status = "Enabled" }
 }
 
-resource "aws_s3_bucket_replication_configuration" "assets" {
-  count      = var.aws_environment == "production" ? 1 : 0
-  depends_on = [aws_s3_bucket_versioning.assets] # TF doesn't infer this :(
-
-  bucket = aws_s3_bucket.assets.id
-  role   = aws_iam_role.backup[0].arn
-
-  rule {
-    id       = "govuk-${var.aws_environment}-assets-replication-rule"
-    priority = 10
-    status   = "Enabled"
-    delete_marker_replication { status = "Disabled" }
-    destination {
-      bucket        = aws_s3_bucket.assets_backup[0].arn
-      storage_class = "STANDARD"
-    }
-    filter {}
-  }
-}
-
 resource "aws_s3_bucket_logging" "assets" {
   bucket        = aws_s3_bucket.assets.id
   target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
   target_prefix = "s3/govuk-assets-${var.aws_environment}/"
 }
 
-
+# TODO: check if still used; clean up and remove (app_user, s3_writer).
 resource "aws_iam_user" "app_user" {
   name = "govuk-assets-${var.aws_environment}-user"
 }
