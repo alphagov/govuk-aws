@@ -134,13 +134,6 @@
   ],
   "queues": [
     {
-      "name": "cache_clearing_service-low",
-      "vhost": "publishing",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {}
-    },
-    {
       "name": "email_alert_service",
       "vhost": "publishing",
       "durable": true,
@@ -197,13 +190,6 @@
       "arguments": {}
     },
     {
-      "name": "cache_clearing_service-high",
-      "vhost": "publishing",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {}
-    },
-    {
       "name": "search_api_govuk_index",
       "vhost": "publishing",
       "durable": true,
@@ -212,13 +198,6 @@
     },
     {
       "name": "email_unpublishing",
-      "vhost": "publishing",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {}
-    },
-    {
-      "name": "cache_clearing_service-medium",
       "vhost": "publishing",
       "durable": true,
       "auto_delete": false,
