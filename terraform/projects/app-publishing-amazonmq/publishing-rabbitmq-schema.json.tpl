@@ -17,11 +17,6 @@
       "tags": ""
     },
     {
-      "name": "cache_clearing_service",
-      "password": "${publishing_amazonmq_passwords["cache_clearing_service"]}",
-      "tags": ""
-    },
-    {
       "name": "monitoring",
       "password": "${publishing_amazonmq_passwords["monitoring"]}",
       "tags": "monitoring"
@@ -80,13 +75,6 @@
       "write": ".*",
       "read": ".*"
     },
-    {
-      "user": "cache_clearing_service",
-      "vhost": "publishing",
-      "configure": "^$",
-      "write": "^$",
-      "read": "^cache_clearing_service-\\w+$"
-    }
   ],
   "parameters": [],
   "global_parameters": [
@@ -96,18 +84,6 @@
     }
   ],
   "policies": [
-    {
-      "vhost": "publishing",
-      "name": "cache_clearing_service-low-ttl",
-      "pattern": "cache_clearing_service-low.*",
-      "apply-to": "queues",
-      "definition": {
-        "ha-mode": "all",
-        "ha-sync-mode": "automatic",
-        "message-ttl": 1800000
-      },
-      "priority": 0
-    },
     {
       "vhost": "publishing",
       "name": "content_data_api-dlx",

@@ -57,20 +57,15 @@ resource "random_password" "email_alert_service" {
   length  = 24
   special = false
 }
-resource "random_password" "cache_clearing_service" {
-  length  = 24
-  special = false
-}
 
 locals {
   publishing_amazonmq_passwords = {
-    root                   = random_password.root.result
-    monitoring             = random_password.monitoring.result
-    publishing_api         = random_password.publishing_api.result
-    search_api             = random_password.search_api.result
-    content_data_api       = random_password.content_data_api.result
-    email_alert_service    = random_password.email_alert_service.result
-    cache_clearing_service = random_password.cache_clearing_service.result
+    root                = random_password.root.result
+    monitoring          = random_password.monitoring.result
+    publishing_api      = random_password.publishing_api.result
+    search_api          = random_password.search_api.result
+    content_data_api    = random_password.content_data_api.result
+    email_alert_service = random_password.email_alert_service.result
   }
 
   tags = {
