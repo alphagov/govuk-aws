@@ -281,14 +281,6 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
-      "destination": "cache_clearing_service-low",
-      "destination_type": "queue",
-      "routing_key": "*.links",
-      "arguments": {}
-    },
-    {
-      "source": "published_documents",
-      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.links",
@@ -300,14 +292,6 @@
       "destination": "search_api_to_be_indexed",
       "destination_type": "queue",
       "routing_key": "*.links",
-      "arguments": {}
-    },
-    {
-      "source": "published_documents",
-      "vhost": "publishing",
-      "destination": "cache_clearing_service-high",
-      "destination_type": "queue",
-      "routing_key": "*.major",
       "arguments": {}
     },
     {
@@ -337,14 +321,6 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
-      "destination": "cache_clearing_service-medium",
-      "destination_type": "queue",
-      "routing_key": "*.minor",
-      "arguments": {}
-    },
-    {
-      "source": "published_documents",
-      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.minor",
@@ -361,25 +337,9 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
-      "destination": "cache_clearing_service-medium",
-      "destination_type": "queue",
-      "routing_key": "*.republish",
-      "arguments": {}
-    },
-    {
-      "source": "published_documents",
-      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.republish",
-      "arguments": {}
-    },
-    {
-      "source": "published_documents",
-      "vhost": "publishing",
-      "destination": "cache_clearing_service-high",
-      "destination_type": "queue",
-      "routing_key": "*.unpublish",
       "arguments": {}
     },
     {
