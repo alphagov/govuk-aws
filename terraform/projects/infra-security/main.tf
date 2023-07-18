@@ -556,6 +556,60 @@ resource "time_sleep" "wait_30_seconds" {
   }
 }
 
+data "aws_iam_policy_document" "kms_docdb_policy" {
+  statement {
+    sid = "Delegate permissions to IAM policies"
+
+    actions = [
+      "kms:*",
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+
+  statement {
+    sid = "Allow access through RDS for all principals in the account that are authorized to use RDS"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant",
+      "kms:ListGrants",
+      "kms:DescribeKey"
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+
+      values = [data.aws_caller_identity.current.account_id]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+
+      values = [
+        "rds.${var.aws_region}.amazonaws.com"
+      ]
+    }
+  }
+}
+
 resource "aws_kms_key" "sops" {
   description = "Encryption key for govuk-aws-data"
   policy      = data.aws_iam_policy_document.kms_sops_policy.json
@@ -568,12 +622,12 @@ resource "aws_kms_alias" "sops" {
 
 resource "aws_kms_key" "licensify_documentdb" {
   description = "Encryption key for Licensify DocumentDB"
-  policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  policy      = data.aws_iam_policy_document.kms_docdb_policy.json
 }
 
 resource "aws_kms_key" "shared_documentdb" {
   description = "Encryption key for Shared DocumentDB"
-  policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  policy      = data.aws_iam_policy_document.kms_docdb_policy.json
 }
 
 # Outputs
