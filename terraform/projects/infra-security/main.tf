@@ -459,7 +459,7 @@ resource "aws_iam_role_policy_attachment" "google-s3-mirror-access" {
 
 data "aws_iam_policy_document" "kms_sops_policy" {
   statement {
-    sid = "Enable IAM User Permission"
+    sid = "Delegate permissions to IAM policies"
 
     actions = [
       "kms:*",
@@ -471,88 +471,6 @@ data "aws_iam_policy_document" "kms_sops_policy" {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
-  }
-
-  statement {
-    sid = "Allow access for Key Administrators"
-
-    actions = [
-      "kms:Create*",
-      "kms:Describe*",
-      "kms:Enable*",
-      "kms:List*",
-      "kms:Put*",
-      "kms:Update*",
-      "kms:Revoke*",
-      "kms:Disable*",
-      "kms:Get*",
-      "kms:Delete*",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:ScheduleKeyDeletion",
-      "kms:CancelKeyDeletion",
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
-    }
-  }
-
-  statement {
-    sid = "Allow use of the key"
-
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey",
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
-    }
-  }
-
-  statement {
-    sid = "Allow attachment of persistent resources"
-
-    actions = [
-      "kms:CreateGrant",
-      "kms:ListGrants",
-      "kms:RevokeGrant",
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
-    }
-  }
-}
-
-
-/*
-wait resource that will be used by the aws_kms_key resources so that they
-wait until the iam_roles are created and propagated before attaching kms
-policies referring the newly created iam_roles
-
-See issues:
-1. https://github.com/hashicorp/terraform-provider-aws/issues/245
-2. https://discuss.hashicorp.com/t/terraform-malformed-policy/11281/2
-*/
-resource "time_sleep" "wait_30_seconds" {
-  create_duration = "30s"
-
-  triggers = {
-    gds_admin_roles_and_arns = jsonencode([for role, arn in module.gds_role_admin.roles_and_arns : arn])
   }
 }
 
