@@ -13,7 +13,6 @@ Infrastructure security settings:
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.25 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | 0.7.2 |
 
 ## Providers
 
