@@ -459,7 +459,24 @@ resource "aws_iam_role_policy_attachment" "google-s3-mirror-access" {
 
 data "aws_iam_policy_document" "kms_sops_policy" {
   statement {
-    sid = "Enable IAM User Permission"
+    sid = "Delegate permissions to IAM policies"
+
+    actions = [
+      "kms:*",
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "kms_docdb_policy" {
+  statement {
+    sid = "Delegate permissions to IAM policies"
 
     actions = [
       "kms:*",
@@ -474,85 +491,40 @@ data "aws_iam_policy_document" "kms_sops_policy" {
   }
 
   statement {
-    sid = "Allow access for Key Administrators"
-
-    actions = [
-      "kms:Create*",
-      "kms:Describe*",
-      "kms:Enable*",
-      "kms:List*",
-      "kms:Put*",
-      "kms:Update*",
-      "kms:Revoke*",
-      "kms:Disable*",
-      "kms:Get*",
-      "kms:Delete*",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:ScheduleKeyDeletion",
-      "kms:CancelKeyDeletion",
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
-    }
-  }
-
-  statement {
-    sid = "Allow use of the key"
+    sid = "Allow access through RDS for all principals in the account that are authorized to use RDS"
 
     actions = [
       "kms:Encrypt",
       "kms:Decrypt",
       "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:DescribeKey",
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
-    }
-  }
-
-  statement {
-    sid = "Allow attachment of persistent resources"
-
-    actions = [
       "kms:CreateGrant",
       "kms:ListGrants",
-      "kms:RevokeGrant",
+      "kms:DescribeKey"
     ]
 
     resources = ["*"]
 
     principals {
       type        = "AWS"
-      identifiers = jsondecode(time_sleep.wait_30_seconds.triggers["gds_admin_roles_and_arns"])
+      identifiers = ["*"]
     }
-  }
-}
 
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
 
-/*
-wait resource that will be used by the aws_kms_key resources so that they
-wait until the iam_roles are created and propagated before attaching kms
-policies referring the newly created iam_roles
+      values = [data.aws_caller_identity.current.account_id]
+    }
 
-See issues:
-1. https://github.com/hashicorp/terraform-provider-aws/issues/245
-2. https://discuss.hashicorp.com/t/terraform-malformed-policy/11281/2
-*/
-resource "time_sleep" "wait_30_seconds" {
-  create_duration = "30s"
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
 
-  triggers = {
-    gds_admin_roles_and_arns = jsonencode([for role, arn in module.gds_role_admin.roles_and_arns : arn])
+      values = [
+        "rds.${var.aws_region}.amazonaws.com"
+      ]
+    }
   }
 }
 
@@ -568,12 +540,12 @@ resource "aws_kms_alias" "sops" {
 
 resource "aws_kms_key" "licensify_documentdb" {
   description = "Encryption key for Licensify DocumentDB"
-  policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  policy      = data.aws_iam_policy_document.kms_docdb_policy.json
 }
 
 resource "aws_kms_key" "shared_documentdb" {
   description = "Encryption key for Shared DocumentDB"
-  policy      = data.aws_iam_policy_document.kms_sops_policy.json
+  policy      = data.aws_iam_policy_document.kms_docdb_policy.json
 }
 
 # Outputs
