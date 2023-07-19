@@ -20,12 +20,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "stackname" {
-  type        = string
-  description = "Stackname"
-  default     = ""
-}
-
 variable "role_admin_user_arns" {
   type        = list(any)
   description = "List of ARNs of external users that can assume the role"
