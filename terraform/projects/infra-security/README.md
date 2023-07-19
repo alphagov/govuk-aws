@@ -74,7 +74,6 @@ Infrastructure security settings:
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list(any)` | n/a | yes |
 | <a name="input_role_admin_policy_arns"></a> [role\_admin\_policy\_arns](#input\_role\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
 | <a name="input_role_admin_user_arns"></a> [role\_admin\_user\_arns](#input\_role\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
 | <a name="input_role_dataengineeruser_policy_arns"></a> [role\_dataengineeruser\_policy\_arns](#input\_role\_dataengineeruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
