@@ -75,6 +75,16 @@ variable "cache_public_base_rate_limit" {
   description = "For the cache ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
 }
 
+variable "licensify_backend_public_base_rate_warning" {
+  type        = number
+  description = "For the licensify backend ALB. Allows us to configure a warning level to detect what happens if we reduce the limit."
+}
+
+variable "licensify_backend_public_base_rate_limit" {
+  type        = number
+  description = "For the licensify backend ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
+}
+
 variable "traffic_replay_ips" {
   type        = list(string)
   description = "An array of CIDR blocks that will replay traffic against an environment"
