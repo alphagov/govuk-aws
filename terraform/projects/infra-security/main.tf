@@ -20,12 +20,6 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "stackname" {
-  type        = string
-  description = "Stackname"
-  default     = ""
-}
-
 variable "role_admin_user_arns" {
   type        = list(any)
   description = "List of ARNs of external users that can assume the role"
@@ -92,11 +86,6 @@ variable "ssh_public_key" {
   default     = null
 }
 
-variable "office_ips" {
-  type        = list(any)
-  description = "An array of CIDR blocks that will be allowed offsite access."
-}
-
 # Resources
 # --------------------------------------------------------------
 
@@ -109,15 +98,8 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.25"
     }
-
-    time = {
-      source  = "hashicorp/time"
-      version = "0.7.2"
-    }
   }
 }
-
-provider "time" {}
 
 provider "aws" {
   region = var.aws_region
@@ -130,7 +112,6 @@ module "gds_role_admin" {
   role_suffix      = "admin"
   role_user_arns   = toset(var.role_admin_user_arns)
   role_policy_arns = var.role_admin_policy_arns
-  office_ips       = var.office_ips
 }
 
 module "gds_role_poweruser" {
@@ -138,7 +119,6 @@ module "gds_role_poweruser" {
   role_suffix      = "poweruser"
   role_user_arns   = toset(var.role_admin_user_arns)
   role_policy_arns = var.role_poweruser_policy_arns
-  office_ips       = var.office_ips
 }
 
 module "role_datascienceuser" {
@@ -237,7 +217,6 @@ module "gds_role_user" {
   role_suffix      = "user"
   role_user_arns   = toset(concat(var.role_user_user_arns, var.role_admin_user_arns))
   role_policy_arns = var.role_user_policy_arns
-  office_ips       = var.office_ips
 }
 
 resource "aws_iam_account_password_policy" "tighten_passwords" {

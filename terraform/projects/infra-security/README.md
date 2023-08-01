@@ -13,7 +13,6 @@ Infrastructure security settings:
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.25 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | 0.7.2 |
 
 ## Providers
 
@@ -74,7 +73,6 @@ Infrastructure security settings:
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list(any)` | n/a | yes |
 | <a name="input_role_admin_policy_arns"></a> [role\_admin\_policy\_arns](#input\_role\_admin\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
 | <a name="input_role_admin_user_arns"></a> [role\_admin\_user\_arns](#input\_role\_admin\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
 | <a name="input_role_dataengineeruser_policy_arns"></a> [role\_dataengineeruser\_policy\_arns](#input\_role\_dataengineeruser\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
@@ -86,7 +84,6 @@ Infrastructure security settings:
 | <a name="input_role_user_policy_arns"></a> [role\_user\_policy\_arns](#input\_role\_user\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
 | <a name="input_role_user_user_arns"></a> [role\_user\_user\_arns](#input\_role\_user\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | `[]` | no |
 | <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | The public part of an SSH keypair | `string` | `null` | no |
-| <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | `""` | no |
 
 ## Outputs
 
