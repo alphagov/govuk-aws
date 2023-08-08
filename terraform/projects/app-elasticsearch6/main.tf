@@ -85,6 +85,8 @@ resource "aws_iam_service_linked_role" "role" {
 }
 
 resource "aws_elasticsearch_domain" "elasticsearch6" {
+  depends_on = [aws_iam_service_linked_role.role]
+
   domain_name           = "${var.stackname}-elasticsearch6-domain"
   elasticsearch_version = "6.7"
 
@@ -144,25 +146,26 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
     log_type                 = "INDEX_SLOW_LOGS"
   }
 
-  access_policies = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        AWS = ["*"]
-      }
-      Action   = ["es:*"]
-      Resource = "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.stackname}-elasticsearch6-domain/*"
-    }]
-  })
+  access_policies = data.aws_iam_policy_document.es_access.json
 
   tags = {
     Name          = "${var.stackname}-elasticsearch6"
     Project       = var.stackname
     aws_stackname = var.stackname
   }
+}
 
-  depends_on = [aws_iam_service_linked_role.role]
+data "aws_iam_policy_document" "es_access" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions = ["es:*"]
+    resources = [
+      "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.stackname}-elasticsearch6-domain/*"
+    ]
+  }
 }
 
 resource "aws_route53_record" "service_record" {
@@ -218,15 +221,18 @@ data "aws_iam_policy_document" "manual_snapshots_cross_account_access" {
 }
 
 resource "aws_iam_role" "manual_snapshot_role" {
-  name = "${var.stackname}-elasticsearch6-manual-snapshot-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Action    = "sts:AssumeRole"
-      Principal = { "Service" = "es.amazonaws.com" }
-    }]
-  })
+  name               = "${var.stackname}-elasticsearch6-manual-snapshot-role"
+  assume_role_policy = data.aws_iam_policy_document.es_can_assume_role.json
+}
+
+data "aws_iam_policy_document" "es_can_assume_role" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["es.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
 }
 
 data "aws_iam_policy_document" "manual_snapshot_bucket_policy" {
@@ -255,23 +261,20 @@ resource "aws_iam_policy_attachment" "manual_snapshot_role_policy_attachment" {
   policy_arn = aws_iam_policy.manual_snapshot_bucket_policy.arn
 }
 
-resource "aws_iam_policy" "manual_snapshot_domain_configuration_policy" {
+resource "aws_iam_policy" "can_configure_es_snapshots" {
   name        = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshot-domain-configuration-policy"
   description = "Human operator permissions for initial setup of the snapshot bucket for the ES domain. https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-managedomains-snapshots.html#es-managedomains-snapshot-prerequisites"
   lifecycle { ignore_changes = [description] } # Inexplicably immutable in AWS.
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = "iam:PassRole"
-        Resource = aws_iam_role.manual_snapshot_role.arn
-      },
-      {
-        Effect   = "Allow"
-        Action   = "es:ESHttpPut"
-        Resource = "${aws_elasticsearch_domain.elasticsearch6.arn}/*"
-      },
-    ]
-  })
+  policy = data.aws_iam_policy_document.can_configure_es_snapshots.json
+}
+
+data "aws_iam_policy_document" "can_configure_es_snapshots" {
+  statement {
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.manual_snapshot_role.arn]
+  }
+  statement {
+    actions   = ["es:ESHttpPut"]
+    resources = ["${aws_elasticsearch_domain.elasticsearch6.arn}/*"]
+  }
 }

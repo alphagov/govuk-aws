@@ -9,7 +9,7 @@ output "service_dns_name" {
 }
 
 output "domain_configuration_policy_arn" {
-  value       = aws_iam_policy.manual_snapshot_domain_configuration_policy.arn
+  value       = aws_iam_policy.can_configure_es_snapshots.arn
   description = "ARN of the policy used to configure the elasticsearch domain"
 }
 
