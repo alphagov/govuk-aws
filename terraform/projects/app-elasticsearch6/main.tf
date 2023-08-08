@@ -170,7 +170,7 @@ data "aws_iam_policy_document" "es_access" {
 
 resource "aws_route53_record" "service_record" {
   zone_id = data.aws_route53_zone.internal.zone_id
-  name    = "elasticsearch6.${var.internal_domain_name}"
+  name    = "elasticsearch6.${var.stackname}"
   type    = "CNAME"
   ttl     = 300
   records = [aws_elasticsearch_domain.elasticsearch6.endpoint]
