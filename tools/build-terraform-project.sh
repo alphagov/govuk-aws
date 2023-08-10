@@ -63,8 +63,10 @@ echo "data dir is " $DATA_DIR
 DATA_DIR="../../../${DATA_DIR}"
 
 COMMON_DATA_DIR="${DATA_DIR}/common/${ENVIRONMENT}"
+GLOBAL_DATA_DIR="${DATA_DIR}/common"
 
 COMMON_DATA="${COMMON_DATA_DIR}/common.tfvars"
+GLOBAL_DATA="${GLOBAL_DATA_DIR}/global.tfvars"
 SECRET_COMMON_DATA="${COMMON_DATA_DIR}/common.secret.tfvars"
 STACK_COMMON_DATA="${COMMON_DATA_DIR}/${STACKNAME}.tfvars"
 
@@ -104,7 +106,8 @@ elif [[ $CMD == "init" ]] && [[ ! -f $PROJECT_DIR/$BACKEND_FILE ]]; then
 elif [[ ! -f $PROJECT_DIR/$STACK_COMMON_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$STACK_PROJECT_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$SECRET_PROJECT_DATA ]] && \
-     [[ ! -f $PROJECT_DIR/$COMMON_DATA ]]  && \
+     [[ ! -f $PROJECT_DIR/$COMMON_DATA ]] && \
+     [[ ! -f $PROJECT_DIR/$GLOBAL_DATA ]] && \
      [[ ! -f $PROJECT_DIR/$SECRET_COMMON_PROJECT_DATA ]]  && \
      [[ ! -f $PROJECT_DIR/$COMMON_PROJECT_DATA ]]; then
   log_error 'Could not find any tfvar files. Looked for:\n' \
@@ -112,6 +115,7 @@ elif [[ ! -f $PROJECT_DIR/$STACK_COMMON_DATA ]] && \
             "\t$PROJECT_DIR/$STACK_PROJECT_DATA \n " \
             "\t$PROJECT_DIR/$SECRET_PROJECT_DATA \n " \
             "\t$PROJECT_DIR/$COMMON_DATA\n " \
+            "\t$PROJECT_DIR/$GLOBAL_DATA\n " \
             "\t$PROJECT_DIR/$SECRET_COMMON_PROJECT_DATA\n " \
             "\t$PROJECT_DIR/$COMMON_PROJECT_DATA"
 fi
@@ -146,6 +150,7 @@ function init() {
 TO_RUN="init && terraform $CMD"
 # Append which ever tfvar files exist
 for TFVAR_FILE in "$COMMON_DATA" \
+                  "$GLOBAL_DATA" \
                   "$SECRET_COMMON_DATA" \
                   "$STACK_COMMON_DATA" \
                   "$COMMON_PROJECT_DATA" \

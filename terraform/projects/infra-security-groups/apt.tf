@@ -69,17 +69,6 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_office_https" {
   cidr_blocks       = var.office_ips
 }
 
-resource "aws_security_group_rule" "apt-external-elb_ingress_carrenza_production_https" {
-  count     = "${var.aws_environment == "production" ? 1 : 0}"
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-
-  security_group_id = "${aws_security_group.apt_external_elb.id}"
-  cidr_blocks       = var.carrenza_production_ips
-}
-
 resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_https" {
   type      = "ingress"
   from_port = 443
