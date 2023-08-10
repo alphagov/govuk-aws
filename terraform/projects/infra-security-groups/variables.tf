@@ -29,48 +29,9 @@ variable "office_ips" {
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
-variable "carrenza_integration_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks that will be allowed to SSH to the jumpbox."
-}
-
-variable "carrenza_staging_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks that will be allowed to SSH to the jumpbox."
-}
-
-variable "carrenza_production_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks that will be allowed to SSH to the jumpbox."
-}
-
-variable "carrenza_env_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox."
-  default     = []
-}
-
-variable "carrenza_draft_frontend_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks for the current environment that will allow access to draft-content-store from Carrenza."
-  default     = []
-}
-
-variable "carrenza_rabbitmq_ips" {
-  type        = "list"
-  description = "An array of CIDR blocks that will be allowed to federate with the rabbitmq nodes."
-  default     = [""]
-}
-
 variable "traffic_replay_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will replay traffic against an environment"
-}
-
-variable "carrenza_vpn_subnet_cidr" {
-  type        = "list"
-  description = "The Carrenza VPN subnet CIDR"
-  default     = []
 }
 
 variable "paas_ireland_egress_ips" {

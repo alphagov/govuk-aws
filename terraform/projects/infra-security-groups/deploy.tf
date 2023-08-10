@@ -67,17 +67,6 @@ resource "aws_security_group_rule" "deploy-elb_ingress_office_https" {
   cidr_blocks       = var.office_ips
 }
 
-# Allow Carrenza Integration and Production access to trigger automated deployments
-resource "aws_security_group_rule" "deploy-elb_ingress_carrenza_https" {
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-
-  security_group_id = "${aws_security_group.deploy_elb.id}"
-  cidr_blocks       = flatten(["${var.carrenza_integration_ips}", "${var.carrenza_production_ips}"])
-}
-
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_https" {
   count     = "${(var.aws_environment == "integration") || (var.aws_environment == "staging") ? 1 : 0}"
   type      = "ingress"
