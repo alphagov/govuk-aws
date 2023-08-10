@@ -11,7 +11,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # the waf is enabled and processing requests
   rule {
     name     = "x-always-block_web_acl_rule"
-    priority = 1
+    priority = 0
 
     override_action {
       none {}
@@ -34,7 +34,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # header and allows it.
   rule {
     name     = "allow-govuk-infra"
-    priority = 2
+    priority = 1
 
     action {
       allow {}
@@ -62,7 +62,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # allow Fastly healthchecks to pass unhindered
   rule {
     name     = "allow-fastly-healthchecks"
-    priority = 3
+    priority = 2
 
     action {
       allow {}
@@ -95,7 +95,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
 
   rule {
     name     = "allow-external-partners"
-    priority = 4
+    priority = 3
 
     action {
       allow {}
@@ -125,7 +125,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # this is checked every 30s
   rule {
     name     = "cache-public-base-rate-warning"
-    priority = 5
+    priority = 4
 
     action {
       count {}
@@ -156,7 +156,7 @@ resource "aws_wafv2_web_acl" "cache_public" {
   # this is checked every 30s
   rule {
     name     = "cache-public-base-rate-limit"
-    priority = 6
+    priority = 5
 
     action {
       block {
