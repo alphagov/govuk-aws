@@ -106,7 +106,6 @@ No modules.
 | [aws_security_group.transition-postgresql-primary](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group.transition-postgresql-standby](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group) | resource |
 | [aws_security_group_rule.apt-external-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.apt-external-elb_ingress_carrenza_production_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.apt-external-elb_ingress_fastly_http](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.apt-external-elb_ingress_fastly_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.apt-external-elb_ingress_office_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -144,7 +143,6 @@ No modules.
 | [aws_security_group_rule.ci-agent-5_ingress_ci-agent-5-ci_master_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-agent-5_ingress_ci-agent-5-elb_ssh_tcp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.ci-master-elb_ingress_carrenza_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-elb_ingress_github_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-elb_ingress_office_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.ci-master-internal-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -166,7 +164,6 @@ No modules.
 | [aws_security_group_rule.deploy-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.deploy-elb_ingress_aws_integration_access_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.deploy-elb_ingress_aws_staging_access_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.deploy-elb_ingress_carrenza_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.deploy-elb_ingress_office_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.deploy-internal-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.deploy-internal-elb_ingress_management_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -264,7 +261,6 @@ No modules.
 | [aws_security_group_rule.rabbitmq-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq-elb_ingress_management_amqp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq-elb_ingress_management_rabbitmq-stomp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.rabbitmq_ingress_carrenza-rabbitmq_amqp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq_ingress_rabbitmq-elb_amqp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq_ingress_rabbitmq-elb_rabbitmq-stomp](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.rabbitmq_ingress_rabbitmq_rabbitmq-epmd](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -276,7 +272,6 @@ No modules.
 | [aws_security_group_rule.search-ltr-generation_ingress_jenkins_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.shared-documentdb_ingress_db-admin_mongodb](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.support-api_egress_external_elb_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.support-api_ingress_external-elb_https](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.transition-db-admin-elb_egress_any_any](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.transition-db-admin-elb_ingress_management_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.transition-db-admin_ingress_transition-db-admin-elb_ssh](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/security_group_rule) | resource |
@@ -294,13 +289,6 @@ No modules.
 | <a name="input_aws_integration_external_nat_gateway_ips"></a> [aws\_integration\_external\_nat\_gateway\_ips](#input\_aws\_integration\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS integration external NAT gateways. | `list` | `[]` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_aws_staging_external_nat_gateway_ips"></a> [aws\_staging\_external\_nat\_gateway\_ips](#input\_aws\_staging\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS staging external NAT gateways. | `list` | `[]` | no |
-| <a name="input_carrenza_draft_frontend_ips"></a> [carrenza\_draft\_frontend\_ips](#input\_carrenza\_draft\_frontend\_ips) | An array of CIDR blocks for the current environment that will allow access to draft-content-store from Carrenza. | `list` | `[]` | no |
-| <a name="input_carrenza_env_ips"></a> [carrenza\_env\_ips](#input\_carrenza\_env\_ips) | An array of CIDR blocks for the current environment that will be allowed to SSH to the jumpbox. | `list` | `[]` | no |
-| <a name="input_carrenza_integration_ips"></a> [carrenza\_integration\_ips](#input\_carrenza\_integration\_ips) | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | `list` | n/a | yes |
-| <a name="input_carrenza_production_ips"></a> [carrenza\_production\_ips](#input\_carrenza\_production\_ips) | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | `list` | n/a | yes |
-| <a name="input_carrenza_rabbitmq_ips"></a> [carrenza\_rabbitmq\_ips](#input\_carrenza\_rabbitmq\_ips) | An array of CIDR blocks that will be allowed to federate with the rabbitmq nodes. | `list` | <pre>[<br>  ""<br>]</pre> | no |
-| <a name="input_carrenza_staging_ips"></a> [carrenza\_staging\_ips](#input\_carrenza\_staging\_ips) | An array of CIDR blocks that will be allowed to SSH to the jumpbox. | `list` | n/a | yes |
-| <a name="input_carrenza_vpn_subnet_cidr"></a> [carrenza\_vpn\_subnet\_cidr](#input\_carrenza\_vpn\_subnet\_cidr) | The Carrenza VPN subnet CIDR | `list` | `[]` | no |
 | <a name="input_ithc_access_ips"></a> [ithc\_access\_ips](#input\_ithc\_access\_ips) | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | `list` | `[]` | no |
 | <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_paas_ireland_egress_ips"></a> [paas\_ireland\_egress\_ips](#input\_paas\_ireland\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS Ireland region | `list` | `[]` | no |
