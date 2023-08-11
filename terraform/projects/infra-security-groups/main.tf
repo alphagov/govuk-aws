@@ -14,7 +14,7 @@ variable "aws_environment" {
 
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "= 0.12.31"
 }
 
 provider "aws" {
@@ -30,7 +30,7 @@ provider "fastly" {
 }
 
 provider "github" {
-  version = "4.4.0"
+  version = "~> 4.15"
 }
 
 data "fastly_ip_ranges" "fastly" {}
