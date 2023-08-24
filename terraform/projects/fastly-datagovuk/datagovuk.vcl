@@ -21,6 +21,17 @@ sub vcl_recv {
     error 403 "Forbidden";
   }
 
+  # Remove any Google Analytics campaign params
+  set req.url = querystring.globfilter(req.url, "utm_*");
+
+  # Sort query params (improve cache hit rate)
+  set req.url = querystring.sort(req.url);
+
+  if (req.url.path == "/") {
+    # get rid of all query parameters
+    set req.url = querystring.remove(req.url);
+  }
+
   if (req.method != "HEAD" && req.method != "GET" && req.method != "FASTLYPURGE") {
     return(pass);
   }
