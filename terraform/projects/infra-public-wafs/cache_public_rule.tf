@@ -199,6 +199,45 @@ resource "aws_wafv2_web_acl" "cache_public" {
     }
   }
 
+  # Block access via *.cloudfront.net URLs
+  rule {
+    name     = "block-cloudfront-urls"
+    priority = 6
+
+    action {
+      count {
+        custom_request_handling {
+          insert_header {
+            name  = "blocked"
+            value = "true"
+          }
+        }
+      }
+    }
+
+    statement {
+      byte_match_statement {
+        field_to_match {
+          single_header {
+            name = "host"
+          }
+        }
+        positional_constraint = "ENDS_WITH"
+        search_string         = "cloudfront.net"
+        text_transformation {
+          priority = 1
+          type     = "NONE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "cache-public-block-cloudfront-urls"
+      sampled_requests_enabled   = true
+    }
+  }
+
   custom_response_body {
     key     = "cache-public-rule-429"
     content = <<HTML
