@@ -4,43 +4,43 @@
 * Manages the Fastly service for data.gov.uk
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "fastly_api_key" {
-  type        = "string"
+  type        = string
   description = "API key to authenticate with Fastly"
 }
 
 variable "logging_aws_access_key_id" {
-  type        = "string"
+  type        = string
   description = "IAM key ID with access to put logs into the S3 bucket"
 }
 
 variable "logging_aws_secret_access_key" {
-  type        = "string"
+  type        = string
   description = "IAM secret key with access to put logs into the S3 bucket"
 }
 
 variable "domain" {
-  type        = "string"
+  type        = string
   description = "The domain of the data.gov.uk service to manage"
 }
 
 variable "backend_domain" {
-  type        = "string"
+  type        = string
   description = "The domain of the data.gov.uk PaaS instance to forward requests to"
 }
 
@@ -52,7 +52,7 @@ terraform {
 }
 
 provider "fastly" {
-  api_key = "${var.fastly_api_key}"
+  api_key = var.fastly_api_key
   version = "~> 0.26.0"
 }
 
@@ -64,7 +64,7 @@ resource "fastly_service_v1" "datagovuk" {
   name = "${title(var.aws_environment)} data.gov.uk"
 
   domain {
-    name = "${var.domain}"
+    name = var.domain
   }
 
   domain {
@@ -73,7 +73,7 @@ resource "fastly_service_v1" "datagovuk" {
 
   backend {
     name               = "cname ${var.backend_domain}"
-    address            = "${var.backend_domain}"
+    address            = var.backend_domain
     port               = "443"
     use_ssl            = true
     auto_loadbalance   = false
@@ -105,7 +105,7 @@ resource "fastly_service_v1" "datagovuk" {
 
   vcl {
     name    = "datagovuk_vcl"
-    content = "${file(data.external.fastly.result.fastly)}"
+    content = file(data.external.fastly.result.fastly)
     main    = true
   }
 
@@ -173,7 +173,7 @@ resource "fastly_service_v1" "datagovuk" {
 
   s3logging {
     # Apache log format documentation: https://www.loggly.com/ultimate-guide/apache-logging-basics/
-    format = "${join("\t",
+    format = join("\t",
       [
         "%h",
         "%%{%Y-%m-%d %H:%M:%S}t.%%{msec_frac}t",
@@ -186,7 +186,7 @@ resource "fastly_service_v1" "datagovuk" {
         "%\"Referer\"i",
         "%\"User-Agent\"i",
       ]
-    )}"
+    )
     bucket_name        = "govuk-${var.aws_environment}-fastly-logs"
     domain             = "s3-eu-west-1.amazonaws.com"
     format_version     = "2"
@@ -197,8 +197,8 @@ resource "fastly_service_v1" "datagovuk" {
     period             = "600"
     redundancy         = "standard"
     response_condition = ""
-    s3_access_key      = "${var.logging_aws_access_key_id}"
-    s3_secret_key      = "${var.logging_aws_secret_access_key}"
+    s3_access_key      = var.logging_aws_access_key_id
+    s3_secret_key      = var.logging_aws_secret_access_key
     timestamp_format   = ""
   }
 
