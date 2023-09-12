@@ -60,6 +60,10 @@ data "external" "fastly" {
   program = ["/bin/bash", "${path.module}/fastly.sh"]
 }
 
+data "fastly_info" "state" {
+  state = fastly_info.state
+}
+
 resource "fastly_service_v1" "datagovuk" {
   name = "${title(var.aws_environment)} data.gov.uk"
 
@@ -182,7 +186,7 @@ resource "fastly_service_v1" "datagovuk" {
         "%>s",
         "%B",
         "%%{tls.client.protocol}V",
-        "${fastly_info.state}V",
+        "${data.fastly_info.state.state}V",
         "%\"Referer\"i",
         "%\"User-Agent\"i",
       ]

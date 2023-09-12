@@ -27,6 +27,7 @@ No modules.
 |------|------|
 | [fastly_service_v1.datagovuk](https://registry.terraform.io/providers/hashicorp/fastly/latest/docs/resources/service_v1) | resource |
 | [external_external.fastly](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
+| [fastly_info.state](https://registry.terraform.io/providers/hashicorp/fastly/latest/docs/data-sources/info) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_root_dns_zones](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
