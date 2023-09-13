@@ -49,6 +49,10 @@ resource "random_password" "search_api" {
   length  = 24
   special = false
 }
+resource "random_password" "search_api_v2" {
+  length  = 24
+  special = false
+}
 resource "random_password" "content_data_api" {
   length  = 24
   special = false
@@ -64,6 +68,7 @@ locals {
     monitoring          = random_password.monitoring.result
     publishing_api      = random_password.publishing_api.result
     search_api          = random_password.search_api.result
+    search_api_v2       = random_password.search_api_v2.result
     content_data_api    = random_password.content_data_api.result
     email_alert_service = random_password.email_alert_service.result
   }
