@@ -229,6 +229,38 @@ resource "aws_wafv2_web_acl" "cache_public" {
     metric_name                = "cache-public-web-acl"
     sampled_requests_enabled   = true
   }
+
+  rule {
+    name     = "block-autodiscover"
+    priority = 6
+    action {
+      block {
+        custom_response {
+          response_code = "404"
+        }
+      }
+    }
+
+    statement {
+      byte_match_statement {
+        field_to_match {
+          uri_path {}
+        }
+        positional_constraint = "EXACTLY"
+        search_string         = "/autodiscover/autodiscover.xml"
+        text_transformation {
+          type     = "LOWERCASE"
+          priority = 1
+        }
+      }
+    }
+
+    visibility_config {
+      sampled_requests_enabled   = true
+      cloudwatch_metrics_enabled = true
+      metric_name                = "block-autodiscover"
+    }
+  }
 }
 
 # Can be deleted once the new set has been associated with the rule and applied
