@@ -44,6 +44,11 @@ variable "backend_domain" {
   description = "The domain of the data.gov.uk PaaS instance to forward requests to"
 }
 
+variable "fastly_info_state" {
+  type        = string
+  description = "The state of the Fastly request"
+}
+
 # Resources
 # --------------------------------------------------------------
 terraform {
@@ -129,7 +134,20 @@ resource "fastly_service_v1" "datagovuk" {
 
   s3logging {
     # Apache log format documentation: https://www.loggly.com/ultimate-guide/apache-logging-basics/
-    format             = "%h\\t%%{%Y-%m-%d %H:%M:%S}t.%%{msec_frac}t\\t%m\\t%U%q\\t%>s\\t%B\\t%%{tls.client.protocol}V\\t%%{fastly_info.state}V\\t%%{Referer}i\\t%%{User-Agent}i"
+        format = join("\t",
+      [
+        "%h",
+        "%%{%Y-%m-%d %H:%M:%S}t.%%{msec_frac}t",
+        "%m",
+        "%U%q",
+        "%>s",
+        "%B",
+        "%%{tls.client.protocol}V",
+        "${var.fastly_info.state}V",
+        "%\"Referer\"i",
+        "%\"User-Agent\"i",
+      ]
+    )
     bucket_name        = "govuk-${var.aws_environment}-fastly-logs"
     domain             = "s3-eu-west-1.amazonaws.com"
     format_version     = "2"

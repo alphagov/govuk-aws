@@ -43,6 +43,7 @@ No modules.
 | <a name="input_backend_domain"></a> [backend\_domain](#input\_backend\_domain) | The domain of the data.gov.uk PaaS instance to forward requests to | `string` | n/a | yes |
 | <a name="input_domain"></a> [domain](#input\_domain) | The domain of the data.gov.uk service to manage | `string` | n/a | yes |
 | <a name="input_fastly_api_key"></a> [fastly\_api\_key](#input\_fastly\_api\_key) | API key to authenticate with Fastly | `string` | n/a | yes |
+| <a name="input_fastly_info_state"></a> [fastly\_info\_state](#input\_fastly\_info\_state) | The state of the Fastly request | `string` | n/a | yes |
 | <a name="input_logging_aws_access_key_id"></a> [logging\_aws\_access\_key\_id](#input\_logging\_aws\_access\_key\_id) | IAM key ID with access to put logs into the S3 bucket | `string` | n/a | yes |
 | <a name="input_logging_aws_secret_access_key"></a> [logging\_aws\_secret\_access\_key](#input\_logging\_aws\_secret\_access\_key) | IAM secret key with access to put logs into the S3 bucket | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
