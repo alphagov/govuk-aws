@@ -25,6 +25,11 @@
       "name": "search_api",
       "password": "${publishing_amazonmq_passwords["search_api"]}",
       "tags": ""
+    },
+    {
+      "name": "search_api_v2",
+      "password": "${publishing_amazonmq_passwords["search_api_v2"]}",
+      "tags": ""
     }
   ],
   "vhosts": [
@@ -53,6 +58,13 @@
       "configure": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index)$",
       "write": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index)$",
       "read": "^(amq\\.gen.*|search_api_to_be_indexed|search_api_govuk_index|search_api_bulk_reindex|published_documents)$"
+    },
+    {
+      "user": "search_api_v2",
+      "vhost": "publishing",
+      "configure": "^(amq\\.gen.*|search_api_v2_published_documents)$",
+      "write": "^(amq\\.gen.*|search_api_v2_published_documents)$",
+      "read": "^(amq\\.gen.*|search_api_v2_published_documents|published_documents)$"
     },
     {
       "user": "monitoring",
@@ -173,6 +185,13 @@
       "arguments": {}
     },
     {
+      "name": "search_api_v2_published_documents",
+      "vhost": "publishing",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
       "name": "email_unpublishing",
       "vhost": "publishing",
       "durable": true,
@@ -213,6 +232,14 @@
       "source": "published_documents",
       "vhost": "publishing",
       "destination": "search_api_govuk_index",
+      "destination_type": "queue",
+      "routing_key": "*.*",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
+      "destination": "search_api_v2_published_documents",
       "destination_type": "queue",
       "routing_key": "*.*",
       "arguments": {}
