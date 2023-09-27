@@ -116,6 +116,18 @@ variable "remote_state_infra_vpc_key_stack" {
   default     = ""
 }
 
+variable "enable_replication" {
+  type        = bool
+  description = "Enable replication from the mirror bucket to its replica"
+  default     = true
+}
+
+variable "enable_replica_lifecycle_rules" {
+  type        = bool
+  description = "Enable lifecycle rules for the mirror bucket's replica"
+  default     = true
+}
+
 # Resources
 # --------------------------------------------------------------
 
@@ -222,17 +234,21 @@ resource "aws_s3_bucket" "govuk-mirror" {
     }
   }
 
-  replication_configuration {
-    role = aws_iam_role.govuk_mirror_replication_role.arn
+  dynamic "replication_configuration" {
+    for_each = var.enable_replication ? [1] : []
 
-    rules {
-      id     = "govuk-mirror-replication-whole-bucket-rule"
-      prefix = ""
-      status = "Enabled"
+    content {
+      role = aws_iam_role.govuk_mirror_replication_role.arn
 
-      destination {
-        bucket        = aws_s3_bucket.govuk-mirror-replica.arn
-        storage_class = "STANDARD"
+      rules {
+        id     = "govuk-mirror-replication-whole-bucket-rule"
+        prefix = ""
+        status = "Enabled"
+
+        destination {
+          bucket        = aws_s3_bucket.govuk-mirror-replica.arn
+          storage_class = "STANDARD"
+        }
       }
     }
   }
@@ -251,6 +267,7 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
 
   tags = {
     Name            = "govuk-${var.aws_environment}-mirror-replica"
+    Status          = var.enable_replication ? null : "Not in use in ${var.aws_environment} environment"
     aws_environment = var.aws_environment
   }
 
@@ -263,25 +280,33 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
     enabled = true
   }
 
-  lifecycle_rule {
-    id      = "main"
-    enabled = true
+  dynamic "lifecycle_rule" {
+    for_each = var.enable_replica_lifecycle_rules ? [1] : []
 
-    prefix = ""
+    content {
+      id      = "main"
+      enabled = true
 
-    noncurrent_version_expiration {
-      days = var.lifecycle_main
+      prefix = ""
+
+      noncurrent_version_expiration {
+        days = var.lifecycle_main
+      }
     }
   }
 
-  lifecycle_rule {
-    id      = "government_uploads"
-    enabled = true
+  dynamic "lifecycle_rule" {
+    for_each = var.enable_replica_lifecycle_rules ? [1] : []
 
-    prefix = "www.gov.uk/government/uploads/"
+    content {
+      id      = "government_uploads"
+      enabled = true
 
-    noncurrent_version_expiration {
-      days = var.lifecycle_government_uploads
+      prefix = "www.gov.uk/government/uploads/"
+
+      noncurrent_version_expiration {
+        days = var.lifecycle_government_uploads
+      }
     }
   }
 }

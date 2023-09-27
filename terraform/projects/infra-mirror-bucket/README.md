@@ -85,6 +85,8 @@ No modules.
 | <a name="input_cloudfront_www_certificate_domain"></a> [cloudfront\_www\_certificate\_domain](#input\_cloudfront\_www\_certificate\_domain) | The domain of the WWW CloudFront certificate to look up. | `string` | `""` | no |
 | <a name="input_cloudfront_www_distribution_aliases"></a> [cloudfront\_www\_distribution\_aliases](#input\_cloudfront\_www\_distribution\_aliases) | Extra CNAMEs (alternate domain names), if any, for the WWW CloudFront distribution. | `list` | `[]` | no |
 | <a name="input_eks_egress_ips"></a> [eks\_egress\_ips](#input\_eks\_egress\_ips) | Egress addresses for the corresponding EKS environment, in CIDR notation. | `list(string)` | n/a | yes |
+| <a name="input_enable_replica_lifecycle_rules"></a> [enable\_replica\_lifecycle\_rules](#input\_enable\_replica\_lifecycle\_rules) | Enable lifecycle rules for the mirror bucket's replica | `bool` | `true` | no |
+| <a name="input_enable_replication"></a> [enable\_replication](#input\_enable\_replication) | Enable replication from the mirror bucket to its replica | `bool` | `true` | no |
 | <a name="input_lifecycle_government_uploads"></a> [lifecycle\_government\_uploads](#input\_lifecycle\_government\_uploads) | Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/ | `string` | `"8"` | no |
 | <a name="input_lifecycle_main"></a> [lifecycle\_main](#input\_lifecycle\_main) | Number of days for the lifecycle rule for the mirror | `string` | `"5"` | no |
 | <a name="input_notify_cloudfront_domain"></a> [notify\_cloudfront\_domain](#input\_notify\_cloudfront\_domain) | The domain of the Notify CloudFront to proxy /alerts requests to. | `string` | `""` | no |
