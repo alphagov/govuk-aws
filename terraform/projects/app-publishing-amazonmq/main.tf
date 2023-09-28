@@ -6,10 +6,6 @@
  *
  * The Terraform provider will only allow us to create a single user, so all 
  * other users must be added from the RabbitMQ web admin UI or REST API.
- * 
- * DO NOT USE IN PRODUCTION YET - this version is integration-only, as it
- * implicitly assumes a single instance, and will need reworking for a 
- * highly-available cluster setup 
  */
 terraform {
   backend "s3" {}
