@@ -70,6 +70,7 @@ GLOBAL_DATA="${GLOBAL_DATA_DIR}/global.tfvars"
 SECRET_COMMON_DATA="${COMMON_DATA_DIR}/common.secret.tfvars"
 STACK_COMMON_DATA="${COMMON_DATA_DIR}/${STACKNAME}.tfvars"
 
+PROJECT_OVERRIDE_DIR="${DATA_DIR}/${PROJECT}"
 PROJECT_DATA_DIR="${DATA_DIR}/${PROJECT}/${ENVIRONMENT}"
 
 COMMON_PROJECT_DATA="${PROJECT_DATA_DIR}/common.tfvars"
@@ -139,11 +140,18 @@ function init() {
     find . -name "${ENVIRONMENT}.*.backend" |cut -d "." -f3
     exit 1
   fi
+  if [[ -d $PROJECT_OVERRIDE_DIR ]]; then
+    find ${PROJECT_OVERRIDE_DIR} -name "*override.tf" -exec ln -fs {} \;
+  fi
   rm -rf .terraform && \
   rm -rf terraform.tfstate.backup && \
   terraform version && \
   terraform init \
             -backend-config "$BACKEND_FILE"
+}
+
+function cleanup() {
+  find . -type l -name "*override.tf" -delete
 }
 
 # Build the command to run
@@ -171,3 +179,4 @@ do
 done
 
 eval "$TO_RUN $*"
+cleanup
