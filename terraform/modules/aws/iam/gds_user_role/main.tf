@@ -30,8 +30,9 @@ variable "restrict_to_gds_ips" {
 }
 
 variable "office_ips" {
-  type        = list
-  description = "An array of CIDR blocks that will be allowed offsite access."
+  type        = list(string)
+  description = "DEPRECATED: list of trusted CIDR netblocks"
+  default     = []
 }
 
 # Resources
