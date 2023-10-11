@@ -107,26 +107,6 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
   }
 
   statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.govuk-mirror.arn}/*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn]
-    }
-  }
-
-  statement {
-    actions   = ["s3:ListBucket"]
-    resources = [aws_s3_bucket.govuk-mirror.arn]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.mirror_access_identity.iam_arn]
-    }
-  }
-
-  statement {
     sid    = "CrossAccountAccess"
     effect = "Allow"
 
