@@ -10,7 +10,7 @@ source venv/bin/activate
 
 mkdir -p wheelhouse
 
-pip3 --python ${PYTHON} install --platform manylinux2014_x86_64  --target=wheelhouse --implementation cp  --only-binary=:all: --upgrade grequests
+pip3 --python ${PYTHON} install --platform manylinux2014_x86_64 --target=wheelhouse --implementation cp --only-binary=:all: --upgrade grequests
 (
 cd wheelhouse
 zip -r ../download_logs_analytics.zip .
