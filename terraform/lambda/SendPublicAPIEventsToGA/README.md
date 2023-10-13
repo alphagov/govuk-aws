@@ -9,12 +9,12 @@ It is triggered by `ObjectCreated` events on the bucket, it will only process S3
 The deployment package for this lambda function is `send_public_events_to_ga.zip`.
 In order to deploy any changes, the package needs to be updated.
 
-Python 3.7 is required to deploy this lambda.
-If you don't have 3.7, [pyenv](https://github.com/pyenv/pyenv) is a useful library for Python version management:
+Python 3.8 is required to deploy this lambda.
+If you don't have 3.8, [pyenv](https://github.com/pyenv/pyenv) is a useful library for Python version management:
 
 ```
-pyenv install 3.7
-pyenv local 3.7
+pyenv install 3.8
+pyenv local 3.8
 pip install virtualenv
 ```
 
