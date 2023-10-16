@@ -12,6 +12,7 @@ source venv/bin/activate
 mkdir -p wheelhouse
 
 pip3 --python ${PYTHON} install --platform manylinux2014_x86_64 --target=wheelhouse --implementation cp --only-binary=:all: --upgrade grequests
+pip3 install -r requirements.txt
 (
 cd wheelhouse
 zip -r ../send_public_events_to_ga.zip .
