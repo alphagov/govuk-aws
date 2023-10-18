@@ -1,0 +1,11 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+- package-ecosystem: terraform
+  directory: "/"
+  schedule:
+    interval: daily
+# We exclude pip because our Python-based lambdas in /terraform/lambda are not tested as part of CI
