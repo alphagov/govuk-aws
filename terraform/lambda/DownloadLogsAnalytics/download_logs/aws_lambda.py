@@ -49,7 +49,7 @@ class AWSLambda(Base):
 
         for row in csvreader:
             result = self.transform_row(row)
-            if result != None:
+            if result is not '' and result is not None:
                 data.append(result)
 
         return data

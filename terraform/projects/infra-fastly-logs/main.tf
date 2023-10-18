@@ -23,12 +23,12 @@ variable "stackname" {
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "= 0.12.31"
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "2.46.0"
+  version = "5.21.0"
 }
 
 provider "archive" {
@@ -951,7 +951,7 @@ resource "aws_lambda_function" "download_logs_analytics" {
   function_name = "govuk-${var.aws_environment}-download-logs-analytics"
   role          = "${aws_iam_role.download_logs_analytics.arn}"
   handler       = "handler.handle_lambda"
-  runtime       = "python3.8"
+  runtime       = "python3.7"
   timeout       = 120
 
   s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"
@@ -986,7 +986,7 @@ resource "aws_lambda_function" "send_public_events_to_ga" {
   function_name = "govuk-${var.aws_environment}-send-public-events-to-ga"
   role          = "${aws_iam_role.download_logs_analytics.arn}"
   handler       = "send_public_api_events_to_ga.handle_lambda"
-  runtime       = "python3.8"
+  runtime       = "python3.7"
   timeout       = 120
 
   s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"

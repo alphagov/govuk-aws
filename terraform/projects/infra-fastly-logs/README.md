@@ -6,16 +6,16 @@ Manages the Fastly logging data which is sent from Fastly to S3.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.30 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.31 |
 | <a name="requirement_archive"></a> [archive](#requirement\_archive) | ~> 1.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 5.21.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_archive"></a> [archive](#provider\_archive) | ~> 1.3 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.21.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
@@ -27,54 +27,54 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_athena_named_query.transition_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/athena_named_query) | resource |
-| [aws_cloudwatch_event_rule.transition_executor_daily](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_event_rule) | resource |
-| [aws_cloudwatch_event_target.transition_executor_daily](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/cloudwatch_event_target) | resource |
-| [aws_glue_catalog_database.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_catalog_database) | resource |
-| [aws_glue_catalog_table.bouncer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_catalog_table) | resource |
-| [aws_glue_catalog_table.govuk_assets](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_catalog_table) | resource |
-| [aws_glue_catalog_table.govuk_www](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_catalog_table) | resource |
-| [aws_glue_crawler.bouncer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_crawler) | resource |
-| [aws_glue_crawler.govuk_assets](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_crawler) | resource |
-| [aws_glue_crawler.govuk_www](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/glue_crawler) | resource |
-| [aws_iam_policy.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy_attachment.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_policy_attachment.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_policy_attachment.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_policy_attachment.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_role.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role.glue](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy.fastly_logs_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy_attachment.aws-glue-service-role-service-attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_user.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
-| [aws_iam_user.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
-| [aws_iam_user.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
-| [aws_lambda_function.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
-| [aws_lambda_function.send_public_events_to_ga](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
-| [aws_lambda_function.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_function) | resource |
-| [aws_lambda_permission.allow_download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
-| [aws_lambda_permission.allow_send_public_events_to_ga](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
-| [aws_lambda_permission.cloudwatch_transition_executor_daily_permission](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/lambda_permission) | resource |
-| [aws_s3_bucket.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket.fastly_logs_monitoring](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket.transition_fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_notification.bucket_notification](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_notification) | resource |
-| [aws_s3_bucket_object.download_logs_analytics_deployment_package](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_object) | resource |
-| [aws_s3_bucket_object.send_public_events_deployment_package](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_object) | resource |
-| [aws_s3_bucket_policy.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket_policy) | resource |
+| [aws_athena_named_query.transition_logs](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/athena_named_query) | resource |
+| [aws_cloudwatch_event_rule.transition_executor_daily](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/cloudwatch_event_rule) | resource |
+| [aws_cloudwatch_event_target.transition_executor_daily](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/cloudwatch_event_target) | resource |
+| [aws_glue_catalog_database.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_catalog_database) | resource |
+| [aws_glue_catalog_table.bouncer](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_catalog_table) | resource |
+| [aws_glue_catalog_table.govuk_assets](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_catalog_table) | resource |
+| [aws_glue_catalog_table.govuk_www](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_catalog_table) | resource |
+| [aws_glue_crawler.bouncer](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_crawler) | resource |
+| [aws_glue_crawler.govuk_assets](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_crawler) | resource |
+| [aws_glue_crawler.govuk_www](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/glue_crawler) | resource |
+| [aws_iam_policy.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy_attachment.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_policy_attachment.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_role.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role) | resource |
+| [aws_iam_role.glue](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role) | resource |
+| [aws_iam_role.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy.fastly_logs_policy](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role_policy) | resource |
+| [aws_iam_role_policy_attachment.aws-glue-service-role-service-attachment](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_user.athena_monitoring](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_user) | resource |
+| [aws_iam_user.logs_writer](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_user) | resource |
+| [aws_iam_user.transition_downloader](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/iam_user) | resource |
+| [aws_lambda_function.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/lambda_function) | resource |
+| [aws_lambda_function.send_public_events_to_ga](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/lambda_function) | resource |
+| [aws_lambda_function.transition_executor](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/lambda_function) | resource |
+| [aws_lambda_permission.allow_download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/lambda_permission) | resource |
+| [aws_lambda_permission.allow_send_public_events_to_ga](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/lambda_permission) | resource |
+| [aws_lambda_permission.cloudwatch_transition_executor_daily_permission](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/lambda_permission) | resource |
+| [aws_s3_bucket.fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.fastly_logs_monitoring](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.transition_fastly_logs](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_notification.bucket_notification](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket_notification) | resource |
+| [aws_s3_bucket_object.download_logs_analytics_deployment_package](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket_object) | resource |
+| [aws_s3_bucket_object.send_public_events_deployment_package](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket_object) | resource |
+| [aws_s3_bucket_policy.lambda_deployment_packages](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/resources/s3_bucket_policy) | resource |
 | [archive_file.transition_executor](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
-| [aws_iam_policy_document.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.lambda_deployment_packages_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_s3_bucket.govuk-analytics-logs-production](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/s3_bucket) | data source |
+| [aws_iam_policy_document.download_logs_analytics](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.lambda_deployment_packages_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_s3_bucket.govuk-analytics-logs-production](https://registry.terraform.io/providers/hashicorp/aws/5.21.0/docs/data-sources/s3_bucket) | data source |
 | [template_file.athena_monitoring_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.download_logs_analytics_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.logs_writer_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
