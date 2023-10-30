@@ -65,9 +65,9 @@ No modules.
 | <a name="input_eks_egress_ips"></a> [eks\_egress\_ips](#input\_eks\_egress\_ips) | Egress addresses for the corresponding EKS environment, in CIDR notation. | `list(string)` | n/a | yes |
 | <a name="input_enable_replica_lifecycle_rules"></a> [enable\_replica\_lifecycle\_rules](#input\_enable\_replica\_lifecycle\_rules) | Enable lifecycle rules for the mirror bucket's replica | `bool` | `true` | no |
 | <a name="input_enable_replication"></a> [enable\_replication](#input\_enable\_replication) | Enable replication from the mirror bucket to its replica | `bool` | `true` | no |
+| <a name="input_gds_egress_ips"></a> [gds\_egress\_ips](#input\_gds\_egress\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_lifecycle_government_uploads"></a> [lifecycle\_government\_uploads](#input\_lifecycle\_government\_uploads) | Number of days for the lifecycle rule for the mirror in the case where the prefix path is www.gov.uk/government/uploads/ | `string` | `"8"` | no |
 | <a name="input_lifecycle_main"></a> [lifecycle\_main](#input\_lifecycle\_main) | Number of days for the lifecycle rule for the mirror | `string` | `"5"` | no |
-| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_networking_key_stack"></a> [remote\_state\_infra\_networking\_key\_stack](#input\_remote\_state\_infra\_networking\_key\_stack) | Override infra\_networking remote state path | `string` | `""` | no |

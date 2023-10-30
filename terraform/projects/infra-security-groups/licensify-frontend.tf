@@ -65,7 +65,7 @@ resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_https"
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
-  cidr_blocks       = var.office_ips
+  cidr_blocks       = var.gds_egress_ips
 }
 
 resource "aws_security_group_rule" "licensify-frontend-elb_ingress_public_https" {
@@ -87,7 +87,7 @@ resource "aws_security_group_rule" "licensify-frontend-elb_ingress_office_http" 
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.licensify-frontend_external_elb.id}"
-  cidr_blocks       = var.office_ips
+  cidr_blocks       = var.gds_egress_ips
 }
 
 resource "aws_security_group_rule" "licensify-frontend-elb_ingress_public_http" {

@@ -47,7 +47,7 @@ variable "remote_state_infra_networking_key_stack" {
   default     = ""
 }
 
-variable "office_ips" {
+variable "gds_egress_ips" {
   type        = list
   description = "An array of CIDR blocks that will be allowed offsite access."
 }

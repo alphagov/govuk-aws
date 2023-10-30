@@ -289,8 +289,8 @@ No modules.
 | <a name="input_aws_integration_external_nat_gateway_ips"></a> [aws\_integration\_external\_nat\_gateway\_ips](#input\_aws\_integration\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS integration external NAT gateways. | `list` | `[]` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_aws_staging_external_nat_gateway_ips"></a> [aws\_staging\_external\_nat\_gateway\_ips](#input\_aws\_staging\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS staging external NAT gateways. | `list` | `[]` | no |
+| <a name="input_gds_egress_ips"></a> [gds\_egress\_ips](#input\_gds\_egress\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_ithc_access_ips"></a> [ithc\_access\_ips](#input\_ithc\_access\_ips) | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | `list` | `[]` | no |
-| <a name="input_office_ips"></a> [office\_ips](#input\_office\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
 | <a name="input_paas_ireland_egress_ips"></a> [paas\_ireland\_egress\_ips](#input\_paas\_ireland\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS Ireland region | `list` | `[]` | no |
 | <a name="input_paas_london_egress_ips"></a> [paas\_london\_egress\_ips](#input\_paas\_london\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS London region | `list` | `[]` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
@@ -303,7 +303,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_office_ips"></a> [office\_ips](#output\_office\_ips) | n/a |
+| <a name="output_gds_egress_ips"></a> [gds\_egress\_ips](#output\_gds\_egress\_ips) | n/a |
 | <a name="output_sg_apt_external_elb_id"></a> [sg\_apt\_external\_elb\_id](#output\_sg\_apt\_external\_elb\_id) | n/a |
 | <a name="output_sg_apt_id"></a> [sg\_apt\_id](#output\_sg\_apt\_id) | n/a |
 | <a name="output_sg_apt_internal_elb_id"></a> [sg\_apt\_internal\_elb\_id](#output\_sg\_apt\_internal\_elb\_id) | n/a |

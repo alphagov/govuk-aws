@@ -66,7 +66,7 @@ resource "aws_security_group_rule" "apt-external-elb_ingress_office_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.apt_external_elb.id}"
-  cidr_blocks       = var.office_ips
+  cidr_blocks       = var.gds_egress_ips
 }
 
 resource "aws_security_group_rule" "apt-external-elb_ingress_fastly_https" {

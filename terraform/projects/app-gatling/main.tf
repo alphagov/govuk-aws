@@ -69,7 +69,7 @@ variable "instance_type" {
   default     = "m5.2xlarge"
 }
 
-variable "office_ips" {
+variable "gds_egress_ips" {
   type        = "list"
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
@@ -174,7 +174,7 @@ data "aws_iam_policy_document" "results_bucket_access" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = ["${var.office_ips}"]
+      values   = ["${var.gds_egress_ips}"]
     }
 
     principals {

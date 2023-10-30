@@ -105,7 +105,7 @@ resource "aws_security_group_rule" "graphite-external-elb_ingress_office_https" 
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.graphite_external_elb.id}"
-  cidr_blocks       = var.office_ips
+  cidr_blocks       = var.gds_egress_ips
 }
 
 # TODO: Audit
