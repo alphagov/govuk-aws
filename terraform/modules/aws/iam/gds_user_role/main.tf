@@ -29,7 +29,7 @@ variable "restrict_to_gds_ips" {
   default = false
 }
 
-variable "office_ips" {
+variable "gds_egress_ips" {
   type        = list(string)
   description = "DEPRECATED: list of trusted CIDR netblocks"
   default     = []
@@ -51,7 +51,7 @@ locals {
 
   gds_ip_restriction_policy_fragment = <<-EOF
   "IpAddress": {
-    "aws:SourceIp": var.office_ips
+    "aws:SourceIp": var.gds_egress_ips
   },
   EOF
 

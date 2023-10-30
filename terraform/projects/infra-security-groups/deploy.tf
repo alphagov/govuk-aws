@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "deploy-elb_ingress_office_https" {
   protocol  = "tcp"
 
   security_group_id = "${aws_security_group.deploy_elb.id}"
-  cidr_blocks       = var.office_ips
+  cidr_blocks       = var.gds_egress_ips
 }
 
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_https" {

@@ -76,7 +76,7 @@ data "aws_iam_policy_document" "s3_mirror_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = var.office_ips
+      values   = var.gds_egress_ips
     }
 
     principals {
@@ -182,7 +182,7 @@ data "aws_iam_policy_document" "s3_mirror_replica_read_policy_doc" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values   = var.office_ips
+      values   = var.gds_egress_ips
     }
 
     principals {

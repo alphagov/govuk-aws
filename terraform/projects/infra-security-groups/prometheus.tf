@@ -6,7 +6,7 @@
 #
 # === Variables:
 # stackname - string
-# office_ips - array of CIDR blocks
+# gds_egress_ips - array of CIDR blocks
 #
 # === Outputs:
 # sg_prometheus_id
@@ -104,7 +104,7 @@ resource "aws_security_group_rule" "prometheus-elb_ingress_officeips_https" {
   security_group_id = "${aws_security_group.prometheus_external_elb.id}"
 
   # Which security group can use this rule
-  cidr_blocks = var.office_ips
+  cidr_blocks = var.gds_egress_ips
 }
 
 resource "aws_security_group_rule" "prometheus-elb_egress_prometheus_http" {

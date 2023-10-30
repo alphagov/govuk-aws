@@ -274,6 +274,6 @@ output "sg_related-links_id" {
   value = "${aws_security_group.related-links.id}"
 }
 
-output "office_ips" {
-  value = "${var.office_ips}"
+output "gds_egress_ips" {
+  value = "${var.gds_egress_ips}"
 }

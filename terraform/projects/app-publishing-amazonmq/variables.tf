@@ -64,7 +64,7 @@ variable "publicly_accessible" {
   default     = false
 }
 
-variable "office_ips" {
+variable "gds_egress_ips" {
   type        = list(any)
   description = "An array of CIDR blocks that will be allowed offsite access."
 }

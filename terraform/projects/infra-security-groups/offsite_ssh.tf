@@ -8,7 +8,7 @@
 #
 # === Variables:
 # stackname - string
-# office_ips - array of CIDR blocks
+# gds_egress_ips - array of CIDR blocks
 #
 
 resource "aws_security_group" "offsite_ssh" {
@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "offsite-ssh_ingress_office-and-carrenza_ssh"
   from_port   = 22
   to_port     = 22
   protocol    = "tcp"
-  cidr_blocks = flatten(["${concat(var.office_ips, var.ithc_access_ips)}"])
+  cidr_blocks = flatten(["${concat(var.gds_egress_ips, var.ithc_access_ips)}"])
 
   security_group_id = "${aws_security_group.offsite_ssh.id}"
 }
