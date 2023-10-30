@@ -8,7 +8,7 @@
 # --------------------------------------------------------------
 terraform {
   backend "s3" {}
-  required_version = "= 0.12.30"
+  required_version = "~> 0.12.31"
 }
 
 provider "fastly" {
