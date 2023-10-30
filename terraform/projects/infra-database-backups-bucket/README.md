@@ -8,7 +8,7 @@ database-backups: The bucket that will hold database backups
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | = 0.12.30 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 0.12.31 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 
