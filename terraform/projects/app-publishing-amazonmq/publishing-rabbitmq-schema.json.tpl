@@ -247,6 +247,14 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
+      "destination": "search_api_v2_published_documents",
+      "destination_type": "queue",
+      "routing_key": "*.bulk.search_api_v2_sync",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
       "destination": "content_data_api_govuk_importer",
       "destination_type": "queue",
       "routing_key": "*.bulk.data-warehouse",
