@@ -15,6 +15,35 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
+variable "remote_state_bucket" {
+  type        = string
+  description = "S3 bucket we store our terraform state in"
+}
+
+variable "remote_state_infra_monitoring_key_stack" {
+  type        = string
+  description = "Override path to infra_monitoring remote state"
+  default     = ""
+}
+
+variable "remote_state_infra_networking_key_stack" {
+  type        = string
+  description = "Override path to infra_networking remote state"
+  default     = ""
+}
+
+variable "remote_state_infra_root_dns_zones_key_stack" {
+  type        = string
+  description = "Override path to infra_root_dns_zones remote state"
+  default     = ""
+}
+
+variable "remote_state_infra_vpc_key_stack" {
+  type        = string
+  description = "Override path to infra_vpc remote state"
+  default     = ""
+}
+
 variable "databases" {
   type        = map(any)
   description = "Databases to create and their configuration."
@@ -44,9 +73,9 @@ variable "backup_window" {
 }
 
 variable "backup_retention_period" {
-  type        = string
-  description = "The days to retain backups for."
-  default     = "7"
+  type        = number
+  description = "Backup retention period in days."
+  default     = 7
 }
 
 variable "skip_final_snapshot" {
@@ -81,24 +110,4 @@ variable "internal_zone_name" {
 variable "internal_domain_name" {
   type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
-}
-
-variable "instance_ami_filter_name" {
-  type        = string
-  description = "Name to use to find AMI images for the instance"
-  default     = "ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"
-}
-
-variable "instance_key_name" {
-  type        = string
-  description = "Name of the instance key"
-  default     = "govuk-infra"
-}
-
-locals {
-  tags = {
-    Project         = var.stackname
-    aws_stackname   = var.stackname
-    aws_environment = var.aws_environment
-  }
 }

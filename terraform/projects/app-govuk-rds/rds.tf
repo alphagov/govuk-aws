@@ -2,7 +2,7 @@ resource "aws_db_subnet_group" "subnet_group" {
   name       = "${var.stackname}-govuk-rds-subnet"
   subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_rds_ids
 
-  tags = merge(local.tags, { Name = "${var.stackname}-govuk-rds-subnet" })
+  tags = { Name = "${var.stackname}-govuk-rds-subnet" }
 }
 
 resource "aws_db_parameter_group" "engine_params" {
@@ -32,7 +32,7 @@ resource "aws_db_instance" "instance" {
   allocated_storage       = each.value.allocated_storage
   instance_class          = each.value.instance_class
   identifier              = "${each.value.name}-${each.value.engine}"
-  storage_type            = "gp2"
+  storage_type            = "gp3"
   db_subnet_group_name    = aws_db_subnet_group.subnet_group.name
   multi_az                = var.multi_az
   parameter_group_name    = aws_db_parameter_group.engine_params[each.key].name
@@ -53,7 +53,7 @@ resource "aws_db_instance" "instance" {
   final_snapshot_identifier = "${each.value.name}-final-snapshot"
   skip_final_snapshot       = var.skip_final_snapshot
 
-  tags = merge(local.tags, { Name = "${var.stackname}-govuk-rds-${each.value.name}-${each.value.engine}" })
+  tags = { Name = "${var.stackname}-govuk-rds-${each.value.name}-${each.value.engine}" }
 }
 
 resource "aws_db_event_subscription" "subscription" {
