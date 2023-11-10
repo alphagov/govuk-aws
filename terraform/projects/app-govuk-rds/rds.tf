@@ -17,7 +17,7 @@ resource "aws_db_parameter_group" "engine_params" {
     content {
       name         = parameter.key
       value        = parameter.value.value
-      apply_method = merge({ apply_method = "immediate" }, each.value)["apply_method"]
+      apply_method = merge({ apply_method = "immediate" }, parameter.value)["apply_method"]
     }
   }
 }
@@ -43,6 +43,10 @@ resource "aws_db_instance" "instance" {
   monitoring_interval     = 60
   monitoring_role_arn     = data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn
   vpc_security_group_ids  = [aws_security_group.rds[each.key].id]
+  apply_immediately       = var.aws_environment != "production"
+
+  performance_insights_enabled          = true
+  performance_insights_retention_period = 7
 
   timeouts {
     create = var.terraform_create_rds_timeout
@@ -50,6 +54,7 @@ resource "aws_db_instance" "instance" {
     update = var.terraform_update_rds_timeout
   }
 
+  deletion_protection       = var.aws_environment == "production"
   final_snapshot_identifier = "${each.value.name}-final-snapshot"
   skip_final_snapshot       = var.skip_final_snapshot
 
@@ -60,14 +65,9 @@ resource "aws_db_event_subscription" "subscription" {
   name      = "govuk-rds-event-subscription"
   sns_topic = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn
 
-  source_type = "db-instance"
-  source_ids  = [for instance in aws_db_instance.instance : instance.id]
-  event_categories = [
-    "availability",
-    "deletion",
-    "failure",
-    "low storage",
-  ]
+  source_type      = "db-instance"
+  source_ids       = [for i in aws_db_instance.instance : i.identifier]
+  event_categories = ["availability", "deletion", "failure", "low storage"]
 }
 
 # Alarm if average CPU utilisation is above the threshold (we use 80% for most of our databases) for 60s
