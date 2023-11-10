@@ -44,12 +44,16 @@ resource "aws_db_instance" "instance" {
   monitoring_role_arn     = data.terraform_remote_state.infra_monitoring.outputs.rds_enhanced_monitoring_role_arn
   vpc_security_group_ids  = [aws_security_group.rds[each.key].id]
 
+  performance_insights_enabled          = true
+  performance_insights_retention_period = 7
+
   timeouts {
     create = var.terraform_create_rds_timeout
     delete = var.terraform_delete_rds_timeout
     update = var.terraform_update_rds_timeout
   }
 
+  deletion_protection       = var.aws_environment == "production"
   final_snapshot_identifier = "${each.value.name}-final-snapshot"
   skip_final_snapshot       = var.skip_final_snapshot
 
