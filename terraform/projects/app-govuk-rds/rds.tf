@@ -64,14 +64,9 @@ resource "aws_db_event_subscription" "subscription" {
   name      = "govuk-rds-event-subscription"
   sns_topic = data.terraform_remote_state.infra_monitoring.outputs.sns_topic_rds_events_arn
 
-  source_type = "db-instance"
-  source_ids  = [for instance in aws_db_instance.instance : instance.id]
-  event_categories = [
-    "availability",
-    "deletion",
-    "failure",
-    "low storage",
-  ]
+  source_type      = "db-instance"
+  source_ids       = [for i in aws_db_instance.instance : i.identifier]
+  event_categories = ["availability", "deletion", "failure", "low storage"]
 }
 
 # Alarm if average CPU utilisation is above the threshold (we use 80% for most of our databases) for 60s
