@@ -17,7 +17,7 @@ resource "aws_db_parameter_group" "engine_params" {
     content {
       name         = parameter.key
       value        = parameter.value.value
-      apply_method = merge({ apply_method = "immediate" }, each.value)["apply_method"]
+      apply_method = merge({ apply_method = "immediate" }, parameter.value)["apply_method"]
     }
   }
 }
