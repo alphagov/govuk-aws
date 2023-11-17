@@ -63,9 +63,12 @@ data "terraform_remote_state" "infra_monitoring" {
 resource "aws_s3_bucket" "datagovuk-organogram" {
   bucket = "datagovuk-${var.aws_environment}-ckan-organogram"
 
-  cors_rule {
+  dynamic "cors_rule" {
+    for_each = [for s in ["${var.domain}", "https://staging.data.gov.uk", "https://find.eks.${var.aws_environment}.govuk.digital"] : {
+      allowed_origin = s
+    }]
     allowed_methods = ["GET"]
-    allowed_origins = "${compact(list(var.domain, var.aws_environment == "production" ? "https://staging.data.gov.uk" : ""))}"
+    allowed_origins = [cors_rule.value.allowed_origin]
   }
 
   tags = {
