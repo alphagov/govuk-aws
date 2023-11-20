@@ -46,8 +46,8 @@ resource "aws_db_instance" "instance" {
   ca_cert_identifier      = "rds-ca-rsa2048-g1"
   apply_immediately       = var.aws_environment != "production"
 
-  performance_insights_enabled          = true
-  performance_insights_retention_period = 7
+  performance_insights_enabled          = each.value.performance_insights_enabled
+  performance_insights_retention_period = each.value.performance_insights_enabled ? 7 : 0
 
   timeouts {
     create = var.terraform_create_rds_timeout
