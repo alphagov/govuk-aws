@@ -14,6 +14,8 @@ locals {
     terraform_deployment = basename(abspath(path.root))
     aws_environment      = var.aws_environment
   }
+  timelock_enabled = var.aws_environment == "production"
+  timelock_days    = 120
 }
 
 provider "aws" {
@@ -28,14 +30,58 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "main" {
-  bucket = "govuk-${var.aws_environment}-database-backups"
-  tags   = { Name = "govuk-${var.aws_environment}-database-backups" }
+  bucket              = "govuk-${var.aws_environment}-database-backups"
+  object_lock_enabled = local.timelock_enabled
+  tags                = { Name = "govuk-${var.aws_environment}-database-backups" }
 }
 
 resource "aws_s3_bucket" "replica" {
-  bucket   = "govuk-${var.aws_environment}-database-backups-replica"
+  bucket              = "govuk-${var.aws_environment}-database-backups-replica"
+  provider            = aws.eu-west-2
+  object_lock_enabled = local.timelock_enabled
+  tags                = { Name = "govuk-${var.aws_environment}-database-backups-replica" }
+}
+
+resource "aws_s3_bucket_object_lock_configuration" "main" {
+  count = local.timelock_enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.main.id
+  rule {
+    default_retention {
+      mode = "COMPLIANCE"
+      days = local.timelock_days
+    }
+  }
+}
+
+resource "aws_s3_bucket_object_lock_configuration" "replica" {
+  count = local.timelock_enabled ? 1 : 0
+
+  bucket   = aws_s3_bucket.replica.id
   provider = aws.eu-west-2
-  tags     = { Name = "govuk-${var.aws_environment}-database-backups-replica" }
+  rule {
+    default_retention {
+      mode = "COMPLIANCE"
+      days = local.timelock_days
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "main" {
+  bucket                  = aws_s3_bucket.main.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_public_access_block" "replica" {
+  bucket                  = aws_s3_bucket.replica.id
+  provider                = aws.eu-west-2
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_logging" "main" {
