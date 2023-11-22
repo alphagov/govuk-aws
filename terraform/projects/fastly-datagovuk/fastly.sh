@@ -4,6 +4,8 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# TODO: FIXME
+# shellcheck disable=SC2207
 fastly_raw_ips=( $(curl https://api.fastly.com/public-ip-list 2>/dev/null | jq -r ".addresses[]") )
 
 fastly_ips_snippet=""

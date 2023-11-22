@@ -1,6 +1,8 @@
 #! /bin/bash
+set -eu
 
 virtualenv -p python3.7 .venv
+# shellcheck disable=SC1091
 . .venv/bin/activate
 
 mkdir -p wheelhouse
