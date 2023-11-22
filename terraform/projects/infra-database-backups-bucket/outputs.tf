@@ -1,6 +1,6 @@
 output "s3_database_backups_bucket_name" {
   value       = aws_s3_bucket.main.id
-  description = "ARN of the database backups S3 bucket."
+  description = "Name of the database backups S3 bucket."
 }
 
 output "integration_mongo_api_read_database_backups_bucket_policy_arn" {
