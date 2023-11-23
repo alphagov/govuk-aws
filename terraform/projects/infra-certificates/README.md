@@ -38,9 +38,9 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | n/a | yes |
 | <a name="input_certificate_external_domain_name"></a> [certificate\_external\_domain\_name](#input\_certificate\_external\_domain\_name) | Domain name for which the external certificate should be issued | `string` | n/a | yes |
-| <a name="input_certificate_external_subject_alternative_names"></a> [certificate\_external\_subject\_alternative\_names](#input\_certificate\_external\_subject\_alternative\_names) | List of domains that should be SANs in the external issued certificate | `list` | `[]` | no |
+| <a name="input_certificate_external_subject_alternative_names"></a> [certificate\_external\_subject\_alternative\_names](#input\_certificate\_external\_subject\_alternative\_names) | List of domains that should be SANs in the external issued certificate | `list(string)` | `[]` | no |
 | <a name="input_certificate_internal_domain_name"></a> [certificate\_internal\_domain\_name](#input\_certificate\_internal\_domain\_name) | Domain name for which the internal certificate should be issued | `string` | n/a | yes |
-| <a name="input_certificate_internal_subject_alternative_names"></a> [certificate\_internal\_subject\_alternative\_names](#input\_certificate\_internal\_subject\_alternative\_names) | List of domains that should be SANs in the internal issued certificate | `list` | `[]` | no |
+| <a name="input_certificate_internal_subject_alternative_names"></a> [certificate\_internal\_subject\_alternative\_names](#input\_certificate\_internal\_subject\_alternative\_names) | List of domains that should be SANs in the internal issued certificate | `list(string)` | `[]` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_root_dns_zones_key_stack"></a> [remote\_state\_infra\_root\_dns\_zones\_key\_stack](#input\_remote\_state\_infra\_root\_dns\_zones\_key\_stack) | Override stackname path to infra\_root\_dns\_zones remote state | `string` | `""` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |

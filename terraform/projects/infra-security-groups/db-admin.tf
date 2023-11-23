@@ -13,11 +13,15 @@
 
 resource "aws_security_group" "db-admin" {
   name        = "${var.stackname}_db-admin_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the db-admin host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_db-admin_access"
+    Name        = "${var.stackname}_db-admin_access"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Database Admin"
   }
 }
 
@@ -28,10 +32,10 @@ resource "aws_security_group_rule" "db-admin_ingress_db-admin-elb_ssh" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin.id}"
+  security_group_id = aws_security_group.db-admin.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.db-admin_elb.id}"
+  source_security_group_id = aws_security_group.db-admin_elb.id
 }
 
 resource "aws_security_group_rule" "db-admin_ingress_db-admin-elb_pgbouncer" {
@@ -41,15 +45,15 @@ resource "aws_security_group_rule" "db-admin_ingress_db-admin-elb_pgbouncer" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.db-admin.id}"
+  security_group_id = aws_security_group.db-admin.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.db-admin_elb.id}"
+  source_security_group_id = aws_security_group.db-admin_elb.id
 }
 
 resource "aws_security_group" "db-admin_elb" {
   name        = "${var.stackname}_db-admin_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the db-admin ELB"
 
   tags = {
@@ -64,8 +68,8 @@ resource "aws_security_group_rule" "db-admin-elb_ingress_management_ssh" {
   to_port   = 22
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.db-admin_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.db-admin_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "db-admin-elb_egress_any_any" {
@@ -74,5 +78,5 @@ resource "aws_security_group_rule" "db-admin-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.db-admin_elb.id}"
+  security_group_id = aws_security_group.db-admin_elb.id
 }

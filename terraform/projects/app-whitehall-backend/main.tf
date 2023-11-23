@@ -19,6 +19,10 @@ resource "aws_s3_bucket" "whitehall_csvs" {
   tags = {
     name            = "govuk-${var.aws_environment}-whitehall-csvs"
     aws_environment = var.aws_environment
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Whitehall CSVS"
   }
 
   logging {

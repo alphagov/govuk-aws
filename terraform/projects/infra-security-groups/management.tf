@@ -14,11 +14,15 @@
 
 resource "aws_security_group" "management" {
   name        = "${var.stackname}_management_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Group used to allow access by management systems"
 
   tags = {
-    Name = "${var.stackname}_management_access"
+    Name        = "${var.stackname}_management_access"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "VM Management"
   }
 }
 
@@ -29,10 +33,10 @@ resource "aws_security_group_rule" "management_ingress_jumpbox_ssh" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.management.id}"
+  security_group_id = aws_security_group.management.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.jumpbox.id}"
+  source_security_group_id = aws_security_group.jumpbox.id
 }
 
 resource "aws_security_group_rule" "management_ingress_deploy_ssh" {
@@ -42,10 +46,10 @@ resource "aws_security_group_rule" "management_ingress_deploy_ssh" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.management.id}"
+  security_group_id = aws_security_group.management.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.deploy.id}"
+  source_security_group_id = aws_security_group.deploy.id
 }
 
 resource "aws_security_group_rule" "management_ingress_monitoring_nrpe" {
@@ -55,10 +59,10 @@ resource "aws_security_group_rule" "management_ingress_monitoring_nrpe" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.management.id}"
+  security_group_id = aws_security_group.management.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring.id}"
+  source_security_group_id = aws_security_group.monitoring.id
 }
 
 resource "aws_security_group_rule" "management_ingress_monitoring_ping" {
@@ -68,10 +72,10 @@ resource "aws_security_group_rule" "management_ingress_monitoring_ping" {
   protocol  = "icmp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.management.id}"
+  security_group_id = aws_security_group.management.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring.id}"
+  source_security_group_id = aws_security_group.monitoring.id
 }
 
 resource "aws_security_group_rule" "management_ingress_prometheus_node_exporter" {
@@ -81,10 +85,10 @@ resource "aws_security_group_rule" "management_ingress_prometheus_node_exporter"
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.management.id}"
+  security_group_id = aws_security_group.management.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.prometheus.id}"
+  source_security_group_id = aws_security_group.prometheus.id
 }
 
 resource "aws_security_group_rule" "mangement_egress_any_any" {
@@ -93,5 +97,5 @@ resource "aws_security_group_rule" "mangement_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.management.id}"
+  security_group_id = aws_security_group.management.id
 }

@@ -49,6 +49,10 @@ resource "aws_s3_bucket" "athena_query_results" {
     Name            = "govuk-${var.aws_environment}-athena-query-results"
     aws_environment = var.aws_environment
     project         = "infra-athena-query-results"
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Athena"
   }
 }
 

@@ -61,6 +61,10 @@ resource "aws_glue_crawler" "csp_reports" {
   tags = {
     aws_environment = var.aws_environment
     project         = local.project_name
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "CSP Reporter"
   }
 
   s3_target {

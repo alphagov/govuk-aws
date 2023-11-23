@@ -47,10 +47,10 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map` | `{}` | no |
+| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map(string)` | `{}` | no |
 | <a name="input_route_table_public_id"></a> [route\_table\_public\_id](#input\_route\_table\_public\_id) | The ID of the route table in the VPC | `string` | n/a | yes |
-| <a name="input_subnet_availability_zones"></a> [subnet\_availability\_zones](#input\_subnet\_availability\_zones) | A map of which AZs the subnets should be created in. | `map` | n/a | yes |
-| <a name="input_subnet_cidrs"></a> [subnet\_cidrs](#input\_subnet\_cidrs) | A map of the CIDRs for the subnets being created. | `map` | n/a | yes |
+| <a name="input_subnet_availability_zones"></a> [subnet\_availability\_zones](#input\_subnet\_availability\_zones) | A map of which AZs the subnets should be created in. | `map(string)` | n/a | yes |
+| <a name="input_subnet_cidrs"></a> [subnet\_cidrs](#input\_subnet\_cidrs) | A map of the CIDRs for the subnets being created. | `map(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of the VPC in which the public subnet is created. | `string` | n/a | yes |
 
 ## Outputs

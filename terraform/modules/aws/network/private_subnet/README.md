@@ -62,11 +62,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map` | `{}` | no |
+| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map(string)` | `{}` | no |
 | <a name="input_s3_gateway_id"></a> [s3\_gateway\_id](#input\_s3\_gateway\_id) | The ID of the AWS VPC Endpoint to use to communicate with S3 | `string` | n/a | yes |
-| <a name="input_subnet_availability_zones"></a> [subnet\_availability\_zones](#input\_subnet\_availability\_zones) | A map of which AZs the subnets should be created in. | `map` | n/a | yes |
-| <a name="input_subnet_cidrs"></a> [subnet\_cidrs](#input\_subnet\_cidrs) | A map of the CIDRs for the subnets being created. | `map` | n/a | yes |
-| <a name="input_subnet_nat_gateways"></a> [subnet\_nat\_gateways](#input\_subnet\_nat\_gateways) | A map containing the NAT gateway IDs for the subnets being created. | `map` | `{}` | no |
+| <a name="input_subnet_availability_zones"></a> [subnet\_availability\_zones](#input\_subnet\_availability\_zones) | A map of which AZs the subnets should be created in. | `map(string)` | n/a | yes |
+| <a name="input_subnet_cidrs"></a> [subnet\_cidrs](#input\_subnet\_cidrs) | A map of the CIDRs for the subnets being created. | `map(string)` | n/a | yes |
+| <a name="input_subnet_nat_gateways"></a> [subnet\_nat\_gateways](#input\_subnet\_nat\_gateways) | A map containing the NAT gateway IDs for the subnets being created. | `map(string)` | `{}` | no |
 | <a name="input_subnet_nat_gateways_length"></a> [subnet\_nat\_gateways\_length](#input\_subnet\_nat\_gateways\_length) | Provide the number of elements in the map subnet\_nat\_gateways. | `string` | `"0"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of the VPC in which the private subnet is created. | `string` | n/a | yes |
 

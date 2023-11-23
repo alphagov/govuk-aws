@@ -36,6 +36,10 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
   tags = {
     aws_environment = var.aws_environment
     project         = local.project_name
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "CSP Reporter"
   }
 
   depends_on = [aws_iam_role_policy.firehose_glue_policy]

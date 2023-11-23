@@ -38,10 +38,10 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | n/a | yes |
+| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list(string)` | n/a | yes |
 | <a name="input_errorportallocation_threshold"></a> [errorportallocation\_threshold](#input\_errorportallocation\_threshold) | The value against which the ErrorPortAllocation metric is compared. | `string` | `"10"` | no |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | The alarm name prefix. | `string` | n/a | yes |
-| <a name="input_nat_gateway_ids"></a> [nat\_gateway\_ids](#input\_nat\_gateway\_ids) | List of IDs of the NAT Gateways that we want to monitor. | `list` | n/a | yes |
+| <a name="input_nat_gateway_ids"></a> [nat\_gateway\_ids](#input\_nat\_gateway\_ids) | List of IDs of the NAT Gateways that we want to monitor. | `list(string)` | n/a | yes |
 | <a name="input_nat_gateway_ids_length"></a> [nat\_gateway\_ids\_length](#input\_nat\_gateway\_ids\_length) | Length of the list of IDs of the NAT Gateways that we want to monitor. | `string` | n/a | yes |
 | <a name="input_packetsdropcount_threshold"></a> [packetsdropcount\_threshold](#input\_packetsdropcount\_threshold) | The value against which the PacketsDropCount metric is compared. | `string` | `"100"` | no |
 

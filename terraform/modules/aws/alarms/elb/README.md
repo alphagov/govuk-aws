@@ -59,7 +59,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | n/a | yes |
+| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list(string)` | n/a | yes |
 | <a name="input_elb_name"></a> [elb\_name](#input\_elb\_name) | The name of the ELB that we want to monitor. | `string` | n/a | yes |
 | <a name="input_healthyhostcount_threshold"></a> [healthyhostcount\_threshold](#input\_healthyhostcount\_threshold) | The value against which the HealthyHostCount metric is compared. | `string` | `"0"` | no |
 | <a name="input_httpcode_backend_4xx_threshold"></a> [httpcode\_backend\_4xx\_threshold](#input\_httpcode\_backend\_4xx\_threshold) | The value against which the HTTPCode\_Backend\_4XX metric is compared. | `string` | `"80"` | no |

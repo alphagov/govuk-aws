@@ -150,6 +150,10 @@ resource "aws_cloudwatch_log_group" "public_bouncer_waf" {
   tags = {
     Project       = var.stackname
     aws_stackname = var.stackname
+    Environment   = "${var.aws_environment}"
+    Product       = "GOVUK"
+    Owner         = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System        = "Bouncer"
   }
 }
 

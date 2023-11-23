@@ -17,23 +17,23 @@
 * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ec2-metricscollected.html
 */
 variable "name_prefix" {
-  type        = "string"
+  type        = string
   description = "The alarm name prefix."
 }
 
 variable "cpuutilization_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the CPUUtilization metric is compared, in percent."
   default     = "80"
 }
 
 variable "alarm_actions" {
-  type        = "list"
+  type        = list(string)
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "autoscaling_group_name" {
-  type        = "string"
+  type        = string
   description = "The name of the AutoScalingGroup that we want to monitor."
 }
 
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpuutilization" {
   namespace           = "AWS/EC2"
   period              = "120"
   statistic           = "Average"
-  threshold           = "${var.cpuutilization_threshold}"
+  threshold           = var.cpuutilization_threshold
   actions_enabled     = true
   alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors CPU utilization in an instance"
@@ -80,12 +80,12 @@ resource "aws_cloudwatch_metric_alarm" "ec2_statuscheckfailed_instance" {
 
 // The ID of the instance CPUUtilization health check.
 output "alarm_ec2_cpuutilization_id" {
-  value       = "${aws_cloudwatch_metric_alarm.ec2_cpuutilization.id}"
+  value       = aws_cloudwatch_metric_alarm.ec2_cpuutilization.id
   description = "The ID of the instance CPUUtilization health check."
 }
 
 // The ID of the instance StatusCheckFailed_Instance health check.
 output "alarm_ec2_statuscheckfailed_instance_id" {
-  value       = "${aws_cloudwatch_metric_alarm.ec2_statuscheckfailed_instance.id}"
+  value       = aws_cloudwatch_metric_alarm.ec2_statuscheckfailed_instance.id
   description = "The ID of the instance StatusCheckFailed_Instance health check."
 }

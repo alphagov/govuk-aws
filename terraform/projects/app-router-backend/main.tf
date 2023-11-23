@@ -24,6 +24,10 @@ locals {
     "aws_stackname"   = var.stackname
     "aws_environment" = var.aws_environment
     "aws_migration"   = "router_backend"
+    "Environment"     = "${var.aws_environment}"
+    "Product"         = "GOVUK"
+    "Owner"           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    "System"          = "${var.stackname} Router"
   }
 }
 
@@ -39,6 +43,10 @@ resource "aws_network_interface" "router-backend-1_eni" {
   tags = merge(local.default_tags, {
     Name         = "${var.stackname}-router-backend-1"
     aws_hostname = "router-backend-1"
+    Environment  = "${var.aws_environment}"
+    Product      = "GOVUK"
+    Owner        = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System       = "${var.stackname} Router"
   })
 }
 
@@ -55,6 +63,10 @@ module "router-backend-1" {
   name   = "${var.stackname}-router-backend-1"
   default_tags = merge(local.default_tags, {
     "aws_hostname" = "router-backend-1"
+    "Environment"  = "${var.aws_environment}"
+    "Product"      = "GOVUK"
+    "Owner"        = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    "System"       = "${var.stackname} Backend"
   })
   instance_subnet_ids = matchkeys(
     values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map),
@@ -84,6 +96,10 @@ resource "aws_network_interface" "router-backend-2_eni" {
   tags = merge(local.default_tags, {
     Name         = "${var.stackname}-router-backend-2"
     aws_hostname = "router-backend-2"
+    Environment  = "${var.aws_environment}"
+    Product      = "GOVUK"
+    Owner        = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System       = "${var.stackname} Backend"
   })
 }
 
@@ -100,6 +116,10 @@ module "router-backend-2" {
   name   = "${var.stackname}-router-backend-2"
   default_tags = merge(local.default_tags, {
     "aws_hostname" = "router-backend-2"
+    "Environment"  = "${var.aws_environment}"
+    "Product"      = "GOVUK"
+    "Owner"        = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    "System"       = "${var.stackname} Backend"
   })
   instance_subnet_ids = matchkeys(
     values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map),
@@ -129,6 +149,10 @@ resource "aws_network_interface" "router-backend-3_eni" {
   tags = merge(local.default_tags, {
     Name         = "${var.stackname}-router-backend-3"
     aws_hostname = "router-backend-3"
+    Environment  = "${var.aws_environment}"
+    Product      = "GOVUK"
+    Owner        = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System       = "${var.stackname} Backend"
   })
 }
 
@@ -145,6 +169,10 @@ module "router-backend-3" {
   name   = "${var.stackname}-router-backend-3"
   default_tags = merge(local.default_tags, {
     "aws_hostname" = "router-backend-3"
+    "Environment"  = "${var.aws_environment}"
+    "Product"      = "GOVUK"
+    "Owner"        = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    "System"       = "${var.stackname} Backend"
   })
   instance_subnet_ids = matchkeys(
     values(data.terraform_remote_state.infra_networking.outputs.private_subnet_names_ids_map),

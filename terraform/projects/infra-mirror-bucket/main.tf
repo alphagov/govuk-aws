@@ -48,7 +48,7 @@ variable "remote_state_infra_networking_key_stack" {
 }
 
 variable "gds_egress_ips" {
-  type        = list
+  type        = list(any)
   description = "An array of CIDR blocks that will be allowed offsite access."
 }
 
@@ -161,6 +161,10 @@ resource "aws_s3_bucket" "govuk-mirror" {
   tags = {
     Name            = "govuk-${var.aws_environment}-mirror"
     aws_environment = var.aws_environment
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "GOVUK Mirror"
   }
 
   logging {
@@ -229,6 +233,10 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
     Name            = "govuk-${var.aws_environment}-mirror-replica"
     Status          = var.enable_replication ? null : "Not in use in ${var.aws_environment} environment"
     aws_environment = var.aws_environment
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "GOVUK Mirror"
   }
 
   logging {

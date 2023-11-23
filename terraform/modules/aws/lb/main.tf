@@ -34,152 +34,152 @@
 */
 
 variable "allow_routing_for_absent_host_header_rules" {
-  type        = "string"
+  type        = string
   description = "If true, the ALB will route to backend hosts. Otherwise, a 400 error will be returned"
   default     = "true"
 }
 
 variable "default_tags" {
-  type        = "map"
+  type        = map(string)
   description = "Additional resource tags"
   default     = {}
 }
 
 variable "load_balancer_type" {
-  type        = "string"
+  type        = string
   description = "The type of load balancer to create. Possible values are application or network. The default value is application."
   default     = "application"
 }
 
 variable "idle_timeout" {
-  type        = "string"
+  type        = string
   description = "The time in seconds that the connection is allowed to be idle."
   default     = "60"
 }
 
 variable "access_logs_bucket_name" {
-  type        = "string"
+  type        = string
   description = "The S3 bucket name to store the logs in."
 }
 
 variable "access_logs_bucket_prefix" {
-  type        = "string"
+  type        = string
   description = "The S3 prefix name to store the logs in."
   default     = ""
 }
 
 variable "listener_action" {
-  type        = "map"
+  type        = map(string)
   description = "A map of Load Balancer Listener and default target group action, both specified as PROTOCOL:PORT."
 }
 
 variable "listener_certificate_domain_name" {
-  type        = "string"
+  type        = string
   description = "HTTPS Listener certificate domain name."
   default     = ""
 }
 
 variable "listener_secondary_certificate_domain_name" {
-  type        = "string"
+  type        = string
   description = "HTTPS Listener secondary certificate domain name."
   default     = ""
 }
 
 variable "listener_internal_certificate_domain_name" {
-  type        = "string"
+  type        = string
   description = "HTTPS Listener internal certificate domain name."
   default     = ""
 }
 
 variable "listener_ssl_policy" {
-  type        = "string"
+  type        = string
   description = "The name of the SSL Policy for HTTPS listeners."
   default     = "ELBSecurityPolicy-TLS-1-2-2017-01"
 }
 
 variable "internal" {
-  type        = "string"
+  type        = string
   description = "If true, the LB will be internal."
   default     = true
 }
 
 variable "name" {
-  type        = "string"
+  type        = string
   description = "The name of the LB. This name must be unique within your AWS account, can have a maximum of 32 characters."
 }
 
 variable "subnets" {
-  type        = "list"
+  type        = list(string)
   description = "A list of subnet IDs to attach to the LB."
 }
 
 variable "security_groups" {
-  type        = "list"
+  type        = list(string)
   description = "A list of security group IDs to assign to the LB. Only valid for Load Balancers of type application."
   default     = []
 }
 
 variable "vpc_id" {
-  type        = "string"
+  type        = string
   description = "The ID of the VPC in which the default target groups are created."
 }
 
 variable "target_group_health_check_path" {
-  type        = "string"
+  type        = string
   description = "The health check path."
   default     = "/_healthcheck"
 }
 
 variable "target_group_health_check_matcher" {
-  type        = "string"
+  type        = string
   description = "The health check match response code."
   default     = "200"
 }
 
 variable "target_group_deregistration_delay" {
-  type        = "string"
+  type        = string
   description = "The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused."
   default     = 300
 }
 
 variable "target_group_health_check_interval" {
-  type        = "string"
+  type        = string
   description = "The approximate amount of time, in seconds, between health checks of an individual target. Minimum value 5 seconds, Maximum value 300 seconds."
   default     = 30
 }
 
 variable "target_group_health_check_timeout" {
-  type        = "string"
+  type        = string
   description = "The amount of time, in seconds, during which no response means a failed health check."
   default     = 5
 }
 
 variable "alarm_actions" {
-  type        = "list"
+  type        = list(string)
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
   default     = []
 }
 
 variable "httpcode_target_4xx_count_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the HTTPCode_Target_4XX_Count metric is compared."
   default     = "0"
 }
 
 variable "httpcode_target_5xx_count_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the HTTPCode_Target_5XX_Count metric is compared."
   default     = "80"
 }
 
 variable "httpcode_elb_4xx_count_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the HTTPCode_ELB_4XX_Count metric is compared."
   default     = "0"
 }
 
 variable "httpcode_elb_5xx_count_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the HTTPCode_ELB_5XX_Count metric is compared."
   default     = "80"
 }
@@ -188,47 +188,47 @@ variable "httpcode_elb_5xx_count_threshold" {
 #--------------------------------------------------------------
 
 data "aws_acm_certificate" "cert" {
-  count    = "${var.listener_certificate_domain_name == "" ? 0 : 1}"
-  domain   = "${var.listener_certificate_domain_name}"
+  count    = var.listener_certificate_domain_name == "" ? 0 : 1
+  domain   = var.listener_certificate_domain_name
   statuses = ["ISSUED"]
 }
 
 data "aws_acm_certificate" "secondary_cert" {
-  count    = "${var.listener_secondary_certificate_domain_name == "" ? 0 : 1}"
-  domain   = "${var.listener_secondary_certificate_domain_name}"
+  count    = var.listener_secondary_certificate_domain_name == "" ? 0 : 1
+  domain   = var.listener_secondary_certificate_domain_name
   statuses = ["ISSUED"]
 }
 
 data "aws_acm_certificate" "internal_cert" {
-  count    = "${var.listener_internal_certificate_domain_name == "" ? 0 : 1}"
-  domain   = "${var.listener_internal_certificate_domain_name}"
+  count    = var.listener_internal_certificate_domain_name == "" ? 0 : 1
+  domain   = var.listener_internal_certificate_domain_name
   statuses = ["ISSUED"]
 }
 
 resource "aws_lb" "lb" {
-  name               = "${var.name}"
-  internal           = "${var.internal}"
-  security_groups    = "${var.security_groups}"
+  name               = var.name
+  internal           = var.internal
+  security_groups    = var.security_groups
   subnets            = flatten(var.subnets)
-  load_balancer_type = "${var.load_balancer_type}"
-  idle_timeout       = "${var.idle_timeout}"
+  load_balancer_type = var.load_balancer_type
+  idle_timeout       = var.idle_timeout
 
   access_logs {
     enabled = true
-    bucket  = "${var.access_logs_bucket_name}"
-    prefix  = "${var.access_logs_bucket_prefix != "" ? var.access_logs_bucket_prefix : "lb/${var.name}"}"
+    bucket  = var.access_logs_bucket_name
+    prefix  = var.access_logs_bucket_prefix != "" ? var.access_logs_bucket_prefix : "lb/${var.name}"
   }
 
-  tags = "${merge(
+  tags = (merge(
     var.default_tags,
     map(
       "Name", var.name
     )
-  )}"
+  ))
 }
 
 data "null_data_source" "values" {
-  count = "${length(keys(var.listener_action))}"
+  count = length(keys(var.listener_action))
 
   inputs = {
     ssl_arn_index = "${element(split(":", element(keys(var.listener_action), count.index)), 0) == "HTTPS" ? format("%d", count.index) : ""}"
@@ -237,14 +237,14 @@ data "null_data_source" "values" {
 }
 
 resource "aws_lb_listener" "listener_non_ssl" {
-  count             = "${length(compact(data.null_data_source.values.*.inputs.arn_index))}"
-  load_balancer_arn = "${aws_lb.lb.arn}"
-  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))), 1)}"
-  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))), 0)}"
+  count             = length(compact(data.null_data_source.values.*.inputs.arn_index))
+  load_balancer_arn = aws_lb.lb.arn
+  port              = element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))), 1)
+  protocol          = element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))), 0)
 
   default_action {
-    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true" ? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))}") : ""}"
-    type             = "${var.allow_routing_for_absent_host_header_rules == "true" ? "forward" : "fixed-response"}"
+    target_group_arn = var.allow_routing_for_absent_host_header_rules == "true" ? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.arn_index), count.index))}") : ""
+    type             = var.allow_routing_for_absent_host_header_rules == "true" ? "forward" : "fixed-response"
 
     fixed_response {
       content_type = "text/plain"
@@ -255,16 +255,16 @@ resource "aws_lb_listener" "listener_non_ssl" {
 }
 
 resource "aws_lb_listener" "listener" {
-  count             = "${length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
-  load_balancer_arn = "${aws_lb.lb.arn}"
-  port              = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 1)}"
-  protocol          = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0)}"
-  ssl_policy        = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0) == "HTTPS" ? var.listener_ssl_policy : ""}"
-  certificate_arn   = "${element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""}"
+  count             = length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))
+  load_balancer_arn = aws_lb.lb.arn
+  port              = element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 1)
+  protocol          = element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0)
+  ssl_policy        = element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0) == "HTTPS" ? var.listener_ssl_policy : ""
+  certificate_arn   = element(split(":", element(keys(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))), 0) == "HTTPS" ? data.aws_acm_certificate.cert.0.arn : ""
 
   default_action {
-    target_group_arn = "${var.allow_routing_for_absent_host_header_rules == "true" ? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))}") : ""}"
-    type             = "${var.allow_routing_for_absent_host_header_rules == "true" ? "forward" : "fixed-response"}"
+    target_group_arn = var.allow_routing_for_absent_host_header_rules == "true" ? lookup(local.target_groups_arns, "${element(values(var.listener_action), element(compact(data.null_data_source.values.*.inputs.ssl_arn_index), count.index))}") : ""
+    type             = var.allow_routing_for_absent_host_header_rules == "true" ? "forward" : "fixed-response"
 
     fixed_response {
       content_type = "text/plain"
@@ -275,54 +275,54 @@ resource "aws_lb_listener" "listener" {
 }
 
 resource "aws_lb_listener_certificate" "secondary" {
-  count           = "${var.listener_secondary_certificate_domain_name == "" ? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
-  listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
-  certificate_arn = "${data.aws_acm_certificate.secondary_cert.0.arn}"
+  count           = var.listener_secondary_certificate_domain_name == "" ? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))
+  listener_arn    = element(aws_lb_listener.listener.*.arn, count.index)
+  certificate_arn = data.aws_acm_certificate.secondary_cert.0.arn
 }
 
 resource "aws_lb_listener_certificate" "internal" {
-  count           = "${var.listener_internal_certificate_domain_name == "" ? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))}"
-  listener_arn    = "${element(aws_lb_listener.listener.*.arn, count.index)}"
-  certificate_arn = "${data.aws_acm_certificate.internal_cert.0.arn}"
+  count           = var.listener_internal_certificate_domain_name == "" ? 0 : length(compact(data.null_data_source.values.*.inputs.ssl_arn_index))
+  listener_arn    = element(aws_lb_listener.listener.*.arn, count.index)
+  certificate_arn = data.aws_acm_certificate.internal_cert.0.arn
 }
 
 locals {
-  target_groups = "${distinct(values(var.listener_action))}"
+  target_groups = distinct(values(var.listener_action))
 }
 
 resource "aws_lb_target_group" "tg_default" {
-  count                = "${length(local.target_groups)}"
-  name                 = "${replace(format("%.21s-%.10s", var.name, replace(local.target_groups[count.index], ":", "-")), "/-$/", "")}"
-  port                 = "${element(split(":", element(local.target_groups, count.index)), 1)}"
-  protocol             = "${element(split(":", element(local.target_groups, count.index)), 0)}"
-  vpc_id               = "${var.vpc_id}"
-  deregistration_delay = "${var.target_group_deregistration_delay}"
+  count                = length(local.target_groups)
+  name                 = replace(format("%.21s-%.10s", var.name, replace(local.target_groups[count.index], ":", "-")), "/-$/", "")
+  port                 = element(split(":", element(local.target_groups, count.index)), 1)
+  protocol             = element(split(":", element(local.target_groups, count.index)), 0)
+  vpc_id               = var.vpc_id
+  deregistration_delay = var.target_group_deregistration_delay
 
   health_check {
-    interval            = "${var.target_group_health_check_interval}"
-    path                = "${var.target_group_health_check_path}"
-    matcher             = "${var.target_group_health_check_matcher}"
-    port                = "${element(split(":", element(local.target_groups, count.index)), 1)}"
-    protocol            = "${element(split(":", element(local.target_groups, count.index)), 0)}"
+    interval            = var.target_group_health_check_interval
+    path                = var.target_group_health_check_path
+    matcher             = var.target_group_health_check_matcher
+    port                = element(split(":", element(local.target_groups, count.index)), 1)
+    protocol            = element(split(":", element(local.target_groups, count.index)), 0)
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    timeout             = "${var.target_group_health_check_timeout}"
+    timeout             = var.target_group_health_check_timeout
   }
 
   lifecycle {
     create_before_destroy = true
   }
 
-  tags = "${merge(
+  tags = (merge(
     var.default_tags,
     map(
       "Name", "${var.name}-${replace(element(local.target_groups, count.index), ":", "-")}"
     )
-  )}"
+  ))
 }
 
 locals {
-  target_groups_arns = "${zipmap(formatlist("%v:%v", aws_lb_target_group.tg_default.*.protocol, aws_lb_target_group.tg_default.*.port), aws_lb_target_group.tg_default.*.arn)}"
+  target_groups_arns = zipmap(formatlist("%v:%v", aws_lb_target_group.tg_default.*.protocol, aws_lb_target_group.tg_default.*.port), aws_lb_target_group.tg_default.*.arn)
 }
 
 locals {
@@ -330,7 +330,7 @@ locals {
 }
 
 resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_4xx_count" {
-  count               = "${var.httpcode_elb_4xx_count_threshold > 0 ? 1 : 0}"
+  count               = var.httpcode_elb_4xx_count_threshold > 0 ? 1 : 0
   alarm_name          = "${var.name}-elb-httpcode_elb_4xx_count"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
@@ -338,9 +338,9 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_4xx_count" {
   namespace           = "AWS/ApplicationELB"
   period              = "60"
   statistic           = "Sum"
-  threshold           = "${var.httpcode_elb_4xx_count_threshold}"
+  threshold           = var.httpcode_elb_4xx_count_threshold
   actions_enabled     = true
-  alarm_actions       = "${var.alarm_actions}"
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the sum of HTTP 4XX response codes generated by the Application LB."
   treat_missing_data  = "notBreaching"
 
@@ -350,7 +350,7 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_4xx_count" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_5xx_count" {
-  count               = "${var.httpcode_elb_5xx_count_threshold > 0 ? 1 : 0}"
+  count               = var.httpcode_elb_5xx_count_threshold > 0 ? 1 : 0
   alarm_name          = "${var.name}-elb-httpcode_elb_5xx_count"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
@@ -358,9 +358,9 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_5xx_count" {
   namespace           = "AWS/ApplicationELB"
   period              = "60"
   statistic           = "Sum"
-  threshold           = "${var.httpcode_elb_5xx_count_threshold}"
+  threshold           = var.httpcode_elb_5xx_count_threshold
   actions_enabled     = true
-  alarm_actions       = "${var.alarm_actions}"
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the sum of HTTP 5XX response codes generated by the Application LB."
   treat_missing_data  = "notBreaching"
 
@@ -370,7 +370,7 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_elb_5xx_count" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_4xx_count" {
-  count               = "${var.httpcode_target_4xx_count_threshold > 0 ? 1 : 0}"
+  count               = var.httpcode_target_4xx_count_threshold > 0 ? 1 : 0
   alarm_name          = "${var.name}-elb-httpcode_target_4xx_count"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
@@ -378,9 +378,9 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_4xx_count" {
   namespace           = "AWS/ApplicationELB"
   period              = "60"
   statistic           = "Sum"
-  threshold           = "${var.httpcode_target_4xx_count_threshold}"
+  threshold           = var.httpcode_target_4xx_count_threshold
   actions_enabled     = true
-  alarm_actions       = "${var.alarm_actions}"
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the sum of HTTP 4XX response codes generated by the Target Groups."
   treat_missing_data  = "notBreaching"
 
@@ -390,7 +390,7 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_4xx_count" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_5xx_count" {
-  count               = "${var.httpcode_target_5xx_count_threshold > 0 ? 1 : 0}"
+  count               = var.httpcode_target_5xx_count_threshold > 0 ? 1 : 0
   alarm_name          = "${var.name}-elb-httpcode_target_5xx_count"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "5"
@@ -398,9 +398,9 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_5xx_count" {
   namespace           = "AWS/ApplicationELB"
   period              = "60"
   statistic           = "Sum"
-  threshold           = "${var.httpcode_target_5xx_count_threshold}"
+  threshold           = var.httpcode_target_5xx_count_threshold
   actions_enabled     = true
-  alarm_actions       = "${var.alarm_actions}"
+  alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors the sum of HTTP 5XX response codes generated by the Target Groups."
   treat_missing_data  = "notBreaching"
 
@@ -413,31 +413,31 @@ resource "aws_cloudwatch_metric_alarm" "elb_httpcode_target_5xx_count" {
 #--------------------------------------------------------------
 
 output "lb_id" {
-  value       = "${aws_lb.lb.id}"
+  value       = aws_lb.lb.id
   description = "The ARN of the load balancer (matches arn)."
 }
 
 output "lb_arn_suffix" {
-  value       = "${aws_lb.lb.arn_suffix}"
+  value       = aws_lb.lb.arn_suffix
   description = "The ARN suffix for use with CloudWatch Metrics."
 }
 
 output "lb_dns_name" {
-  value       = "${aws_lb.lb.dns_name}"
+  value       = aws_lb.lb.dns_name
   description = "The DNS name of the load balancer."
 }
 
 output "lb_zone_id" {
-  value       = "${aws_lb.lb.zone_id}"
+  value       = aws_lb.lb.zone_id
   description = "The canonical hosted zone ID of the load balancer (to be used in a Route 53 Alias record)."
 }
 
 output "target_group_arns" {
-  value       = "${aws_lb_target_group.tg_default.*.arn}"
+  value       = aws_lb_target_group.tg_default.*.arn
   description = "List of the default target group ARNs."
 }
 
 output "load_balancer_ssl_listeners" {
-  value       = "${aws_lb_listener.listener.*.arn}"
+  value       = aws_lb_listener.listener.*.arn
   description = "List of https listeners on the Load Balancer."
 }

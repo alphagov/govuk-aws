@@ -25,6 +25,9 @@ provider "aws" {
     tags = {
       terraform_deployment = basename(abspath(path.root))
       aws_environment      = var.aws_environment
+      Environment          = "${var.aws_environment}"
+      Product              = "GOVUK"
+      Owner                = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
     }
   }
 }
@@ -152,6 +155,10 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
     Name          = "${var.stackname}-elasticsearch6"
     Project       = var.stackname
     aws_stackname = var.stackname
+    Environment   = "${var.aws_environment}"
+    Product       = "GOVUK"
+    Owner         = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System        = "Elasticsearch"
   }
 }
 
@@ -178,7 +185,13 @@ resource "aws_route53_record" "service_record" {
 
 resource "aws_s3_bucket" "manual_snapshots" {
   bucket = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots"
-  tags   = { Name = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots" }
+  tags = {
+    Name        = "govuk-${var.aws_environment}-elasticsearch6-manual-snapshots"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Elasticsearch Manual Snapshots"
+  }
 }
 
 resource "aws_s3_bucket_logging" "manual_snapshots" {

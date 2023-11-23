@@ -13,11 +13,15 @@
 
 resource "aws_security_group" "deploy" {
   name        = "${var.stackname}_deploy_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the deploy host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_deploy_access"
+    Name        = "${var.stackname}_deploy_access"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Deploy Access"
   }
 }
 
@@ -28,10 +32,10 @@ resource "aws_security_group_rule" "deploy_ingress_deploy-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.deploy.id}"
+  security_group_id = aws_security_group.deploy.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.deploy_elb.id}"
+  source_security_group_id = aws_security_group.deploy_elb.id
 }
 
 resource "aws_security_group_rule" "deploy_ingress_deploy-internal-elb_http" {
@@ -41,15 +45,15 @@ resource "aws_security_group_rule" "deploy_ingress_deploy-internal-elb_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.deploy.id}"
+  security_group_id = aws_security_group.deploy.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.deploy_internal_elb.id}"
+  source_security_group_id = aws_security_group.deploy_internal_elb.id
 }
 
 resource "aws_security_group" "deploy_elb" {
   name        = "${var.stackname}_deploy_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the deploy ELB"
 
   tags = {
@@ -63,29 +67,29 @@ resource "aws_security_group_rule" "deploy-elb_ingress_office_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.deploy_elb.id}"
+  security_group_id = aws_security_group.deploy_elb.id
   cidr_blocks       = var.gds_egress_ips
 }
 
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_integration_access_https" {
-  count     = "${(var.aws_environment == "integration") || (var.aws_environment == "staging") ? 1 : 0}"
+  count     = (var.aws_environment == "integration") || (var.aws_environment == "staging") ? 1 : 0
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.deploy_elb.id}"
+  security_group_id = aws_security_group.deploy_elb.id
   cidr_blocks       = var.aws_integration_external_nat_gateway_ips
 }
 
 resource "aws_security_group_rule" "deploy-elb_ingress_aws_staging_access_https" {
-  count     = "${var.aws_environment == "production" ? 1 : 0}"
+  count     = var.aws_environment == "production" ? 1 : 0
   type      = "ingress"
   from_port = 443
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.deploy_elb.id}"
+  security_group_id = aws_security_group.deploy_elb.id
   cidr_blocks       = var.aws_staging_external_nat_gateway_ips
 }
 
@@ -95,7 +99,7 @@ resource "aws_security_group_rule" "deploy-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.deploy_elb.id}"
+  security_group_id = aws_security_group.deploy_elb.id
 }
 
 resource "aws_security_group_rule" "deploy-internal-elb_egress_any_any" {
@@ -104,12 +108,12 @@ resource "aws_security_group_rule" "deploy-internal-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.deploy_internal_elb.id}"
+  security_group_id = aws_security_group.deploy_internal_elb.id
 }
 
 resource "aws_security_group" "deploy_internal_elb" {
   name        = "${var.stackname}_deploy_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the deploy Internal ELB"
 
   tags = {
@@ -123,6 +127,6 @@ resource "aws_security_group_rule" "deploy-internal-elb_ingress_management_https
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.deploy_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.deploy_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }

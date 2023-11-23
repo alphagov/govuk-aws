@@ -7,24 +7,24 @@
 */
 
 variable "remote_state_bucket" {
-  type        = "string"
+  type        = string
   description = "S3 bucket we store our terraform state in"
 }
 
 variable "remote_state_infra_networking_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override infra_networking remote state path"
   default     = ""
 }
 
 variable "remote_state_infra_security_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override infra_security stackname path to infra_vpc remote state "
   default     = ""
 }
 
 variable "remote_state_infra_security_groups_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override infra_security_groups stackname path to infra_vpc remote state "
   default     = ""
 }

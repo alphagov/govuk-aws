@@ -79,7 +79,7 @@ Router backend hosts both Mongo and router-api
 | <a name="input_router-backend_3_reserved_ips_subnet"></a> [router-backend\_3\_reserved\_ips\_subnet](#input\_router-backend\_3\_reserved\_ips\_subnet) | Name of the subnet to place the reserved IP of the instance | `any` | n/a | yes |
 | <a name="input_router-backend_3_subnet"></a> [router-backend\_3\_subnet](#input\_router-backend\_3\_subnet) | Name of the subnet to place the Router Mongo 3 | `any` | n/a | yes |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `any` | n/a | yes |
-| <a name="input_user_data_snippets"></a> [user\_data\_snippets](#input\_user\_data\_snippets) | List of user-data snippets | `list` | n/a | yes |
+| <a name="input_user_data_snippets"></a> [user\_data\_snippets](#input\_user\_data\_snippets) | List of user-data snippets | `list(any)` | n/a | yes |
 
 ## Outputs
 

@@ -46,7 +46,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | n/a | yes |
+| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list(string)` | n/a | yes |
 | <a name="input_cpuutilization_threshold"></a> [cpuutilization\_threshold](#input\_cpuutilization\_threshold) | The value against which the CPUUtilization metric is compared, in percent. | `string` | `"80"` | no |
 | <a name="input_db_instance_id"></a> [db\_instance\_id](#input\_db\_instance\_id) | The ID of the database instance that we want to monitor. | `string` | n/a | yes |
 | <a name="input_freeablememory_threshold"></a> [freeablememory\_threshold](#input\_freeablememory\_threshold) | The value against which the FreeableMemory metric is compared, in Bytes. | `string` | `"2147483648"` | no |

@@ -13,10 +13,14 @@
 
 resource "aws_security_group" "rate-limit-redis" {
   name        = "${var.stackname}_rate-limit-redis_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to rate-limit-redis from its clients"
 
   tags = {
-    Name = "${var.stackname}_rate-limit-redis_access"
+    Name        = "${var.stackname}_rate-limit-redis_access"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Redis Rate Limit"
   }
 }

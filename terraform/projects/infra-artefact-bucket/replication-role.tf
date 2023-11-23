@@ -11,19 +11,19 @@
 resource "aws_iam_role" "artefact_replication" {
   name               = "govuk-${var.aws_environment}-artefact-replication-role"
   description        = "Allows replication of the artefacts bucket"
-  assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_policy" "artefact_replication" {
   name        = "govuk-${var.aws_environment}-artefact-replication-policy"
-  policy      = "${data.aws_iam_policy_document.artefact_replication.json}"
+  policy      = data.aws_iam_policy_document.artefact_replication.json
   description = "Allows replication of the artefacts bucket"
 }
 
 resource "aws_iam_policy_attachment" "artefact_replication" {
   name       = "govuk-${var.aws_environment}-artefact-replication-policy-attachment"
   roles      = ["${aws_iam_role.artefact_replication.name}"]
-  policy_arn = "${aws_iam_policy.artefact_replication.arn}"
+  policy_arn = aws_iam_policy.artefact_replication.arn
 }
 
 data "aws_iam_policy_document" "assume_role" {

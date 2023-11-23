@@ -10,7 +10,7 @@
 
 resource "aws_security_group" "licensify_documentdb" {
   name        = "${var.stackname}_licensify-documentdb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to licensify documentdb from its clients"
 
   tags = {
@@ -26,10 +26,10 @@ resource "aws_security_group_rule" "licensify-documentdb_ingress_db-admin_mongod
   description = "allow db_admin to access licensify document db"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.licensify_documentdb.id}"
+  security_group_id = aws_security_group.licensify_documentdb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.db-admin.id}"
+  source_security_group_id = aws_security_group.db-admin.id
 }
 
 resource "aws_security_group_rule" "licensify-documentdb_ingress_db-licensify_frontend_mongodb" {
@@ -40,10 +40,10 @@ resource "aws_security_group_rule" "licensify-documentdb_ingress_db-licensify_fr
   description = "allow licensify frontend nodes to access licensify document db"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.licensify_documentdb.id}"
+  security_group_id = aws_security_group.licensify_documentdb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.licensify-frontend.id}"
+  source_security_group_id = aws_security_group.licensify-frontend.id
 }
 
 resource "aws_security_group_rule" "licensify-documentdb_ingress_db-licensify_backend_mongodb" {
@@ -54,8 +54,8 @@ resource "aws_security_group_rule" "licensify-documentdb_ingress_db-licensify_ba
   description = "allow licensify backend nodes to access licensify document db"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.licensify_documentdb.id}"
+  security_group_id = aws_security_group.licensify_documentdb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.licensify-backend.id}"
+  source_security_group_id = aws_security_group.licensify-backend.id
 }

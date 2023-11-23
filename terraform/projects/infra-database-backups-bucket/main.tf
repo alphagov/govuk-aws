@@ -13,6 +13,10 @@ locals {
   tags = {
     terraform_deployment = basename(abspath(path.root))
     aws_environment      = var.aws_environment
+    Environment          = "${var.aws_environment}"
+    Product              = "GOVUK"
+    Owner                = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System               = "Database Backups"
   }
   timelock_enabled = var.aws_environment == "production"
   timelock_days    = 120
@@ -32,14 +36,26 @@ provider "aws" {
 resource "aws_s3_bucket" "main" {
   bucket              = "govuk-${var.aws_environment}-database-backups"
   object_lock_enabled = local.timelock_enabled
-  tags                = { Name = "govuk-${var.aws_environment}-database-backups" }
+  tags = {
+    Name        = "govuk-${var.aws_environment}-database-backups"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Database Backups"
+  }
 }
 
 resource "aws_s3_bucket" "replica" {
   bucket              = "govuk-${var.aws_environment}-database-backups-replica"
   provider            = aws.eu-west-2
   object_lock_enabled = local.timelock_enabled
-  tags                = { Name = "govuk-${var.aws_environment}-database-backups-replica" }
+  tags = {
+    Name        = "govuk-${var.aws_environment}-database-backups-replica"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Database Backups"
+  }
 }
 
 resource "aws_s3_bucket_object_lock_configuration" "main" {

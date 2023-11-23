@@ -22,6 +22,10 @@ module "search" {
     "aws_environment" = var.aws_environment
     "aws_migration"   = "search"
     "aws_hostname"    = "search-1"
+    "Environment"     = "${var.aws_environment}"
+    "Product"         = "GOVUK"
+    "Owner"           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    "System"          = "${var.stackname} Search"
   }
   instance_subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
   instance_security_group_ids = [
@@ -45,6 +49,10 @@ resource "aws_s3_bucket" "sitemaps_bucket" {
   tags = {
     Name            = "govuk-${var.aws_environment}-sitemaps"
     aws_environment = var.aws_environment
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "${var.stackname} Search"
   }
   logging {
     target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
@@ -120,6 +128,10 @@ resource "aws_s3_bucket" "search_relevancy_bucket" {
     Name            = "govuk-${var.aws_environment}-search-relevancy"
     Description     = "S3 bucket for Search Relevancy"
     aws_environment = var.aws_environment
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Apt Package Storage"
   }
 
   logging {
@@ -298,6 +310,10 @@ resource "aws_autoscaling_group" "learntorank-generation" {
     key                 = "Name"
     value               = "govuk-${var.aws_environment}-search-ltr-generation"
     propagate_at_launch = true
+    Environment         = var.aws_environment
+    Product             = "GOVUK"
+    Owner               = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System              = "Apt Package Storage"
   }
 }
 

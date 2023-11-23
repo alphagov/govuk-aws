@@ -9,18 +9,18 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
@@ -32,7 +32,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
@@ -42,10 +42,14 @@ resource "aws_s3_bucket" "cdn_logs_monitor" {
   tags = {
     Name            = "govuk-${var.aws_environment}-cdn-logs-monitor-archive"
     aws_environment = "${var.aws_environment}"
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Content Delivery Network Logs"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-cdn-logs-monitor-archive/"
   }
 }

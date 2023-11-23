@@ -46,7 +46,7 @@ No modules.
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override stackname path to infra\_monitoring remote state | `string` | `""` | no |
-| <a name="input_s3_bucket_read_ips"></a> [s3\_bucket\_read\_ips](#input\_s3\_bucket\_read\_ips) | Additional IPs to allow read access from | `list` | n/a | yes |
+| <a name="input_s3_bucket_read_ips"></a> [s3\_bucket\_read\_ips](#input\_s3\_bucket\_read\_ips) | Additional IPs to allow read access from | `list(string)` | n/a | yes |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
 
 ## Outputs

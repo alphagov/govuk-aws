@@ -10,7 +10,7 @@
 
 resource "aws_security_group" "transition-postgresql-primary" {
   name        = "${var.stackname}_transition-postgresql-primary_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to transition-postgresql-primary from its clients"
 
   tags = {
@@ -20,7 +20,7 @@ resource "aws_security_group" "transition-postgresql-primary" {
 
 resource "aws_security_group" "transition-postgresql-standby" {
   name        = "${var.stackname}_transition-postgresql-standby_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to transition-postgresql-standby from its clients"
 
   tags = {
@@ -35,8 +35,8 @@ resource "aws_security_group_rule" "transition-postgresql-primary_ingress_db-adm
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.transition-postgresql-primary.id}"
+  security_group_id = aws_security_group.transition-postgresql-primary.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.transition-db-admin.id}"
+  source_security_group_id = aws_security_group.transition-db-admin.id
 }

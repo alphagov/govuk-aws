@@ -4,18 +4,18 @@
 * Manages the Fastly logging data which is sent from Fastly to S3.
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
@@ -27,7 +27,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "5.21.0"
 }
 
@@ -42,10 +42,14 @@ resource "aws_s3_bucket" "fastly_logs" {
   tags = {
     Name            = "govuk-${var.aws_environment}-fastly-logs"
     aws_environment = "${var.aws_environment}"
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Fastly"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-fastly-logs/"
   }
 
@@ -65,18 +69,18 @@ resource "aws_iam_user" "logs_writer" {
 
 resource "aws_iam_policy" "logs_writer" {
   name        = "fastly-logs-${var.aws_environment}-logs-writer-policy"
-  policy      = "${data.template_file.logs_writer_policy_template.rendered}"
+  policy      = data.template_file.logs_writer_policy_template.rendered
   description = "Allows writing to to the fastly-logs bucket"
 }
 
 resource "aws_iam_policy_attachment" "logs_writer" {
   name       = "logs-writer-policy-attachment"
   users      = ["${aws_iam_user.logs_writer.name}"]
-  policy_arn = "${aws_iam_policy.logs_writer.arn}"
+  policy_arn = aws_iam_policy.logs_writer.arn
 }
 
 data "template_file" "logs_writer_policy_template" {
-  template = "${file("${path.module}/../../policies/fastly_logs_writer_policy.tpl")}"
+  template = file("${path.module}/../../policies/fastly_logs_writer_policy.tpl")
 
   vars = {
     aws_environment = "${var.aws_environment}"
@@ -91,7 +95,7 @@ resource "aws_glue_catalog_database" "fastly_logs" {
 
 resource "aws_iam_role_policy_attachment" "aws-glue-service-role-service-attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
-  role       = "${aws_iam_role.glue.name}"
+  role       = aws_iam_role.glue.name
 }
 
 resource "aws_iam_role" "glue" {
@@ -118,7 +122,7 @@ EOF
 
 resource "aws_iam_role_policy" "fastly_logs_policy" {
   name = "govuk-${var.aws_environment}-fastly-logs-glue-policy"
-  role = "${aws_iam_role.glue.id}"
+  role = aws_iam_role.glue.id
 
   policy = <<EOF
 {
@@ -142,8 +146,8 @@ EOF
 resource "aws_glue_crawler" "govuk_www" {
   name          = "GOV.UK fastly logs"
   description   = "Crawls the GOV.UK logs from fastly for allowing Athena querying"
-  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
-  role          = "${aws_iam_role.glue.name}"
+  database_name = aws_glue_catalog_database.fastly_logs.name
+  role          = aws_iam_role.glue.name
   schedule      = "cron(30 */4 * * ? *)"
 
   s3_target {
@@ -170,7 +174,7 @@ EOF
 resource "aws_glue_catalog_table" "govuk_www" {
   name          = "govuk_www"
   description   = "Allows access to JSON data exported from Fastly"
-  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
+  database_name = aws_glue_catalog_database.fastly_logs.name
   table_type    = "EXTERNAL_TABLE"
 
   storage_descriptor {
@@ -330,8 +334,8 @@ resource "aws_glue_catalog_table" "govuk_www" {
 resource "aws_glue_crawler" "govuk_assets" {
   name          = "Assets fastly logs"
   description   = "Crawls the assets logs from fastly for allowing Athena querying"
-  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
-  role          = "${aws_iam_role.glue.name}"
+  database_name = aws_glue_catalog_database.fastly_logs.name
+  role          = aws_iam_role.glue.name
   schedule      = "cron(30 */4 * * ? *)"
 
   s3_target {
@@ -358,7 +362,7 @@ EOF
 resource "aws_glue_catalog_table" "govuk_assets" {
   name          = "govuk_assets"
   description   = "Allows access to JSON data exported from Fastly"
-  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
+  database_name = aws_glue_catalog_database.fastly_logs.name
   table_type    = "EXTERNAL_TABLE"
 
   storage_descriptor {
@@ -518,8 +522,8 @@ resource "aws_glue_catalog_table" "govuk_assets" {
 resource "aws_glue_crawler" "bouncer" {
   name          = "Bouncer fastly logs"
   description   = "Crawls the bouncer logs from fastly for allowing Athena querying"
-  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
-  role          = "${aws_iam_role.glue.name}"
+  database_name = aws_glue_catalog_database.fastly_logs.name
+  role          = aws_iam_role.glue.name
   schedule      = "cron(30 */4 * * ? *)"
 
   s3_target {
@@ -546,7 +550,7 @@ EOF
 resource "aws_glue_catalog_table" "bouncer" {
   name          = "bouncer"
   description   = "Allows access to JSON data exported from Fastly"
-  database_name = "${aws_glue_catalog_database.fastly_logs.name}"
+  database_name = aws_glue_catalog_database.fastly_logs.name
   table_type    = "EXTERNAL_TABLE"
 
   storage_descriptor {
@@ -692,10 +696,14 @@ resource "aws_s3_bucket" "fastly_logs_monitoring" {
   tags = {
     Name            = "govuk-${var.aws_environment}-fastly-logs-monitoring"
     aws_environment = "${var.aws_environment}"
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Fastly"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-fastly-logs-monitoring/"
   }
 
@@ -714,17 +722,17 @@ resource "aws_iam_user" "athena_monitoring" {
 
 resource "aws_iam_policy" "athena_monitoring" {
   name   = "fastly-logs-${var.aws_environment}-fastly-logs-athena-monitoring-policy"
-  policy = "${data.template_file.athena_monitoring_policy_template.rendered}"
+  policy = data.template_file.athena_monitoring_policy_template.rendered
 }
 
 resource "aws_iam_policy_attachment" "athena_monitoring" {
   name       = "fastly-logs-${var.aws_environment}-fastly-logs-athena-monitoring-policy-attachment"
   users      = ["${aws_iam_user.athena_monitoring.name}"]
-  policy_arn = "${aws_iam_policy.athena_monitoring.arn}"
+  policy_arn = aws_iam_policy.athena_monitoring.arn
 }
 
 data "template_file" "athena_monitoring_policy_template" {
-  template = "${file("${path.module}/../../policies/fastly_logs_athena_monitoring_policy.tpl")}"
+  template = file("${path.module}/../../policies/fastly_logs_athena_monitoring_policy.tpl")
 
   vars = {
     out_bucket_arn = "${aws_s3_bucket.fastly_logs_monitoring.arn}"
@@ -741,10 +749,14 @@ resource "aws_s3_bucket" "transition_fastly_logs" {
   tags = {
     Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
     aws_environment = "${var.aws_environment}"
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Fastly"
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-transition-fastly-logs/"
   }
 
@@ -764,17 +776,17 @@ resource "aws_iam_user" "transition_downloader" {
 
 resource "aws_iam_policy" "transition_downloader" {
   name   = "fastly-logs-${var.aws_environment}-transition-downloader-policy"
-  policy = "${data.template_file.transition_downloader_policy_template.rendered}"
+  policy = data.template_file.transition_downloader_policy_template.rendered
 }
 
 resource "aws_iam_policy_attachment" "transition_downloader" {
   name       = "transition-downloader-policy-attachment"
   users      = ["${aws_iam_user.transition_downloader.name}"]
-  policy_arn = "${aws_iam_policy.transition_downloader.arn}"
+  policy_arn = aws_iam_policy.transition_downloader.arn
 }
 
 data "template_file" "transition_downloader_policy_template" {
-  template = "${file("${path.module}/../../policies/transition_downloader_policy.tpl")}"
+  template = file("${path.module}/../../policies/transition_downloader_policy.tpl")
 
   vars = {
     bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
@@ -783,8 +795,8 @@ data "template_file" "transition_downloader_policy_template" {
 
 resource "aws_athena_named_query" "transition_logs" {
   name     = "transition-logs-query"
-  database = "${aws_glue_catalog_database.fastly_logs.name}"
-  query    = "${file("${path.module}/../../queries/transition_logs_query.sql")}"
+  database = aws_glue_catalog_database.fastly_logs.name
+  query    = file("${path.module}/../../queries/transition_logs_query.sql")
 }
 
 data "archive_file" "transition_executor" {
@@ -794,11 +806,11 @@ data "archive_file" "transition_executor" {
 }
 
 resource "aws_lambda_function" "transition_executor" {
-  filename         = "${data.archive_file.transition_executor.output_path}"
-  source_code_hash = "${data.archive_file.transition_executor.output_base64sha256}"
+  filename         = data.archive_file.transition_executor.output_path
+  source_code_hash = data.archive_file.transition_executor.output_base64sha256
 
   function_name = "govuk-${var.aws_environment}-transition"
-  role          = "${aws_iam_role.transition_executor.arn}"
+  role          = aws_iam_role.transition_executor.arn
   handler       = "main.lambda_handler"
   runtime       = "python3.8"
 
@@ -833,16 +845,16 @@ EOF
 
 resource "aws_iam_policy" "transition_executor" {
   name   = "fastly-logs-${var.aws_environment}-transition-executor-policy"
-  policy = "${data.template_file.transition_executor_policy_template.rendered}"
+  policy = data.template_file.transition_executor_policy_template.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "transition_executor" {
-  role       = "${aws_iam_role.transition_executor.name}"
-  policy_arn = "${aws_iam_policy.transition_executor.arn}"
+  role       = aws_iam_role.transition_executor.name
+  policy_arn = aws_iam_policy.transition_executor.arn
 }
 
 data "template_file" "transition_executor_policy_template" {
-  template = "${file("${path.module}/../../policies/transition_executor_policy.tpl")}"
+  template = file("${path.module}/../../policies/transition_executor_policy.tpl")
 
   vars = {
     out_bucket_arn = "${aws_s3_bucket.transition_fastly_logs.arn}"
@@ -856,23 +868,23 @@ resource "aws_cloudwatch_event_rule" "transition_executor_daily" {
 }
 
 resource "aws_cloudwatch_event_target" "transition_executor_daily" {
-  rule = "${aws_cloudwatch_event_rule.transition_executor_daily.name}"
-  arn  = "${aws_lambda_function.transition_executor.arn}"
+  rule = aws_cloudwatch_event_rule.transition_executor_daily.name
+  arn  = aws_lambda_function.transition_executor.arn
 }
 
 resource "aws_lambda_permission" "cloudwatch_transition_executor_daily_permission" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.transition_executor.function_name}"
+  function_name = aws_lambda_function.transition_executor.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.transition_executor_daily.arn}"
+  source_arn    = aws_cloudwatch_event_rule.transition_executor_daily.arn
 }
 
 # Outputs
 # --------------------------------------------------------------
 
 output "logs_writer_bucket_policy_arn" {
-  value       = "${aws_iam_policy.logs_writer.arn}"
+  value       = aws_iam_policy.logs_writer.arn
   description = "ARN of the logs writer bucket policy"
 }
 
@@ -892,8 +904,8 @@ resource "aws_s3_bucket" "lambda_deployment_packages" {
 }
 
 resource "aws_s3_bucket_policy" "lambda_deployment_packages" {
-  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
-  policy = "${data.aws_iam_policy_document.lambda_deployment_packages_bucket_access.json}"
+  bucket = aws_s3_bucket.lambda_deployment_packages.id
+  policy = data.aws_iam_policy_document.lambda_deployment_packages_bucket_access.json
 }
 
 data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
@@ -921,17 +933,17 @@ data "aws_iam_policy_document" "lambda_deployment_packages_bucket_access" {
 # Grant permissions for accessing the S3 bucket
 resource "aws_iam_policy" "download_logs_analytics" {
   name   = "fastly-logs-${var.aws_environment}-download-logs-analytics-policy"
-  policy = "${data.template_file.download_logs_analytics_policy_template.rendered}"
+  policy = data.template_file.download_logs_analytics_policy_template.rendered
 }
 
 resource "aws_iam_policy_attachment" "download_logs_analytics" {
   name       = "download-logs-analytics-policy-attachment"
   roles      = ["${aws_iam_role.download_logs_analytics.name}"]
-  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+  policy_arn = aws_iam_policy.download_logs_analytics.arn
 }
 
 data "template_file" "download_logs_analytics_policy_template" {
-  template = "${file("${path.module}/../../policies/analytics_logs_policy.tpl")}"
+  template = file("${path.module}/../../policies/analytics_logs_policy.tpl")
 
   vars = {
     bucket_arn = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
@@ -940,23 +952,23 @@ data "template_file" "download_logs_analytics_policy_template" {
 
 # Upload local build deployment packages in lambda_deployment_packages bucket
 resource "aws_s3_bucket_object" "download_logs_analytics_deployment_package" {
-  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  bucket = aws_s3_bucket.lambda_deployment_packages.id
   key    = "download_logs_analytics.zip"
   source = "${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip"
 
-  etag = "${filemd5("${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip")}"
+  etag = filemd5("${path.module}/../../lambda/DownloadLogsAnalytics/download_logs_analytics.zip")
 }
 
 resource "aws_lambda_function" "download_logs_analytics" {
   function_name = "govuk-${var.aws_environment}-download-logs-analytics"
-  role          = "${aws_iam_role.download_logs_analytics.arn}"
+  role          = aws_iam_role.download_logs_analytics.arn
   handler       = "handler.handle_lambda"
   runtime       = "python3.7"
   timeout       = 120
 
-  s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"
-  s3_key            = "${aws_s3_bucket_object.download_logs_analytics_deployment_package.id}"
-  s3_object_version = "${aws_s3_bucket_object.download_logs_analytics_deployment_package.version_id}"
+  s3_bucket         = aws_s3_bucket.lambda_deployment_packages.id
+  s3_key            = aws_s3_bucket_object.download_logs_analytics_deployment_package.id
+  s3_object_version = aws_s3_bucket_object.download_logs_analytics_deployment_package.version_id
 
   environment {
     variables = {
@@ -968,30 +980,30 @@ resource "aws_lambda_function" "download_logs_analytics" {
 resource "aws_lambda_permission" "allow_download_logs_analytics" {
   statement_id  = "AllowAnalyticsLogsExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.download_logs_analytics.function_name}"
+  function_name = aws_lambda_function.download_logs_analytics.function_name
   principal     = "s3.amazonaws.com"
-  source_arn    = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
+  source_arn    = data.aws_s3_bucket.govuk-analytics-logs-production.arn
 }
 
 # Upload local build deployment packages in lambda_deployment_packages bucket
 resource "aws_s3_bucket_object" "send_public_events_deployment_package" {
-  bucket = "${aws_s3_bucket.lambda_deployment_packages.id}"
+  bucket = aws_s3_bucket.lambda_deployment_packages.id
   key    = "send_public_api_events.zip"
   source = "${path.module}/../../lambda/SendPublicAPIEventsToGA/send_public_events_to_ga.zip"
 
-  etag = "${filemd5("${path.module}/../../lambda/SendPublicAPIEventsToGA/send_public_events_to_ga.zip")}"
+  etag = filemd5("${path.module}/../../lambda/SendPublicAPIEventsToGA/send_public_events_to_ga.zip")
 }
 
 resource "aws_lambda_function" "send_public_events_to_ga" {
   function_name = "govuk-${var.aws_environment}-send-public-events-to-ga"
-  role          = "${aws_iam_role.download_logs_analytics.arn}"
+  role          = aws_iam_role.download_logs_analytics.arn
   handler       = "send_public_api_events_to_ga.handle_lambda"
   runtime       = "python3.7"
   timeout       = 120
 
-  s3_bucket         = "${aws_s3_bucket.lambda_deployment_packages.id}"
-  s3_key            = "${aws_s3_bucket_object.send_public_events_deployment_package.id}"
-  s3_object_version = "${aws_s3_bucket_object.send_public_events_deployment_package.version_id}"
+  s3_bucket         = aws_s3_bucket.lambda_deployment_packages.id
+  s3_key            = aws_s3_bucket_object.send_public_events_deployment_package.id
+  s3_object_version = aws_s3_bucket_object.send_public_events_deployment_package.version_id
 
   environment {
     variables = {
@@ -1003,22 +1015,22 @@ resource "aws_lambda_function" "send_public_events_to_ga" {
 resource "aws_lambda_permission" "allow_send_public_events_to_ga" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.send_public_events_to_ga.function_name}"
+  function_name = aws_lambda_function.send_public_events_to_ga.function_name
   principal     = "s3.amazonaws.com"
-  source_arn    = "${data.aws_s3_bucket.govuk-analytics-logs-production.arn}"
+  source_arn    = data.aws_s3_bucket.govuk-analytics-logs-production.arn
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = "${data.aws_s3_bucket.govuk-analytics-logs-production.id}"
+  bucket = data.aws_s3_bucket.govuk-analytics-logs-production.id
 
   lambda_function {
-    lambda_function_arn = "${aws_lambda_function.send_public_events_to_ga.arn}"
+    lambda_function_arn = aws_lambda_function.send_public_events_to_ga.arn
     events              = ["s3:ObjectCreated:*"]
     filter_prefix       = "public_api_logs/"
   }
 
   lambda_function {
-    lambda_function_arn = "${aws_lambda_function.download_logs_analytics.arn}"
+    lambda_function_arn = aws_lambda_function.download_logs_analytics.arn
     events              = ["s3:ObjectCreated:*"]
     filter_prefix       = "assets/"
   }
@@ -1045,8 +1057,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "download_logs_analytics" {
-  role       = "${aws_iam_role.download_logs_analytics.name}"
-  policy_arn = "${aws_iam_policy.download_logs_analytics.arn}"
+  role       = aws_iam_role.download_logs_analytics.name
+  policy_arn = aws_iam_policy.download_logs_analytics.arn
 }
 
 data "aws_iam_policy_document" "download_logs_analytics" {
@@ -1064,6 +1076,6 @@ data "aws_iam_policy_document" "download_logs_analytics" {
 }
 
 resource "aws_iam_role_policy" "download_logs_analytics" {
-  role   = "${aws_iam_role.download_logs_analytics.id}"
-  policy = "${data.aws_iam_policy_document.download_logs_analytics.json}"
+  role   = aws_iam_role.download_logs_analytics.id
+  policy = data.aws_iam_policy_document.download_logs_analytics.json
 }

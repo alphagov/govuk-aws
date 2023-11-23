@@ -33,7 +33,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_policy_attachment_roles"></a> [additional\_policy\_attachment\_roles](#input\_additional\_policy\_attachment\_roles) | Additional roles to attach to the readwrite policy, for legacy compatibility. | `list` | `[]` | no |
+| <a name="input_additional_policy_attachment_roles"></a> [additional\_policy\_attachment\_roles](#input\_additional\_policy\_attachment\_roles) | Additional roles to attach to the readwrite policy, for legacy compatibility. | `list(string)` | `[]` | no |
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | `"govuk-attachments"` | no |

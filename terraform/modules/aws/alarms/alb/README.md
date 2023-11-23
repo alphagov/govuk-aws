@@ -44,7 +44,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | `[]` | no |
+| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list(string)` | `[]` | no |
 | <a name="input_alb_arn_suffix"></a> [alb\_arn\_suffix](#input\_alb\_arn\_suffix) | The ALB ARN suffix for use with CloudWatch Metrics. | `string` | n/a | yes |
 | <a name="input_httpcode_elb_4xx_count_threshold"></a> [httpcode\_elb\_4xx\_count\_threshold](#input\_httpcode\_elb\_4xx\_count\_threshold) | The value against which the HTTPCode\_ELB\_4XX\_Count metric is compared. | `string` | `"0"` | no |
 | <a name="input_httpcode_elb_5xx_count_threshold"></a> [httpcode\_elb\_5xx\_count\_threshold](#input\_httpcode\_elb\_5xx\_count\_threshold) | The value against which the HTTPCode\_ELB\_5XX\_Count metric is compared. | `string` | `"80"` | no |

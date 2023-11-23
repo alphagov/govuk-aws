@@ -14,7 +14,7 @@
 #
 resource "aws_security_group" "router-backend" {
   name        = "${var.stackname}_router-backend_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to router-backend"
 
   tags = {
@@ -30,16 +30,16 @@ resource "aws_security_group_rule" "router-backend_ingress_router-backend_mongo"
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.router-backend.id}"
+  security_group_id = aws_security_group.router-backend.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.router-backend.id}"
+  source_security_group_id = aws_security_group.router-backend.id
 }
 
 resource "aws_security_group" "router-backend_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_router-backend_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Control access to ITHC SSH"
 
   tags = {
@@ -48,11 +48,11 @@ resource "aws_security_group" "router-backend_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_router-backend_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.router-backend_ithc_access[0].id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.router-backend_ithc_access[0].id
 }

@@ -32,9 +32,9 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_gds_egress_ips"></a> [gds\_egress\_ips](#input\_gds\_egress\_ips) | DEPRECATED: list of trusted CIDR netblocks | `list(string)` | `[]` | no |
 | <a name="input_restrict_to_gds_ips"></a> [restrict\_to\_gds\_ips](#input\_restrict\_to\_gds\_ips) | n/a | `bool` | `false` | no |
-| <a name="input_role_policy_arns"></a> [role\_policy\_arns](#input\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list` | `[]` | no |
+| <a name="input_role_policy_arns"></a> [role\_policy\_arns](#input\_role\_policy\_arns) | List of ARNs of policies to attach to the role | `list(any)` | `[]` | no |
 | <a name="input_role_suffix"></a> [role\_suffix](#input\_role\_suffix) | Suffix of the role name | `string` | n/a | yes |
-| <a name="input_role_user_arns"></a> [role\_user\_arns](#input\_role\_user\_arns) | List of ARNs of external users that can assume the role | `list` | n/a | yes |
+| <a name="input_role_user_arns"></a> [role\_user\_arns](#input\_role\_user\_arns) | List of ARNs of external users that can assume the role | `list(any)` | n/a | yes |
 
 ## Outputs
 

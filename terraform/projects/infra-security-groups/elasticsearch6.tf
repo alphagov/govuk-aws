@@ -18,11 +18,15 @@
 
 resource "aws_security_group" "elasticsearch6" {
   name        = "${var.stackname}_elasticsearch6_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to elasticsearch6"
 
   tags = {
-    Name = "${var.stackname}_elasticsearch6_access"
+    Name        = "${var.stackname}_elasticsearch6_access"
+    Environment = "${var.aws_environment}"
+    Product     = "GOVUK"
+    Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System      = "Elasticsearch"
   }
 }
 
@@ -33,10 +37,10 @@ resource "aws_security_group_rule" "elasticsearch6_ingress_search_elasticsearch-
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.elasticsearch6.id}"
+  security_group_id = aws_security_group.elasticsearch6.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search.id}"
+  source_security_group_id = aws_security_group.search.id
 }
 
 resource "aws_security_group_rule" "elasticsearch6_ingress_search_elasticsearch-api-https" {
@@ -46,10 +50,10 @@ resource "aws_security_group_rule" "elasticsearch6_ingress_search_elasticsearch-
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.elasticsearch6.id}"
+  security_group_id = aws_security_group.elasticsearch6.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search.id}"
+  source_security_group_id = aws_security_group.search.id
 }
 
 resource "aws_security_group_rule" "elasticsearch6_ingress_search-ltr-generation_elasticsearch-api" {
@@ -59,10 +63,10 @@ resource "aws_security_group_rule" "elasticsearch6_ingress_search-ltr-generation
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.elasticsearch6.id}"
+  security_group_id = aws_security_group.elasticsearch6.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search-ltr-generation.id}"
+  source_security_group_id = aws_security_group.search-ltr-generation.id
 }
 
 resource "aws_security_group_rule" "elasticsearch6_ingress_search-ltr-generation_elasticsearch-api-https" {
@@ -72,8 +76,8 @@ resource "aws_security_group_rule" "elasticsearch6_ingress_search-ltr-generation
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.elasticsearch6.id}"
+  security_group_id = aws_security_group.elasticsearch6.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.search-ltr-generation.id}"
+  source_security_group_id = aws_security_group.search-ltr-generation.id
 }

@@ -9,7 +9,7 @@
 # 
 
 variable "user_data_snippets" {
-  type        = "list"
+  type        = list(string)
   description = "List of user-data snippets"
 }
 
@@ -17,9 +17,9 @@ variable "user_data_snippets" {
 # --------------------------------------------------------------
 
 resource "null_resource" "user_data" {
-  count = "${length(var.user_data_snippets)}"
+  count = length(var.user_data_snippets)
 
   triggers {
-    snippet = "${file("../../userdata/${element(var.user_data_snippets, count.index)}")}"
+    snippet = file("../../userdata/${element(var.user_data_snippets, count.index)}")
   }
 }
