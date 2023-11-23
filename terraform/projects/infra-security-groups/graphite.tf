@@ -15,7 +15,7 @@
 
 resource "aws_security_group" "graphite" {
   name        = "${var.stackname}_graphite_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the graphite host from its ELB"
 
   tags = {
@@ -30,10 +30,10 @@ resource "aws_security_group_rule" "graphite_ingress_graphite-external-elb_http"
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.graphite.id}"
+  security_group_id = aws_security_group.graphite.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.graphite_external_elb.id}"
+  source_security_group_id = aws_security_group.graphite_external_elb.id
 }
 
 resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_http" {
@@ -43,10 +43,10 @@ resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_http"
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.graphite.id}"
+  security_group_id = aws_security_group.graphite.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+  source_security_group_id = aws_security_group.graphite_internal_elb.id
 }
 
 resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_carbon" {
@@ -56,10 +56,10 @@ resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_carbo
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.graphite.id}"
+  security_group_id = aws_security_group.graphite.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+  source_security_group_id = aws_security_group.graphite_internal_elb.id
 }
 
 resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_pickle" {
@@ -69,10 +69,10 @@ resource "aws_security_group_rule" "graphite_ingress_graphite-internal-elb_pickl
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.graphite.id}"
+  security_group_id = aws_security_group.graphite.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+  source_security_group_id = aws_security_group.graphite_internal_elb.id
 }
 
 resource "aws_security_group_rule" "graphite_ingress_graphite_internal_elb_https" {
@@ -82,15 +82,15 @@ resource "aws_security_group_rule" "graphite_ingress_graphite_internal_elb_https
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+  security_group_id = aws_security_group.graphite_internal_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.graphite.id}"
+  source_security_group_id = aws_security_group.graphite.id
 }
 
 resource "aws_security_group" "graphite_external_elb" {
   name        = "${var.stackname}_graphite_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the Graphite External ELB"
 
   tags = {
@@ -104,7 +104,7 @@ resource "aws_security_group_rule" "graphite-external-elb_ingress_office_https" 
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.graphite_external_elb.id}"
+  security_group_id = aws_security_group.graphite_external_elb.id
   cidr_blocks       = var.gds_egress_ips
 }
 
@@ -115,8 +115,8 @@ resource "aws_security_group_rule" "graphite-external-elb_ingress_management_htt
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.graphite_external_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.graphite_external_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "graphite-external-elb_egress_any_any" {
@@ -125,12 +125,12 @@ resource "aws_security_group_rule" "graphite-external-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.graphite_external_elb.id}"
+  security_group_id = aws_security_group.graphite_external_elb.id
 }
 
 resource "aws_security_group" "graphite_internal_elb" {
   name        = "${var.stackname}_graphite_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the Graphite Internal ELB"
 
   tags = {
@@ -144,8 +144,8 @@ resource "aws_security_group_rule" "graphite-internal-elb_ingress_monitoring_htt
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.graphite_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.monitoring.id}"
+  security_group_id        = aws_security_group.graphite_internal_elb.id
+  source_security_group_id = aws_security_group.monitoring.id
 }
 
 resource "aws_security_group_rule" "graphite-internal-elb_ingress_deploy_https" {
@@ -155,10 +155,10 @@ resource "aws_security_group_rule" "graphite-internal-elb_ingress_deploy_https" 
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+  security_group_id = aws_security_group.graphite_internal_elb.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.deploy.id}"
+  source_security_group_id = aws_security_group.deploy.id
 }
 
 resource "aws_security_group_rule" "graphite-internal-elb_ingress_management_carbon" {
@@ -167,8 +167,8 @@ resource "aws_security_group_rule" "graphite-internal-elb_ingress_management_car
   to_port   = 2003
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.graphite_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.graphite_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "graphite-internal-elb_ingress_management_pickle" {
@@ -177,8 +177,8 @@ resource "aws_security_group_rule" "graphite-internal-elb_ingress_management_pic
   to_port   = 2004
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.graphite_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.graphite_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "graphite-internal-elb_egress_any_any" {
@@ -187,5 +187,5 @@ resource "aws_security_group_rule" "graphite-internal-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.graphite_internal_elb.id}"
+  security_group_id = aws_security_group.graphite_internal_elb.id
 }

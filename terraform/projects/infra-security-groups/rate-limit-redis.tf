@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "rate-limit-redis" {
   name        = "${var.stackname}_rate-limit-redis_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to rate-limit-redis from its clients"
 
   tags = {

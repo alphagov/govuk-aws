@@ -12,7 +12,7 @@
 
 resource "aws_security_group" "support-api_external_elb" {
   name        = "${var.stackname}_support-api_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the support-api external ELB"
 
   tags = {
@@ -26,15 +26,15 @@ resource "aws_security_group_rule" "support-api_egress_external_elb_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.support-api_external_elb.id}"
+  security_group_id = aws_security_group.support-api_external_elb.id
 }
 
 resource "aws_security_group_rule" "ithc_ingress_support-api_https" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 443
   from_port         = 443
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.support-api_external_elb.id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.support-api_external_elb.id
 }

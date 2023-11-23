@@ -36,10 +36,10 @@ No modules.
 | <a name="input_copy_tags_to_snapshot"></a> [copy\_tags\_to\_snapshot](#input\_copy\_tags\_to\_snapshot) | Whether to copy the instance tags to the snapshot. | `string` | `"true"` | no |
 | <a name="input_create_rds_notifications"></a> [create\_rds\_notifications](#input\_create\_rds\_notifications) | Enable RDS events notifications | `string` | `true` | no |
 | <a name="input_create_replicate_source_db"></a> [create\_replicate\_source\_db](#input\_create\_replicate\_source\_db) | Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate | `string` | `"0"` | no |
-| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map` | `{}` | no |
+| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Additional resource tags | `map(string)` | `{}` | no |
 | <a name="input_engine_name"></a> [engine\_name](#input\_engine\_name) | RDS engine (eg mysql, postgresql) | `string` | `""` | no |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Which version of MySQL to use (eg 5.5.46) | `string` | `""` | no |
-| <a name="input_event_categories"></a> [event\_categories](#input\_event\_categories) | A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html | `list` | <pre>[<br>  "availability",<br>  "deletion",<br>  "failure",<br>  "low storage"<br>]</pre> | no |
+| <a name="input_event_categories"></a> [event\_categories](#input\_event\_categories) | A list of event categories for a SourceType that you want to subscribe to. See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide//USER_Events.html | `list(string)` | <pre>[<br>  "availability",<br>  "deletion",<br>  "failure",<br>  "low storage"<br>]</pre> | no |
 | <a name="input_event_sns_topic_arn"></a> [event\_sns\_topic\_arn](#input\_event\_sns\_topic\_arn) | The SNS topic to send events to. | `string` | `""` | no |
 | <a name="input_instance_class"></a> [instance\_class](#input\_instance\_class) | The instance type of the RDS instance. | `string` | `"db.t1.micro"` | no |
 | <a name="input_instance_name"></a> [instance\_name](#input\_instance\_name) | The RDS Instance Name. | `string` | `""` | no |
@@ -52,11 +52,11 @@ No modules.
 | <a name="input_parameter_group_name"></a> [parameter\_group\_name](#input\_parameter\_group\_name) | Name of the parameter group to make the instance a member of. | `string` | `""` | no |
 | <a name="input_password"></a> [password](#input\_password) | Password for accessing the database. | `string` | `""` | no |
 | <a name="input_replicate_source_db"></a> [replicate\_source\_db](#input\_replicate\_source\_db) | Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate | `string` | `"false"` | no |
-| <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | Security group IDs to apply to this cluster | `list` | n/a | yes |
+| <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | Security group IDs to apply to this cluster | `list(string)` | n/a | yes |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | Set to true to NOT create a final snapshot when the cluster is deleted. | `string` | `"false"` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | Specifies whether or not to create this database from a snapshot. | `string` | `""` | no |
 | <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | One of standard (magnetic), gp2 (general purpose SSD), or io1 (provisioned IOPS SSD). The default is gp2 | `string` | `"gp2"` | no |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs to assign to the aws\_elasticache\_subnet\_group | `list` | `[]` | no |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs to assign to the aws\_elasticache\_subnet\_group | `list(string)` | `[]` | no |
 | <a name="input_terraform_create_rds_timeout"></a> [terraform\_create\_rds\_timeout](#input\_terraform\_create\_rds\_timeout) | Set the timeout time for AWS RDS creation. | `string` | `"2h"` | no |
 | <a name="input_terraform_delete_rds_timeout"></a> [terraform\_delete\_rds\_timeout](#input\_terraform\_delete\_rds\_timeout) | Set the timeout time for AWS RDS deletion. | `string` | `"2h"` | no |
 | <a name="input_terraform_update_rds_timeout"></a> [terraform\_update\_rds\_timeout](#input\_terraform\_update\_rds\_timeout) | Set the timeout time for AWS RDS modification. | `string` | `"2h"` | no |

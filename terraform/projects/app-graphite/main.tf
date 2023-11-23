@@ -4,70 +4,70 @@
 * Graphite node
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "ebs_encrypted" {
-  type        = "string"
+  type        = string
   description = "Whether or not the EBS volume is encrypted"
 }
 
 variable "instance_ami_filter_name" {
-  type        = "string"
+  type        = string
   description = "Name to use to find AMI images"
   default     = ""
 }
 
 variable "graphite_1_subnet" {
-  type        = "string"
+  type        = string
   description = "Name of the subnet to place the Graphite instance 1 and EBS volume"
 }
 
 variable "elb_external_certname" {
-  type        = "string"
+  type        = string
   description = "The ACM cert domain name to find the ARN of"
 }
 
 variable "elb_internal_certname" {
-  type        = "string"
+  type        = string
   description = "The ACM cert domain name to find the ARN of"
 }
 
 variable "remote_state_infra_graphite_backups_bucket_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override stackname path to infra_graphite_backups_bucket remote state"
   default     = "govuk"
 }
 
 variable "external_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains external records"
 }
 
 variable "external_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the external DNS records, it could be different from the zone name"
 }
 
 variable "internal_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains internal records"
 }
 
 variable "internal_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
@@ -77,13 +77,13 @@ variable "create_external_elb" {
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type used for EC2 resources"
   default     = "m5.xlarge"
 }
 
 variable "ebs_volume_size" {
-  type        = "string"
+  type        = string
   description = "EBS Volume size in GB"
   default     = "250"
 }
@@ -96,32 +96,32 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 data "aws_route53_zone" "external" {
-  name         = "${var.external_zone_name}"
+  name         = var.external_zone_name
   private_zone = false
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
+  name         = var.internal_zone_name
   private_zone = true
 }
 
 data "aws_acm_certificate" "elb_external_cert" {
-  domain   = "${var.elb_external_certname}"
+  domain   = var.elb_external_certname
   statuses = ["ISSUED"]
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
-  domain   = "${var.elb_internal_certname}"
+  domain   = var.elb_internal_certname
   statuses = ["ISSUED"]
 }
 
 resource "aws_elb" "graphite_external_elb" {
-  count = "${var.create_external_elb}"
+  count = var.create_external_elb
 
   name            = "${var.stackname}-graphite-external"
   subnets         = ["${data.terraform_remote_state.infra_networking.public_subnet_ids}"]
@@ -129,7 +129,7 @@ resource "aws_elb" "graphite_external_elb" {
   internal        = "false"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     bucket_prefix = "elb/${var.stackname}-graphite-external-elb"
     interval      = 60
   }
@@ -140,7 +140,7 @@ resource "aws_elb" "graphite_external_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_external_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_external_cert.arn
   }
 
   health_check {
@@ -161,29 +161,29 @@ resource "aws_elb" "graphite_external_elb" {
 }
 
 resource "aws_route53_record" "graphite_external_service_record" {
-  count = "${var.create_external_elb}"
+  count = var.create_external_elb
 
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  zone_id = data.aws_route53_zone.external.zone_id
   name    = "graphite.${var.external_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.graphite_external_elb.dns_name}"
-    zone_id                = "${aws_elb.graphite_external_elb.zone_id}"
+    name                   = aws_elb.graphite_external_elb.dns_name
+    zone_id                = aws_elb.graphite_external_elb.zone_id
     evaluate_target_health = true
   }
 }
 
 resource "aws_route53_record" "grafana_external_service_record" {
-  count = "${var.create_external_elb}"
+  count = var.create_external_elb
 
-  zone_id = "${data.aws_route53_zone.external.zone_id}"
+  zone_id = data.aws_route53_zone.external.zone_id
   name    = "grafana.${var.external_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.graphite_external_elb.dns_name}"
-    zone_id                = "${aws_elb.graphite_external_elb.zone_id}"
+    name                   = aws_elb.graphite_external_elb.dns_name
+    zone_id                = aws_elb.graphite_external_elb.zone_id
     evaluate_target_health = true
   }
 }
@@ -195,7 +195,7 @@ resource "aws_elb" "graphite_internal_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     bucket_prefix = "elb/${var.stackname}-graphite-internal-elb"
     interval      = 60
   }
@@ -220,7 +220,7 @@ resource "aws_elb" "graphite_internal_elb" {
     lb_port           = 443
     lb_protocol       = "https"
 
-    ssl_certificate_id = "${data.aws_acm_certificate.elb_internal_cert.arn}"
+    ssl_certificate_id = data.aws_acm_certificate.elb_internal_cert.arn
   }
 
   health_check {
@@ -241,61 +241,61 @@ resource "aws_elb" "graphite_internal_elb" {
 }
 
 resource "aws_route53_record" "graphite_internal_service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "graphite.${var.internal_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.graphite_internal_elb.dns_name}"
-    zone_id                = "${aws_elb.graphite_internal_elb.zone_id}"
+    name                   = aws_elb.graphite_internal_elb.dns_name
+    zone_id                = aws_elb.graphite_internal_elb.zone_id
     evaluate_target_health = true
   }
 }
 
 resource "aws_route53_record" "grafana_internal_service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "grafana.${var.internal_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.graphite_internal_elb.dns_name}"
-    zone_id                = "${aws_elb.graphite_internal_elb.zone_id}"
+    name                   = aws_elb.graphite_internal_elb.dns_name
+    zone_id                = aws_elb.graphite_internal_elb.zone_id
     evaluate_target_health = true
   }
 }
 
 locals {
-  instance_elb_ids_length = "${var.create_external_elb ? 2 : 1}"
-  instance_elb_ids        = "${compact(list(aws_elb.graphite_internal_elb.id, join("", aws_elb.graphite_external_elb.*.id)))}"
+  instance_elb_ids_length = var.create_external_elb ? 2 : 1
+  instance_elb_ids        = compact(list(aws_elb.graphite_internal_elb.id, join("", aws_elb.graphite_external_elb.*.id)))
 }
 
 module "graphite-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-graphite-1"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "graphite", "aws_hostname", "graphite-1")}"
-  instance_subnet_ids           = "${matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))}"
+  instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.graphite_1_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_graphite_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
-  instance_elb_ids_length       = "${local.instance_elb_ids_length}"
+  instance_type                 = var.instance_type
+  instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
+  instance_elb_ids_length       = local.instance_elb_ids_length
   instance_elb_ids              = ["${local.instance_elb_ids}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  instance_ami_filter_name      = var.instance_ami_filter_name
+  asg_notification_topic_arn    = data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn
 }
 
 resource "aws_ebs_volume" "graphite-1" {
-  availability_zone = "${lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)}"
-  encrypted         = "${var.ebs_encrypted}"
-  size              = "${var.ebs_volume_size}"
+  availability_zone = lookup(data.terraform_remote_state.infra_networking.private_subnet_names_azs_map, var.graphite_1_subnet)
+  encrypted         = var.ebs_encrypted
+  size              = var.ebs_volume_size
   type              = "io1"
   iops              = 1000
 
   tags {
     Name            = "${var.stackname}-graphite-1"
-    Project         = "${var.stackname}"
+    Project         = var.stackname
     Device          = "xvdf"
-    aws_stackname   = "${var.stackname}"
-    aws_environment = "${var.aws_environment}"
+    aws_stackname   = var.stackname
+    aws_environment = var.aws_environment
     aws_migration   = "graphite"
     aws_hostname    = "graphite-1"
   }
@@ -304,31 +304,31 @@ resource "aws_ebs_volume" "graphite-1" {
 resource "aws_iam_policy" "graphite_1_iam_policy" {
   name   = "${var.stackname}-graphite-1-additional"
   path   = "/"
-  policy = "${file("${path.module}/additional_policy.json")}"
+  policy = file("${path.module}/additional_policy.json")
 }
 
 resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_attachment" {
-  role       = "${module.graphite-1.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.graphite_1_iam_policy.arn}"
+  role       = module.graphite-1.instance_iam_role_name
+  policy_arn = aws_iam_policy.graphite_1_iam_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "graphite_1_iam_role_policy_cloudwatch_attachment" {
-  role       = "${module.graphite-1.instance_iam_role_name}"
+  role       = module.graphite-1.instance_iam_role_name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "access_graphite_backups_iam_role_policy_attachment" {
-  role       = "${module.graphite-1.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_graphite_backups_bucket.access_graphite_backups_bucket_policy_arn}"
+  role       = module.graphite-1.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_graphite_backups_bucket.access_graphite_backups_bucket_policy_arn
 }
 
 data "terraform_remote_state" "infra_graphite_backups_bucket" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_graphite_backups_bucket_key_stack, var.stackname)}/infra-graphite-backups-bucket.tfstate"
-    region = "${var.aws_region}"
+    region = var.aws_region
   }
 }
 
@@ -336,7 +336,7 @@ module "alarms-elb-graphite-internal" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-graphite-internal"
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${aws_elb.graphite_internal_elb.name}"
+  elb_name                       = aws_elb.graphite_internal_elb.name
   httpcode_backend_4xx_threshold = "0"
   httpcode_backend_5xx_threshold = "100"
   httpcode_elb_4xx_threshold     = "100"
@@ -346,19 +346,19 @@ module "alarms-elb-graphite-internal" {
 }
 
 locals {
-  elb_httpcode_backend_5xx_threshold = "${var.create_external_elb ? 100 : 0}"
-  elb_httpcode_elb_5xx_threshold     = "${var.create_external_elb ? 100 : 0}"
+  elb_httpcode_backend_5xx_threshold = var.create_external_elb ? 100 : 0
+  elb_httpcode_elb_5xx_threshold     = var.create_external_elb ? 100 : 0
 }
 
 module "alarms-elb-graphite-external" {
   source                         = "../../modules/aws/alarms/elb"
   name_prefix                    = "${var.stackname}-graphite-external"
   alarm_actions                  = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  elb_name                       = "${join("", aws_elb.graphite_external_elb.*.name)}"
+  elb_name                       = join("", aws_elb.graphite_external_elb.*.name)
   httpcode_backend_4xx_threshold = "0"
-  httpcode_backend_5xx_threshold = "${local.elb_httpcode_backend_5xx_threshold}"
+  httpcode_backend_5xx_threshold = local.elb_httpcode_backend_5xx_threshold
   httpcode_elb_4xx_threshold     = "0"
-  httpcode_elb_5xx_threshold     = "${local.elb_httpcode_elb_5xx_threshold}"
+  httpcode_elb_5xx_threshold     = local.elb_httpcode_elb_5xx_threshold
   surgequeuelength_threshold     = "0"
   healthyhostcount_threshold     = "0"
 }
@@ -367,11 +367,11 @@ module "alarms-elb-graphite-external" {
 # --------------------------------------------------------------
 
 output "graphite_internal_service_dns_name" {
-  value       = "${aws_route53_record.graphite_internal_service_record.fqdn}"
+  value       = aws_route53_record.graphite_internal_service_record.fqdn
   description = "DNS name to access the Graphite internal service"
 }
 
 output "graphite_external_elb_dns_name" {
-  value       = "${join("", aws_route53_record.graphite_external_service_record.*.fqdn)}"
+  value       = join("", aws_route53_record.graphite_external_service_record.*.fqdn)
   description = "DNS name to access the Graphite external service"
 }

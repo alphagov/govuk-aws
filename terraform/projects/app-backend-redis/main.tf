@@ -72,12 +72,12 @@ provider "aws" {
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
+  name         = var.internal_zone_name
   private_zone = true
 }
 
 resource "aws_route53_record" "service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "backend-redis.${var.internal_domain_name}"
   type    = "CNAME"
   ttl     = 300
@@ -91,28 +91,28 @@ module "backend_redis_cluster" {
   default_tags               = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis")}"
   subnet_ids                 = data.terraform_remote_state.infra_networking.outputs.private_subnet_elasticache_ids
   security_group_ids         = [data.terraform_remote_state.infra_security_groups.outputs.sg_backend-redis_id]
-  elasticache_node_type      = "${var.instance_type}"
-  elasticache_node_number    = "${var.node_number}"
-  redis_engine_version       = "${var.redis_engine_version}"
-  redis_parameter_group_name = "${var.redis_parameter_group_name}"
+  elasticache_node_type      = var.instance_type
+  elasticache_node_number    = var.node_number
+  redis_engine_version       = var.redis_engine_version
+  redis_parameter_group_name = var.redis_parameter_group_name
 }
 
 module "alarms-elasticache-backend-redis" {
   source           = "../../modules/aws/alarms/elasticache"
   name_prefix      = "${var.stackname}-backend-redis"
   alarm_actions    = [data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn]
-  cache_cluster_id = "${module.backend_redis_cluster.replication_group_id}"
+  cache_cluster_id = module.backend_redis_cluster.replication_group_id
 }
 
 # Outputs
 # --------------------------------------------------------------
 
 output "backend_redis_configuration_endpoint_address" {
-  value       = "${module.backend_redis_cluster.configuration_endpoint_address}"
+  value       = module.backend_redis_cluster.configuration_endpoint_address
   description = "Backend VDC redis configuration endpoint address"
 }
 
 output "service_dns_name" {
-  value       = "${aws_route53_record.service_record.fqdn}"
+  value       = aws_route53_record.service_record.fqdn
   description = "DNS name to access the node service"
 }

@@ -10,7 +10,7 @@
 #
 resource "aws_security_group" "asset-master-efs" {
   name        = "${var.stackname}_asset-master-efs_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Security group for asset-master EFS share"
 
   tags = {

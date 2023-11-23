@@ -15,23 +15,23 @@
 *
 */
 variable "name_prefix" {
-  type        = "string"
+  type        = string
   description = "The alarm name prefix."
 }
 
 variable "groupinserviceinstances_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the Autoscaling GroupInServiceInstaces metric is compared."
   default     = "1"
 }
 
 variable "alarm_actions" {
-  type        = "list"
+  type        = list(string)
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "autoscaling_group_name" {
-  type        = "string"
+  type        = string
   description = "The name of the AutoScalingGroup that we want to monitor."
 }
 
@@ -45,7 +45,7 @@ resource "aws_cloudwatch_metric_alarm" "autoscaling_groupinserviceinstances" {
   namespace           = "AWS/AutoScaling"
   period              = "60"
   statistic           = "Average"
-  threshold           = "${var.groupinserviceinstances_threshold}"
+  threshold           = var.groupinserviceinstances_threshold
   actions_enabled     = true
   alarm_actions       = var.alarm_actions
   alarm_description   = "This metric monitors instances in service in an AutoScalingGroup"
@@ -60,6 +60,6 @@ resource "aws_cloudwatch_metric_alarm" "autoscaling_groupinserviceinstances" {
 
 // The ID of the autoscaling GroupInServiceInstances health check.
 output "alarm_autoscaling_groupinserviceinstances_id" {
-  value       = "${aws_cloudwatch_metric_alarm.autoscaling_groupinserviceinstances.id}"
+  value       = aws_cloudwatch_metric_alarm.autoscaling_groupinserviceinstances.id
   description = "The ID of the autoscaling GroupInServiceInstances health check."
 }

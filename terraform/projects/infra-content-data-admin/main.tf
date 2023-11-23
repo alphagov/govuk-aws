@@ -5,18 +5,18 @@
 */
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
@@ -28,7 +28,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "content_data_csvs" {
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-content-data-csvs/"
   }
 
@@ -62,18 +62,18 @@ resource "aws_iam_user" "content_data_admin_app" {
 
 resource "aws_iam_policy" "s3_writer" {
   name        = "govuk-${var.aws_environment}-content-data-admin-app-s3-writer-policy"
-  policy      = "${data.template_file.s3_writer_policy_template.rendered}"
+  policy      = data.template_file.s3_writer_policy_template.rendered
   description = "Allows writing to the govuk-${var.aws_environment}-content-data-csvs S3 bucket"
 }
 
 resource "aws_iam_policy_attachment" "s3_writer" {
   name       = "archive-writer-policy-attachment"
   users      = ["${aws_iam_user.content_data_admin_app.name}"]
-  policy_arn = "${aws_iam_policy.s3_writer.arn}"
+  policy_arn = aws_iam_policy.s3_writer.arn
 }
 
 data "template_file" "s3_writer_policy_template" {
-  template = "${file("${path.module}/../../policies/content_data_admin_s3_writer_policy.tpl")}"
+  template = file("${path.module}/../../policies/content_data_admin_s3_writer_policy.tpl")
 
   vars = {
     aws_environment = "${var.aws_environment}"

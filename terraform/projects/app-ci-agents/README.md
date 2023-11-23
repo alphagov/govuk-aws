@@ -92,7 +92,7 @@ CI agents
 | <a name="input_esm_trusty_token"></a> [esm\_trusty\_token](#input\_esm\_trusty\_token) | n/a | `string` | n/a | yes |
 | <a name="input_instance_ami_filter_name"></a> [instance\_ami\_filter\_name](#input\_instance\_ami\_filter\_name) | Name to use to find AMI images | `string` | `""` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance type used for EC2 resources | `string` | `"m5.2xlarge"` | no |
-| <a name="input_internal_app_service_records"></a> [internal\_app\_service\_records](#input\_internal\_app\_service\_records) | List of application service names that get traffic via this loadbalancer | `list` | `[]` | no |
+| <a name="input_internal_app_service_records"></a> [internal\_app\_service\_records](#input\_internal\_app\_service\_records) | List of application service names that get traffic via this loadbalancer | `list(string)` | `[]` | no |
 | <a name="input_internal_domain_name"></a> [internal\_domain\_name](#input\_internal\_domain\_name) | The domain name of the internal DNS records, it could be different from the zone name | `string` | n/a | yes |
 | <a name="input_internal_zone_name"></a> [internal\_zone\_name](#input\_internal\_zone\_name) | The name of the Route53 zone that contains internal records | `string` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
@@ -104,7 +104,7 @@ CI agents
 | <a name="input_remote_state_infra_vpc_key_stack"></a> [remote\_state\_infra\_vpc\_key\_stack](#input\_remote\_state\_infra\_vpc\_key\_stack) | Override infra\_vpc remote state path | `string` | `""` | no |
 | <a name="input_root_block_device_volume_size"></a> [root\_block\_device\_volume\_size](#input\_root\_block\_device\_volume\_size) | size of the root volume in GB | `string` | `"50"` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | Stackname | `string` | n/a | yes |
-| <a name="input_user_data_snippets"></a> [user\_data\_snippets](#input\_user\_data\_snippets) | List of user-data snippets | `list` | n/a | yes |
+| <a name="input_user_data_snippets"></a> [user\_data\_snippets](#input\_user\_data\_snippets) | List of user-data snippets | `list(string)` | n/a | yes |
 
 ## Outputs
 

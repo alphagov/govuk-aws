@@ -12,7 +12,7 @@
 
 resource "aws_security_group" "jumpbox" {
   name        = "${var.stackname}_jumpbox_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Control access to the jumpbox"
 
   tags = {
@@ -25,6 +25,6 @@ resource "aws_security_group_rule" "jumpbox_ingress_offsite-ssh_ssh" {
   to_port                  = 22
   from_port                = 22
   protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.jumpbox.id}"
-  source_security_group_id = "${aws_security_group.offsite_ssh.id}"
+  security_group_id        = aws_security_group.jumpbox.id
+  source_security_group_id = aws_security_group.offsite_ssh.id
 }

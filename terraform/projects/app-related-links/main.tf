@@ -6,28 +6,28 @@
 * Run resource intensive scripts for data science purposes.
 */
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS environment"
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "jenkins_ssh_public_key" {
-  type        = "string"
+  type        = string
   description = "Jenkins SSH public key"
 }
 
 locals {
-  content_store_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+  content_store_bucket_name = data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name
   related_links_bucket_name = "govuk-related-links-${var.aws_environment}"
 }
 
@@ -40,7 +40,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "1.40.0"
 }
 
@@ -57,15 +57,15 @@ data "aws_secretsmanager_secret" "secret_publishing_api_bearer_token" {
 }
 
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "${local.related_links_bucket_name}"
+  bucket = local.related_links_bucket_name
 
   versioning {
     enabled = true
   }
 
   tags {
-    aws_environment = "${var.aws_environment}"
-    Name            = "${local.related_links_bucket_name}"
+    aws_environment = var.aws_environment
+    Name            = local.related_links_bucket_name
   }
 }
 
@@ -82,12 +82,12 @@ data "aws_ami" "ubuntu_bionic" {
 }
 
 data "template_file" "ec2_assume_policy_template" {
-  template = "${file("${path.module}/../../policies/ec2_assume_policy.tpl")}"
+  template = file("${path.module}/../../policies/ec2_assume_policy.tpl")
 }
 
 resource "aws_iam_role" "ec2_role" {
   name               = "${var.stackname}-ec2-role"
-  assume_role_policy = "${data.template_file.ec2_assume_policy_template.rendered}"
+  assume_role_policy = data.template_file.ec2_assume_policy_template.rendered
 }
 
 data "aws_iam_policy_document" "read_content_store_backups_bucket_policy_document" {
@@ -150,16 +150,16 @@ data "aws_iam_policy_document" "read_secrets_from_secrets_manager_policy_documen
 }
 
 data "template_file" "provision-generation-instance-userdata" {
-  template = "${file("${path.module}/provision-generation-instance.tpl")}"
+  template = file("${path.module}/provision-generation-instance.tpl")
 
   vars {
-    database_backups_bucket_name = "${data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name}"
+    database_backups_bucket_name = data.terraform_remote_state.infra_database_backups_bucket.s3_database_backups_bucket_name
     related_links_bucket_name    = "govuk-related-links-${var.aws_environment}"
   }
 }
 
 data "template_file" "provision-ingestion-instance-userdata" {
-  template = "${file("${path.module}/provision-ingestion-instance.tpl")}"
+  template = file("${path.module}/provision-ingestion-instance.tpl")
 
   vars {
     publishing_api_uri        = "https://publishing-api.${var.aws_environment}.govuk-internal.digital"
@@ -227,62 +227,62 @@ data "aws_iam_policy_document" "related_links_jenkins_policy_document" {
 
 resource "aws_iam_policy" "read_content_store_backups_bucket_policy" {
   name   = "read_content_store_backups_bucket_policy"
-  policy = "${data.aws_iam_policy_document.read_content_store_backups_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.read_content_store_backups_bucket_policy_document.json
 }
 
 resource "aws_iam_policy" "read_write_related_links_bucket_policy" {
   name   = "read_write_related_links_bucket_policy"
-  policy = "${data.aws_iam_policy_document.read_write_related_links_bucket_policy_document.json}"
+  policy = data.aws_iam_policy_document.read_write_related_links_bucket_policy_document.json
 }
 
 resource "aws_iam_policy" "read_secrets_from_secrets_manager_policy" {
   name   = "read_secrets_from_secrets_manager_policy"
-  policy = "${data.aws_iam_policy_document.read_secrets_from_secrets_manager_policy_document.json}"
+  policy = data.aws_iam_policy_document.read_secrets_from_secrets_manager_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "attach_read_content_store_backups_bucket_policy" {
-  role       = "${aws_iam_role.ec2_role.name}"
-  policy_arn = "${aws_iam_policy.read_content_store_backups_bucket_policy.arn}"
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.read_content_store_backups_bucket_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach_read_write_related_links_bucket_policy" {
-  role       = "${aws_iam_role.ec2_role.name}"
-  policy_arn = "${aws_iam_policy.read_write_related_links_bucket_policy.arn}"
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.read_write_related_links_bucket_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "attach_read_secrets_from_secrets_manager_policy" {
-  role       = "${aws_iam_role.ec2_role.name}"
-  policy_arn = "${aws_iam_policy.read_secrets_from_secrets_manager_policy.arn}"
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.read_secrets_from_secrets_manager_policy.arn
 }
 
 resource "aws_iam_policy" "related_links_jenkins_policy" {
   name   = "related_links_jenkins_policy"
-  policy = "${data.aws_iam_policy_document.related_links_jenkins_policy_document.json}"
+  policy = data.aws_iam_policy_document.related_links_jenkins_policy_document.json
 }
 
 resource "aws_iam_instance_profile" "related-links_instance-profile" {
   name = "related-links_instance-profile"
-  role = "${aws_iam_role.ec2_role.name}"
+  role = aws_iam_role.ec2_role.name
 }
 
 resource "aws_key_pair" "jenkins_public_key" {
   key_name   = "jenkins-public-key"
-  public_key = "${var.jenkins_ssh_public_key}"
+  public_key = var.jenkins_ssh_public_key
 }
 
 resource "aws_launch_template" "related-links-generation_launch-template" {
   name          = "related-links-generation_launch-template"
-  image_id      = "${data.aws_ami.ubuntu_bionic.id}"
+  image_id      = data.aws_ami.ubuntu_bionic.id
   instance_type = "m5.8xlarge"
 
   vpc_security_group_ids = [
     "${data.terraform_remote_state.infra_security_groups.sg_related-links_id}",
   ]
 
-  key_name = "${aws_key_pair.jenkins_public_key.key_name}"
+  key_name = aws_key_pair.jenkins_public_key.key_name
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.related-links_instance-profile.name}"
+    name = aws_iam_instance_profile.related-links_instance-profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -299,7 +299,7 @@ resource "aws_launch_template" "related-links-generation_launch-template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.provision-generation-instance-userdata.rendered)}"
+  user_data = base64encode(data.template_file.provision-generation-instance-userdata.rendered)
 }
 
 resource "aws_autoscaling_group" "related-links-generation" {
@@ -309,7 +309,7 @@ resource "aws_autoscaling_group" "related-links-generation" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.related-links-generation_launch-template.id}"
+    id      = aws_launch_template.related-links-generation_launch-template.id
     version = "$Latest"
   }
 
@@ -324,7 +324,7 @@ resource "aws_autoscaling_group" "related-links-generation" {
 
 resource "aws_launch_template" "related-links-ingestion_launch-template" {
   name          = "related-links-ingestion_launch-template"
-  image_id      = "${data.aws_ami.ubuntu_bionic.id}"
+  image_id      = data.aws_ami.ubuntu_bionic.id
   instance_type = "t2.micro"
 
   vpc_security_group_ids = [
@@ -332,10 +332,10 @@ resource "aws_launch_template" "related-links-ingestion_launch-template" {
     "${data.terraform_remote_state.infra_security_groups.sg_management_id}",
   ]
 
-  key_name = "${aws_key_pair.jenkins_public_key.key_name}"
+  key_name = aws_key_pair.jenkins_public_key.key_name
 
   iam_instance_profile {
-    name = "${aws_iam_instance_profile.related-links_instance-profile.name}"
+    name = aws_iam_instance_profile.related-links_instance-profile.name
   }
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -352,7 +352,7 @@ resource "aws_launch_template" "related-links-ingestion_launch-template" {
     }
   }
 
-  user_data = "${base64encode(data.template_file.provision-ingestion-instance-userdata.rendered)}"
+  user_data = base64encode(data.template_file.provision-ingestion-instance-userdata.rendered)
 }
 
 resource "aws_autoscaling_group" "related-links-ingestion" {
@@ -362,7 +362,7 @@ resource "aws_autoscaling_group" "related-links-ingestion" {
   desired_capacity = 0
 
   launch_template {
-    id      = "${aws_launch_template.related-links-ingestion_launch-template.id}"
+    id      = aws_launch_template.related-links-ingestion_launch-template.id
     version = "$Latest"
   }
 
@@ -379,16 +379,16 @@ resource "aws_autoscaling_group" "related-links-ingestion" {
 # --------------------------------------------------------------
 
 output "policy_read_content_store_backups_bucket_policy_arn" {
-  value       = "${aws_iam_policy.read_content_store_backups_bucket_policy.arn}"
+  value       = aws_iam_policy.read_content_store_backups_bucket_policy.arn
   description = "ARN of the policy used to read content store backups from the database backups bucket"
 }
 
 output "policy_read_write_related_links_bucket_policy_arn" {
-  value       = "${aws_iam_policy.read_write_related_links_bucket_policy.arn}"
+  value       = aws_iam_policy.read_write_related_links_bucket_policy.arn
   description = "ARN of the policy used to read/write data from/to the related links bucket"
 }
 
 output "policy_related_links_jenkins_policy_arn" {
-  value       = "${aws_iam_policy.related_links_jenkins_policy.arn}"
+  value       = aws_iam_policy.related_links_jenkins_policy.arn
   description = "ARN of the policy used by Jenkins to manage related links generation and ingestion"
 }

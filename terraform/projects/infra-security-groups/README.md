@@ -286,18 +286,18 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_environment"></a> [aws\_environment](#input\_aws\_environment) | AWS Environment | `string` | n/a | yes |
-| <a name="input_aws_integration_external_nat_gateway_ips"></a> [aws\_integration\_external\_nat\_gateway\_ips](#input\_aws\_integration\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS integration external NAT gateways. | `list` | `[]` | no |
+| <a name="input_aws_integration_external_nat_gateway_ips"></a> [aws\_integration\_external\_nat\_gateway\_ips](#input\_aws\_integration\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS integration external NAT gateways. | `list(string)` | `[]` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region | `string` | `"eu-west-1"` | no |
-| <a name="input_aws_staging_external_nat_gateway_ips"></a> [aws\_staging\_external\_nat\_gateway\_ips](#input\_aws\_staging\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS staging external NAT gateways. | `list` | `[]` | no |
-| <a name="input_gds_egress_ips"></a> [gds\_egress\_ips](#input\_gds\_egress\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list` | n/a | yes |
-| <a name="input_ithc_access_ips"></a> [ithc\_access\_ips](#input\_ithc\_access\_ips) | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | `list` | `[]` | no |
-| <a name="input_paas_ireland_egress_ips"></a> [paas\_ireland\_egress\_ips](#input\_paas\_ireland\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS Ireland region | `list` | `[]` | no |
-| <a name="input_paas_london_egress_ips"></a> [paas\_london\_egress\_ips](#input\_paas\_london\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS London region | `list` | `[]` | no |
+| <a name="input_aws_staging_external_nat_gateway_ips"></a> [aws\_staging\_external\_nat\_gateway\_ips](#input\_aws\_staging\_external\_nat\_gateway\_ips) | An array of public IPs of the AWS staging external NAT gateways. | `list(string)` | `[]` | no |
+| <a name="input_gds_egress_ips"></a> [gds\_egress\_ips](#input\_gds\_egress\_ips) | An array of CIDR blocks that will be allowed offsite access. | `list(string)` | n/a | yes |
+| <a name="input_ithc_access_ips"></a> [ithc\_access\_ips](#input\_ithc\_access\_ips) | An array of CIDR blocks that will be allowed temporary access for ITHC purposes. | `list(string)` | `[]` | no |
+| <a name="input_paas_ireland_egress_ips"></a> [paas\_ireland\_egress\_ips](#input\_paas\_ireland\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS Ireland region | `list(string)` | `[]` | no |
+| <a name="input_paas_london_egress_ips"></a> [paas\_london\_egress\_ips](#input\_paas\_london\_egress\_ips) | An array of CIDR blocks that are used for egress from the GOV.UK PaaS London region | `list(string)` | `[]` | no |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_networking_key_stack"></a> [remote\_state\_infra\_networking\_key\_stack](#input\_remote\_state\_infra\_networking\_key\_stack) | Override infra\_networking remote state path | `string` | `""` | no |
 | <a name="input_remote_state_infra_vpc_key_stack"></a> [remote\_state\_infra\_vpc\_key\_stack](#input\_remote\_state\_infra\_vpc\_key\_stack) | Override infra\_vpc remote state path | `string` | `""` | no |
 | <a name="input_stackname"></a> [stackname](#input\_stackname) | The name of the stack being built. Must be unique within the environment as it's used for disambiguation. | `string` | n/a | yes |
-| <a name="input_traffic_replay_ips"></a> [traffic\_replay\_ips](#input\_traffic\_replay\_ips) | An array of CIDR blocks that will replay traffic against an environment | `list` | n/a | yes |
+| <a name="input_traffic_replay_ips"></a> [traffic\_replay\_ips](#input\_traffic\_replay\_ips) | An array of CIDR blocks that will replay traffic against an environment | `list(string)` | n/a | yes |
 
 ## Outputs
 

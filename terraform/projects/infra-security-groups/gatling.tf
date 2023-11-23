@@ -11,7 +11,7 @@
 
 resource "aws_security_group" "gatling" {
   name        = "${var.stackname}_gatling_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the gatling host"
 
   tags = {
@@ -26,10 +26,10 @@ resource "aws_security_group_rule" "gatling_ingress_gatling_ssh" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.gatling.id}"
+  security_group_id = aws_security_group.gatling.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.gatling.id}"
+  source_security_group_id = aws_security_group.gatling.id
 }
 
 resource "aws_security_group_rule" "gatling_egress_any_any" {
@@ -38,7 +38,7 @@ resource "aws_security_group_rule" "gatling_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.gatling.id}"
+  security_group_id = aws_security_group.gatling.id
 }
 
 resource "aws_security_group_rule" "gatling_ingress_gatling_http" {
@@ -48,15 +48,15 @@ resource "aws_security_group_rule" "gatling_ingress_gatling_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.gatling.id}"
+  security_group_id = aws_security_group.gatling.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.gatling_external_elb.id}"
+  source_security_group_id = aws_security_group.gatling_external_elb.id
 }
 
 resource "aws_security_group" "gatling_external_elb" {
   name        = "${var.stackname}_gatling_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the gatling External ELB"
 
   tags = {
@@ -70,7 +70,7 @@ resource "aws_security_group_rule" "gatling-external-elb_ingress_office_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.gatling_external_elb.id}"
+  security_group_id = aws_security_group.gatling_external_elb.id
   cidr_blocks       = var.gds_egress_ips
 }
 
@@ -80,5 +80,5 @@ resource "aws_security_group_rule" "gatling-external-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.gatling_external_elb.id}"
+  security_group_id = aws_security_group.gatling_external_elb.id
 }

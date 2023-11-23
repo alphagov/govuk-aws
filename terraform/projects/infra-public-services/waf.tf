@@ -34,7 +34,7 @@ EOF
 
 resource "aws_iam_role_policy" "aws_waf_firehose" {
   name = "${var.aws_environment}-aws-waf-firehose"
-  role = "${aws_iam_role.aws_waf_firehose.id}"
+  role = aws_iam_role.aws_waf_firehose.id
 
   policy = <<EOF
 {
@@ -90,10 +90,10 @@ data "archive_file" "aws_waf_log_trimmer" {
 }
 
 resource "aws_lambda_function" "aws_waf_log_trimmer" {
-  filename         = "${data.archive_file.aws_waf_log_trimmer.output_path}"
+  filename         = data.archive_file.aws_waf_log_trimmer.output_path
   function_name    = "${var.aws_environment}-waf-log-trimmer"
-  source_code_hash = "${data.archive_file.aws_waf_log_trimmer.output_base64sha256}"
-  role             = "${aws_iam_role.aws_waf_log_trimmer.arn}"
+  source_code_hash = data.archive_file.aws_waf_log_trimmer.output_base64sha256
+  role             = aws_iam_role.aws_waf_log_trimmer.arn
   handler          = "lambda.handler"
   runtime          = "nodejs18.x"
   timeout          = 190
@@ -108,16 +108,16 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
   destination = "splunk"
 
   s3_configuration {
-    role_arn           = "${aws_iam_role.aws_waf_firehose.arn}"
-    bucket_arn         = "${aws_s3_bucket.aws_waf_logs.arn}"
+    role_arn           = aws_iam_role.aws_waf_firehose.arn
+    bucket_arn         = aws_s3_bucket.aws_waf_logs.arn
     buffer_size        = 10
     buffer_interval    = 400
     compression_format = "GZIP"
   }
 
   splunk_configuration {
-    hec_endpoint               = "${var.waf_logs_hec_endpoint}"
-    hec_token                  = "${var.waf_logs_hec_token}"
+    hec_endpoint               = var.waf_logs_hec_endpoint
+    hec_token                  = var.waf_logs_hec_token
     hec_acknowledgment_timeout = 180
     hec_endpoint_type          = "Raw"
     s3_backup_mode             = "AllEvents"
@@ -135,7 +135,7 @@ resource "aws_kinesis_firehose_delivery_stream" "splunk" {
 
         parameters {
           parameter_name  = "RoleArn"
-          parameter_value = "${aws_iam_role.aws_waf_firehose.arn}"
+          parameter_value = aws_iam_role.aws_waf_firehose.arn
         }
 
         parameters {

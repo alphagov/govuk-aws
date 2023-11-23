@@ -1,5 +1,5 @@
 variable "user_data_snippets" {
-  type        = list
+  type        = list(any)
   description = "List of user-data snippets"
 }
 

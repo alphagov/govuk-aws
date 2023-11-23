@@ -15,7 +15,7 @@
 
 resource "aws_security_group" "ckan" {
   name        = "${var.stackname}_ckan_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the ckan host from its ELB"
 
   tags = {
@@ -30,10 +30,10 @@ resource "aws_security_group_rule" "ckan_ingress_ckan-elb-internal_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.ckan.id}"
+  security_group_id = aws_security_group.ckan.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.ckan_elb_internal.id}"
+  source_security_group_id = aws_security_group.ckan_elb_internal.id
 }
 
 resource "aws_security_group_rule" "ckan_ingress_ckan-elb-external_http" {
@@ -43,15 +43,15 @@ resource "aws_security_group_rule" "ckan_ingress_ckan-elb-external_http" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.ckan.id}"
+  security_group_id = aws_security_group.ckan.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.ckan_elb_external.id}"
+  source_security_group_id = aws_security_group.ckan_elb_external.id
 }
 
 resource "aws_security_group" "ckan_elb_internal" {
   name        = "${var.stackname}_ckan_elb_internal_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the ckan ELB"
 
   tags = {
@@ -66,13 +66,13 @@ resource "aws_security_group_rule" "ckan-elb-internal_ingress_management_https" 
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.ckan_elb_internal.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.ckan_elb_internal.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group" "ckan_elb_external" {
   name        = "${var.stackname}_ckan_elb_external_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the ckan ELB"
 
   tags = {
@@ -87,7 +87,7 @@ resource "aws_security_group_rule" "ckan-elb-external_ingress_public_https" {
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.ckan_elb_external.id}"
+  security_group_id = aws_security_group.ckan_elb_external.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
@@ -97,7 +97,7 @@ resource "aws_security_group_rule" "ckan-elb-internal_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.ckan_elb_internal.id}"
+  security_group_id = aws_security_group.ckan_elb_internal.id
 }
 
 resource "aws_security_group_rule" "ckan-elb-external_egress_any_any" {
@@ -106,7 +106,7 @@ resource "aws_security_group_rule" "ckan-elb-external_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.ckan_elb_external.id}"
+  security_group_id = aws_security_group.ckan_elb_external.id
 }
 
 # Allow SSH access from db-admin for data sync
@@ -116,14 +116,14 @@ resource "aws_security_group_rule" "ckan_ingress_db-admin_ssh" {
   to_port   = 22
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.ckan.id}"
-  source_security_group_id = "${aws_security_group.db-admin.id}"
+  security_group_id        = aws_security_group.ckan.id
+  source_security_group_id = aws_security_group.db-admin.id
 }
 
 resource "aws_security_group" "ckan_ithc_access" {
-  count       = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count       = length(var.ithc_access_ips) > 0 ? 1 : 0
   name        = "${var.stackname}_ckan_ithc_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Control access to ITHC SSH"
 
   tags = {
@@ -132,11 +132,11 @@ resource "aws_security_group" "ckan_ithc_access" {
 }
 
 resource "aws_security_group_rule" "ithc_ingress_ckan_ssh" {
-  count             = "${length(var.ithc_access_ips) > 0 ? 1 : 0}"
+  count             = length(var.ithc_access_ips) > 0 ? 1 : 0
   type              = "ingress"
   to_port           = 22
   from_port         = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.ithc_access_ips}"
-  security_group_id = "${aws_security_group.ckan_ithc_access[0].id}"
+  cidr_blocks       = var.ithc_access_ips
+  security_group_id = aws_security_group.ckan_ithc_access[0].id
 }

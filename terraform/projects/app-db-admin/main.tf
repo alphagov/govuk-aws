@@ -6,51 +6,51 @@
 * These nodes connect to RDS instances and administer them.
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "instance_ami_filter_name" {
-  type        = "string"
+  type        = string
   description = "Name to use to find AMI images"
   default     = ""
 }
 
 variable "remote_state_infra_content_publisher_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override stackname path to infra_content_publisher remote state"
   default     = ""
 }
 
 variable "remote_state_infra_database_backups_bucket_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override stackname path to infra_database_backups_bucket remote state"
   default     = ""
 }
 
 variable "internal_zone_name" {
-  type        = "string"
+  type        = string
   description = "The name of the Route53 zone that contains internal records"
 }
 
 variable "internal_domain_name" {
-  type        = "string"
+  type        = string
   description = "The domain name of the internal DNS records, it could be different from the zone name"
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type used for EC2 resources"
   default     = "t2.medium"
 }
@@ -63,12 +63,12 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 data "aws_route53_zone" "internal" {
-  name         = "${var.internal_zone_name}"
+  name         = var.internal_zone_name
   private_zone = true
 }
 
@@ -79,7 +79,7 @@ resource "aws_elb" "db-admin_elb" {
   internal        = "true"
 
   access_logs {
-    bucket        = "${data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id}"
+    bucket        = data.terraform_remote_state.infra_monitoring.aws_logging_bucket_id
     bucket_prefix = "elb/${var.stackname}-db-admin-internal-elb"
     interval      = 60
   }
@@ -119,28 +119,28 @@ module "db-admin" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-db-admin"
   default_tags                  = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "db_admin", "aws_hostname", "db-admin-1")}"
-  instance_subnet_ids           = "${data.terraform_remote_state.infra_networking.private_subnet_ids}"
+  instance_subnet_ids           = data.terraform_remote_state.infra_networking.private_subnet_ids
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_db-admin_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
-  instance_type                 = "${var.instance_type}"
-  instance_additional_user_data = "${join("\n", null_resource.user_data.*.triggers.snippet)}"
+  instance_type                 = var.instance_type
+  instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
   instance_elb_ids_length       = "1"
   instance_elb_ids              = ["${aws_elb.db-admin_elb.id}"]
-  instance_ami_filter_name      = "${var.instance_ami_filter_name}"
+  instance_ami_filter_name      = var.instance_ami_filter_name
   asg_max_size                  = "1"
   asg_min_size                  = "1"
   asg_desired_capacity          = "1"
-  asg_notification_topic_arn    = "${data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn}"
+  asg_notification_topic_arn    = data.terraform_remote_state.infra_monitoring.sns_topic_autoscaling_group_events_arn
   root_block_device_volume_size = "512"
 }
 
 resource "aws_route53_record" "db_admin_service_record" {
-  zone_id = "${data.aws_route53_zone.internal.zone_id}"
+  zone_id = data.aws_route53_zone.internal.zone_id
   name    = "db-admin.${var.internal_domain_name}"
   type    = "A"
 
   alias {
-    name                   = "${aws_elb.db-admin_elb.dns_name}"
-    zone_id                = "${aws_elb.db-admin_elb.zone_id}"
+    name                   = aws_elb.db-admin_elb.dns_name
+    zone_id                = aws_elb.db-admin_elb.zone_id
     evaluate_target_health = true
   }
 }
@@ -148,7 +148,7 @@ resource "aws_route53_record" "db_admin_service_record" {
 module "alarms-autoscaling-db-admin" {
   source                            = "../../modules/aws/alarms/autoscaling"
   name_prefix                       = "${var.stackname}-db-admin"
-  autoscaling_group_name            = "${module.db-admin.autoscaling_group_name}"
+  autoscaling_group_name            = module.db-admin.autoscaling_group_name
   alarm_actions                     = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   groupinserviceinstances_threshold = "1"
 }
@@ -156,7 +156,7 @@ module "alarms-autoscaling-db-admin" {
 module "alarms-ec2-db-admin" {
   source                   = "../../modules/aws/alarms/ec2"
   name_prefix              = "${var.stackname}-db-admin"
-  autoscaling_group_name   = "${module.db-admin.autoscaling_group_name}"
+  autoscaling_group_name   = module.db-admin.autoscaling_group_name
   alarm_actions            = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   cpuutilization_threshold = "85"
 }
@@ -165,9 +165,9 @@ data "terraform_remote_state" "infra_database_backups_bucket" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_database_backups_bucket_key_stack, var.stackname)}/infra-database-backups-bucket.tfstate"
-    region = "${var.aws_region}"
+    region = var.aws_region
   }
 }
 
@@ -175,9 +175,9 @@ data "terraform_remote_state" "infra_content_publisher_active_storage_buckets" {
   backend = "s3"
 
   config {
-    bucket = "${var.remote_state_bucket}"
+    bucket = var.remote_state_bucket
     key    = "${coalesce(var.remote_state_infra_content_publisher_key_stack, var.stackname)}/infra-content-publisher.tfstate"
-    region = "${var.aws_region}"
+    region = var.aws_region
   }
 }
 
@@ -185,102 +185,102 @@ data "terraform_remote_state" "infra_content_publisher_active_storage_buckets" {
 # their respective environment.
 resource "aws_iam_role_policy_attachment" "write_db-admin_database_backups_iam_role_policy_attachment" {
   count      = 1
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.dbadmin_write_database_backups_bucket_policy_arn}"
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.dbadmin_write_database_backups_bucket_policy_arn
 }
 
 # All environments, except production for safety reasons, should be able to read from the production database
 # backups bucket, to enable restoring the backups, and the overnight
 # data syncs.
 resource "aws_iam_role_policy_attachment" "read_from_production_database_backups_from_production_iam_role_policy_attachment" {
-  count      = "${var.aws_environment != "production" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.production_dbadmin_read_database_backups_bucket_policy_arn}"
+  count      = var.aws_environment != "production" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.production_dbadmin_read_database_backups_bucket_policy_arn
 }
 
 # integration environment should be able to read integration and staging database backups
 resource "aws_iam_role_policy_attachment" "read_from_integration_database_backups_from_integration_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "integration" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.integration_dbadmin_read_database_backups_bucket_policy_arn}"
+  count      = var.aws_environment == "integration" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.integration_dbadmin_read_database_backups_bucket_policy_arn
 }
 
 # staging environment should be able to read staging database backups
 resource "aws_iam_role_policy_attachment" "read_from_staging_database_backups_from_integration_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "staging" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_database_backups_bucket.staging_dbadmin_read_database_backups_bucket_policy_arn}"
+  count      = var.aws_environment == "staging" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_database_backups_bucket.staging_dbadmin_read_database_backups_bucket_policy_arn
 }
 
 resource "aws_iam_policy" "db-admin_iam_policy" {
   name   = "${var.stackname}-db-admin-additional"
   path   = "/"
-  policy = "${file("${path.module}/additional_policy.json")}"
+  policy = file("${path.module}/additional_policy.json")
 }
 
 resource "aws_iam_role_policy_attachment" "db-admin_iam_role_policy_attachment" {
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.db-admin_iam_policy.arn}"
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = aws_iam_policy.db-admin_iam_policy.arn
 }
 
 resource "aws_iam_policy" "db-admin_elasticache_iam_policy" {
-  count  = "${var.aws_environment == "integration" ? 1 : 0}"
+  count  = var.aws_environment == "integration" ? 1 : 0
   name   = "${var.stackname}-db-admin-elasticache"
   path   = "/"
-  policy = "${file("${path.module}/elasticache_policy.json")}"
+  policy = file("${path.module}/elasticache_policy.json")
 }
 
 resource "aws_iam_role_policy_attachment" "db-admin_elasticache_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "integration" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.db-admin_elasticache_iam_policy.arn}"
+  count      = var.aws_environment == "integration" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = aws_iam_policy.db-admin_elasticache_iam_policy.arn
 }
 
 resource "aws_iam_policy" "assets_env_sync_s3_writer" {
-  count       = "${var.aws_environment == "production" ? 1 : 0}"
+  count       = var.aws_environment == "production" ? 1 : 0
   name        = "govuk-${var.aws_environment}-asset-manager-env-sync-s3-writer-policy"
   description = "Read prod assets buckets, read/write integration/staging assets buckets. Should exist in Prod only."
-  policy      = "${data.template_file.assets_env_sync_s3_writer_policy_template.rendered}"
+  policy      = data.template_file.assets_env_sync_s3_writer_policy_template.rendered
 }
 
 resource "aws_iam_role_policy_attachment" "assets_env_sync_s3_writer" {
-  count      = "${var.aws_environment == "production" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${aws_iam_policy.assets_env_sync_s3_writer.arn}"
+  count      = var.aws_environment == "production" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = aws_iam_policy.assets_env_sync_s3_writer.arn
 }
 
 data "template_file" "assets_env_sync_s3_writer_policy_template" {
-  template = "${file("s3_assets_sync_policy.tpl")}"
+  template = file("s3_assets_sync_policy.tpl")
 }
 
 resource "aws_iam_role_policy_attachment" "read_from_staging_content_publisher_active_storage_from_integration_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "integration" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.staging_content_publisher_active_storage_bucket_reader_policy_arn}"
+  count      = var.aws_environment == "integration" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_content_publisher_active_storage_buckets.staging_content_publisher_active_storage_bucket_reader_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "read_write_from_integration_content_publisher_active_storage_from_integration_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "integration" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.integration_content_publisher_active_storage_bucket_reader_writer_policy_arn}"
+  count      = var.aws_environment == "integration" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_content_publisher_active_storage_buckets.integration_content_publisher_active_storage_bucket_reader_writer_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "read_write_from_staging_content_publisher_active_storage_from_staging_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "staging" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.staging_content_publisher_active_storage_bucket_reader_writer_policy_arn}"
+  count      = var.aws_environment == "staging" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_content_publisher_active_storage_buckets.staging_content_publisher_active_storage_bucket_reader_writer_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "read_from_production_content_publisher_active_storage_from_staging_iam_role_policy_attachment" {
-  count      = "${var.aws_environment == "staging" ? 1 : 0}"
-  role       = "${module.db-admin.instance_iam_role_name}"
-  policy_arn = "${data.terraform_remote_state.infra_content_publisher_active_storage_buckets.production_content_publisher_active_storage_bucket_reader_policy_arn}"
+  count      = var.aws_environment == "staging" ? 1 : 0
+  role       = module.db-admin.instance_iam_role_name
+  policy_arn = data.terraform_remote_state.infra_content_publisher_active_storage_buckets.production_content_publisher_active_storage_bucket_reader_policy_arn
 }
 
 # Outputs
 # --------------------------------------------------------------
 
 output "db-admin_elb_dns_name" {
-  value       = "${aws_elb.db-admin_elb.dns_name}"
+  value       = aws_elb.db-admin_elb.dns_name
   description = "DNS name to access the db-admin service"
 }

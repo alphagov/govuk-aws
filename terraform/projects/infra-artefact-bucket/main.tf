@@ -23,79 +23,79 @@
 *
 */
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
 
 variable "aws_secondary_region" {
-  type        = "string"
+  type        = string
   description = "Secondary region for cross-replication"
   default     = "eu-west-2"
 }
 
 variable "aws_environment" {
-  type        = "string"
+  type        = string
   description = "AWS Environment"
 }
 
 variable "aws_subscription_account_id" {
-  type        = "string"
+  type        = string
   description = "The AWS Account ID that will appear on the subscription"
 }
 
 variable "create_sns_topic" {
-  type        = "string"
+  type        = string
   default     = false
   description = "Indicates whether to create an SNS Topic"
 }
 
 variable "create_sns_subscription" {
-  type        = "string"
+  type        = string
   default     = false
   description = "Indicates whether to create an SNS subscription"
 }
 
 variable "aws_subscription_account_region" {
-  type        = "string"
+  type        = string
   default     = "eu-west-1"
   description = "AWS region of the SNS topic"
 }
 
 variable "artefact_source" {
-  type        = "string"
+  type        = string
   description = "Identifies the source artefact environment"
 }
 
 variable "aws_s3_access_account" {
-  type        = "string"
+  type        = string
   description = "Here we define the account that will have access to the Artefact S3 bucket."
 }
 
 variable "stackname" {
-  type        = "string"
+  type        = string
   description = "Stackname"
 }
 
 variable "remote_state_bucket" {
-  type        = "string"
+  type        = string
   description = "S3 bucket we store our terraform state in"
 }
 
 variable "remote_state_infra_monitoring_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override stackname path to infra_monitoring remote state "
   default     = ""
 }
 
 variable "whole_bucket_lifecycle_rule_integration_enabled" {
-  type        = "string"
+  type        = string
   description = "Set to true in Integration data to only apply these rules for Integration"
   default     = "false"
 }
 
 variable "replication_setting" {
-  type        = "string"
+  type        = string
   description = "Whether replication is Enabled or Disabled"
   default     = "Enabled"
 }
@@ -108,19 +108,19 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 provider "aws" {
   alias   = "secondary"
-  region  = "${var.aws_secondary_region}"
+  region  = var.aws_secondary_region
   version = "2.46.0"
 }
 
 provider "aws" {
   alias   = "subscription"
-  region  = "${var.aws_subscription_account_region}"
+  region  = var.aws_subscription_account_region
   version = "2.46.0"
 }
 
@@ -153,7 +153,7 @@ resource "aws_s3_bucket" "artefact_replication_destination" {
   lifecycle_rule {
     id      = "whole_bucket_lifecycle_rule_integration"
     prefix  = ""
-    enabled = "${var.whole_bucket_lifecycle_rule_integration_enabled}"
+    enabled = var.whole_bucket_lifecycle_rule_integration_enabled
 
     expiration {
       days = "7"
@@ -180,20 +180,20 @@ resource "aws_s3_bucket" "artefact" {
   }
 
   logging {
-    target_bucket = "${data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id}"
+    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
     target_prefix = "s3/govuk-${var.aws_environment}-artefact/"
   }
 
   replication_configuration {
-    role = "${aws_iam_role.artefact_replication.arn}"
+    role = aws_iam_role.artefact_replication.arn
 
     rules {
       id     = "govuk-artefact-replication-whole-bucket-rule"
-      status = "${var.replication_setting}"
+      status = var.replication_setting
       prefix = ""
 
       destination {
-        bucket = "${aws_s3_bucket.artefact_replication_destination.arn}"
+        bucket = aws_s3_bucket.artefact_replication_destination.arn
       }
     }
   }
@@ -236,26 +236,26 @@ data "aws_iam_policy_document" "govuk-artefact-bucket" {
 }
 
 resource "aws_s3_bucket_policy" "govuk-artefact-bucket-policy" {
-  bucket = "${aws_s3_bucket.artefact.id}"
-  policy = "${data.aws_iam_policy_document.govuk-artefact-bucket.json}"
+  bucket = aws_s3_bucket.artefact.id
+  policy = data.aws_iam_policy_document.govuk-artefact-bucket.json
 }
 
 # Create an AWS SNS Topic
 resource "aws_sns_topic" "artefact_topic" {
-  count = "${var.create_sns_topic ? 1 : 0}"
+  count = var.create_sns_topic ? 1 : 0
   name  = "govuk-${var.aws_environment}-artefact"
 }
 
 # AWS SNS Topic Policy
 resource "aws_sns_topic_policy" "artefact_topic_policy" {
-  count  = "${var.create_sns_topic ? 1 : 0}"
-  arn    = "${aws_sns_topic.artefact_topic[0].arn}"
-  policy = "${data.aws_iam_policy_document.artefact_sns_topic_policy[0].json}"
+  count  = var.create_sns_topic ? 1 : 0
+  arn    = aws_sns_topic.artefact_topic[0].arn
+  policy = data.aws_iam_policy_document.artefact_sns_topic_policy[0].json
 }
 
 # AWS SNS Topic Policy Data
 data "aws_iam_policy_document" "artefact_sns_topic_policy" {
-  count     = "${var.create_sns_topic ? 1 : 0}"
+  count     = var.create_sns_topic ? 1 : 0
   policy_id = "__default_policy_ID"
 
   statement {
@@ -288,19 +288,19 @@ data "aws_iam_policy_document" "artefact_sns_topic_policy" {
 
 # AWS S3 Bucket Event
 resource "aws_s3_bucket_notification" "artefact_bucket_notification" {
-  count      = "${var.create_sns_topic ? 1 : 0}"
-  bucket     = "${aws_s3_bucket.artefact.id}"
+  count      = var.create_sns_topic ? 1 : 0
+  bucket     = aws_s3_bucket.artefact.id
   depends_on = ["aws_sns_topic.artefact_topic"]
 
   topic {
-    topic_arn = "${aws_sns_topic.artefact_topic[0].arn}"
+    topic_arn = aws_sns_topic.artefact_topic[0].arn
     events    = ["s3:ObjectCreated:*"]
   }
 }
 
 # AWS SNS Subscription
 resource "aws_sns_topic_subscription" "artefact_topic_subscription" {
-  count     = "${var.create_sns_subscription ? 1 : 0}"
+  count     = var.create_sns_subscription ? 1 : 0
   provider  = "aws.subscription"
   topic_arn = "arn:aws:sns:${var.aws_subscription_account_region}:${var.aws_subscription_account_id}:govuk-${var.artefact_source}-artefact"
   protocol  = "lambda"
@@ -315,20 +315,20 @@ data "archive_file" "artefact_lambda" {
 }
 
 resource "aws_lambda_function" "artefact_lambda_function" {
-  count = "${var.create_sns_subscription ? 1 : 0}"
+  count = var.create_sns_subscription ? 1 : 0
 
-  filename         = "${data.archive_file.artefact_lambda.output_path}"
-  source_code_hash = "${data.archive_file.artefact_lambda.output_base64sha256}"
+  filename         = data.archive_file.artefact_lambda.output_path
+  source_code_hash = data.archive_file.artefact_lambda.output_base64sha256
 
   function_name = "govuk-${var.aws_environment}-artefact"
-  role          = "${aws_iam_role.govuk_artefact_lambda_role[0].arn}"
+  role          = aws_iam_role.govuk_artefact_lambda_role[0].arn
   handler       = "main.lambda_handler"
   runtime       = "python3.8"
 }
 
 # AWS Lambda Role
 resource "aws_iam_role" "govuk_artefact_lambda_role" {
-  count = "${var.create_sns_subscription ? 1 : 0}"
+  count = var.create_sns_subscription ? 1 : 0
   name  = "govuk_artefact_lambda_role"
 
   assume_role_policy = <<EOF
@@ -350,7 +350,7 @@ EOF
 
 # AWS SNS IAM Policy - Template file
 data "template_file" "govuk_artefact_policy_template" {
-  template = "${file("${path.module}/../../policies/govuk_artefact_policy.tpl")}"
+  template = file("${path.module}/../../policies/govuk_artefact_policy.tpl")
 
   vars = {
     artefact_source = "${var.artefact_source}"
@@ -360,23 +360,23 @@ data "template_file" "govuk_artefact_policy_template" {
 
 # AWS SNS IAM Policy
 resource "aws_iam_policy" "govuk_artefact_policy" {
-  count       = "${var.create_sns_subscription ? 1 : 0}"
+  count       = var.create_sns_subscription ? 1 : 0
   name        = "govuk-artefact-policy"
   description = "Provides necessary access to the Lambda function."
-  policy      = "${data.template_file.govuk_artefact_policy_template.rendered}"
+  policy      = data.template_file.govuk_artefact_policy_template.rendered
 }
 
 # AWS SNS-Lambda Policy Attachment
 resource "aws_iam_policy_attachment" "govuk_artefact_policy_attachment" {
-  count      = "${var.create_sns_subscription ? 1 : 0}"
+  count      = var.create_sns_subscription ? 1 : 0
   name       = "govuk-artefact-policy-attachment"
   roles      = ["${aws_iam_role.govuk_artefact_lambda_role[0].name}"]
-  policy_arn = "${aws_iam_policy.govuk_artefact_policy[0].arn}"
+  policy_arn = aws_iam_policy.govuk_artefact_policy[0].arn
 }
 
 # AWS SNS Trigger for Lambda
 resource "aws_lambda_permission" "govuk_artefact_lambda_sns" {
-  count         = "${var.create_sns_subscription ? 1 : 0}"
+  count         = var.create_sns_subscription ? 1 : 0
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
   function_name = "govuk-${var.aws_environment}-artefact"
@@ -388,7 +388,7 @@ resource "aws_lambda_permission" "govuk_artefact_lambda_sns" {
 # Artefact Writer
 resource "aws_iam_policy" "artefact_writer" {
   name        = "govuk-${var.aws_environment}-artefact-writer-policy"
-  policy      = "${data.template_file.artefact_writer_policy_template.rendered}"
+  policy      = data.template_file.artefact_writer_policy_template.rendered
   description = "Allows writing of the artefacts bucket"
 }
 
@@ -400,12 +400,12 @@ resource "aws_iam_user" "artefact_writer" {
 resource "aws_iam_policy_attachment" "artefact_writer" {
   name       = "artefact-writer-policy-attachment"
   users      = ["${aws_iam_user.artefact_writer.name}"]
-  policy_arn = "${aws_iam_policy.artefact_writer.arn}"
+  policy_arn = aws_iam_policy.artefact_writer.arn
   roles      = ["blue-deploy"]
 }
 
 data "template_file" "artefact_writer_policy_template" {
-  template = "${file("${path.module}/../../policies/artefact_writer_policy.tpl")}"
+  template = file("${path.module}/../../policies/artefact_writer_policy.tpl")
 
   vars = {
     aws_environment = "${var.aws_environment}"
@@ -416,12 +416,12 @@ data "template_file" "artefact_writer_policy_template" {
 # Artefact Reader
 resource "aws_iam_policy" "artefact_reader" {
   name        = "govuk-${var.aws_environment}-artefact-reader-policy"
-  policy      = "${data.template_file.artefact_reader_policy_template.rendered}"
+  policy      = data.template_file.artefact_reader_policy_template.rendered
   description = "Allows writing of the artefacts bucket"
 }
 
 data "template_file" "artefact_reader_policy_template" {
-  template = "${file("${path.module}/../../policies/artefact_reader_policy.tpl")}"
+  template = file("${path.module}/../../policies/artefact_reader_policy.tpl")
 
   vars = {
     aws_environment = "${var.aws_environment}"
@@ -433,11 +433,11 @@ data "template_file" "artefact_reader_policy_template" {
 # --------------------------------------------------------------
 
 output "write_artefact_bucket_policy_arn" {
-  value       = "${aws_iam_policy.artefact_writer.arn}"
+  value       = aws_iam_policy.artefact_writer.arn
   description = "ARN of the write artefact-bucket policy"
 }
 
 output "read_artefact_bucket_policy_arn" {
-  value       = "${aws_iam_policy.artefact_reader.arn}"
+  value       = aws_iam_policy.artefact_reader.arn
   description = "ARN of the read artefact-bucket policy"
 }
