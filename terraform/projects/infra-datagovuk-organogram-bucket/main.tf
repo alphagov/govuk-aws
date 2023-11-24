@@ -60,7 +60,10 @@ resource "aws_s3_bucket_cors_configuration" "datagovuk_organogram" {
     allowed_origins = [
       var.domain,
       "https://staging.data.gov.uk",
-      "https://find.eks.${var.aws_environment}.govuk.digital"
+      "https://integration.data.gov.uk",
+      "https://find.eks.production.govuk.digital",
+      "https://find.eks.integration.govuk.digital",
+      "https://find.eks.staging.govuk.digital"
     ]
   }
 }
