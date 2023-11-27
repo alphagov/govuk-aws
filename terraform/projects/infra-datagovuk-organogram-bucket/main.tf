@@ -59,8 +59,8 @@ resource "aws_s3_bucket_cors_configuration" "datagovuk_organogram" {
     allowed_methods = ["GET"]
     allowed_origins = [
       var.domain,
-      "https://staging.data.gov.uk",
-      "https://integration.data.gov.uk",
+      "https://www.staging.data.gov.uk",
+      "https://www.integration.data.gov.uk",
       "https://find.eks.production.govuk.digital",
       "https://find.eks.integration.govuk.digital",
       "https://find.eks.staging.govuk.digital"
