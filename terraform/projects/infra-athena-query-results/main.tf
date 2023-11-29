@@ -46,7 +46,7 @@ resource "aws_s3_bucket" "athena_query_results" {
   bucket = "govuk-${var.aws_environment}-athena-query-results"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-athena-query-results"
+    Name            = "govuk-${var.env}-${var.region}-athena"
     aws_environment = var.aws_environment
     project         = "infra-athena-query-results"
     Environment     = "${var.aws_environment}"
