@@ -17,6 +17,7 @@ module "search" {
   source = "../../modules/aws/node_group"
   name   = "${var.stackname}-search"
   default_tags = {
+    "Name"            = "govuk-${var.env}-${var.region}-search"
     "Project"         = var.stackname
     "aws_stackname"   = var.stackname
     "aws_environment" = var.aws_environment
@@ -47,7 +48,7 @@ resource "aws_s3_bucket" "sitemaps_bucket" {
   region = var.aws_region
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-sitemaps"
+    Name            = "govuk-${var.env}-${var.region}-sitemaps"
     aws_environment = var.aws_environment
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
@@ -125,7 +126,7 @@ resource "aws_s3_bucket" "search_relevancy_bucket" {
   region = var.aws_region
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-search-relevancy"
+    Name            = "govuk-${var.env}-${var.region}-search-relavancy"
     Description     = "S3 bucket for Search Relevancy"
     aws_environment = var.aws_environment
     Environment     = "${var.aws_environment}"
