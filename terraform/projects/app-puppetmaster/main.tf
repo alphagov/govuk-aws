@@ -109,7 +109,7 @@ resource "aws_elb" "puppetmaster_bootstrap_elb" {
   connection_draining_timeout = 400
 
   tags {
-    Name        = "${var.stackname}_puppetmaster_bootstrap"
+    Name        = "govuk-${var.env}-${var.region}-puppetmaster"
     Project     = var.stackname
     Environment = var.aws_environment
     Product     = "GOVUK"
@@ -169,7 +169,7 @@ resource "aws_elb" "puppetmaster_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Puppet")
+  tags = map("Name", "${var.stackname}-puppetmaster", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-puppetmaster", "System", "Puppet")
 }
 
 resource "aws_route53_record" "service_record" {
@@ -199,7 +199,7 @@ resource "aws_route53_record" "puppetdb_service_record" {
 module "puppetmaster" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-puppetmaster"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Puppet")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "puppetmaster", "aws_hostname", "puppetmaster-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-puppetmaster", "System", "Puppet")
   instance_subnet_ids           = data.terraform_remote_state.infra_networking.private_subnet_ids
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_puppetmaster_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
