@@ -137,6 +137,7 @@ resource "aws_db_parameter_group" "content_data_api" {
   }
 
   tags {
+    Name          = "govuk-${var.env}-${var.region}-content-data-api-postgres"
     aws_stackname = var.stackname
     Environment   = var.aws_environment
     Product       = "GOVUK"
@@ -151,7 +152,7 @@ module "content-data-api-postgresql-primary_rds_instance" {
   parameter_group_name  = aws_db_parameter_group.content_data_api.name
   engine_name           = "postgres"
   engine_version        = "13.3"
-  default_tags          = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_primary", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags          = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "content_data_api_postgresql_primary", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-content-data-api-postgres")
   subnet_ids            = data.terraform_remote_state.infra_networking.private_subnet_rds_ids
   username              = var.username
   password              = var.password
