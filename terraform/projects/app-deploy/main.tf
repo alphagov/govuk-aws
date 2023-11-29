@@ -164,7 +164,7 @@ resource "aws_elb" "deploy_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-deploy", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Deployment")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-app-deploy", "System", "Deployment")
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
@@ -207,7 +207,7 @@ resource "aws_elb" "deploy_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-deploy-internal", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Deployment")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-app-deploy-internal", "System", "Deployment")
 }
 
 resource "aws_route53_record" "service_record" {
@@ -244,7 +244,7 @@ locals {
 module "deploy" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-deploy"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "aws_hostname", "jenkins-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jenkins", "aws_hostname", "jenkins-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-app-deploy")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.deploy_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_deploy_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -262,7 +262,7 @@ resource "aws_ebs_volume" "deploy" {
   type              = "gp2"
 
   tags {
-    Name            = "${var.stackname}-deploy"
+    Name            = "govuk-${var.env}-${var.region}-app-deploy"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "jenkins-1"
