@@ -16,7 +16,7 @@ resource "aws_security_group" "content-data-api-db-admin" {
   description = "Security group for the Content Data API DB admin machine"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-content-data-api-db-admin"
+    Name = "govuk-${var.env}-${var.region}-content-data-api-db-admin"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_security_group" "content-data-api-db-admin_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-content-data-api-db-admin-ithc"
+    Name = "govuk-${var.env}-${var.region}-content-data-api-db-admin-ithc"
   }
 }
 

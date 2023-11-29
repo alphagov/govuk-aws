@@ -164,7 +164,7 @@ resource "aws_ebs_volume" "mongo-1" {
   size              = 300
 
   tags {
-    Name          = "govuk-${var.env}-${var.region}-mongo-1"
+    Name            = "govuk-${var.env}-${var.region}-mongo-1"
     Project         = var.stackname
     ManagedBy       = "terraform"
     aws_stackname   = var.stackname

@@ -58,7 +58,7 @@ resource "aws_security_group" "puppetmaster_elb" {
   description = "Access the puppetmaster ELB"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-puppetmaster-elb"
+    Name = "govuk-${var.env}-${var.region}-puppetmaster-elb"
   }
 }
 

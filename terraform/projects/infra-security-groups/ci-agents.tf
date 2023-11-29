@@ -20,7 +20,7 @@ resource "aws_security_group" "ci-agent-1" {
   description = "Access to the ci-agent-1 host from its ELB"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-ci-agent-1"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-1"
   }
 }
 

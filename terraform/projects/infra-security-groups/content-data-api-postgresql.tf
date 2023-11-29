@@ -42,7 +42,7 @@ resource "aws_security_group" "content-data-api-postgresql-primary_ithc_access" 
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-content-data-api-postgres-ithc"
+    Name = "govuk-${var.env}-${var.region}-content-data-api-postgres-ithc"
   }
 }
 

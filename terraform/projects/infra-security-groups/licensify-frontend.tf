@@ -162,7 +162,7 @@ resource "aws_security_group" "licensify_frontend_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-licensify-frontend-ithc"
+    Name = "govuk-${var.env}-${var.region}-licensify-frontend-ithc"
   }
 }
 

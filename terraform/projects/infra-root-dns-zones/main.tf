@@ -100,7 +100,7 @@ resource "aws_route53_zone" "external_zone" {
   name  = var.root_domain_external_name
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-external-dns"
+    Name        = "govuk-${var.env}-${var.region}-external-dns"
     Project     = "infra-root-dns-zones"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
@@ -114,7 +114,7 @@ resource "aws_route53_zone" "internal_zone_dns_validation" {
   name  = var.root_domain_internal_name
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-internal-validation-dns"
+    Name        = "govuk-${var.env}-${var.region}-internal-validation-dns"
     Project     = "infra-root-dns-zones"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"

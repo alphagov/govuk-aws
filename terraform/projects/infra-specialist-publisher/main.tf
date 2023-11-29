@@ -36,7 +36,7 @@ resource "aws_s3_bucket" "specialist_publisher_csvs" {
   bucket = "govuk-${var.aws_environment}-specialist-publisher-csvs"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-specialist-publisher"
+    Name            = "govuk-${var.env}-${var.region}-specialist-publisher"
     name            = "govuk-${var.aws_environment}-specialist-publisher-csvs"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"

@@ -94,7 +94,7 @@ resource "aws_security_group" "prometheus_external_elb" {
   description = "Access to prometheus LB"
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-prometheus"
+    Name = "govuk-${var.env}-${var.region}-prometheus"
     Name = "${var.stackname}_prometheus_external_elb"
   }
 }

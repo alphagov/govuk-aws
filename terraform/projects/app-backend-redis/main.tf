@@ -88,7 +88,7 @@ module "backend_redis_cluster" {
   source                     = "../../modules/aws/elasticache_redis_cluster"
   enable_clustering          = var.enable_clustering
   name                       = "${var.stackname}-backend-redis"
-  default_tags               = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk","Name","govuk-${var.env}-${var.region}-backend-redis")
+  default_tags               = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "backend-redis", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-backend-redis")
   subnet_ids                 = data.terraform_remote_state.infra_networking.outputs.private_subnet_elasticache_ids
   security_group_ids         = [data.terraform_remote_state.infra_security_groups.outputs.sg_backend-redis_id]
   elasticache_node_type      = var.instance_type

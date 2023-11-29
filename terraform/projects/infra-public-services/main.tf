@@ -841,7 +841,7 @@ module "licensify_backend_public_lb" {
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
-    Name          = "govuk-${var.env}-${var.region}-public-services"
+    Name            = "govuk-${var.env}-${var.region}-public-services"
     Project         = "${var.stackname}"
     aws_migration   = "licensify_backend"
     aws_environment = "${var.aws_environment}"

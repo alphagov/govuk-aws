@@ -24,7 +24,7 @@ resource "aws_apigatewayv2_domain_name" "csp_reporter" {
   }
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-csp-reporter-domain-name"
+    Name            = "govuk-${var.env}-${var.region}-csp-reporter-domain-name"
     aws_environment = var.aws_environment
     project         = local.project_name
     Environment     = "${var.aws_environment}"
@@ -74,7 +74,7 @@ resource "aws_cloudwatch_log_group" "csp_reporter_log_group" {
   retention_in_days = 30
 
   tags = {
-    Name          = "govuk-${var.env}-${var.region}-csp-reporter-log-group"
+    Name            = "govuk-${var.env}-${var.region}-csp-reporter-log-group"
     aws_environment = var.aws_environment
     project         = local.project_name
     Environment     = "${var.aws_environment}"
