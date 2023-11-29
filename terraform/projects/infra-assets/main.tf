@@ -19,6 +19,7 @@ provider "aws" {
   region = var.aws_region
   default_tags {
     tags = {
+      Name                 = "govuk-${var.env}-${var.region}-infra-assets"
       terraform_deployment = basename(abspath(path.root))
       aws_environment      = var.aws_environment
       Environment          = "${var.aws_environment}"
@@ -37,7 +38,7 @@ provider "aws" {
 resource "aws_s3_bucket" "assets" {
   bucket = "govuk-assets-${var.aws_environment}"
   tags = {
-    Name        = "govuk-assets-${var.aws_environment}"
+    Name        = "govuk-${var.env}-${var.region}-infra-assets"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
