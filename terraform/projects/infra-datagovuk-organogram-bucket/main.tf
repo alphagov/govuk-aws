@@ -1,48 +1,11 @@
 /**
-* ## Project: datagovuk-organogram-bucket
+* ## Project: app-asset-master
 *
-* This creates an s3 bucket
-*
-* datagovuk-organogram-bucket: A bucket to hold data.gov.uk organogram files
-*
+* Assets EFS (NFS) volume.
 */
 
-variable "aws_region" {
-  type        = string
-  description = "AWS region"
-  default     = "eu-west-1"
-}
-
-variable "aws_environment" {
-  type        = string
-  description = "AWS Environment"
-}
-
-variable "domain" {
-  type        = string
-  description = "The domain of the data.gov.uk service to manage"
-}
-
-variable "stackname" {
-  type        = string
-  description = "Stackname"
-}
-
-variable "remote_state_bucket" {
-  type        = string
-  description = "S3 bucket we store our terraform state in"
-}
-
-variable "remote_state_infra_monitoring_key_stack" {
-  type        = string
-  description = "Override stackname path to infra_monitoring remote state "
-  default     = ""
-}
-
-# Set up the backend & provider for each region
 terraform {
   backend "s3" {}
-  required_version = "~> 0.12.31"
 }
 
 provider "aws" {
@@ -50,43 +13,37 @@ provider "aws" {
   version = "2.46.0"
 }
 
-data "terraform_remote_state" "infra_monitoring" {
-  backend = "s3"
-
-  config = {
-    bucket = "${var.remote_state_bucket}"
-    key    = "${coalesce(var.remote_state_infra_monitoring_key_stack, var.stackname)}/infra-monitoring.tfstate"
-    region = "${var.aws_region}"
-  }
+data "aws_route53_zone" "internal" {
+  name         = var.internal_zone_name
+  private_zone = true
 }
 
-resource "aws_s3_bucket" "datagovuk-organogram" {
-  bucket = "datagovuk-${var.aws_environment}-ckan-organogram"
-
-  dynamic "cors_rule" {
-    for_each = [for s in ["${var.domain}", "https://staging.data.gov.uk", "https://find.eks.${var.aws_environment}.govuk.digital"] : {
-      allowed_origin = s
-    }]
-    allowed_methods = ["GET"]
-    allowed_origins = [cors_rule.value.allowed_origin]
-  }
-
+resource "aws_efs_file_system" "assets-efs-fs" {
+  creation_token = "${var.stackname}-assets"
   tags = {
-    Name            = "datagovuk-${var.aws_environment}-ckan-organogram"
-    aws_environment = "${var.aws_environment}"
-  }
-
-  logging {
-    target_bucket = data.terraform_remote_state.infra_monitoring.outputs.aws_logging_bucket_id
-    target_prefix = "s3/datagovuk-${var.aws_environment}-ckan-organogram/"
-  }
-
-  versioning {
-    enabled = true
+    "Name"            = "govuk-${var.env}-${var.region}-asset-master"
+    "Description"     = "Asset Manager and Whitehall attachments are stored here temporarily for malware scanning before being transferred to S3."
+    "Product"         = "GOV.UK"
+    "System"          = "Asset EFS"
+    "Environment"     = "${var.govuk_environment}"
+    "Owner"           = "reliability-engineering@digital.cabinet-office.gov.uk"
+    "Project"         = var.stackname
+    "aws_environment" = var.aws_environment
+    "aws_migration"   = "asset_master"
   }
 }
 
-resource "aws_s3_bucket_policy" "govuk_datagovuk_organogram_read_policy" {
-  bucket = aws_s3_bucket.datagovuk-organogram.id
-  policy = data.aws_iam_policy_document.s3_fastly_read_policy_doc.json
+resource "aws_efs_mount_target" "assets-mount-target" {
+  count           = length(data.terraform_remote_state.infra_networking.outputs.private_subnet_ids)
+  file_system_id  = aws_efs_file_system.assets-efs-fs.id
+  subnet_id       = element(data.terraform_remote_state.infra_networking.outputs.private_subnet_ids, count.index)
+  security_groups = [data.terraform_remote_state.infra_security_groups.outputs.sg_asset-master-efs_id]
+}
+
+resource "aws_route53_record" "assets_service_record" {
+  zone_id = data.aws_route53_zone.internal.zone_id
+  name    = "assets.${var.internal_domain_name}"
+  type    = "CNAME"
+  records = [aws_efs_mount_target.assets-mount-target.0.dns_name]
+  ttl     = 300
 }
