@@ -87,6 +87,7 @@ resource "aws_route53_zone" "external_zone" {
   name  = "${var.stackname}.${var.root_domain_external_name}"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-dns-zones"
     Project       = "${var.stackname}"
     aws_stackname = "${var.stackname}"
     Environment   = "${var.aws_environment}"
