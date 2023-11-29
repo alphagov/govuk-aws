@@ -75,7 +75,7 @@ module "prometheus-1" {
   source = "../../modules/aws/node_group"
   name   = "${var.stackname}-prometheus-1"
   default_tags = (map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment",
-  var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Prometheus"))
+  var.aws_environment, "aws_migration", "prometheus", "aws_hostname", "prometheus-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-prometheus", "System", "Prometheus"))
 
   instance_subnet_ids = (matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map),
   keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.prometheus_1_subnet)))
@@ -93,7 +93,7 @@ resource "aws_ebs_volume" "prometheus-1" {
   type              = "gp3"
 
   tags {
-    Name            = "${var.stackname}-prometheus-1"
+    Name            = "govuk-${var.env}-${var.region}-prometheus"
     Project         = var.stackname
     Device          = "xvdf"
     aws_stackname   = var.stackname
@@ -131,7 +131,7 @@ module "prometheus_internal_alb" {
 
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_prometheus_internal_elb_id}"]
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags    = map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Prometheus")
+  default_tags    = map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-prometheus", "System", "Prometheus")
 }
 
 resource "aws_autoscaling_attachment" "internal_lb" {
