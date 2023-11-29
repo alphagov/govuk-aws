@@ -317,7 +317,7 @@ module "ckan_public_lb" {
   subnets                                    = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_elb_external_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = map("Project", var.stackname, "aws_migration", "ckan", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Public Networking")
+  default_tags                               = map("Project", var.stackname, "aws_migration", "ckan", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "DATAGOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "datagovuk-${var.env}-${var.region}-public-ckan", "System", "Public Networking")
 }
 
 resource "aws_route53_record" "ckan_public_service_names" {
@@ -430,7 +430,7 @@ module "deploy_public_lb" {
   subnets                                    = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_deploy_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = map("Project", var.stackname, "aws_migration", "deploy", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Public Networking")
+  default_tags                               = map("Project", var.stackname, "aws_migration", "deploy", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "DATAGOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "datagovuk-${var.env}-${var.region}-public-deploy", "System", "Public Networking")
 }
 
 resource "aws_route53_record" "deploy_public_service_names" {
@@ -516,7 +516,7 @@ module "graphite_public_lb" {
   subnets                                    = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_graphite_external_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = map("Project", var.stackname, "aws_migration", "graphite", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Graphite")
+  default_tags                               = map("Project", var.stackname, "aws_migration", "graphite", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "DATAGOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "datagovuk-${var.env}-${var.region}-public-graphite", "System", "Graphite")
 }
 
 #
@@ -548,7 +548,7 @@ module "prometheus_public_lb" {
   subnets                                    = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_prometheus_external_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Graphite")
+  default_tags                               = map("Project", var.stackname, "aws_migration", "prometheus", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "DATAGOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "datagovuk-${var.env}-${var.region}-public-prometheus", "System", "Graphite")
   target_group_health_check_path             = "/-/ready"
 }
 
@@ -660,7 +660,7 @@ resource "aws_elb" "jumpbox_public_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jumpbox", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Jumpbox")
+  tags = map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jumpbox", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-public-services", "System", "Jumpbox")
 }
 
 resource "aws_route53_record" "jumpbox_public_service_names" {
@@ -733,6 +733,7 @@ module "licensify_frontend_public_lb" {
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
+    Name            = "govuk-${var.env}-${var.region}-public-licensify"
     Project         = "${var.stackname}"
     aws_migration   = "licensify-frontend"
     aws_environment = "${var.aws_environment}"
@@ -840,6 +841,7 @@ module "licensify_backend_public_lb" {
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
+    Name          = "govuk-${var.env}-${var.region}-public-services"
     Project         = "${var.stackname}"
     aws_migration   = "licensify_backend"
     aws_environment = "${var.aws_environment}"
@@ -929,7 +931,7 @@ module "monitoring_public_lb" {
   subnets                                    = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_monitoring_external_elb_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = map("Project", var.stackname, "aws_migration", "monitoring", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Monitoring")
+  default_tags                               = map("Project", var.stackname, "aws_migration", "monitoring", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-public-services", "System", "Monitoring")
 }
 
 resource "aws_route53_record" "monitoring_public_service_names" {
