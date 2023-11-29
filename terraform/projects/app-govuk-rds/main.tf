@@ -14,6 +14,7 @@ provider "aws" {
   region = var.aws_region
   default_tags {
     tags = {
+      Name            = "govuk-${var.env}-${var.region}-database"
       Project         = basename(abspath(path.root))
       aws_stackname   = var.stackname
       aws_environment = var.aws_environment

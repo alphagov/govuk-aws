@@ -3,7 +3,7 @@ resource "aws_db_subnet_group" "subnet_group" {
   subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_rds_ids
 
   tags = {
-    Name        = "${var.stackname}-govuk-rds-subnet"
+    Name        = "govuk-${var.env}-${var.region}-database"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -66,7 +66,7 @@ resource "aws_db_instance" "instance" {
   skip_final_snapshot       = var.skip_final_snapshot
 
   tags = {
-    Name        = "${var.stackname}-govuk-rds-${each.value.name}-${each.value.engine}"
+    Name        = "govuk-${var.env}-${var.region}-database"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
