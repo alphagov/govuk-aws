@@ -175,7 +175,7 @@ resource "aws_elb" "ci-agent-1_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-agent-1", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "CI agent")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "CI agent", "Name", "govuk-${var.env}-${var.region}-ci-agent")
 }
 
 resource "aws_route53_record" "ci-agent-1_service_record" {
@@ -193,7 +193,7 @@ resource "aws_route53_record" "ci-agent-1_service_record" {
 module "ci-agent-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-1"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name",""govuk-${var.env}-${var.region}-ci-agent")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_1_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-1_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -215,7 +215,7 @@ resource "aws_ebs_volume" "ci-agent-1-data" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-1-data"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-data-1"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "ci-agent-1"
@@ -236,7 +236,7 @@ resource "aws_ebs_volume" "ci-agent-1-docker" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-1-docker"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-docker-1"
     Project         = var.stackname
     Device          = "xvdg"
     aws_hostname    = "ci-agent-1"
@@ -303,7 +303,7 @@ resource "aws_elb" "ci-agent-2_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-agent-2", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-ci-agent-2" )
 }
 
 resource "aws_route53_record" "ci-agent-2_service_record" {
@@ -321,7 +321,7 @@ resource "aws_route53_record" "ci-agent-2_service_record" {
 module "ci-agent-2" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-2"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-2", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-2", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name",""govuk-${var.env}-${var.region}-ci-agent-2")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_2_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-2_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -343,7 +343,7 @@ resource "aws_ebs_volume" "ci-agent-2-data" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-2-data"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-data-2"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "ci-agent-2"
@@ -364,7 +364,7 @@ resource "aws_ebs_volume" "ci-agent-2-docker" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-2-docker"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-docker-2"
     Project         = var.stackname
     Device          = "xvdg"
     aws_hostname    = "ci-agent-2"
@@ -437,7 +437,7 @@ resource "aws_elb" "ci-agent-3_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-agent-3", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-ci-agent-2")
 }
 
 resource "aws_route53_record" "ci-agent-3_service_record" {
@@ -455,7 +455,7 @@ resource "aws_route53_record" "ci-agent-3_service_record" {
 module "ci-agent-3" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-agent-3"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-3", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_agent", "aws_hostname", "ci-agent-3", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-ci-agent-2")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.ci_agent_3_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-agent-3_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -477,7 +477,7 @@ resource "aws_ebs_volume" "ci-agent-3-data" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-3-data"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-data-3"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "ci-agent-3"
@@ -498,7 +498,7 @@ resource "aws_ebs_volume" "ci-agent-3-docker" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-3-docker"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-docker-3"
     Project         = var.stackname
     Device          = "xvdg"
     aws_hostname    = "ci-agent-3"
@@ -565,7 +565,7 @@ resource "aws_elb" "ci-agent-4_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-agent-4", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-ci-agent-4")
 }
 
 resource "aws_route53_record" "ci-agent-4_service_record" {
@@ -605,7 +605,7 @@ resource "aws_ebs_volume" "ci-agent-4-data" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-4-data"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-data-4"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "ci-agent-4"
@@ -626,7 +626,7 @@ resource "aws_ebs_volume" "ci-agent-4-docker" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-4-docker"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-docker-4"
     Project         = var.stackname
     Device          = "xvdg"
     aws_hostname    = "ci-agent-4"
@@ -693,7 +693,7 @@ resource "aws_elb" "ci-agent-5_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-agent-5", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci-agent", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-ci-agent-4")
 }
 
 resource "aws_route53_record" "ci-agent-5_service_record" {
@@ -733,7 +733,7 @@ resource "aws_ebs_volume" "ci-agent-5-data" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-5-data"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-data-5"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "ci-agent-5"
@@ -754,7 +754,7 @@ resource "aws_ebs_volume" "ci-agent-5-docker" {
   type              = var.ebs_volume_type
 
   tags {
-    Name            = "${var.stackname}-ci-agent-5-docker"
+    Name            = "govuk-${var.env}-${var.region}-ci-agent-docker-5"
     Project         = var.stackname
     Device          = "xvdg"
     aws_hostname    = "ci-agent-5"
