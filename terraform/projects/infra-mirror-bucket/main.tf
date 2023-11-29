@@ -159,7 +159,7 @@ resource "aws_s3_bucket" "govuk-mirror" {
   bucket = "govuk-${var.aws_environment}-mirror"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-mirror"
+    Name            = "govuk-${var.env}-${var.region}-mirror"
     aws_environment = var.aws_environment
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
@@ -230,7 +230,7 @@ resource "aws_s3_bucket" "govuk-mirror-replica" {
   provider = aws.aws_replica
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-mirror-replica"
+    Name            = "govuk-${var.env}-${var.region}-mirror-replica"
     Status          = var.enable_replication ? null : "Not in use in ${var.aws_environment} environment"
     aws_environment = var.aws_environment
     Environment     = "${var.aws_environment}"
