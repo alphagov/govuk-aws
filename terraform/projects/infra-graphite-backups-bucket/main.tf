@@ -43,7 +43,7 @@ resource "aws_s3_bucket" "graphite_backups" {
   region = var.aws_region
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-graphite-backups"
+    Name            = "govuk-${var.env}-${var.region}-graphite-backups"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
