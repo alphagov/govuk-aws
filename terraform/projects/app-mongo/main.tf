@@ -121,7 +121,7 @@ resource "aws_network_interface" "mongo-1_eni" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
 
   tags {
-    Name            = "${var.stackname}-mongo-1"
+    Name            = "govuk-${var.env}-${var.region}-mongo-1"
     Project         = var.stackname
     aws_hostname    = "mongo-1"
     aws_migration   = "mongo"
@@ -145,7 +145,7 @@ resource "aws_route53_record" "mongo_1_service_record" {
 module "mongo-1" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mongo-1"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Mongo")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-mongo-1", "System", "${var.stackname} Mongo")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_1_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -164,7 +164,7 @@ resource "aws_ebs_volume" "mongo-1" {
   size              = 300
 
   tags {
-    Name            = "${var.stackname}-mongo-1"
+    Name          = "govuk-${var.env}-${var.region}-mongo-1"
     Project         = var.stackname
     ManagedBy       = "terraform"
     aws_stackname   = var.stackname
@@ -186,7 +186,7 @@ resource "aws_network_interface" "mongo-2_eni" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
 
   tags {
-    Name            = "${var.stackname}-mongo-2"
+    Name            = "govuk-${var.env}-${var.region}-mongo-2"
     Project         = var.stackname
     aws_hostname    = "mongo-2"
     aws_migration   = "mongo"
@@ -210,7 +210,7 @@ resource "aws_route53_record" "mongo_2_service_record" {
 module "mongo-2" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mongo-2"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-2", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Mongo")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-2", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-mongo-2", "System", "${var.stackname} Mongo")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_2_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -229,7 +229,7 @@ resource "aws_ebs_volume" "mongo-2" {
   size              = 300
 
   tags {
-    Name            = "${var.stackname}-mongo-2"
+    Name            = "govuk-${var.env}-${var.region}-mongo-2"
     Project         = var.stackname
     ManagedBy       = "terraform"
     aws_stackname   = var.stackname
@@ -251,7 +251,7 @@ resource "aws_network_interface" "mongo-3_eni" {
   security_groups = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}"]
 
   tags {
-    Name            = "${var.stackname}-mongo-3"
+    Name            = "govuk-${var.env}-${var.region}-mongo-3"
     Project         = var.stackname
     aws_hostname    = "mongo-3"
     aws_migration   = "mongo"
@@ -275,7 +275,7 @@ resource "aws_route53_record" "mongo_3_service_record" {
 module "mongo-3" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-mongo-3"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-3", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Mongo")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "mongo", "aws_hostname", "mongo-3", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-mongo-3", "System", "${var.stackname} Mongo")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.mongo_3_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_mongo_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -294,7 +294,7 @@ resource "aws_ebs_volume" "mongo-3" {
   size              = 300
 
   tags {
-    Name            = "${var.stackname}-mongo-3"
+    Name            = "govuk-${var.env}-${var.region}-mongo-3"
     Project         = var.stackname
     ManagedBy       = "terraform"
     aws_stackname   = var.stackname
