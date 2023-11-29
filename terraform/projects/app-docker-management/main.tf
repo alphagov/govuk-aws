@@ -91,7 +91,7 @@ resource "aws_elb" "docker_management_etcd_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-docker_management_etcd", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "docker_management_etcd", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Docker Management")
+  tags = map("Name", "${var.stackname}-docker_management_etcd", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "docker_management_etcd", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-docker-management", "System", "Docker Management")
 }
 
 resource "aws_route53_record" "docker_management_etcd_service_record" {
@@ -111,7 +111,7 @@ resource "aws_route53_record" "docker_management_etcd_service_record" {
 module "docker_management" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-docker_management"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "docker_management", "aws_hostname", "docker-management-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "docker_management", "aws_hostname", "docker-management-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-docker-management", "System", "${var.stackname}")
   instance_subnet_ids           = data.terraform_remote_state.infra_networking.private_subnet_ids
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_docker_management_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
