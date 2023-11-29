@@ -112,7 +112,7 @@ resource "aws_elb" "db-admin_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-db-admin", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "db_admin", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}")
+  tags = map("Name", "${var.stackname}-db-admin", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "db_admin", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-app-db-admin", "System", "${var.stackname}")
 }
 
 module "db-admin" {
