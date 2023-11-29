@@ -112,7 +112,7 @@ module "gatling_external_lb" {
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
   target_group_health_check_path             = "/"
   target_group_health_check_matcher          = "200-499"
-  default_tags                               = map("Project", var.stackname, "aws_migration", "gatling", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags                               = map("Project", var.stackname, "aws_migration", "gatling", "aws_environment", var.aws_environment, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-app-gatling")
 }
 
 resource "aws_route53_record" "gatling_external_service_record" {
@@ -130,7 +130,7 @@ resource "aws_route53_record" "gatling_external_service_record" {
 module "gatling" {
   source                            = "../../modules/aws/node_group"
   name                              = "${var.stackname}-gatling"
-  default_tags                      = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "gatling", "aws_hostname", "gatling-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk")
+  default_tags                      = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "gatling", "aws_hostname", "gatling-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-app-gatling")
   instance_subnet_ids               = data.terraform_remote_state.infra_networking.private_subnet_ids
   instance_security_group_ids       = ["${data.terraform_remote_state.infra_security_groups.sg_gatling_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                     = var.instance_type
