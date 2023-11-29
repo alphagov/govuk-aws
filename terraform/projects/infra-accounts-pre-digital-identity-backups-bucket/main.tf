@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "bucket" {
   bucket = "govuk-${var.aws_environment}-accounts-pre-digital-identity-backups"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-accounts-pre-digital-identity-backups"
+    Name            = "govuk-${var.env}-${var.region}-identity-backups"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
