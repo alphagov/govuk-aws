@@ -169,7 +169,7 @@ resource "aws_elb" "ci-master_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-master", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}", "Name", "govuk-${var.env}-${var.region}-ci-master")
 }
 
 data "aws_acm_certificate" "elb_internal_cert" {
@@ -212,7 +212,7 @@ resource "aws_elb" "ci-master_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-ci-master-internal", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}", "Name", "govuk-${var.env}-${var.region}-ci-master-internal")
 }
 
 resource "aws_route53_record" "service_record" {
@@ -249,7 +249,7 @@ locals {
 module "ci-master" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-ci-master"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "aws_hostname", "ci-master-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "ci_master", "aws_hostname", "ci-master-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname}", "Name", "govuk-${var.env}-${var.region}-ci-master")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.deploy_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_ci-master_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -267,7 +267,7 @@ resource "aws_ebs_volume" "ci-master" {
   type              = "gp3"
 
   tags {
-    Name            = "${var.stackname}-ci"
+    Name            = "govuk-${var.env}-${var.region}-ci-master"
     Project         = var.stackname
     Device          = "xvdf"
     aws_hostname    = "ci-master-1"
