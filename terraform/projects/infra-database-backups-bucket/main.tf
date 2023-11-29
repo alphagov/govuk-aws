@@ -11,6 +11,7 @@ terraform {
 
 locals {
   tags = {
+    Name                 = "govuk-${var.env}-${var.region}-database-backups"
     terraform_deployment = basename(abspath(path.root))
     aws_environment      = var.aws_environment
     Environment          = "${var.aws_environment}"
@@ -37,7 +38,7 @@ resource "aws_s3_bucket" "main" {
   bucket              = "govuk-${var.aws_environment}-database-backups"
   object_lock_enabled = local.timelock_enabled
   tags = {
-    Name        = "govuk-${var.aws_environment}-database-backups"
+    Name        = "govuk-${var.env}-${var.region}-database-backups"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -50,7 +51,7 @@ resource "aws_s3_bucket" "replica" {
   provider            = aws.eu-west-2
   object_lock_enabled = local.timelock_enabled
   tags = {
-    Name        = "govuk-${var.aws_environment}-database-backups-replica"
+    Name        = "govuk-${var.env}-${var.region}-database-backups"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
