@@ -40,7 +40,7 @@ resource "aws_s3_bucket" "cdn_logs_monitor" {
   bucket = "govuk-${var.aws_environment}-cdn-logs-monitor-archive"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-cdn-logs-monitor-archive"
+    Name            = "govuk-${var.env}-${var.region}-cdn-logs-monitor-archive"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
