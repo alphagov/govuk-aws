@@ -148,6 +148,7 @@ resource "aws_cloudwatch_log_group" "public_bouncer_waf" {
   retention_in_days = var.waf_log_retention_days
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-bouncer-public"
     Project       = var.stackname
     aws_stackname = var.stackname
     Environment   = "${var.aws_environment}"

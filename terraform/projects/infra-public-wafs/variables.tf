@@ -17,6 +17,7 @@ variable "aws_environment" {
 
 locals {
   tags = {
+    Name            = "govuk-${var.env}-${var.region}-waf"
     Project         = var.stackname
     aws_stackname   = var.stackname
     aws_environment = var.aws_environment
