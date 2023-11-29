@@ -37,7 +37,7 @@ resource "aws_s3_bucket" "content_data_csvs" {
   acl    = "public-read"
 
   tags = {
-    name            = "govuk-${var.aws_environment}-content-data-csvs"
+    Name            = "govuk-${var.env}-${var.region}-content-data-csvs"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
