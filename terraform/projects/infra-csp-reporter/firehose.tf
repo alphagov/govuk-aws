@@ -34,6 +34,7 @@ resource "aws_kinesis_firehose_delivery_stream" "delivery_stream" {
   }
 
   tags = {
+    Name            = "govuk-${var.env}-${var.region}-csp-reporter-delivery-stream"
     aws_environment = var.aws_environment
     project         = local.project_name
     Environment     = "${var.aws_environment}"

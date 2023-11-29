@@ -59,6 +59,7 @@ resource "aws_glue_crawler" "csp_reports" {
   schedule      = "cron(15 * * * ? *)" # Run every hour as we're not sure how frequently we'll get reports
 
   tags = {
+    Name            = "govuk-${var.env}-${var.region}-csp-reports"
     aws_environment = var.aws_environment
     project         = local.project_name
     Environment     = "${var.aws_environment}"

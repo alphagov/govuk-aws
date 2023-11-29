@@ -21,6 +21,7 @@ resource "aws_lambda_function" "lambda" {
   }
 
   tags = {
+    Name            = "govuk-${var.env}-${var.region}-csp-reporter-lambda"
     aws_environment = var.aws_environment
     project         = local.project_name
     Environment     = "${var.aws_environment}"
@@ -84,6 +85,7 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
   retention_in_days = 30
 
   tags = {
+    Name            = "govuk-${var.env}-${var.region}-csp-reporter-log-group"
     aws_environment = var.aws_environment
     project         = local.project_name
   }

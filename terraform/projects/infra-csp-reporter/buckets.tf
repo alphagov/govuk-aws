@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "csp_reports" {
   bucket = "govuk-${var.aws_environment}-csp-reports"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-csp-reports"
+    Name            = "govuk-${var.env}-${var.region}-csp-reports"
     aws_environment = var.aws_environment
     project         = local.project_name
     Environment     = "${var.aws_environment}"
