@@ -150,7 +150,7 @@ data "terraform_remote_state" "infra_monitoring" {
 module "infra_public_subnet" {
   source                    = "../../modules/aws/network/public_subnet"
   vpc_id                    = data.terraform_remote_state.infra_vpc.outputs.vpc_id
-  default_tags              = map("Project", var.stackname, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Networking")
+  default_tags              = map("Project", var.stackname, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-network-public", "System", "Networking")
   route_table_public_id     = data.terraform_remote_state.infra_vpc.outputs.route_table_public_id
   subnet_cidrs              = var.public_subnet_cidrs
   subnet_availability_zones = var.public_subnet_availability_zones
@@ -191,7 +191,7 @@ data "template_file" "nat_gateway_association_nat_id" {
 module "infra_private_subnet" {
   source                     = "../../modules/aws/network/private_subnet"
   vpc_id                     = data.terraform_remote_state.infra_vpc.outputs.vpc_id
-  default_tags               = map("Project", var.stackname, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Networking")
+  default_tags               = map("Project", var.stackname, "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-network-private", "System", "Networking")
   subnet_cidrs               = var.private_subnet_cidrs
   subnet_availability_zones  = var.private_subnet_availability_zones
   subnet_nat_gateways        = zipmap(keys(var.private_subnet_nat_gateway_association), data.template_file.nat_gateway_association_nat_id.*.rendered)
@@ -202,7 +202,7 @@ module "infra_private_subnet" {
 module "infra_private_subnet_elasticache" {
   source                     = "../../modules/aws/network/private_subnet"
   vpc_id                     = data.terraform_remote_state.infra_vpc.outputs.vpc_id
-  default_tags               = map("Project", var.stackname, "aws_migration", "elasticache", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Elasticache Networking")
+  default_tags               = map("Project", var.stackname, "aws_migration", "elasticache", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-network-elasticache", "System", "Elasticache Networking")
   subnet_cidrs               = var.private_subnet_elasticache_cidrs
   subnet_availability_zones  = var.private_subnet_elasticache_availability_zones
   subnet_nat_gateways_length = "0"
@@ -212,7 +212,7 @@ module "infra_private_subnet_elasticache" {
 module "infra_private_subnet_rds" {
   source                     = "../../modules/aws/network/private_subnet"
   vpc_id                     = data.terraform_remote_state.infra_vpc.outputs.vpc_id
-  default_tags               = map("Project", var.stackname, "aws_migration", "rds", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Database Networking")
+  default_tags               = map("Project", var.stackname, "aws_migration", "rds", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-network-rds", "System", "Database Networking")
   subnet_cidrs               = var.private_subnet_rds_cidrs
   subnet_availability_zones  = var.private_subnet_rds_availability_zones
   subnet_nat_gateways_length = "0"
@@ -222,7 +222,7 @@ module "infra_private_subnet_rds" {
 module "infra_private_subnet_reserved_ips" {
   source                     = "../../modules/aws/network/private_subnet"
   vpc_id                     = data.terraform_remote_state.infra_vpc.outputs.vpc_id
-  default_tags               = map("Project", var.stackname, "aws_migration", "eni", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Networking")
+  default_tags               = map("Project", var.stackname, "aws_migration", "eni", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-network-reserved-ips", "System", "Networking")
   subnet_cidrs               = var.private_subnet_reserved_ips_cidrs
   subnet_availability_zones  = var.private_subnet_reserved_ips_availability_zones
   subnet_nat_gateways_length = "0"
@@ -232,7 +232,7 @@ module "infra_private_subnet_reserved_ips" {
 module "infra_private_subnet_elasticsearch" {
   source                     = "../../modules/aws/network/private_subnet"
   vpc_id                     = data.terraform_remote_state.infra_vpc.outputs.vpc_id
-  default_tags               = map("Project", var.stackname, "aws_migration", "elasticsearch", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "Elasticsearch Networking")
+  default_tags               = map("Project", var.stackname, "aws_migration", "elasticsearch", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-network-elasticsearch", "System", "Elasticsearch Networking")
   subnet_cidrs               = var.private_subnet_elasticsearch_cidrs
   subnet_availability_zones  = var.private_subnet_elasticsearch_availability_zones
   subnet_nat_gateways_length = "0"
