@@ -35,7 +35,7 @@ resource "aws_s3_bucket" "aws-secondary-logging" {
   provider = "aws.aws_secondary"
 
   tags = {
-    Name        = "govuk-${var.aws_environment}-aws-secondary-logging"
+    Name        = "govuk-${var.env}-${var.region}-aws-secondary-logging"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

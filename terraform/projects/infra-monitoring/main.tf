@@ -109,7 +109,7 @@ resource "aws_s3_bucket" "aws-logging" {
   acl    = "log-delivery-write"
 
   tags = {
-    Name        = "govuk-${var.aws_environment}-aws-logging"
+    Name        = "govuk-${var.env}-${var.region}-aws-logging"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -328,7 +328,7 @@ resource "aws_iam_role" "rds_enhanced_monitoring" {
   assume_role_policy = data.aws_iam_policy_document.rds_enhanced_monitoring.json
 
   tags = {
-    "Name"        = "${var.rds_enhanced_monitoring_role_name}"
+    "Name"        = "govuk-${var.env}-${var.region}-rds-enhanced-monitoring"
     "Environment" = "${var.aws_environment}"
     "Product"     = "GOVUK"
     "Owner"       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
