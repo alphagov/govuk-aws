@@ -50,7 +50,7 @@ resource "aws_s3_bucket" "ask_export_bucket" {
   bucket = var.export_s3_bucket_name
 
   tags {
-    Name            = var.export_s3_bucket_name
+    Name            = "govuk-${var.env}-${var.region}-ask-export"
     aws_environment = var.aws_environment
     Environment     = var.aws_environment
     Product         = "GOVUK"
