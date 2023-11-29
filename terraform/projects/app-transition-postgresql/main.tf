@@ -115,7 +115,7 @@ module "transition-postgresql-primary_rds_instance" {
   name                  = "${var.stackname}-transition-postgresql-primary"
   engine_name           = "postgres"
   engine_version        = "13"
-  default_tags          = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Transition Database")
+  default_tags          = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-transition-db-postgres", "System", "${var.stackname} Transition Database")
   subnet_ids            = data.terraform_remote_state.infra_networking.private_subnet_rds_ids
   username              = var.username
   password              = var.password
@@ -145,7 +145,7 @@ module "transition-postgresql-standby_rds_instance" {
   source = "../../modules/aws/rds_instance"
 
   name                       = "${var.stackname}-transition-postgresql-standby"
-  default_tags               = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_standby", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Transition Database")
+  default_tags               = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_standby", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-transition-db-postgres", "System", "${var.stackname} Transition Database")
   instance_class             = var.instance_type
   instance_name              = "${var.stackname}-transition-postgresql-standby"
   security_group_ids         = ["${data.terraform_remote_state.infra_security_groups.sg_transition-postgresql-standby_id}"]
