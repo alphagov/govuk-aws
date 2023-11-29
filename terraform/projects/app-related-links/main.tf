@@ -64,8 +64,8 @@ resource "aws_s3_bucket" "s3_bucket" {
   }
 
   tags {
+    Name            = "govuk-${var.env}-${var.region}-related-links"
     aws_environment = var.aws_environment
-    Name            = local.related_links_bucket_name
     Environment     = var.aws_environment
     Product         = "GOVUK"
     Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
