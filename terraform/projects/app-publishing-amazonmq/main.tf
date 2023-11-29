@@ -70,6 +70,7 @@ locals {
   }
 
   tags = {
+    Name            = "govuk-${var.env}-${var.region}-publishing-queue"
     Project         = var.stackname
     aws_stackname   = var.stackname
     aws_environment = var.aws_environment
@@ -218,7 +219,7 @@ resource "aws_lb" "publishingmq_lb_internal" {
   enable_deletion_protection = var.lb_delete_protection
 
   tags = {
-    "Name"            = "${var.stackname}-publishingamazonmq-internal"
+    "Name"              = "govuk-${var.env}-${var.region}-publishing-queue"
     "Project"         = var.stackname
     "aws_environment" = var.aws_environment
     "aws_migration"   = "publishingamazonmq"
