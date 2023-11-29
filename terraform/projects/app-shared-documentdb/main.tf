@@ -143,9 +143,9 @@ resource "aws_docdb_cluster" "cluster" {
   enabled_cloudwatch_logs_exports = slice("${list("profiler")}", 0, var.profiler == "enabled" ? 1 : 0)
 
   tags = {
+    Name        = "govuk-${var.env}-${var.region}-shared-document-db"
     Service     = "shared documentdb"
     Customer    = "asset-manager"
-    Name        = "shared-documentdb"
     Source      = "app-shared-documentdb"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
