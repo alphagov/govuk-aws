@@ -171,6 +171,7 @@ resource "aws_s3_bucket" "artefact" {
   acl    = "private"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-artefact-buckter"
     Name            = "govuk-${var.aws_environment}-artefact"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
