@@ -64,7 +64,7 @@ resource "aws_s3_bucket" "datagovuk-static" {
   bucket = "datagovuk-${var.aws_environment}-ckan-static-data"
 
   tags = {
-    Name            = "datagovuk-${var.aws_environment}-ckan-static-data"
+    Name            = "datagovuk-${var.env}-${var.region}-ckan-static-data"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "DATA.GOVUK"
