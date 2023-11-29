@@ -1,18 +1,19 @@
+## Project: app-asset-master
+
+Assets EFS (NFS) volume.
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
-| <a name="requirement_fastly"></a> [fastly](#requirement\_fastly) | ~> 5.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 2.46.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
-| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | ~> 5.0 |
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 2.46.0 |
+| <a name="provider_fastly"></a> [fastly](#provider\_fastly) | n/a |
 
 ## Modules
 
@@ -22,18 +23,16 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_iam_policy.s3_datagovuk_organogram_writer_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_iam_policy_attachment.s3_datagovuk_organogram_writer_user_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy_attachment) | resource |
-| [aws_iam_user.s3_datagovuk_organogram_writer_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
-| [aws_s3_bucket.datagovuk-organogram](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_cors_configuration.datagovuk_organogram](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_cors_configuration) | resource |
-| [aws_s3_bucket_logging.datagovuk_organogram](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_logging) | resource |
-| [aws_s3_bucket_policy.govuk_datagovuk_organogram_read_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
-| [aws_s3_bucket_versioning.datagovuk_organogram](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
-| [aws_iam_policy_document.s3_datagovuk_organogram_writer_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.s3_fastly_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/fastly/fastly/latest/docs/data-sources/ip_ranges) | data source |
-| [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
+| [aws_efs_file_system.assets-efs-fs](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/efs_file_system) | resource |
+| [aws_efs_mount_target.assets-mount-target](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/efs_mount_target) | resource |
+| [aws_iam_policy.s3_datagovuk_organogram_writer_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
+| [aws_iam_policy_attachment.s3_datagovuk_organogram_writer_user_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy_attachment) | resource |
+| [aws_iam_user.s3_datagovuk_organogram_writer_user](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_user) | resource |
+| [aws_route53_record.assets_service_record](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/route53_record) | resource |
+| [aws_iam_policy_document.s3_datagovuk_organogram_writer_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.s3_fastly_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
+| [aws_route53_zone.internal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/route53_zone) | data source |
+| [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/hashicorp/fastly/latest/docs/data-sources/ip_ranges) | data source |
 
 ## Inputs
 
