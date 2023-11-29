@@ -21,7 +21,7 @@ data "aws_route53_zone" "internal" {
 resource "aws_efs_file_system" "assets-efs-fs" {
   creation_token = "${var.stackname}-assets"
   tags = {
-    "Name"            = "${var.stackname}-asset-master"
+    "Name"            = "govuk-${var.env}-${var.region}-app-asset"
     "Description"     = "Asset Manager and Whitehall attachments are stored here temporarily for malware scanning before being transferred to S3."
     "Project"         = var.stackname
     "aws_environment" = var.aws_environment
