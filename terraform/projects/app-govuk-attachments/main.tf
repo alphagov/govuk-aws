@@ -70,6 +70,7 @@ resource "aws_s3_bucket" "bucket" {
   acl    = "private"
 
   tags {
+    Name          = "govuk-${var.env}-${var.region}-attachments"
     Environment = var.aws_environment
     Team        = var.team
     Product     = "GOVUK"
@@ -98,6 +99,7 @@ resource "aws_s3_bucket" "bucket_without_lifecycle" {
   acl    = "private"
 
   tags {
+    Name          = "govuk-${var.env}-${var.region}-attachments"
     Environment = var.aws_environment
     Team        = var.team
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
