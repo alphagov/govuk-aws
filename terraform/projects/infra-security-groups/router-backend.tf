@@ -18,7 +18,7 @@ resource "aws_security_group" "router-backend" {
   description = "Access to router-backend"
 
   tags = {
-    Name = "${var.stackname}_router-backend_access"
+    Name = "govuk-${var.env}-${var.region}-router-backend"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_security_group" "router-backend_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_router-backend_ithc_access"
+    Name = "govuk-${var.env}-${var.region}-router-backend-ithc"
   }
 }
 

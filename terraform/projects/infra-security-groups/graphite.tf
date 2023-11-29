@@ -19,6 +19,7 @@ resource "aws_security_group" "graphite" {
   description = "Access to the graphite host from its ELB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-graphite"
     Name        = "${var.stackname}_graphite_access"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
@@ -98,6 +99,7 @@ resource "aws_security_group" "graphite_external_elb" {
   description = "Access the Graphite External ELB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-graphite"
     Name = "${var.stackname}_graphite_external_elb_access"
   }
 }
@@ -138,6 +140,7 @@ resource "aws_security_group" "graphite_internal_elb" {
   description = "Access the Graphite Internal ELB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-graphite"
     Name = "${var.stackname}_graphite_internal_elb_access"
   }
 }

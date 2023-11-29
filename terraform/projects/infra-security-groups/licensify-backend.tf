@@ -14,7 +14,7 @@ resource "aws_security_group" "licensify-backend" {
   description = "Access to the licensify-backend host from its ELB"
 
   tags = {
-    Name = "licensify-backend_access"
+    Name = "govuk-${var.env}-${var.region}-licensify-backend"
   }
 }
 
@@ -50,7 +50,7 @@ resource "aws_security_group" "licensify-backend_internal_elb" {
   description = "Access the licensify-backend ELB"
 
   tags = {
-    Name = "licensify-backend_internal_elb_access"
+    Name = "govuk-${var.env}-${var.region}-licensify-backend-elb"
   }
 }
 
@@ -79,7 +79,7 @@ resource "aws_security_group" "licensify-backend_external_elb" {
   description = "Access the licensify-backend external ELB"
 
   tags = {
-    Name = "licensify-backend_external_elb_access"
+    Name = "govuk-${var.env}-${var.region}-licensify-backend-elb"
   }
 }
 
@@ -119,7 +119,7 @@ resource "aws_security_group" "licensify_backend_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_licensify_backend_ithc_access"
+    Name = "govuk-${var.env}-${var.region}-licensify-backend-ithc"
   }
 }
 

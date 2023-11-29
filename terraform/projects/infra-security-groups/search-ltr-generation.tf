@@ -4,7 +4,7 @@ resource "aws_security_group" "search-ltr-generation" {
   vpc_id = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
   tags = {
-    Name        = "search-ltr-generation"
+    Name        = "govuk-${var.env}-${var.region}-search-ltr-generation"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

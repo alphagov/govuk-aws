@@ -19,7 +19,7 @@ resource "aws_security_group" "apt" {
   description = "Access to the apt host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_apt_access"
+    Name        = "govuk-${var.env}-${var.region}-apt-access"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -59,7 +59,7 @@ resource "aws_security_group" "apt_external_elb" {
   description = "Access the apt External ELB"
 
   tags = {
-    Name = "${var.stackname}_apt_external_elb_access"
+    Name = "govuk-${var.env}-${var.region}-external-apt"
   }
 }
 
@@ -108,7 +108,7 @@ resource "aws_security_group" "apt_internal_elb" {
   description = "Access the apt Internal ELB"
 
   tags = {
-    Name = "${var.stackname}_apt_internal_elb_access"
+    Name = "govuk-${var.env}-${var.region}-internal-apt"
   }
 }
 
@@ -148,7 +148,7 @@ resource "aws_security_group" "apt_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_apt_ithc_access"
+    Name = "govuk-${var.env}-${var.region}-apt-ithc"
   }
 }
 

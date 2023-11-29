@@ -4,7 +4,7 @@ resource "aws_security_group" "related-links" {
   vpc_id = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
   tags = {
-    Name        = "related-links"
+    Name        = "govuk-${var.env}-${var.region}-related-links"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

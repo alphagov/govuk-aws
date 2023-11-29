@@ -15,7 +15,7 @@ resource "aws_security_group" "gatling" {
   description = "Access to the gatling host"
 
   tags = {
-    Name        = "${var.stackname}_gatling_access"
+    Name        = "govuk-${var.env}-${var.region}-gatling"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -64,7 +64,7 @@ resource "aws_security_group" "gatling_external_elb" {
   description = "Access the gatling External ELB"
 
   tags = {
-    Name = "${var.stackname}_gatling_external_elb_access"
+    Name = "govuk-${var.env}-${var.region}-gatling-elb"
   }
 }
 

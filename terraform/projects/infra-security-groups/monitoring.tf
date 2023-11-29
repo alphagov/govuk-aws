@@ -18,7 +18,7 @@ resource "aws_security_group" "monitoring" {
   description = "Access to the monitoring host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_monitoring_access"
+    Name        = "govuk-${var.env}-${var.region}-monitoring"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -84,7 +84,7 @@ resource "aws_security_group" "monitoring_external_elb" {
   description = "Access the monitoring ELB"
 
   tags = {
-    Name = "${var.stackname}_monitoring_external_elb_access"
+    Name = "govuk-${var.env}-${var.region}-monitoring-elb"
   }
 }
 
@@ -113,7 +113,7 @@ resource "aws_security_group" "monitoring_internal_elb" {
   description = "Access the monitoring ELB"
 
   tags = {
-    Name = "${var.stackname}_monitoring_internal_elb_access"
+    Name = "govuk-${var.env}-${var.region}-monitoring-elb"
   }
 }
 

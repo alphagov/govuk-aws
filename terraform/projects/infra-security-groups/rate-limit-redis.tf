@@ -17,7 +17,7 @@ resource "aws_security_group" "rate-limit-redis" {
   description = "Access to rate-limit-redis from its clients"
 
   tags = {
-    Name        = "${var.stackname}_rate-limit-redis_access"
+    Name        = "govuk-${var.env}-${var.region}-rate-limit-redis"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

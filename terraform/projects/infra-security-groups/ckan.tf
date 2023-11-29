@@ -19,7 +19,7 @@ resource "aws_security_group" "ckan" {
   description = "Access to the ckan host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_ckan_access"
+    Name        = "govuk-${var.env}-${var.region}-ckan"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -59,7 +59,7 @@ resource "aws_security_group" "ckan_elb_internal" {
   description = "Access the ckan ELB"
 
   tags = {
-    Name = "${var.stackname}_ckan_elb_internal_access"
+    Name = "govuk-${var.env}-${var.region}-ckan-internal"
   }
 }
 
@@ -80,7 +80,7 @@ resource "aws_security_group" "ckan_elb_external" {
   description = "Access the ckan ELB"
 
   tags = {
-    Name = "${var.stackname}_ckan_elb_external_access"
+    Name = "govuk-${var.env}-${var.region}-ckan-external"
   }
 }
 
@@ -131,7 +131,7 @@ resource "aws_security_group" "ckan_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_ckan_ithc_access"
+    Name = "govuk-${var.env}-${var.region}-ckan-ithc"
   }
 }
 

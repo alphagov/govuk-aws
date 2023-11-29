@@ -14,7 +14,7 @@ resource "aws_security_group" "shared-documentdb" {
   description = "Access to Shared Documentdb from its clients"
 
   tags = {
-    Name        = "${var.stackname}_shared_documentdb_access"
+    Name        = "govuk-${var.env}-${var.region}-shared-documentdb"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

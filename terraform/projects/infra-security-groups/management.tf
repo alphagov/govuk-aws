@@ -18,7 +18,7 @@ resource "aws_security_group" "management" {
   description = "Group used to allow access by management systems"
 
   tags = {
-    Name        = "${var.stackname}_management_access"
+    Name        = "govuk-${var.env}-${var.region}-management"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

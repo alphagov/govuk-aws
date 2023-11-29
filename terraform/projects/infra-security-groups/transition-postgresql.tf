@@ -14,7 +14,7 @@ resource "aws_security_group" "transition-postgresql-primary" {
   description = "Access to transition-postgresql-primary from its clients"
 
   tags = {
-    Name = "${var.stackname}_transition-postgresql-primary_access"
+    Name = "govuk-${var.env}-${var.region}-transition-postgres"
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_security_group" "transition-postgresql-standby" {
   description = "Access to transition-postgresql-standby from its clients"
 
   tags = {
-    Name = "${var.stackname}_transition-postgresql-standby_access"
+    Name = "govuk-${var.env}-${var.region}-transition-postgresql"
   }
 }
 

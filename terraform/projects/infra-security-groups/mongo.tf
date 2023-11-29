@@ -17,7 +17,7 @@ resource "aws_security_group" "mongo" {
   description = "Access to mongo"
 
   tags = {
-    Name        = "${var.stackname}_mongo_access"
+    Name        = "govuk-${var.env}-${var.region}-mongo"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

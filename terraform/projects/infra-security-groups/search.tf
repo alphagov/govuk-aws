@@ -17,7 +17,7 @@ resource "aws_security_group" "search" {
   description = "Access to the search host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_search_access"
+    Name        = "govuk-${var.env}-${var.region}-search"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -32,7 +32,7 @@ resource "aws_security_group" "search_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_search_ithc_access"
+    Name = "govuk-${var.env}-${var.region}-search-ithc"
   }
 }
 

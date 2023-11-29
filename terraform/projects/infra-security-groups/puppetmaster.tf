@@ -17,7 +17,7 @@ resource "aws_security_group" "puppetmaster" {
   description = "Access to the puppetmaster from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_puppetmaster_access"
+    Name        = "govuk-${var.env}-${var.region}-puppetmaster"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -58,7 +58,7 @@ resource "aws_security_group" "puppetmaster_elb" {
   description = "Access the puppetmaster ELB"
 
   tags = {
-    Name = "${var.stackname}_puppetmaster_elb_access"
+    Name          = "govuk-${var.env}-${var.region}-puppetmaster-elb"
   }
 }
 

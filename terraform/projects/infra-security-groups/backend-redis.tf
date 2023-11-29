@@ -17,7 +17,7 @@ resource "aws_security_group" "backend-redis" {
   description = "Access to backend-redis from its clients"
 
   tags = {
-    Name        = "${var.stackname}_backend-redis_access"
+    Name        = "govuk-${var.env}-${var.region}-backend-redis"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

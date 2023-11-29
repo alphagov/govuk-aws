@@ -14,7 +14,7 @@ resource "aws_security_group" "asset-master-efs" {
   description = "Security group for asset-master EFS share"
 
   tags = {
-    Name        = "${var.stackname}_asset-master-efs_access"
+    Name        = "govuk-${var.env}-${var.region}-asset-master"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

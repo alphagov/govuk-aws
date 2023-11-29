@@ -16,7 +16,7 @@ resource "aws_security_group" "support-api_external_elb" {
   description = "Access the support-api external ELB"
 
   tags = {
-    Name        = "${var.stackname}_support-api_external_elb_access"
+    Name        = "govuk-${var.env}-${var.region}-support-api"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

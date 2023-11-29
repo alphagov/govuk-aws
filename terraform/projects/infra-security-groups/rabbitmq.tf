@@ -17,7 +17,7 @@ resource "aws_security_group" "rabbitmq" {
   description = "Access to the rabbitmq host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_rabbitmq_access"
+    Name        = "govuk-${var.env}-${var.region}-rabbitmq"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -83,7 +83,7 @@ resource "aws_security_group" "rabbitmq_elb" {
   description = "Access the rabbitmq Internal ELB"
 
   tags = {
-    Name = "${var.stackname}_rabbitmq_elb_access"
+    Name = "govuk-${var.env}-${var.region}-rabbitmq-elb"
   }
 }
 

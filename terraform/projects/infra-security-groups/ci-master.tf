@@ -18,6 +18,7 @@ resource "aws_security_group" "ci-master" {
   description = "Access to the ci-master host from its ELB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-ci-master"
     Name        = "${var.stackname}_ci-master_access"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
@@ -61,6 +62,7 @@ resource "aws_security_group" "ci-master_elb" {
   description = "Access the ci-master ELB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-ci-master"
     Name = "${var.stackname}_ci-master_elb_access"
   }
 }
@@ -115,6 +117,7 @@ resource "aws_security_group" "ci-master_internal_elb" {
   description = "Access the ci-master Internal ELB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-ci-master"
     Name = "${var.stackname}_ci-master_internal_elb_access"
   }
 }

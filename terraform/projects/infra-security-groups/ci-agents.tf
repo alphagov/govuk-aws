@@ -20,7 +20,7 @@ resource "aws_security_group" "ci-agent-1" {
   description = "Access to the ci-agent-1 host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-1_access"
+    Name          = "govuk-${var.env}-${var.region}-ci-agent-1"
   }
 }
 
@@ -59,7 +59,7 @@ resource "aws_security_group" "ci-agent-1_elb" {
   description = "Access the CI agent 1 ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-1_elb_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-1"
   }
 }
 
@@ -104,7 +104,7 @@ resource "aws_security_group" "ci-agent-2" {
   description = "Access to the ci-agent-2 host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-2_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-2"
   }
 }
 
@@ -143,7 +143,7 @@ resource "aws_security_group" "ci-agent-2_elb" {
   description = "Access the CI agent 2 ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-2_elb_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-2"
   }
 }
 
@@ -188,7 +188,7 @@ resource "aws_security_group" "ci-agent-3" {
   description = "Access to the ci-agent-3 host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-3_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-3"
   }
 }
 
@@ -227,7 +227,7 @@ resource "aws_security_group" "ci-agent-3_elb" {
   description = "Access the CI agent 3 ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-3_elb_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-3"
   }
 }
 
@@ -272,7 +272,7 @@ resource "aws_security_group" "ci-agent-4" {
   description = "Access to the ci-agent-4 host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-4_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-4"
   }
 }
 
@@ -311,7 +311,7 @@ resource "aws_security_group" "ci-agent-4_elb" {
   description = "Access the CI agent 4 ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-4_elb_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-4"
   }
 }
 
@@ -356,7 +356,7 @@ resource "aws_security_group" "ci-agent-5" {
   description = "Access to the ci-agent-5 host from its ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-5_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-5"
   }
 }
 
@@ -395,7 +395,7 @@ resource "aws_security_group" "ci-agent-5_elb" {
   description = "Access the CI agent 5 ELB"
 
   tags = {
-    Name = "${var.stackname}_ci-agent-5_elb_access"
+    Name = "govuk-${var.env}-${var.region}-ci-agent-5"
   }
 }
 

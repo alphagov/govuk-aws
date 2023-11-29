@@ -22,7 +22,7 @@ resource "aws_security_group" "elasticsearch6" {
   description = "Access to elasticsearch6"
 
   tags = {
-    Name        = "${var.stackname}_elasticsearch6_access"
+    Name        = "govuk-${var.env}-${var.region}-elasticsearch6"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

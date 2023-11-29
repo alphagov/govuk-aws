@@ -17,7 +17,7 @@ resource "aws_security_group" "licensify-frontend" {
   description = "Access to the licensify-frontend host from its public ELB and internal LB"
 
   tags = {
-    Name        = "${var.stackname}_licensify-frontend_access"
+    Name        = "govuk-${var.env}-${var.region}-licensify-frontend"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -57,7 +57,7 @@ resource "aws_security_group" "licensify-frontend_external_elb" {
   description = "Access the public licensify-frontend ELB"
 
   tags = {
-    Name = "${var.stackname}_licensify-frontend_elb_access"
+    Name = "govuk-${var.env}-${var.region}-licensify-frontend-elb"
   }
 }
 
@@ -121,7 +121,7 @@ resource "aws_security_group" "licensify-frontend_internal_lb" {
   description = "Access the licensify-frontend LB"
 
   tags = {
-    Name = "${var.stackname}_licensify-frontend_internal_lb_access"
+    Name = "govuk-${var.env}-${var.region}-licensify-frontend-internal"
   }
 }
 
@@ -162,7 +162,7 @@ resource "aws_security_group" "licensify_frontend_ithc_access" {
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_licensify_frontend_ithc_access"
+    Name          = "govuk-${var.env}-${var.region}-licensify-frontend-ithc"
   }
 }
 

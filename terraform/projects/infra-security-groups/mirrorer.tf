@@ -14,7 +14,7 @@ resource "aws_security_group" "mirrorer" {
   description = "Security group for mirrorer"
 
   tags = {
-    Name        = "${var.stackname}_mirrorer_access"
+    Name        = "govuk-${var.env}-${var.region}-mirrorer"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

@@ -16,7 +16,7 @@ resource "aws_security_group" "jumpbox" {
   description = "Control access to the jumpbox"
 
   tags = {
-    Name        = "${var.stackname}_jumpbox_access"
+    Name        = "govuk-${var.env}-${var.region}-jumpbox"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

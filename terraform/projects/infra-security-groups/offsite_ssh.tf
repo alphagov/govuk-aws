@@ -17,7 +17,7 @@ resource "aws_security_group" "offsite_ssh" {
   description = "Access to SSH and egress"
 
   tags = {
-    Name        = "${var.stackname}_ssh_access"
+    Name        = "govuk-${var.env}-${var.region}-offsite-ssh"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"

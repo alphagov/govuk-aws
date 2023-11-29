@@ -17,7 +17,7 @@ resource "aws_security_group" "deploy" {
   description = "Access to the deploy host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_deploy_access"
+    Name        = "govuk-${var.env}-${var.region}-deploy"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -57,7 +57,7 @@ resource "aws_security_group" "deploy_elb" {
   description = "Access the deploy ELB"
 
   tags = {
-    Name = "${var.stackname}_deploy_elb_access"
+    Name = "govuk-${var.env}-${var.region}-deploy-elb"
   }
 }
 
@@ -117,7 +117,7 @@ resource "aws_security_group" "deploy_internal_elb" {
   description = "Access the deploy Internal ELB"
 
   tags = {
-    Name = "${var.stackname}_deploy_internal_elb_access"
+    Name = "govuk-${var.env}-${var.region}-deploy-internal"
   }
 }
 

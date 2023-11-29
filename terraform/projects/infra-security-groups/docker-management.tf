@@ -18,7 +18,7 @@ resource "aws_security_group" "docker_management" {
   description = "Access to the docker_management host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_docker_management_access"
+    Name        = "govuk-${var.env}-${var.region}-docker-management"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -55,7 +55,7 @@ resource "aws_security_group" "docker_management_etcd_elb" {
   description = "Access the docker_management etcd ELB"
 
   tags = {
-    Name = "${var.stackname}_docker_management_etcd_elb_access"
+    Name = "govuk-${var.env}-${var.region}-docker-management-etcd"
   }
 }
 

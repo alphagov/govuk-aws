@@ -18,7 +18,7 @@ resource "aws_security_group" "prometheus" {
   description = "Access to prometheus instance from the prometheus LB"
 
   tags = {
-    Name        = "${var.stackname}_prometheus"
+    Name        = "govuk-${var.env}-${var.region}-prometheus"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -45,7 +45,7 @@ resource "aws_security_group" "prometheus_internal_elb" {
   description = "Prometheus Internal LB"
 
   tags = {
-    Name = "${var.stackname}_prometheus_internal_elb"
+    Name = "govuk-${var.env}-${var.region}-prometheus-elb"
   }
 }
 
@@ -94,6 +94,7 @@ resource "aws_security_group" "prometheus_external_elb" {
   description = "Access to prometheus LB"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-prometheus"
     Name = "${var.stackname}_prometheus_external_elb"
   }
 }

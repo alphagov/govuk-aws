@@ -17,7 +17,7 @@ resource "aws_security_group" "transition-db-admin" {
   description = "Access to the transition-db-admin host from its ELB"
 
   tags = {
-    Name        = "${var.stackname}_transition-db-admin_access"
+    Name        = "govuk-${var.env}-${var.region}-transition-db-admin"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -44,7 +44,7 @@ resource "aws_security_group" "transition-db-admin_elb" {
   description = "Access the transition-db-admin ELB"
 
   tags = {
-    Name = "${var.stackname}_transition-db-admin_elb_access"
+    Name = "govuk-${var.env}-${var.region}-transition-db-admin-elb"
   }
 }
 

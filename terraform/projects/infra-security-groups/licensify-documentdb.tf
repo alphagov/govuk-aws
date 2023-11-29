@@ -14,6 +14,7 @@ resource "aws_security_group" "licensify_documentdb" {
   description = "Access to licensify documentdb from its clients"
 
   tags = {
+    Name          = "govuk-${var.env}-${var.region}-licensify-documentdb"
     Name = "${var.stackname}_licensify_documentdb_access"
   }
 }

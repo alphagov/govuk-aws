@@ -14,7 +14,7 @@ resource "aws_security_group" "content-data-api-postgresql-primary" {
   description = "Access to content-data-api-postgresql-primary from its clients"
 
   tags = {
-    Name        = "${var.stackname}_content-data-api-postgresql-primary_access"
+    Name        = "govuk-${var.env}-${var.region}-content-data-api-postgres"
     Environment = "${var.aws_environment}"
     Product     = "GOVUK"
     Owner       = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
@@ -42,7 +42,7 @@ resource "aws_security_group" "content-data-api-postgresql-primary_ithc_access" 
   description = "Control access to ITHC SSH"
 
   tags = {
-    Name = "${var.stackname}_content-data-api-postgresql-primary_ithc_access"
+    Name          = "govuk-${var.env}-${var.region}-content-data-api-postgres-ithc"
   }
 }
 
