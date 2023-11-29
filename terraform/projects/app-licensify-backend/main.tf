@@ -89,6 +89,7 @@ module "internal_lb" {
   alarm_actions   = ["${data.terraform_remote_state.infra_monitoring.sns_topic_cloudwatch_alarms_arn}"]
 
   default_tags = {
+    Name            = "govuk-${var.env}-${var.region}-licencify-backend"
     Project         = "${var.stackname}"
     aws_migration   = "licensing_backend"
     aws_environment = "${var.aws_environment}"
@@ -119,6 +120,7 @@ module "licensify-backend" {
   name   = "licensify-backend"
 
   default_tags = {
+    Name            = "govuk-${var.env}-${var.region}-licencify-backend"
     Project         = "${var.stackname}"
     aws_stackname   = "${var.stackname}"
     aws_environment = "${var.aws_environment}"

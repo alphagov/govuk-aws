@@ -119,6 +119,7 @@ resource "aws_docdb_cluster" "licensify_cluster" {
   enabled_cloudwatch_logs_exports = slice("${list("profiler")}", 0, var.profiler == "enabled" ? 1 : 0)
 
   tags = {
+    Name        = "govuk-${var.env}-${var.region}-licencify-document-db"
     Service     = "documentdb"
     Customer    = "licensify"
     Name        = "licensify-documentdb"
