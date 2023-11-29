@@ -168,7 +168,7 @@ resource "aws_elb" "monitoring_external_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Monitoring")
+  tags = map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-monitoring", "System", "${var.stackname} Monitoring")
 }
 
 resource "aws_elb" "monitoring_internal_elb" {
@@ -214,13 +214,13 @@ resource "aws_elb" "monitoring_internal_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Monitoring")
+  tags = map("Name", "${var.stackname}-monitoring", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-monitoring", "System", "${var.stackname} Monitoring")
 }
 
 module "monitoring" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-monitoring"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "aws_hostname", "monitoring-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Monitoring")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "monitoring", "aws_hostname", "monitoring-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-monitoring", "System", "${var.stackname} Monitoring")
   instance_subnet_ids           = matchkeys(values(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), keys(data.terraform_remote_state.infra_networking.private_subnet_names_ids_map), list(var.monitoring_subnet))
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_monitoring_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
@@ -239,7 +239,7 @@ resource "aws_ebs_volume" "monitoring" {
   size              = 40
 
   tags {
-    Name            = "${var.stackname}-monitoring"
+    Name            = "govuk-${var.env}-${var.region}-monitoring"
     Project         = var.stackname
     ManagedBy       = "terraform"
     aws_stackname   = var.stackname
