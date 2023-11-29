@@ -40,7 +40,7 @@ resource "aws_s3_bucket" "fastly_logs" {
   bucket = "govuk-${var.aws_environment}-fastly-logs"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-fastly-logs"
+    Name            = "govuk-${var.env}-${var.region}-fastly-logs"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
@@ -694,7 +694,7 @@ resource "aws_s3_bucket" "fastly_logs_monitoring" {
   bucket = "govuk-${var.aws_environment}-fastly-logs-monitoring"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-fastly-logs-monitoring"
+    Name            = "govuk-${var.env}-${var.region}-fastly-logs-monitoring"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
@@ -747,7 +747,7 @@ resource "aws_s3_bucket" "transition_fastly_logs" {
   bucket = "govuk-${var.aws_environment}-transition-fastly-logs"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-transition-fastly-logs"
+    Name            = "govuk-${var.env}-${var.region}-fastly-transition-logs"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
