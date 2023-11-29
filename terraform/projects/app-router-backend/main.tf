@@ -20,6 +20,7 @@ data "aws_route53_zone" "internal" {
 
 locals {
   default_tags = {
+    "Name"            = "govuk-${var.env}-${var.region}-router-backend"
     "Project"         = var.stackname
     "aws_stackname"   = var.stackname
     "aws_environment" = var.aws_environment
