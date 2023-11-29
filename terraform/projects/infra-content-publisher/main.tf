@@ -60,7 +60,7 @@ resource "aws_s3_bucket" "activestorage" {
   bucket = "govuk-${var.aws_environment}-content-publisher-activestorage"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-content-publisher-activestorage"
+    Name            = "govuk-${var.env}-${var.region}-content-publisher-activestorage"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
@@ -99,8 +99,12 @@ resource "aws_s3_bucket" "activestorage_replica" {
   provider = "aws.aws_replica"
 
   tags = {
-    Name            = "govuk-${var.aws_environment}-content-publisher-activestorage-replica"
+    Name            = "govuk-${var.env}-${var.region}-content-publisher-activestorage-replica"
     aws_environment = "${var.aws_environment}"
+    Environment     = "${var.aws_environment}"
+    Product         = "GOVUK"
+    Owner           = "govuk-replatforming-team@digital.cabinet-office.gov.uk"
+    System          = "Content Publisher Active Storage Replica"
   }
 
   versioning {
