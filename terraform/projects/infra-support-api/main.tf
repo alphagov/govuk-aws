@@ -36,7 +36,7 @@ resource "aws_s3_bucket" "support_api_csvs" {
   bucket = "govuk-${var.aws_environment}-support-api-csvs"
 
   tags = {
-    name            = "govuk-${var.aws_environment}-support-api-csvs"
+    Name            = "govuk-${var.env}-${var.region}-support-api-csvs"
     aws_environment = "${var.aws_environment}"
     Environment     = "${var.aws_environment}"
     Product         = "GOVUK"
