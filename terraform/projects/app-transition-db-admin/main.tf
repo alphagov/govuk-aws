@@ -91,13 +91,13 @@ resource "aws_elb" "transition-db-admin_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = map("Name", "${var.stackname}-transition-db-admin", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_db_admin", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Transition Database")
+  tags = map("Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_db_admin", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-transition-db-admin", "System", "${var.stackname} Transition Database")
 }
 
 module "transition-db-admin" {
   source                        = "../../modules/aws/node_group"
   name                          = "${var.stackname}-transition-db-admin"
-  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_db_admin", "aws_hostname", "transition-db-admin-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "System", "${var.stackname} Transition Database")
+  default_tags                  = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_db_admin", "aws_hostname", "transition-db-admin-1", "Environment", var.aws_environment, "Product", "GOVUK", "Owner", "govuk-replatforming-team@digital.cabinet-office.gov.uk", "Name", "govuk-${var.env}-${var.region}-transition-db-admin", "System", "${var.stackname} Transition Database")
   instance_subnet_ids           = data.terraform_remote_state.infra_networking.private_subnet_ids
   instance_security_group_ids   = ["${data.terraform_remote_state.infra_security_groups.sg_transition-db-admin_id}", "${data.terraform_remote_state.infra_security_groups.sg_management_id}"]
   instance_type                 = var.instance_type
