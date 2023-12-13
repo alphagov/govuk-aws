@@ -5,12 +5,12 @@
 */
 
 variable "chain_account_id" {
-  type    = "string"
+  type    = string
   default = "988997429095"
 }
 
 variable "aws_region" {
-  type    = "string"
+  type    = string
   default = "eu-west-1"
 }
 
@@ -22,7 +22,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 

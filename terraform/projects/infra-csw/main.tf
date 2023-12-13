@@ -9,7 +9,7 @@ variable "csw_prefix" {
 }
 
 variable "aws_region" {
-  type        = "string"
+  type        = string
   description = "AWS region"
   default     = "eu-west-1"
 }
@@ -24,13 +24,13 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = var.aws_region
   version = "2.46.0"
 }
 
 module "csw_inspector_role" {
   source               = "git::https://github.com/alphagov/csw-client-role.git"
-  region               = "${var.aws_region}"
-  csw_prefix           = "${var.csw_prefix}"
-  csw_agent_account_id = "${var.csw_agent_account_id}"
+  region               = var.aws_region
+  csw_prefix           = var.csw_prefix
+  csw_agent_account_id = var.csw_agent_account_id
 }

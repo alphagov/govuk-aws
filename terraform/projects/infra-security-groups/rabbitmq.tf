@@ -13,7 +13,7 @@
 
 resource "aws_security_group" "rabbitmq" {
   name        = "${var.stackname}_rabbitmq_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the rabbitmq host from its ELB"
 
   tags = {
@@ -28,10 +28,10 @@ resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_amqp" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.rabbitmq.id}"
+  security_group_id = aws_security_group.rabbitmq.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.rabbitmq_elb.id}"
+  source_security_group_id = aws_security_group.rabbitmq_elb.id
 }
 
 resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_rabbitmq-stomp" {
@@ -41,10 +41,10 @@ resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq-elb_rabbitmq-stomp
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.rabbitmq.id}"
+  security_group_id = aws_security_group.rabbitmq.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.rabbitmq_elb.id}"
+  source_security_group_id = aws_security_group.rabbitmq_elb.id
 }
 
 resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq_rabbitmq-transport" {
@@ -54,10 +54,10 @@ resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq_rabbitmq-transport
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.rabbitmq.id}"
+  security_group_id = aws_security_group.rabbitmq.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.rabbitmq.id}"
+  source_security_group_id = aws_security_group.rabbitmq.id
 }
 
 resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq_rabbitmq-epmd" {
@@ -67,15 +67,15 @@ resource "aws_security_group_rule" "rabbitmq_ingress_rabbitmq_rabbitmq-epmd" {
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.rabbitmq.id}"
+  security_group_id = aws_security_group.rabbitmq.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.rabbitmq.id}"
+  source_security_group_id = aws_security_group.rabbitmq.id
 }
 
 resource "aws_security_group" "rabbitmq_elb" {
   name        = "${var.stackname}_rabbitmq_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the rabbitmq Internal ELB"
 
   tags = {
@@ -90,8 +90,8 @@ resource "aws_security_group_rule" "rabbitmq-elb_ingress_management_amqp" {
   to_port   = 5672
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.rabbitmq_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.rabbitmq_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "rabbitmq-elb_ingress_management_rabbitmq-stomp" {
@@ -100,8 +100,8 @@ resource "aws_security_group_rule" "rabbitmq-elb_ingress_management_rabbitmq-sto
   to_port   = 6163
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.rabbitmq_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.rabbitmq_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "rabbitmq-elb_egress_any_any" {
@@ -110,5 +110,5 @@ resource "aws_security_group_rule" "rabbitmq-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.rabbitmq_elb.id}"
+  security_group_id = aws_security_group.rabbitmq_elb.id
 }

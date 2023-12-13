@@ -18,34 +18,34 @@
 * to use with Application Load Balancers with the `instance_target_group_arns` variable.
 */
 variable "name" {
-  type        = "string"
+  type        = string
   description = "Jumpbox resources name. Only alphanumeric characters and hyphens allowed"
 }
 
 variable "default_tags" {
-  type        = "map"
+  type        = map(string)
   description = "Additional resource tags"
   default     = {}
 }
 
 variable "instance_subnet_ids" {
-  type        = "list"
+  type        = list(string)
   description = "List of subnet ids where the instance can be deployed"
 }
 
 variable "instance_security_group_ids" {
-  type        = "list"
+  type        = list(string)
   description = "List of security group ids to attach to the ASG"
 }
 
 variable "instance_ami_filter_name" {
-  type        = "string"
+  type        = string
   description = "Name to use to find AMI images for the instance"
   default     = "ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"
 }
 
 variable "instance_type" {
-  type        = "string"
+  type        = string
   description = "Instance type"
   default     = "t2.micro"
 }
@@ -57,97 +57,97 @@ variable "create_instance_key" {
 }
 
 variable "instance_key_name" {
-  type        = "string"
+  type        = string
   description = "Name of the instance key"
   default     = "govuk-infra"
 }
 
 variable "instance_public_key" {
-  type        = "string"
+  type        = string
   description = "The jumpbox default public key material"
   default     = ""
 }
 
 variable "instance_user_data" {
-  type        = "string"
+  type        = string
   description = "User_data provisioning script (default user_data.sh in module directory)"
   default     = "user_data.sh"
 }
 
 variable "instance_additional_user_data" {
-  type        = "string"
+  type        = string
   description = "Append additional user-data script"
   default     = ""
 }
 
 variable "instance_default_policy" {
-  type        = "string"
+  type        = string
   description = "Name of the JSON file containing the default IAM role policy for the instance"
   default     = "default_policy.json"
 }
 
 variable "instance_elb_ids" {
-  type        = "list"
+  type        = list(string)
   description = "A list of the ELB IDs to attach this ASG to"
   default     = []
 }
 
 variable "instance_elb_ids_length" {
-  type        = "string"
+  type        = string
   description = "Length of instance_elb_ids"
   default     = 0
 }
 
 variable "instance_target_group_arns" {
-  type        = "list"
+  type        = list(string)
   description = "The ARN of the target group with which to register targets."
   default     = []
 }
 
 variable "instance_target_group_arns_length" {
-  type        = "string"
+  type        = string
   description = "Length of instance_target_group_arns"
   default     = 0
 }
 
 variable "asg_health_check_grace_period" {
-  type        = "string"
+  type        = string
   description = "The time to wait after creation before checking the status of the instance"
   default     = "60"
 }
 
 variable "asg_desired_capacity" {
-  type        = "string"
+  type        = string
   description = "The autoscaling groups desired capacity"
   default     = "1"
 }
 
 variable "asg_max_size" {
-  type        = "string"
+  type        = string
   description = "The autoscaling groups max_size"
   default     = "1"
 }
 
 variable "asg_min_size" {
-  type        = "string"
+  type        = string
   description = "The autoscaling groups max_size"
   default     = "1"
 }
 
 variable "root_block_device_volume_size" {
-  type        = "string"
+  type        = string
   description = "The size of the instance root volume in gigabytes"
   default     = "20"
 }
 
 variable "create_asg_notifications" {
-  type        = "string"
+  type        = string
   description = "Enable Autoscaling Group notifications"
   default     = true
 }
 
 variable "asg_notification_types" {
-  type        = "list"
+  type        = list(string)
   description = "A list of Notification Types that trigger Autoscaling Group notifications. Acceptable values are documented in https://docs.aws.amazon.com/AutoScaling/latest/APIReference/API_NotificationConfiguration.html"
 
   default = [
@@ -158,37 +158,37 @@ variable "asg_notification_types" {
 }
 
 variable "asg_notification_topic_arn" {
-  type        = "string"
+  type        = string
   description = "The Topic ARN for Autoscaling Group notifications to be sent to"
   default     = ""
 }
 
 variable "lc_create_ebs_volume" {
-  type        = "string"
+  type        = string
   description = "Creates a launch configuration which will add an additional ebs volume to the instance if this value is set to 1"
   default     = "0"
 }
 
 variable "ebs_device_volume_size" {
-  type        = "string"
+  type        = string
   description = "Size of additional ebs volume in GB"
   default     = "20"
 }
 
 variable "ebs_encrypted" {
-  type        = "string"
+  type        = string
   description = "Whether or not to encrypt the ebs volume"
   default     = "false"
 }
 
 variable "ebs_device_name" {
-  type        = "string"
+  type        = string
   description = "Name of the block device to mount on the instance, e.g. xvdf"
   default     = "xvdf"
 }
 
 locals {
-  launch_configuration_name = "${coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name))}"
+  launch_configuration_name = coalesce(join("", aws_launch_configuration.node_launch_configuration.*.name), join("", aws_launch_configuration.node_with_ebs_launch_configuration.*.name))
 }
 
 # Resources
@@ -211,7 +211,7 @@ data "aws_ami" "node_ami_ubuntu" {
 }
 
 resource "aws_iam_role" "node_iam_role" {
-  name = "${var.name}"
+  name = var.name
   path = "/"
 
   assume_role_policy = <<EOF
@@ -234,48 +234,48 @@ EOF
 resource "aws_iam_policy" "node_iam_policy_default" {
   name   = "${var.name}-default"
   path   = "/"
-  policy = "${file("${path.module}/${var.instance_default_policy}")}"
+  policy = file("${path.module}/${var.instance_default_policy}")
 }
 
 resource "aws_iam_role_policy_attachment" "node_iam_role_policy_attachment_default" {
-  role       = "${aws_iam_role.node_iam_role.name}"
-  policy_arn = "${aws_iam_policy.node_iam_policy_default.arn}"
+  role       = aws_iam_role.node_iam_role.name
+  policy_arn = aws_iam_policy.node_iam_policy_default.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_access_cloudwatch_policy_iam_role_policy_attachment" {
-  role       = "${aws_iam_role.node_iam_role.name}"
+  role       = aws_iam_role.node_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 resource "aws_iam_instance_profile" "node_instance_profile" {
-  name = "${var.name}"
-  role = "${aws_iam_role.node_iam_role.name}"
+  name = var.name
+  role = aws_iam_role.node_iam_role.name
 }
 
 resource "aws_key_pair" "node_key" {
-  count      = "${var.create_instance_key == false ? 0 : 1}"
-  key_name   = "${var.instance_key_name}"
-  public_key = "${var.instance_public_key}"
+  count      = var.create_instance_key == false ? 0 : 1
+  key_name   = var.instance_key_name
+  public_key = var.instance_public_key
 }
 
 resource "aws_launch_configuration" "node_launch_configuration" {
-  count         = "${var.lc_create_ebs_volume == "1" ? 0 : 1}"
+  count         = var.lc_create_ebs_volume == "1" ? 0 : 1
   name_prefix   = "${var.name}-"
-  image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
-  instance_type = "${var.instance_type}"
-  user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
+  image_id      = data.aws_ami.node_ami_ubuntu.id
+  instance_type = var.instance_type
+  user_data     = join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))
 
   # this awkward syntax should work in both v0.11 and v0.12
   # (see https://stackoverflow.com/questions/57117183/terraform-0-11-list-attribute-compatible-with-terraform-0-12)
-  security_groups = "${flatten(var.instance_security_group_ids)}"
+  security_groups = flatten(var.instance_security_group_ids)
 
-  iam_instance_profile        = "${aws_iam_instance_profile.node_instance_profile.name}"
+  iam_instance_profile        = aws_iam_instance_profile.node_instance_profile.name
   associate_public_ip_address = false
-  key_name                    = "${var.instance_key_name}"
+  key_name                    = var.instance_key_name
 
   root_block_device {
     volume_type           = "gp2"
-    volume_size           = "${var.root_block_device_volume_size}"
+    volume_size           = var.root_block_device_volume_size
     delete_on_termination = true
   }
 
@@ -285,30 +285,30 @@ resource "aws_launch_configuration" "node_launch_configuration" {
 }
 
 resource "aws_launch_configuration" "node_with_ebs_launch_configuration" {
-  count         = "${var.lc_create_ebs_volume}"
+  count         = var.lc_create_ebs_volume
   name_prefix   = "${var.name}-"
-  image_id      = "${data.aws_ami.node_ami_ubuntu.id}"
-  instance_type = "${var.instance_type}"
-  user_data     = "${join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))}"
+  image_id      = data.aws_ami.node_ami_ubuntu.id
+  instance_type = var.instance_type
+  user_data     = join("\n\n", list(file("${path.module}/${var.instance_user_data}"), var.instance_additional_user_data))
 
-  security_groups = "${flatten(var.instance_security_group_ids)}"
+  security_groups = flatten(var.instance_security_group_ids)
 
-  iam_instance_profile        = "${aws_iam_instance_profile.node_instance_profile.name}"
+  iam_instance_profile        = aws_iam_instance_profile.node_instance_profile.name
   associate_public_ip_address = false
-  key_name                    = "${var.instance_key_name}"
+  key_name                    = var.instance_key_name
 
   root_block_device {
     volume_type           = "gp2"
-    volume_size           = "${var.root_block_device_volume_size}"
+    volume_size           = var.root_block_device_volume_size
     delete_on_termination = true
   }
 
   ebs_block_device {
     volume_type           = "gp2"
-    volume_size           = "${var.ebs_device_volume_size}"
+    volume_size           = var.ebs_device_volume_size
     delete_on_termination = true
-    encrypted             = "${var.ebs_encrypted}"
-    device_name           = "${var.ebs_device_name}"
+    encrypted             = var.ebs_encrypted
+    device_name           = var.ebs_device_name
   }
 
   lifecycle {
@@ -317,7 +317,7 @@ resource "aws_launch_configuration" "node_with_ebs_launch_configuration" {
 }
 
 resource "null_resource" "node_autoscaling_group_tags" {
-  count = "${length(keys(var.default_tags))}"
+  count = length(keys(var.default_tags))
 
   triggers = {
     key                 = "${element(keys(var.default_tags), count.index)}"
@@ -327,18 +327,18 @@ resource "null_resource" "node_autoscaling_group_tags" {
 }
 
 resource "aws_autoscaling_group" "node_autoscaling_group" {
-  name = "${var.name}"
+  name = var.name
 
-  vpc_zone_identifier = "${flatten(var.instance_subnet_ids)}"
+  vpc_zone_identifier = flatten(var.instance_subnet_ids)
 
-  desired_capacity          = "${var.asg_desired_capacity}"
-  min_size                  = "${var.asg_min_size}"
-  max_size                  = "${var.asg_max_size}"
-  health_check_grace_period = "${var.asg_health_check_grace_period}"
+  desired_capacity          = var.asg_desired_capacity
+  min_size                  = var.asg_min_size
+  max_size                  = var.asg_max_size
+  health_check_grace_period = var.asg_health_check_grace_period
   health_check_type         = "EC2"
   force_delete              = false
   wait_for_capacity_timeout = 0
-  launch_configuration      = "${local.launch_configuration_name}"
+  launch_configuration      = local.launch_configuration_name
 
   enabled_metrics = [
     "GroupMinSize",
@@ -351,10 +351,9 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
     "GroupTotalInstances",
   ]
 
-  tags = "${concat(
+  tags = (concat(
     list(map("key", "Name", "value", "${var.name}", "propagate_at_launch", true)),
-    null_resource.node_autoscaling_group_tags.*.triggers)
-  }"
+  null_resource.node_autoscaling_group_tags.*.triggers))
 
   lifecycle {
     create_before_destroy = true
@@ -362,33 +361,33 @@ resource "aws_autoscaling_group" "node_autoscaling_group" {
 }
 
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_alb" {
-  count                  = "${var.instance_target_group_arns_length}"
-  autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
-  alb_target_group_arn   = "${element(flatten(var.instance_target_group_arns), count.index)}"
+  count                  = var.instance_target_group_arns_length
+  autoscaling_group_name = aws_autoscaling_group.node_autoscaling_group.id
+  alb_target_group_arn   = element(flatten(var.instance_target_group_arns), count.index)
 }
 
 resource "aws_autoscaling_attachment" "node_autoscaling_group_attachment_classic" {
-  count                  = "${var.instance_elb_ids_length}"
-  autoscaling_group_name = "${aws_autoscaling_group.node_autoscaling_group.id}"
-  elb                    = "${element(flatten(var.instance_elb_ids), count.index)}"
+  count                  = var.instance_elb_ids_length
+  autoscaling_group_name = aws_autoscaling_group.node_autoscaling_group.id
+  elb                    = element(flatten(var.instance_elb_ids), count.index)
 }
 
 resource "aws_autoscaling_notification" "node_autoscaling_group_notifications" {
-  count         = "${var.create_asg_notifications == false ? 0 : 1}"
+  count         = var.create_asg_notifications == false ? 0 : 1
   group_names   = ["${aws_autoscaling_group.node_autoscaling_group.name}"]
-  notifications = "${flatten(var.asg_notification_types)}"
-  topic_arn     = "${var.asg_notification_topic_arn}"
+  notifications = flatten(var.asg_notification_types)
+  topic_arn     = var.asg_notification_topic_arn
 }
 
 # Outputs
 #--------------------------------------------------------------
 
 output "instance_iam_role_name" {
-  value       = "${aws_iam_role.node_iam_role.name}"
+  value       = aws_iam_role.node_iam_role.name
   description = "Node IAM Role Name. Use with aws_iam_role_policy_attachment to attach specific policies to the node role"
 }
 
 output "autoscaling_group_name" {
-  value       = "${aws_autoscaling_group.node_autoscaling_group.name}"
+  value       = aws_autoscaling_group.node_autoscaling_group.name
   description = "The name of the node auto scaling group."
 }

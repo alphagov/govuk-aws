@@ -1,5 +1,5 @@
 variable "remote_state_infra_networking_key_stack" {
-  type        = "string"
+  type        = string
   description = "Override infra_networking remote state path"
   default     = ""
 }

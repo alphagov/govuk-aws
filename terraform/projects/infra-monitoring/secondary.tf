@@ -5,7 +5,7 @@
 */
 
 variable "aws_secondary_region" {
-  type        = "string"
+  type        = string
   description = "Secondary AWS region"
   default     = "eu-west-2"
 }
@@ -15,12 +15,12 @@ variable "aws_secondary_region" {
 
 provider "aws" {
   alias   = "aws_secondary"
-  region  = "${var.aws_secondary_region}"
+  region  = var.aws_secondary_region
   version = "2.46.0"
 }
 
 data "template_file" "s3_aws_secondary_logging_policy_template" {
-  template = "${file("${path.module}/../../policies/s3_aws_secondary_logging_write_policy.tpl")}"
+  template = file("${path.module}/../../policies/s3_aws_secondary_logging_write_policy.tpl")
 
   vars = {
     aws_environment = "${var.aws_environment}"
@@ -48,13 +48,13 @@ resource "aws_s3_bucket" "aws-secondary-logging" {
     }
   }
 
-  policy = "${data.template_file.s3_aws_secondary_logging_policy_template.rendered}"
+  policy = data.template_file.s3_aws_secondary_logging_policy_template.rendered
 }
 
 # Outputs
 # --------------------------------------------------------------
 
 output "aws_secondary_logging_bucket_id" {
-  value       = "${aws_s3_bucket.aws-secondary-logging.id}"
+  value       = aws_s3_bucket.aws-secondary-logging.id
   description = "Name of the AWS logging bucket"
 }

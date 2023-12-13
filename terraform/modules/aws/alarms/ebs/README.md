@@ -36,7 +36,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list` | n/a | yes |
+| <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN). | `list(string)` | n/a | yes |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | The alarm name prefix. | `string` | n/a | yes |
 | <a name="input_volume_id"></a> [volume\_id](#input\_volume\_id) | The ID of the EBS volume that we want to monitor. | `string` | n/a | yes |
 | <a name="input_volumequeuelength_threshold"></a> [volumequeuelength\_threshold](#input\_volumequeuelength\_threshold) | The value against which the EBS VolumeQueueLength metric is compared. | `string` | `"10"` | no |

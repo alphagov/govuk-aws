@@ -14,7 +14,7 @@
 
 resource "aws_security_group" "monitoring" {
   name        = "${var.stackname}_monitoring_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access to the monitoring host from its ELB"
 
   tags = {
@@ -29,10 +29,10 @@ resource "aws_security_group_rule" "monitoring_ingress_monitoring-external-elb_h
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitoring.id}"
+  security_group_id = aws_security_group.monitoring.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_external_elb.id}"
+  source_security_group_id = aws_security_group.monitoring_external_elb.id
 }
 
 resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_nsca" {
@@ -42,10 +42,10 @@ resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_n
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitoring.id}"
+  security_group_id = aws_security_group.monitoring.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
+  source_security_group_id = aws_security_group.monitoring_internal_elb.id
 }
 
 resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_ssh" {
@@ -55,10 +55,10 @@ resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_s
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitoring.id}"
+  security_group_id = aws_security_group.monitoring.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
+  source_security_group_id = aws_security_group.monitoring_internal_elb.id
 }
 
 resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_http" {
@@ -68,15 +68,15 @@ resource "aws_security_group_rule" "monitoring_ingress_monitoring-internal-elb_h
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitoring.id}"
+  security_group_id = aws_security_group.monitoring.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
+  source_security_group_id = aws_security_group.monitoring_internal_elb.id
 }
 
 resource "aws_security_group" "monitoring_external_elb" {
   name        = "${var.stackname}_monitoring_external_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the monitoring ELB"
 
   tags = {
@@ -90,7 +90,7 @@ resource "aws_security_group_rule" "monitoring-external-elb_ingress_office_https
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id = "${aws_security_group.monitoring_external_elb.id}"
+  security_group_id = aws_security_group.monitoring_external_elb.id
   cidr_blocks       = var.gds_egress_ips
 }
 
@@ -100,12 +100,12 @@ resource "aws_security_group_rule" "monitoring-external-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.monitoring_external_elb.id}"
+  security_group_id = aws_security_group.monitoring_external_elb.id
 }
 
 resource "aws_security_group" "monitoring_internal_elb" {
   name        = "${var.stackname}_monitoring_internal_elb_access"
-  vpc_id      = "${data.terraform_remote_state.infra_vpc.outputs.vpc_id}"
+  vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
   description = "Access the monitoring ELB"
 
   tags = {
@@ -119,8 +119,8 @@ resource "aws_security_group_rule" "monitoring-internal-elb_ingress_management_n
   to_port   = 5667
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.monitoring_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.monitoring_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "monitoring-internal-elb_ingress_management_https" {
@@ -129,8 +129,8 @@ resource "aws_security_group_rule" "monitoring-internal-elb_ingress_management_h
   to_port   = 443
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.monitoring_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.management.id}"
+  security_group_id        = aws_security_group.monitoring_internal_elb.id
+  source_security_group_id = aws_security_group.management.id
 }
 
 resource "aws_security_group_rule" "monitoring-internal-elb_ingress_jumpbox_ssh" {
@@ -139,8 +139,8 @@ resource "aws_security_group_rule" "monitoring-internal-elb_ingress_jumpbox_ssh"
   to_port   = 22
   protocol  = "tcp"
 
-  security_group_id        = "${aws_security_group.monitoring_internal_elb.id}"
-  source_security_group_id = "${aws_security_group.jumpbox.id}"
+  security_group_id        = aws_security_group.monitoring_internal_elb.id
+  source_security_group_id = aws_security_group.jumpbox.id
 }
 
 resource "aws_security_group_rule" "monitoring-internal-elb_egress_any_any" {
@@ -149,7 +149,7 @@ resource "aws_security_group_rule" "monitoring-internal-elb_egress_any_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.monitoring_internal_elb.id}"
+  security_group_id = aws_security_group.monitoring_internal_elb.id
 }
 
 # Allows access to the monitoring machine from its ELB on specified ports
@@ -160,10 +160,10 @@ resource "aws_security_group_rule" "monitoring_ingress_monitoring-elb_syslog-tls
   protocol  = "tcp"
 
   # Which security group is the rule assigned to
-  security_group_id = "${aws_security_group.monitoring.id}"
+  security_group_id = aws_security_group.monitoring.id
 
   # Which security group can use this rule
-  source_security_group_id = "${aws_security_group.monitoring_external_elb.id}"
+  source_security_group_id = aws_security_group.monitoring_external_elb.id
 }
 
 # Allows access to the monitoring ELB from fastly IPs on specified ports
@@ -172,6 +172,6 @@ resource "aws_security_group_rule" "monitoring-elb_ingress_fastly_syslog-tls" {
   from_port         = 6514
   to_port           = 6516
   protocol          = "tcp"
-  security_group_id = "${aws_security_group.monitoring_external_elb.id}"
+  security_group_id = aws_security_group.monitoring_external_elb.id
   cidr_blocks       = data.fastly_ip_ranges.fastly.cidr_blocks
 }

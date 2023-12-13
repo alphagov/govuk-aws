@@ -15,12 +15,12 @@ variable "role_suffix" {
 }
 
 variable "role_user_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of external users that can assume the role"
 }
 
 variable "role_policy_arns" {
-  type        = list
+  type        = list(any)
   description = "List of ARNs of policies to attach to the role"
   default     = []
 }

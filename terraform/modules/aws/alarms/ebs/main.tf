@@ -14,23 +14,23 @@
 * http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ebs-metricscollected.html
 */
 variable "name_prefix" {
-  type        = "string"
+  type        = string
   description = "The alarm name prefix."
 }
 
 variable "volumequeuelength_threshold" {
-  type        = "string"
+  type        = string
   description = "The value against which the EBS VolumeQueueLength metric is compared."
   default     = "10"
 }
 
 variable "alarm_actions" {
-  type        = "list"
+  type        = list(string)
   description = "The list of actions to execute when this alarm transitions into an ALARM state. Each action is specified as an Amazon Resource Number (ARN)."
 }
 
 variable "volume_id" {
-  type        = "string"
+  type        = string
   description = "The ID of the EBS volume that we want to monitor."
 }
 
@@ -44,13 +44,13 @@ resource "aws_cloudwatch_metric_alarm" "ebs_volumequeuelength" {
   namespace           = "AWS/EBS"
   period              = "120"
   statistic           = "Average"
-  threshold           = "${var.volumequeuelength_threshold}"
+  threshold           = var.volumequeuelength_threshold
   actions_enabled     = true
   alarm_actions       = ["${var.alarm_actions}"]
   alarm_description   = "This metric monitors the number of read and write operation requests waiting to be completed in an EBS volume"
 
   dimensions {
-    VolumeId = "${var.volume_id}"
+    VolumeId = var.volume_id
   }
 }
 
@@ -59,6 +59,6 @@ resource "aws_cloudwatch_metric_alarm" "ebs_volumequeuelength" {
 
 // The ID of the EBS VolumeQueueLength health check.
 output "alarm_ebs_volumequeuelength_id" {
-  value       = "${aws_cloudwatch_metric_alarm.ebs_volumequeuelength.id}"
+  value       = aws_cloudwatch_metric_alarm.ebs_volumequeuelength.id
   description = "The ID of the EBS VolumeQueueLength health check."
 }
