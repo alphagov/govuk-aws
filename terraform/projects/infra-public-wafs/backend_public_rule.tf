@@ -11,7 +11,7 @@ resource "aws_wafv2_web_acl" "backend_public" {
   # the waf is enabled and processing requests
   rule {
     name     = "x-always-block_web_acl_rule"
-    priority = 1
+    priority = 10
 
     override_action {
       none {}
@@ -33,7 +33,7 @@ resource "aws_wafv2_web_acl" "backend_public" {
   # this rule matches any request from our NAT gateway IPs and allows it.
   rule {
     name     = "allow-govuk-infra"
-    priority = 2
+    priority = 20
 
     action {
       allow {}
@@ -57,7 +57,7 @@ resource "aws_wafv2_web_acl" "backend_public" {
   # this is checked every 30s
   rule {
     name     = "backend-public-base-rate-warning"
-    priority = 3
+    priority = 30
 
     action {
       count {}
@@ -81,7 +81,7 @@ resource "aws_wafv2_web_acl" "backend_public" {
   # this is checked every 30s
   rule {
     name     = "backend-public-base-rate-limit"
-    priority = 4
+    priority = 40
 
     action {
       block {
