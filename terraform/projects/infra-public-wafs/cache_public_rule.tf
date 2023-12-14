@@ -31,12 +31,12 @@ resource "aws_wafv2_ip_set" "govuk_requesting_ips" {
   addresses          = concat(var.traffic_replay_ips, local.nat_gateway_ips, var.eks_egress_ips)
 }
 
-resource "aws_wafv2_ip_set" "external_partner_ips" {
-  name               = "external_partner_ips"
-  description        = "The IP addresses are used by our partners."
+resource "aws_wafv2_ip_set" "high_request_rate" {
+  name               = "high_request_rate"
+  description        = "Source addresses from which we allow a higher ratelimit."
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
-  addresses          = var.allow_external_ips
+  addresses          = var.allow_high_request_rate_from_cidrs
 }
 
 resource "aws_cloudwatch_log_group" "public_cache_waf" {
