@@ -30,9 +30,8 @@ resource "aws_wafv2_web_acl" "backend_public" {
     }
   }
 
-  # this rule matches any request from our NAT gateway IPs and allows it.
   rule {
-    name     = "allow-govuk-infra"
+    name     = "rate-limit-exemptions"
     priority = 20
 
     action {
@@ -40,8 +39,17 @@ resource "aws_wafv2_web_acl" "backend_public" {
     }
 
     statement {
-      ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.govuk_requesting_ips.arn
+      or_statement {
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.govuk_requesting_ips.arn
+          }
+        }
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.high_request_rate.arn
+          }
+        }
       }
     }
 
