@@ -105,9 +105,9 @@ variable "eks_egress_ips" {
   description = "An array of CIDR blocks for the corresponding EKS environment's NAT gateway IPs"
 }
 
-variable "allow_external_ips" {
+variable "allow_high_request_rate_from_cidrs" {
   type        = list(string)
-  description = "An array of CIDR blocks that are our partners using to send traffic to us"
+  description = "Source IP netblocks from which we allow a higher rate of requests."
 }
 
 variable "waf_log_retention_days" {
