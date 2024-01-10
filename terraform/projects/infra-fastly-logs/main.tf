@@ -183,7 +183,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name = "ser_de_name"
 
       parameters = {
-        paths                   = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
+        paths                   = "client_ip,request_received,request_received_offset,method,url,status,protocol,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         "ignore.malformed.json" = "true"
       }
 
@@ -199,6 +199,7 @@ resource "aws_glue_catalog_table" "govuk_www" {
     // "method":"%{json.escape(req.method)}V",
     // "url":"%{json.escape(req.url)}V",
     // "status":%>s,
+    // "protocol":"%{json.escape(req.proto)}V",
     // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
     // "time_to_generate_response":%{time.to_first_byte}V,
     // "bytes":%B,
@@ -245,6 +246,11 @@ resource "aws_glue_catalog_table" "govuk_www" {
       name    = "status"
       type    = "int"
       comment = "HTTP status code returned"
+    }
+    columns {
+      name    = "protocol"
+      type    = "string"
+      comment = "HTTP version used"
     }
     columns {
       name    = "request_time"
@@ -371,7 +377,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name = "ser_de_name"
 
       parameters = {
-        paths                   = "client_ip,request_received,request_received_offset,method,url,status,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
+        paths                   = "client_ip,request_received,request_received_offset,method,url,status,protocol,request_time,time_to_generate_response,bytes,content_type,user_agent,fastly_backend,data_centre,cache_hit,cache_response,tls_client_protocol,tls_client_cipher,client_ja3"
         "ignore.malformed.json" = "true"
       }
 
@@ -387,6 +393,7 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     // "method":"%{json.escape(req.method)}V",
     // "url":"%{json.escape(req.url)}V",
     // "status":%>s,
+    // "protocol":"%{json.escape(req.proto)}V",
     // "request_time":%{time.elapsed.sec}V.%{time.elapsed.msec_frac}V,
     // "time_to_generate_response":%{time.to_first_byte}V,
     // "bytes":%B,
@@ -433,6 +440,11 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       name    = "status"
       type    = "int"
       comment = "HTTP status code returned"
+    }
+    columns {
+      name    = "protocol"
+      type    = "string"
+      comment = "HTTP version used"
     }
     columns {
       name    = "request_time"
