@@ -248,11 +248,6 @@ resource "aws_glue_catalog_table" "govuk_www" {
       comment = "HTTP status code returned"
     }
     columns {
-      name    = "protocol"
-      type    = "string"
-      comment = "HTTP version used"
-    }
-    columns {
       name    = "request_time"
       type    = "double"
       comment = "Time until user received full response in seconds"
@@ -308,6 +303,11 @@ resource "aws_glue_catalog_table" "govuk_www" {
     columns {
       name = "client_ja3"
       type = "string"
+    }
+    columns {
+      name    = "protocol"
+      type    = "string"
+      comment = "HTTP version used"
     }
   }
 
@@ -442,11 +442,6 @@ resource "aws_glue_catalog_table" "govuk_assets" {
       comment = "HTTP status code returned"
     }
     columns {
-      name    = "protocol"
-      type    = "string"
-      comment = "HTTP version used"
-    }
-    columns {
       name    = "request_time"
       type    = "double"
       comment = "Time until user received full response in seconds"
@@ -502,6 +497,11 @@ resource "aws_glue_catalog_table" "govuk_assets" {
     columns {
       name = "client_ja3"
       type = "string"
+    }
+    columns {
+      name    = "protocol"
+      type    = "string"
+      comment = "HTTP version used"
     }
   }
 
