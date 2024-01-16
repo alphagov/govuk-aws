@@ -5,12 +5,15 @@ acl purge_ip_whitelist {
   "34.246.209.74";    # AWS NAT GW1 Production
   "34.253.57.8";      # AWS NAT GW2 Production
   "18.202.136.43";    # AWS NAT GW3 Production
-  "54.246.115.159";   # EKS Staging NAT gateways
-  "54.220.171.242";
-  "54.228.115.164";
+  "46.137.141.50";    # EKS Staging licensify NAT gateway
+  "18.200.65.72";
+  "108.128.15.82";
   "63.33.241.191";    # EKS Production NAT gateways
   "52.208.193.230";
   "54.220.6.200";
+  "52.51.83.47";      # EKS Production licenisfy NAT gateways
+  "46.137.63.103";
+  "34.249.23.204";
 }
 
 sub vcl_recv {
