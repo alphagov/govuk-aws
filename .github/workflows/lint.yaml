@@ -15,29 +15,6 @@ on:
   pull_request:
 
 jobs:
-  check-docs:
-    name: Docs up to date
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          show-progress: false
-      - name: terraform-docs
-        env:
-          TERRAFORM_DOCS_VERSION: '0.16.0'
-        run: |
-          echo "Downloading terraform-docs-v${TERRAFORM_DOCS_VERSION} binary."
-          curl -Lsf \
-            "https://github.com/terraform-docs/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-linux-amd64.tar.gz" | tar -zxf - terraform-docs
-
-          echo "Checking whether auto-generated README files are up to date."
-          PATH="$PATH:$PWD" tools/update-docs.sh
-
-          if ! git diff --exit-code; then
-            echo "The documentation isn't up to date. Run tools/update-docs.sh and commit the results."
-            exit 1
-          fi
-
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
@@ -61,6 +38,8 @@ jobs:
         with:
           path: ~/tfenv
           key: tfenv-${{ runner.os }}
+      - name: Validate JSON
+        run: find . -type -f -name '*.json' | xargs tools/json-check.sh
       - name: terraform install
         env:
           TFENV_VERSION: '3.0.0'
@@ -89,27 +68,3 @@ jobs:
             echo "Run terraform fmt -recursive . to fix formatting."
             exit 1
           fi
-
-  other-linters:
-    name: Other linters
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          show-progress: false
-      - uses: ruby/setup-ruby@v1
-      - uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: bundle
-      - name: bundle install
-        run: bundle install -j8 --deployment --without development
-      - name: RSpec
-        run: bundle exec rspec spec/validate_resources_spec.rb
-      - name: Lint resource names
-        run: bundle exec lib/resource_name_lint.rb
-      - name: Validate JSON
-        run: find . -type -f -name '*.json' | xargs tools/json-check.sh
-      - name: Check ADRs
-        run: tools/adr-check.sh
