@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-integration"
-key     = "govuk/fastly-datagovuk.tfstate"
-encrypt = true
-region  = "eu-west-1"
