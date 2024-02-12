@@ -260,9 +260,7 @@ data "aws_iam_policy_document" "allow-iam-key-rotation" {
       "iam:ListAccessKeys",
       "iam:UpdateAccessKey",
     ]
-
-    effect    = "Allow"
-    resources = ["*"]
+    resources = ["arn:aws:iam::*:user/&{aws:username}"]
   }
 }
 
