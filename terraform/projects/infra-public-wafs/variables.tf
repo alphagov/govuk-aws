@@ -55,6 +55,11 @@ variable "backend_public_base_rate_limit" {
   description = "For the backend ALB. Number of requests to allow in a 5 minute period before rate limiting is applied."
 }
 
+variable "backend_public_ja3_denylist" {
+  type        = list(string)
+  description = "For the backend ALB. List of JA3 signatures for which we should block all requests."
+}
+
 variable "bouncer_public_base_rate_warning" {
   type        = number
   description = "For the bouncer ALB. Allows us to configure a warning level to detect what happens if we reduce the limit."
