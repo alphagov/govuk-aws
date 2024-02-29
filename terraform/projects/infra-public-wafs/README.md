@@ -20,16 +20,9 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_cloudwatch_log_group.licensify_backend_public_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
-| [aws_cloudwatch_log_group.licensify_frontend_public_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.public_backend_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.public_bouncer_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.public_cache_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
-| [aws_shield_protection.deploy_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.graphite_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.licensify_backend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.licensify_frontend_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
-| [aws_shield_protection.monitoring_public_lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/shield_protection) | resource |
 | [aws_wafv2_ip_set.govuk_requesting_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_ip_set.high_request_rate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
 | [aws_wafv2_ip_set.nat_gateway_ips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_ip_set) | resource |
@@ -39,16 +32,7 @@ No modules.
 | [aws_wafv2_web_acl.bouncer_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
 | [aws_wafv2_web_acl.cache_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
 | [aws_wafv2_web_acl.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
-| [aws_wafv2_web_acl.licensify_backend_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
-| [aws_wafv2_web_acl.licensify_frontend_public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl) | resource |
-| [aws_wafv2_web_acl_association.deploy_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
-| [aws_wafv2_web_acl_association.graphite_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
-| [aws_wafv2_web_acl_association.licensify_backend_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
-| [aws_wafv2_web_acl_association.licensify_frontend_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
-| [aws_wafv2_web_acl_association.monitoring_public_web_acl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association) | resource |
 | [aws_wafv2_web_acl_logging_configuration.default_web_acl_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
-| [aws_wafv2_web_acl_logging_configuration.licensify_backend_public_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
-| [aws_wafv2_web_acl_logging_configuration.licensify_frontend_public_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [aws_wafv2_web_acl_logging_configuration.public_backend_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [aws_wafv2_web_acl_logging_configuration.public_bouncer_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
 | [aws_wafv2_web_acl_logging_configuration.public_cache_waf](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_logging_configuration) | resource |
@@ -75,10 +59,6 @@ No modules.
 | <a name="input_cache_public_base_rate_warning"></a> [cache\_public\_base\_rate\_warning](#input\_cache\_public\_base\_rate\_warning) | For the cache ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
 | <a name="input_eks_egress_ips"></a> [eks\_egress\_ips](#input\_eks\_egress\_ips) | An array of CIDR blocks for the corresponding EKS environment's NAT gateway IPs | `list(string)` | n/a | yes |
 | <a name="input_fastly_rate_limit_token"></a> [fastly\_rate\_limit\_token](#input\_fastly\_rate\_limit\_token) | Token used by the CDN to skip rate limiting | `string` | `""` | no |
-| <a name="input_licensify_backend_public_base_rate_limit"></a> [licensify\_backend\_public\_base\_rate\_limit](#input\_licensify\_backend\_public\_base\_rate\_limit) | For the licensify backend ALB. Number of requests to allow in a 5 minute period before rate limiting is applied. | `number` | n/a | yes |
-| <a name="input_licensify_backend_public_base_rate_warning"></a> [licensify\_backend\_public\_base\_rate\_warning](#input\_licensify\_backend\_public\_base\_rate\_warning) | For the licensify backend ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
-| <a name="input_licensify_frontend_public_base_rate_limit"></a> [licensify\_frontend\_public\_base\_rate\_limit](#input\_licensify\_frontend\_public\_base\_rate\_limit) | For the licensify frontend ALB. Number of requests to allow in a 5 minute period before rate limiting is applied. | `number` | n/a | yes |
-| <a name="input_licensify_frontend_public_base_rate_warning"></a> [licensify\_frontend\_public\_base\_rate\_warning](#input\_licensify\_frontend\_public\_base\_rate\_warning) | For the licensify frontend ALB. Allows us to configure a warning level to detect what happens if we reduce the limit. | `number` | n/a | yes |
 | <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket) | S3 bucket we store our terraform state in | `string` | n/a | yes |
 | <a name="input_remote_state_infra_database_backups_bucket_key_stack"></a> [remote\_state\_infra\_database\_backups\_bucket\_key\_stack](#input\_remote\_state\_infra\_database\_backups\_bucket\_key\_stack) | Override path to infra\_database\_backups\_bucket remote state | `string` | `""` | no |
 | <a name="input_remote_state_infra_monitoring_key_stack"></a> [remote\_state\_infra\_monitoring\_key\_stack](#input\_remote\_state\_infra\_monitoring\_key\_stack) | Override path to infra\_monitoring remote state | `string` | `""` | no |
