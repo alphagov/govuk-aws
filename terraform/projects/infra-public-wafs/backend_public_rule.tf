@@ -125,6 +125,47 @@ resource "aws_wafv2_web_acl" "backend_public" {
     }
   }
 
+  dynamic "rule" {
+    for_each = var.backend_public_ja3_denylist
+    iterator = signature
+
+    content {
+      name = "deny-ja3-${signature.value}"
+
+      # All rules require a unique priority, and the size of the JA3 denylist is potentially unbounded,
+      # so we add these rules to the end of the list to avoid collisions.
+      priority = 50 + signature.key
+
+      action {
+        block {}
+      }
+
+      statement {
+        byte_match_statement {
+          positional_constraint = "EXACTLY"
+          search_string         = signature.value
+
+          field_to_match {
+            ja3_fingerprint {
+              fallback_behavior = "NO_MATCH"
+            }
+          }
+
+          text_transformation {
+            type     = "NONE"
+            priority = 0
+          }
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "deny-ja3-${signature.value}"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   custom_response_body {
     key     = "backend-public-rule-429"
     content = <<HTML
