@@ -317,7 +317,7 @@ module "ckan_public_lb" {
   subnets                                    = data.terraform_remote_state.infra_networking.outputs.public_subnet_ids
   security_groups                            = ["${data.terraform_remote_state.infra_security_groups.outputs.sg_ckan_elb_external_id}"]
   alarm_actions                              = ["${data.terraform_remote_state.infra_monitoring.outputs.sns_topic_cloudwatch_alarms_arn}"]
-  default_tags                               = "${map("Project", var.stackname, "aws_migration", "ckan", "aws_environment", var.aws_environment)}"
+  default_tags                               = map("Project", var.stackname, "aws_migration", "ckan", "aws_environment", var.aws_environment)
 }
 
 resource "aws_route53_record" "ckan_public_service_names" {
@@ -660,7 +660,7 @@ resource "aws_elb" "jumpbox_public_elb" {
   connection_draining         = true
   connection_draining_timeout = 400
 
-  tags = "${map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jumpbox")}"
+  tags = map("Name", "${var.stackname}-jumpbox", "Project", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "jumpbox")
 }
 
 resource "aws_route53_record" "jumpbox_public_service_names" {
