@@ -213,26 +213,4 @@ resource "aws_cloudwatch_log_group" "public_backend_waf" {
 resource "aws_wafv2_web_acl_logging_configuration" "public_backend_waf" {
   log_destination_configs = [aws_cloudwatch_log_group.public_backend_waf.arn]
   resource_arn            = aws_wafv2_web_acl.backend_public.arn
-
-  logging_filter {
-    default_behavior = "DROP"
-
-    filter {
-      behavior = "KEEP"
-
-      condition {
-        action_condition {
-          action = "COUNT"
-        }
-      }
-
-      condition {
-        action_condition {
-          action = "BLOCK"
-        }
-      }
-
-      requirement = "MEETS_ANY"
-    }
-  }
 }
