@@ -79,7 +79,7 @@ data "terraform_remote_state" "infra_monitoring" {
 
 module "vpc" {
   source       = "../../modules/aws/network/vpc"
-  default_tags = "${map("Project", var.stackname)}"
+  default_tags = map("Project", var.stackname)
   name         = var.vpc_name
   cidr         = var.vpc_cidr
 }

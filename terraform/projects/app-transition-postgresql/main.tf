@@ -115,7 +115,7 @@ module "transition-postgresql-primary_rds_instance" {
   name                  = "${var.stackname}-transition-postgresql-primary"
   engine_name           = "postgres"
   engine_version        = "13"
-  default_tags          = "${map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")}"
+  default_tags          = map("Project", var.stackname, "aws_stackname", var.stackname, "aws_environment", var.aws_environment, "aws_migration", "transition_postgresql_primary")
   subnet_ids            = data.terraform_remote_state.infra_networking.private_subnet_rds_ids
   username              = var.username
   password              = var.password
