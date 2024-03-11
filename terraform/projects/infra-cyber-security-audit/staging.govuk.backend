@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-staging"
-key     = "govuk/infra-cyber-security-audit.tfstate"
-encrypt = true
-region  = "eu-west-1"
