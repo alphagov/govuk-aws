@@ -1,4 +1,0 @@
-bucket  = "govuk-terraform-steppingstone-staging"
-key     = "govuk/infra-datagovuk-static-bucket.tfstate"
-encrypt = true
-region  = "eu-west-1"
