@@ -1,14 +1,7 @@
-
 variable "aws_region" {
   type        = string
   description = "AWS region"
   default     = "eu-west-1"
-}
-
-variable "stackname" {
-  type        = string
-  description = "Stackname"
-  default     = "blue"
 }
 
 variable "aws_environment" {
@@ -25,7 +18,7 @@ variable "engine_type" {
 variable "engine_version" {
   type        = string
   description = "broker engine version"
-  default     = "3.9.16"
+  default     = "3.9.27"
 }
 
 variable "deployment_mode" {
@@ -40,33 +33,16 @@ variable "host_instance_type" {
   default     = "mq.t3.micro"
 }
 
-variable "maintenance_window_start_time_day_of_week" {
+variable "maintenance_window_start_day_of_week" {
   type        = string
   description = "Day of the week of the start of the maintenance window"
   default     = "WEDNESDAY"
 }
 
-variable "maintenance_window_start_time_time_of_day" {
+variable "maintenance_window_start_time_utc" {
   type        = string
-  description = "Time of day of the start of the maintenance window"
-  default     = "07:00"
-}
-
-variable "maintenance_window_start_time_time_zone" {
-  type        = string
-  description = "Time zone of the start of the maintenance window"
-  default     = "UTC"
-}
-
-variable "publicly_accessible" {
-  type        = bool
-  description = "Whether to enable connections from applications outside of the VPC that hosts the broker's subnets. Default false"
-  default     = false
-}
-
-variable "gds_egress_ips" {
-  type        = list(any)
-  description = "An array of CIDR blocks that will be allowed offsite access."
+  description = "Time of day of the start of the maintenance window in UTC"
+  default     = "06:00"
 }
 
 variable "publishing_amazonmq_broker_name" {
