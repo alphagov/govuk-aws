@@ -107,8 +107,8 @@ data "aws_vpc_endpoint" "mq" {
 }
 
 data "aws_network_interface" "mq" {
-  for_each = data.aws_vpc_endpoint.mq.network_interface_ids
-  id       = each.value
+  count = var.publishing_amazonmq_instance_count
+  id    = sort(tolist(data.aws_vpc_endpoint.mq.network_interface_ids))[count.index]
 }
 
 resource "aws_mq_broker" "publishing_amazonmq" {
@@ -222,13 +222,13 @@ resource "aws_lb_target_group" "internal_https" {
 }
 
 resource "aws_lb_target_group_attachment" "internal_https_ips" {
-  for_each = data.aws_network_interface.mq
+  count = var.publishing_amazonmq_instance_count
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_https,
   ]
   target_group_arn = aws_lb_target_group.internal_https.arn
-  target_id        = each.value.private_ip
+  target_id        = data.aws_network_interface.mq[count.index].private_ip
   port             = 443
 }
 
@@ -263,13 +263,13 @@ resource "aws_lb_target_group" "internal_amqps" {
 # Attach all the IP addresses from the broker DNS lookup
 # to the LB target group
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
-  for_each = data.aws_network_interface.mq
+  count = var.publishing_amazonmq_instance_count
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_amqps,
   ]
   target_group_arn = aws_lb_target_group.internal_amqps.arn
-  target_id        = each.value.private_ip
+  target_id        = data.aws_network_interface.mq[count.index].private_ip
   port             = 5671
 }
 
