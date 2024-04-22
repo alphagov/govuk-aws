@@ -1,6 +1,7 @@
 import base64
 
 import re
+import urllib.error
 
 from urllib import request
 
@@ -28,13 +29,18 @@ def lambda_handler(event, context):
     add_headers(req, event)
 
     print('Posting json to ', event['url'])
-    resp = request.urlopen(req)
+    try:
+        resp = request.urlopen(req)
+        status = resp.status
+        response_body = resp.read()
+    except urllib.error.HTTPError as e:
+        status = e.status
+        response_body = e.read().decode()
 
-    print('Posted - status_code = ', resp.status)
-    response_body = resp.read()
-    print('Response body: (only present if an error occurred)', response_body)
+    print('response status: ', status)
+    print('response body: ', response_body)
 
     return {
-        'statusCode': resp.status,
+        'statusCode': status,
         'body': response_body
     }
