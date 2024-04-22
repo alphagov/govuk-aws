@@ -1,11 +1,9 @@
 /**
- * ## Project: app-publishing-amazonmq
- * 
- * Project app-publishing-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
- * It uses remote state from the infra-vpc and infra-security-groups modules.
+ * app-publishing-amazonmq creates an Amazon MQ RabbitMQ instance or cluster.
  *
- * The Terraform provider will only allow us to create a single user, so all 
- * other users must be added from the RabbitMQ web admin UI or REST API.
+ * The Terraform provider can only create a single user account on the MQ, so
+ * we create other users by installing and invoking a Lambda that talks to the
+ * MQ's REST API.
  */
 terraform {
   backend "s3" {}
@@ -94,7 +92,6 @@ data "aws_subnet" "lb_subnets" {
   id    = sort(tolist(aws_mq_broker.publishing_amazonmq.subnet_ids))[count.index]
 }
 
-# Look up the existing SSL certificate for internal-facing infra
 data "aws_acm_certificate" "internal_cert" {
   domain   = var.elb_internal_certname
   statuses = ["ISSUED"]
@@ -137,8 +134,7 @@ resource "aws_mq_broker" "publishing_amazonmq" {
 
   logs { general = true }
 
-  # The Terraform provider will only allow us to create a single user
-  # All other users must be added from the web UI 
+  # The Terraform provider can only create a single user.
   user {
     console_access = true
     username       = "root"
@@ -164,12 +160,10 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_amqps" {
   protocol    = "tcp"
   description = "AMQPS ingress for Publishing AmazonMQ"
 
-  # Which security group is the rule assigned to
   security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
 }
 
-# allow outgoing traffic to anything within the same SG
 resource "aws_security_group_rule" "rabbitmq_egress_self_self" {
   type      = "egress"
   from_port = 0
@@ -194,13 +188,13 @@ resource "aws_lb" "publishingmq_lb_internal" {
   enable_deletion_protection = var.lb_delete_protection
 }
 
-# HTTPS listener & target group for web admin UI traffic
 resource "aws_lb_listener" "internal_https" {
   load_balancer_arn = aws_lb.publishingmq_lb_internal.arn
   port              = "443"
   protocol          = "TLS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn   = data.aws_acm_certificate.internal_cert.arn
+  tags              = { Description = "MQ admin web UI" }
 
   default_action {
     type             = "forward"
@@ -251,8 +245,6 @@ resource "aws_lb_target_group" "internal_amqps" {
   protocol    = "TLS"
   vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
-  # Use port 443 HTTPS for the healthcheck, as the LB
-  # won't get a recognisable response on port 5671
   health_check {
     path     = "/"
     port     = 443
@@ -260,8 +252,6 @@ resource "aws_lb_target_group" "internal_amqps" {
   }
 }
 
-# Attach all the IP addresses from the broker DNS lookup
-# to the LB target group
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
   count = var.publishing_amazonmq_instance_count
   depends_on = [
@@ -289,8 +279,7 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 
 # Create and invoke a Lambda function to POST the full RabbitMQ config to the
 # management API in the target environment.
-#
-# Write the decrypted definitions from govuk-aws-data to a local file.
+
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   filename = join(".", [
     "/tmp/amazonmq_rabbitmq_definitions",
@@ -313,7 +302,6 @@ data "aws_iam_policy" "lambda_vpc_access" {
   name = "AWSLambdaVPCAccessExecutionRole"
 }
 
-# Build a zip file for deploying the lambda.
 data "archive_file" "artefact_lambda" {
   type        = "zip"
   source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
@@ -369,4 +357,3 @@ data "aws_lambda_invocation" "post_config_to_amazonmq" {
     json_b64 = base64encode(data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content)
   })
 }
-
