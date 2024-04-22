@@ -8,7 +8,6 @@
 terraform {
   backend "s3" {}
   required_version = "~> 1.7"
-
   required_providers {
     archive = {
       source  = "hashicorp/archive"
@@ -42,45 +41,18 @@ provider "aws" {
   }
 }
 
-resource "random_password" "root" {
+resource "random_password" "mq_user" {
+  for_each = toset([
+    "root",
+    "content_data_api",
+    "email_alert_service",
+    "monitoring",
+    "publishing_api",
+    "search_api",
+    "search_api_v2",
+  ])
   length  = 24
   special = false
-}
-resource "random_password" "monitoring" {
-  length  = 24
-  special = false
-}
-resource "random_password" "publishing_api" {
-  length  = 24
-  special = false
-}
-resource "random_password" "search_api" {
-  length  = 24
-  special = false
-}
-resource "random_password" "search_api_v2" {
-  length  = 24
-  special = false
-}
-resource "random_password" "content_data_api" {
-  length  = 24
-  special = false
-}
-resource "random_password" "email_alert_service" {
-  length  = 24
-  special = false
-}
-
-locals {
-  publishing_amazonmq_passwords = {
-    root                = random_password.root.result
-    monitoring          = random_password.monitoring.result
-    publishing_api      = random_password.publishing_api.result
-    search_api          = random_password.search_api.result
-    search_api_v2       = random_password.search_api_v2.result
-    content_data_api    = random_password.content_data_api.result
-    email_alert_service = random_password.email_alert_service.result
-  }
 }
 
 data "aws_subnet" "lb_subnets" {
@@ -134,7 +106,7 @@ resource "aws_mq_broker" "publishing_amazonmq" {
   user {
     console_access = true
     username       = "root"
-    password       = local.publishing_amazonmq_passwords["root"]
+    password       = random_password.mq_user["root"].result
   }
 }
 
@@ -283,7 +255,9 @@ resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
     "json",
   ])
   content = templatefile("${path.cwd}/publishing-rabbitmq-schema.json.tpl", {
-    publishing_amazonmq_passwords   = local.publishing_amazonmq_passwords
+    publishing_amazonmq_passwords = {
+      for user, pw in random_password.mq_user : user => pw.result
+    }
     publishing_amazonmq_broker_name = var.publishing_amazonmq_broker_name
   })
 }
@@ -345,7 +319,7 @@ data "aws_lambda_invocation" "post_config_to_amazonmq" {
   input = jsonencode({
     url      = "${aws_mq_broker.publishing_amazonmq.instances[0].console_url}/api/definitions"
     username = "root"
-    password = local.publishing_amazonmq_passwords["root"]
+    password = random_password.mq_user["root"].result
     json_b64 = base64encode(data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content)
   })
 }

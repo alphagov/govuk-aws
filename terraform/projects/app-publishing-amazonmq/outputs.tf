@@ -22,7 +22,7 @@ output "internal_domain_name" {
 output "publishing_amazonmq_passwords" {
   description = "Generated passwords for each RabbitMQ user account. Use `terraform output -json | jq '.publishing_amazonmq_passwords.value'` to retrieve the values."
   sensitive   = true
-  value       = local.publishing_amazonmq_passwords
+  value       = { for user, pw in random_password.mq_user : user => pw.result }
 }
 
 output "lambda_function_name" {
