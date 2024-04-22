@@ -86,7 +86,7 @@
       "configure": ".*",
       "write": ".*",
       "read": ".*"
-    },
+    }
   ],
   "parameters": [],
   "global_parameters": [
