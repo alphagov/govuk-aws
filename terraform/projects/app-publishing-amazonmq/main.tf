@@ -1,16 +1,13 @@
 /**
- * ## Project: app-publishing-amazonmq
- * 
- * Project app-publishing-amazonmq creates an Amazon MQ instance or cluster for GOV.UK.
- * It uses remote state from the infra-vpc and infra-security-groups modules.
+ * app-publishing-amazonmq creates an Amazon MQ RabbitMQ instance or cluster.
  *
- * The Terraform provider will only allow us to create a single user, so all 
- * other users must be added from the RabbitMQ web admin UI or REST API.
+ * The Terraform provider can only create a single user account on the MQ, so
+ * we create other users by installing and invoking a Lambda that talks to the
+ * MQ's REST API.
  */
 terraform {
   backend "s3" {}
   required_version = "~> 1.7"
-
   required_providers {
     archive = {
       source  = "hashicorp/archive"
@@ -19,10 +16,6 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
-    }
-    dns = {
-      source  = "hashicorp/dns"
-      version = "~> 3.4"
     }
     local = {
       source  = "hashicorp/local"
@@ -48,53 +41,33 @@ provider "aws" {
   }
 }
 
-resource "random_password" "root" {
-  length  = 24
-  special = false
-}
-resource "random_password" "monitoring" {
-  length  = 24
-  special = false
-}
-resource "random_password" "publishing_api" {
-  length  = 24
-  special = false
-}
-resource "random_password" "search_api" {
-  length  = 24
-  special = false
-}
-resource "random_password" "search_api_v2" {
-  length  = 24
-  special = false
-}
-resource "random_password" "content_data_api" {
-  length  = 24
-  special = false
-}
-resource "random_password" "email_alert_service" {
-  length  = 24
-  special = false
+locals {
+  mq_instance_count = {
+    SINGLE_INSTANCE         = 1
+    ACTIVE_STANDBY_MULTI_AZ = 2
+    CLUSTER_MULTI_AZ        = 3
+  }[var.deployment_mode]
 }
 
-locals {
-  publishing_amazonmq_passwords = {
-    root                = random_password.root.result
-    monitoring          = random_password.monitoring.result
-    publishing_api      = random_password.publishing_api.result
-    search_api          = random_password.search_api.result
-    search_api_v2       = random_password.search_api_v2.result
-    content_data_api    = random_password.content_data_api.result
-    email_alert_service = random_password.email_alert_service.result
-  }
+resource "random_password" "mq_user" {
+  for_each = toset([
+    "root",
+    "content_data_api",
+    "email_alert_service",
+    "monitoring",
+    "publishing_api",
+    "search_api",
+    "search_api_v2",
+  ])
+  length  = 24
+  special = false
 }
 
 data "aws_subnet" "lb_subnets" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   id    = sort(tolist(aws_mq_broker.publishing_amazonmq.subnet_ids))[count.index]
 }
 
-# Look up the existing SSL certificate for internal-facing infra
 data "aws_acm_certificate" "internal_cert" {
   domain   = var.elb_internal_certname
   statuses = ["ISSUED"]
@@ -107,7 +80,7 @@ data "aws_vpc_endpoint" "mq" {
 }
 
 data "aws_network_interface" "mq" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   id    = sort(tolist(data.aws_vpc_endpoint.mq.network_interface_ids))[count.index]
 }
 
@@ -137,12 +110,11 @@ resource "aws_mq_broker" "publishing_amazonmq" {
 
   logs { general = true }
 
-  # The Terraform provider will only allow us to create a single user
-  # All other users must be added from the web UI 
+  # The Terraform provider can only create a single user.
   user {
     console_access = true
     username       = "root"
-    password       = local.publishing_amazonmq_passwords["root"]
+    password       = random_password.mq_user["root"].result
   }
 }
 
@@ -164,12 +136,10 @@ resource "aws_security_group_rule" "publishingamazonmq_ingress_lb_amqps" {
   protocol    = "tcp"
   description = "AMQPS ingress for Publishing AmazonMQ"
 
-  # Which security group is the rule assigned to
   security_group_id = data.terraform_remote_state.infra_security_groups.outputs.sg_rabbitmq_id
   cidr_blocks       = data.aws_subnet.lb_subnets[*].cidr_block
 }
 
-# allow outgoing traffic to anything within the same SG
 resource "aws_security_group_rule" "rabbitmq_egress_self_self" {
   type      = "egress"
   from_port = 0
@@ -194,13 +164,13 @@ resource "aws_lb" "publishingmq_lb_internal" {
   enable_deletion_protection = var.lb_delete_protection
 }
 
-# HTTPS listener & target group for web admin UI traffic
 resource "aws_lb_listener" "internal_https" {
   load_balancer_arn = aws_lb.publishingmq_lb_internal.arn
   port              = "443"
   protocol          = "TLS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn   = data.aws_acm_certificate.internal_cert.arn
+  tags              = { Description = "MQ admin web UI" }
 
   default_action {
     type             = "forward"
@@ -222,7 +192,7 @@ resource "aws_lb_target_group" "internal_https" {
 }
 
 resource "aws_lb_target_group_attachment" "internal_https_ips" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_https,
@@ -251,8 +221,6 @@ resource "aws_lb_target_group" "internal_amqps" {
   protocol    = "TLS"
   vpc_id      = data.terraform_remote_state.infra_vpc.outputs.vpc_id
 
-  # Use port 443 HTTPS for the healthcheck, as the LB
-  # won't get a recognisable response on port 5671
   health_check {
     path     = "/"
     port     = 443
@@ -260,10 +228,8 @@ resource "aws_lb_target_group" "internal_amqps" {
   }
 }
 
-# Attach all the IP addresses from the broker DNS lookup
-# to the LB target group
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_amqps,
@@ -289,8 +255,7 @@ resource "aws_route53_record" "publishing_amazonmq_internal_root_domain_name" {
 
 # Create and invoke a Lambda function to POST the full RabbitMQ config to the
 # management API in the target environment.
-#
-# Write the decrypted definitions from govuk-aws-data to a local file.
+
 resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
   filename = join(".", [
     "/tmp/amazonmq_rabbitmq_definitions",
@@ -298,7 +263,9 @@ resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
     "json",
   ])
   content = templatefile("${path.cwd}/publishing-rabbitmq-schema.json.tpl", {
-    publishing_amazonmq_passwords   = local.publishing_amazonmq_passwords
+    publishing_amazonmq_passwords = {
+      for user, pw in random_password.mq_user : user => pw.result
+    }
     publishing_amazonmq_broker_name = var.publishing_amazonmq_broker_name
   })
 }
@@ -313,7 +280,6 @@ data "aws_iam_policy" "lambda_vpc_access" {
   name = "AWSLambdaVPCAccessExecutionRole"
 }
 
-# Build a zip file for deploying the lambda.
 data "archive_file" "artefact_lambda" {
   type        = "zip"
   source_file = "${path.module}/../../lambda/PostConfigToAmazonMQ/post_config_to_amazonmq.py"
@@ -325,9 +291,9 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
   source_code_hash = data.archive_file.artefact_lambda.output_base64sha256
 
   function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
-  role          = aws_iam_role.post_config_to_amazonmq_role.arn
+  role          = aws_iam_role.post_config_to_amazonmq.arn
   handler       = "post_config_to_amazonmq.lambda_handler"
-  runtime       = "python3.8"
+  runtime       = "python3.12"
 
   vpc_config {
     subnet_ids         = aws_mq_broker.publishing_amazonmq.subnet_ids
@@ -335,27 +301,23 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
   }
 }
 
-resource "aws_iam_role" "post_config_to_amazonmq_role" {
-  name               = "post_config_to_amazonmq_role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
+data "aws_iam_policy_document" "lambda_assumerole" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
-  ]
+  }
 }
-EOF
+
+resource "aws_iam_role" "post_config_to_amazonmq" {
+  name               = "post_config_to_amazonmq"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assumerole.json
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
-  role       = aws_iam_role.post_config_to_amazonmq_role.name
+  role       = aws_iam_role.post_config_to_amazonmq.name
   policy_arn = data.aws_iam_policy.lambda_vpc_access.arn
 }
 
@@ -365,8 +327,7 @@ data "aws_lambda_invocation" "post_config_to_amazonmq" {
   input = jsonencode({
     url      = "${aws_mq_broker.publishing_amazonmq.instances[0].console_url}/api/definitions"
     username = "root"
-    password = local.publishing_amazonmq_passwords["root"]
+    password = random_password.mq_user["root"].result
     json_b64 = base64encode(data.local_sensitive_file.amazonmq_rabbitmq_definitions_interpolated.content)
   })
 }
-
