@@ -309,7 +309,7 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
   source_code_hash = data.archive_file.artefact_lambda.output_base64sha256
 
   function_name = "govuk-${var.aws_environment}-post_config_to_amazonmq"
-  role          = aws_iam_role.post_config_to_amazonmq_role.arn
+  role          = aws_iam_role.post_config_to_amazonmq.arn
   handler       = "post_config_to_amazonmq.lambda_handler"
   runtime       = "python3.8"
 
@@ -319,27 +319,23 @@ resource "aws_lambda_function" "post_config_to_amazonmq" {
   }
 }
 
-resource "aws_iam_role" "post_config_to_amazonmq_role" {
-  name               = "post_config_to_amazonmq_role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
+data "aws_iam_policy_document" "lambda_assumerole" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
-  ]
+  }
 }
-EOF
+
+resource "aws_iam_role" "post_config_to_amazonmq" {
+  name               = "post_config_to_amazonmq"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assumerole.json
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
-  role       = aws_iam_role.post_config_to_amazonmq_role.name
+  role       = aws_iam_role.post_config_to_amazonmq.name
   policy_arn = data.aws_iam_policy.lambda_vpc_access.arn
 }
 
