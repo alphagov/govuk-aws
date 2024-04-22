@@ -41,6 +41,14 @@ provider "aws" {
   }
 }
 
+locals {
+  mq_instance_count = {
+    SINGLE_INSTANCE         = 1
+    ACTIVE_STANDBY_MULTI_AZ = 2
+    CLUSTER_MULTI_AZ        = 3
+  }[var.deployment_mode]
+}
+
 resource "random_password" "mq_user" {
   for_each = toset([
     "root",
@@ -56,7 +64,7 @@ resource "random_password" "mq_user" {
 }
 
 data "aws_subnet" "lb_subnets" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   id    = sort(tolist(aws_mq_broker.publishing_amazonmq.subnet_ids))[count.index]
 }
 
@@ -72,7 +80,7 @@ data "aws_vpc_endpoint" "mq" {
 }
 
 data "aws_network_interface" "mq" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   id    = sort(tolist(data.aws_vpc_endpoint.mq.network_interface_ids))[count.index]
 }
 
@@ -184,7 +192,7 @@ resource "aws_lb_target_group" "internal_https" {
 }
 
 resource "aws_lb_target_group_attachment" "internal_https_ips" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_https,
@@ -221,7 +229,7 @@ resource "aws_lb_target_group" "internal_amqps" {
 }
 
 resource "aws_lb_target_group_attachment" "internal_amqps_ips" {
-  count = var.publishing_amazonmq_instance_count
+  count = local.mq_instance_count
   depends_on = [
     aws_mq_broker.publishing_amazonmq,
     aws_lb_target_group.internal_amqps,
