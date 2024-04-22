@@ -18,10 +18,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-    dns = {
-      source  = "hashicorp/dns"
-      version = "~> 3.4"
-    }
     local = {
       source  = "hashicorp/local"
       version = "~> 2.5"
