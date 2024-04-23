@@ -87,7 +87,7 @@ data "aws_network_interface" "mq" {
 resource "aws_mq_broker" "publishing_amazonmq" {
   broker_name = var.publishing_amazonmq_broker_name
 
-  engine_type         = var.engine_type
+  engine_type         = "RabbitMQ"
   engine_version      = var.engine_version
   deployment_mode     = var.deployment_mode
   host_instance_type  = var.host_instance_type
