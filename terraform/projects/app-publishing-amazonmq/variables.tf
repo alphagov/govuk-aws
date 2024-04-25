@@ -9,16 +9,10 @@ variable "aws_environment" {
   description = "AWS Environment"
 }
 
-variable "engine_type" {
-  type        = string
-  description = "ActiveMQ or RabbitMQ"
-  default     = "RabbitMQ"
-}
-
 variable "engine_version" {
   type        = string
-  description = "broker engine version"
-  default     = "3.9.27"
+  description = "Broker engine version. https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/rabbitmq-version-management"
+  default     = "3.11.28"
 }
 
 variable "deployment_mode" {
