@@ -17,6 +17,11 @@
       "tags": ""
     },
     {
+      "name": "govuk_chat",
+      "password": "${publishing_amazonmq_passwords["govuk_chat"]}",
+      "tags": ""
+    },
+    {
       "name": "monitoring",
       "password": "${publishing_amazonmq_passwords["monitoring"]}",
       "tags": "monitoring"
@@ -44,6 +49,13 @@
       "configure": "^(amq\\.gen.*|email_alert_service|email_unpublishing|subscriber_list_details_update_minor|subscriber_list_details_update_major)$",
       "write": "^(amq\\.gen.*|email_alert_service|email_unpublishing|subscriber_list_details_update_minor|subscriber_list_details_update_major)$",
       "read": "^(amq\\.gen.*|email_alert_service|email_unpublishing|subscriber_list_details_update_minor|subscriber_list_details_update_major|published_documents)$"
+    },
+    {
+      "user": "govuk_chat",
+      "vhost": "publishing",
+      "configure": "^govuk_chat_published_documents$",
+      "write": "^$",
+      "read": "^govuk_chat_published_documents$"
     },
     {
       "user": "content_data_api",
@@ -192,6 +204,13 @@
       "arguments": {}
     },
     {
+      "name": "govuk_chat_published_documents",
+      "vhost": "publishing",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
       "name": "email_unpublishing",
       "vhost": "publishing",
       "durable": true,
@@ -271,6 +290,14 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
+      "destination_type": "queue",
+      "routing_key": "*.bulk.govuk-chat-sync",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
       "destination": "content_data_api",
       "destination_type": "queue",
       "routing_key": "*.links",
@@ -288,6 +315,14 @@
       "source": "published_documents",
       "vhost": "publishing",
       "destination": "content_data_api",
+      "destination_type": "queue",
+      "routing_key": "*.major",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
       "destination_type": "queue",
       "routing_key": "*.major",
       "arguments": {}
@@ -319,6 +354,14 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
+      "destination_type": "queue",
+      "routing_key": "*.minor",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
       "destination": "subscriber_list_details_update_minor",
       "destination_type": "queue",
       "routing_key": "*.minor.#",
@@ -335,7 +378,23 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
+      "destination_type": "queue",
+      "routing_key": "*.republish",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
       "destination": "content_data_api",
+      "destination_type": "queue",
+      "routing_key": "*.unpublish",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
       "destination_type": "queue",
       "routing_key": "*.unpublish",
       "arguments": {}
