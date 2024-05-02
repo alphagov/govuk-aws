@@ -292,7 +292,7 @@
       "vhost": "publishing",
       "destination": "govuk_chat_published_documents",
       "destination_type": "queue",
-      "routing_key": "*.bulk.govuk-chat-sync",
+      "routing_key": "*.bulk.govuk_chat_sync",
       "arguments": {}
     },
     {
