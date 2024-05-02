@@ -53,7 +53,7 @@
     {
       "user": "govuk_chat",
       "vhost": "publishing",
-      "configure": "^govuk_chat_published_documents$",
+      "configure": "^$",
       "write": "^$",
       "read": "^govuk_chat_published_documents$"
     },
