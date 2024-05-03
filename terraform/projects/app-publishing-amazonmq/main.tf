@@ -54,6 +54,7 @@ resource "random_password" "mq_user" {
     "root",
     "content_data_api",
     "email_alert_service",
+    "govuk_chat",
     "monitoring",
     "publishing_api",
     "search_api",
