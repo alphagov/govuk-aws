@@ -306,6 +306,14 @@
     {
       "source": "published_documents",
       "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
+      "destination_type": "queue",
+      "routing_key": "*.links",
+      "arguments": {}
+    },
+    {
+      "source": "published_documents",
+      "vhost": "publishing",
       "destination": "search_api_to_be_indexed",
       "destination_type": "queue",
       "routing_key": "*.links",
