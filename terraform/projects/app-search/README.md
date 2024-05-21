@@ -26,34 +26,11 @@ Search application servers
 
 | Name | Type |
 |------|------|
-| [aws_autoscaling_group.learntorank-generation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/autoscaling_group) | resource |
-| [aws_ecr_repository.repo](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ecr_repository) | resource |
-| [aws_ecr_repository_policy.policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/ecr_repository_policy) | resource |
-| [aws_iam_instance_profile.learntorank-generation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_instance_profile) | resource |
-| [aws_iam_policy.scale-learntorank-generation-asg-policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.search_relevancy_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.sitemaps_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_policy.use_sagemaker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_policy) | resource |
-| [aws_iam_role.learntorank](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy_attachment.learntorank-bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.learntorank-ecr](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.learntorank-sagemaker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.scale-learntorank-generation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.search_relevancy_bucket_access_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.sitemaps_bucket_access_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.use_sagemaker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_key_pair.learntorank-generation-key](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/key_pair) | resource |
-| [aws_launch_template.learntorank-generation](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/launch_template) | resource |
-| [aws_s3_bucket.search_relevancy_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.sitemaps_bucket](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/resources/s3_bucket) | resource |
 | [null_resource.user_data](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
-| [aws_ami.ubuntu_focal](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/ami) | data source |
-| [aws_iam_policy_document.ecr-usage](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.learntorank-assume-role](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.scale-learntorank-generation-asg](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.search_relevancy_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.sitemaps_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.use_sagemaker](https://registry.terraform.io/providers/hashicorp/aws/2.46.0/docs/data-sources/iam_policy_document) | data source |
 | [terraform_remote_state.infra_monitoring](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_networking](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 | [terraform_remote_state.infra_root_dns_zones](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
@@ -87,8 +64,4 @@ Search application servers
 
 | Name | Description |
 |------|-------------|
-| <a name="output_ecr_repository_url"></a> [ecr\_repository\_url](#output\_ecr\_repository\_url) | URL of the ECR repository |
-| <a name="output_ltr_role_arn"></a> [ltr\_role\_arn](#output\_ltr\_role\_arn) | LTR role ARN |
-| <a name="output_scale_learntorank_asg_policy_arn"></a> [scale\_learntorank\_asg\_policy\_arn](#output\_scale\_learntorank\_asg\_policy\_arn) | ARN of the policy used by to scale the ASG for learn to rank |
-| <a name="output_search_relevancy_s3_policy_arn"></a> [search\_relevancy\_s3\_policy\_arn](#output\_search\_relevancy\_s3\_policy\_arn) | ARN of the policy used to access the search-relevancy S3 bucket |
 | <a name="output_sitemaps_s3_policy_arn"></a> [sitemaps\_s3\_policy\_arn](#output\_sitemaps\_s3\_policy\_arn) | ARN of the policy used to access the sitemaps S3 bucket |
