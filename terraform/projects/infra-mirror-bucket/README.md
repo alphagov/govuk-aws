@@ -45,7 +45,6 @@ No modules.
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.s3_mirror_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.s3_mirror_replica_read_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [external_external.pingdom](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) | data source |
 | [fastly_ip_ranges.fastly](https://registry.terraform.io/providers/fastly/fastly/latest/docs/data-sources/ip_ranges) | data source |
 | [template_file.s3_govuk_mirror_read_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [template_file.s3_govuk_mirror_replication_policy_template](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
