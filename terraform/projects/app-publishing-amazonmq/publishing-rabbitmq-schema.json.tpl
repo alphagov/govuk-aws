@@ -122,6 +122,31 @@
     },
     {
       "vhost": "publishing",
+      "name": "govuk_chat_retry_dlx",
+      "pattern": "govuk_chat_published_documents",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "govuk_chat_retry_dlx",
+        "ha-mode": "all",
+        "ha-sync-mode": "automatic"
+      },
+      "priority": 0
+    },
+    {
+      "vhost": "publishing",
+      "name": "govuk_chat_retry",
+      "pattern": "govuk_chat_retry",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "govuk_chat_dlx",
+        "message-ttl":"${govuk_chat_retry_message-ttl}",
+        "ha-mode": "all",
+        "ha-sync-mode": "automatic"
+      },
+      "priority": 0
+    },
+    {
+      "vhost": "publishing",
       "name": "ha-all",
       "pattern": ".*",
       "apply-to": "all",
@@ -211,6 +236,13 @@
       "arguments": {}
     },
     {
+      "name": "govuk_chat_retry",
+      "vhost": "publishing",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
       "name": "email_unpublishing",
       "vhost": "publishing",
       "durable": true,
@@ -221,6 +253,24 @@
   "exchanges": [
     {
       "name": "published_documents",
+      "vhost": "publishing",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "govuk_chat_retry_dlx",
+      "vhost": "publishing",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "govuk_chat_dlx",
       "vhost": "publishing",
       "type": "topic",
       "durable": true,
@@ -413,6 +463,22 @@
       "destination": "email_unpublishing",
       "destination_type": "queue",
       "routing_key": "*.unpublish.#",
+      "arguments": {}
+    },
+    {
+      "source": "govuk_chat_retry_dlx",
+      "vhost": "publishing",
+      "destination": "govuk_chat_retry",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    },
+    {
+      "source": "govuk_chat_dlx",
+      "vhost": "publishing",
+      "destination": "govuk_chat_published_documents",
+      "destination_type": "queue",
+      "routing_key": "#",
       "arguments": {}
     }
   ]
