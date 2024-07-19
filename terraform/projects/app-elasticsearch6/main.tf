@@ -124,7 +124,6 @@ resource "aws_elasticsearch_domain" "elasticsearch6" {
     )
     security_group_ids = [
       data.terraform_remote_state.infra_security_groups.outputs.sg_elasticsearch6_id,
-      data.terraform_remote_state.infra_security_groups.outputs.sg_management_id,
     ]
   }
 

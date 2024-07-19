@@ -329,7 +329,6 @@ resource "aws_launch_template" "related-links-ingestion_launch-template" {
 
   vpc_security_group_ids = [
     "${data.terraform_remote_state.infra_security_groups.sg_related-links_id}",
-    "${data.terraform_remote_state.infra_security_groups.sg_management_id}",
   ]
 
   key_name = aws_key_pair.jenkins_public_key.key_name
