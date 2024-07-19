@@ -26,7 +26,6 @@ module "search" {
   instance_subnet_ids = data.terraform_remote_state.infra_networking.outputs.private_subnet_ids
   instance_security_group_ids = [
     data.terraform_remote_state.infra_security_groups.outputs.sg_search_id,
-    data.terraform_remote_state.infra_security_groups.outputs.sg_management_id
   ]
   instance_type                 = var.instance_type
   instance_additional_user_data = join("\n", null_resource.user_data.*.triggers.snippet)
