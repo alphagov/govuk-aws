@@ -25,6 +25,7 @@ provider "aws" {
     tags = {
       terraform_deployment = basename(abspath(path.root))
       aws_environment      = var.aws_environment
+      project              = "GOV.UK - Search"
     }
   }
 }
