@@ -45,6 +45,12 @@ variable "publishing_amazonmq_broker_name" {
   default     = "PublishingMQ"
 }
 
+variable "govuk_chat_retry_message-ttl" {
+  type        = string
+  description = "Time in miliseconds before messages in the govuk_chat_retry queue expires and are sent back to the govuk_chat_published_ducoments queue through the dead letter mechanism"
+  default     = "300000"
+}
+
 variable "elb_internal_certname" {
   type        = string
   description = "The ACM cert domain name to find the ARN of, so that it can be applied to the Network Load Balancer"

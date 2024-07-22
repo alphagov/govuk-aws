@@ -6,6 +6,15 @@ It uses remote state from the infra-vpc and infra-security-groups modules.
 The Terraform provider will only allow us to create a single user, so all
 other users must be added from the RabbitMQ web admin UI or REST API.
 
+We set a dead letter exchange for the govuk_chat_published_documents called govuk_chat_retry_dlx 
+This dlx then send all incoming messages to a queue called govuk_chat_retry. 
+this queue has a message-ttl value set and a dead letter exchange set to an exchange called govuk_chat_dlx. 
+This last exchange route all incoming messages back to govuk_chat_published_documents.
+
+The result of all this is that when a message is rejected in govuk_chat_published_documents, 
+it ends up in the govuk_chat_retry queue, it will then wait here for the message-ttl value before expiring. 
+After expiration it is sent back to govuk_chat_published_documents.
+
 ## Requirements
 
 | Name | Version |
