@@ -139,7 +139,7 @@
       "apply-to": "queues",
       "definition": {
         "dead-letter-exchange": "govuk_chat_dlx",
-        "message-ttl":"${govuk_chat_retry_message-ttl}",
+        "message-ttl":${govuk_chat_retry_message-ttl},
         "ha-mode": "all",
         "ha-sync-mode": "automatic"
       },

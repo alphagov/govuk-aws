@@ -268,6 +268,7 @@ resource "local_sensitive_file" "amazonmq_rabbitmq_definitions" {
       for user, pw in random_password.mq_user : user => pw.result
     }
     publishing_amazonmq_broker_name = var.publishing_amazonmq_broker_name
+    govuk_chat_retry_message-ttl    = var.govuk_chat_retry_message-ttl
   })
 }
 

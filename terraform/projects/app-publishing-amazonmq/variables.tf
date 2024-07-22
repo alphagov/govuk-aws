@@ -46,9 +46,9 @@ variable "publishing_amazonmq_broker_name" {
 }
 
 variable "govuk_chat_retry_message-ttl" {
-  type        = string
+  type        = number
   description = "Time in miliseconds before messages in the govuk_chat_retry queue expires and are sent back to the govuk_chat_published_ducoments queue through the dead letter mechanism"
-  default     = "300000"
+  default     = 300000
 }
 
 variable "elb_internal_certname" {
