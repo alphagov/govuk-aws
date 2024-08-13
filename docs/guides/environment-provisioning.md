@@ -173,12 +173,12 @@ The projects that need to be initially run in this way are:
 6. `infra-stack-dns-zones`
 7. `infra-certificates`
 
-  You will need to purchase a certificate from Gandi.net for your new environment,
-  and then upload the certificate to AWS Route53. The steps in [Renew a TLS
-  certificate for GOV.UK][] are broadly the same for creating a new certificate.
-  Copy the approach that you see in staging/production. We use Gandi rather than AWS,
-  because we need to upload the certificate to Fastly, and AWS does not permit
-  downloading public certificates.
+You will need to purchase a certificate from Fastly for your new environment,
+and then upload the certificate to AWS Route53. The steps in [Renew a TLS
+certificate for GOV.UK][] are broadly the same for creating a new certificate.
+Copy the approach that you see in staging/production. We use Fastly rather than
+AWS, because AWS does not permit downloading public certificates and we need
+the certificate in both AWS Route53 and Fastly.
 
 8. `infra-security-groups`
 9. `infra-database-backups-bucket`
@@ -197,7 +197,7 @@ terraform command as below. This will only work once you have applied
 gds aws <env> -- tools/build-terraform-project.sh ...
 ```
 
-[Renew a TLS certificate for GOV.UK]: https://docs.publishing.service.gov.uk/manual/renew-a-tls-certificate.html
+[Renew a TLS certificate for GOV.UK]: https://docs.publishing.service.gov.uk/manual/request-fastly-tls-certificate.html
 [GDS CLI]: https://github.com/alphagov/gds-cli
 
 ### Update the NS records (if rebuilding infra-root-dns-zones in staging or integration)
