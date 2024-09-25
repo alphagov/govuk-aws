@@ -12,7 +12,7 @@ variable "aws_environment" {
 variable "engine_version" {
   type        = string
   description = "Broker engine version. https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/rabbitmq-version-management"
-  default     = "3.12"
+  default     = "3.13"
 }
 
 variable "deployment_mode" {
