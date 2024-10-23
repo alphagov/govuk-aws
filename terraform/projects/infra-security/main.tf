@@ -377,8 +377,12 @@ resource "aws_iam_role_policy_attachment" "shield-response-team-access" {
   policy_arn = aws_iam_policy.shield-response-team-access.arn
 }
 
+locals {
+  allow_google_s3_mirror = contains(["integration", "staging"], var.aws_environment)
+}
+
 data "aws_iam_policy_document" "google_s3_mirror" {
-  count = var.aws_environment == "integration" ? 1 : 0
+  count = local.allow_google_s3_mirror ? 1 : 0
 
   statement {
     sid = "GoogleReadBucket"
@@ -390,21 +394,21 @@ data "aws_iam_policy_document" "google_s3_mirror" {
 
     # Need access to the top level of the tree.
     resources = [
-      "arn:aws:s3:::govuk-integration-database-backups",
-      "arn:aws:s3:::govuk-integration-database-backups/*",
+      "arn:aws:s3:::govuk-${var.aws_environment}-database-backups",
+      "arn:aws:s3:::govuk-${var.aws_environment}-database-backups/*",
     ]
   }
 }
 
 resource "aws_iam_policy" "google-s3-mirror" {
-  count       = var.aws_environment == "integration" ? 1 : 0
+  count       = local.allow_google_s3_mirror ? 1 : 0
   name        = "google-s3-mirror"
   description = "Allows a Google Cloud Platform project to mirror S3 buckets."
   policy      = data.aws_iam_policy_document.google_s3_mirror[0].json
 }
 
 resource "aws_iam_role" "google-s3-mirror" {
-  count = var.aws_environment == "integration" ? 1 : 0
+  count = local.allow_google_s3_mirror ? 1 : 0
   name  = "google-s3-mirror"
 
   assume_role_policy = jsonencode({
@@ -427,7 +431,7 @@ resource "aws_iam_role" "google-s3-mirror" {
 }
 
 resource "aws_iam_role_policy_attachment" "google-s3-mirror-access" {
-  count      = var.aws_environment == "integration" ? 1 : 0
+  count      = local.allow_google_s3_mirror ? 1 : 0
   role       = aws_iam_role.google-s3-mirror[0].name
   policy_arn = aws_iam_policy.google-s3-mirror[0].arn
 }
